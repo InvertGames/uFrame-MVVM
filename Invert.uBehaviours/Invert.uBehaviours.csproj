@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A0448E5C-C0A6-40CA-8C82-BDD4472B5E62}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Invert.uBehaviours</RootNamespace>
+    <AssemblyName>Invert.uBehaviours</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actions\UBRandom.cs" />
+    <Compile Include="Actions\UBMath.cs" />
+    <Compile Include="Actions\UBVector.cs" />
+    <Compile Include="Attributes\InstanceTemplateListAttribute.cs" />
+    <Compile Include="Attributes\TriggerListAttribute.cs" />
+    <Compile Include="Triggers\UBSwipeDownLeftTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeDownRightTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeDownTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeRightTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeLeftTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeUpLeftTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeUpRightTrigger.cs" />
+    <Compile Include="Triggers\UBSwipeUpTrigger.cs" />
+    <Compile Include="UBehaviours\ArrayItemFieldInfo.cs" />
+    <Compile Include="Runtime\IUBFieldInfo.cs" />
+    <Compile Include="UBehaviours\BehaviourSetting.cs" />
+    <Compile Include="UBehaviours\ReflectionFieldInfo.cs" />
+    <Compile Include="Attributes\UBHelpAttribute.cs" />
+    <Compile Include="Attributes\UBRequiredAttribute.cs" />
+    <Compile Include="Attributes\ValueTypeFromAttribute.cs" />
+    <Compile Include="UBehaviours\BehaviourError.cs" />
+    <Compile Include="Runtime\IBehaviourNotification.cs" />
+    <Compile Include="Serialization\ByteObject.cs" />
+    <Compile Include="Runtime\IUBCSharpGenerator.cs" />
+    <Compile Include="Attributes\CodeGeneratorAttribute.cs" />
+    <Compile Include="Attributes\EnumTypesAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Attributes\UBRequireVariableAttribute.cs" />
+    <Compile Include="UBAction.cs" />
+    <Compile Include="Serialization\IReferenceHolder.cs" />
+    <Compile Include="Serialization\UBBinarySerializer.cs" />
+    <Compile Include="Attributes\UBCategoryAttribute.cs" />
+    <Compile Include="UBConditionAction.cs" />
+    <Compile Include="Triggers\UBFixedUpdateTrigger.cs" />
+    <Compile Include="Triggers\UBOnDestroyTrigger.cs" />
+    <Compile Include="Triggers\UBOnEnableTrigger.cs" />
+    <Compile Include="Triggers\UBOnGUITrigger.cs" />
+    <Compile Include="UBehaviours\UBComponent.cs" />
+    <Compile Include="UBehaviours\UBHelper.cs" />
+    <Compile Include="Attributes\UBPropertyAttribute.cs" />
+    <Compile Include="Runtime\DefaultExecutionHandler.cs" />
+    <Compile Include="Runtime\IBehaviourVisitable.cs" />
+    <Compile Include="Runtime\IBehaviourVisitor.cs" />
+    <Compile Include="Runtime\IContextItem.cs" />
+    <Compile Include="Runtime\IUBContext.cs" />
+    <Compile Include="Runtime\IUBehaviours.cs" />
+    <Compile Include="Runtime\IUBExecutionHandler.cs" />
+    <Compile Include="UBehaviours\UBActionSheet.cs" />
+    <Compile Include="UBehaviours\UBActionSheetInfo.cs" />
+    <Compile Include="UBehaviours\UBContext.cs" />
+    <Compile Include="UBehaviours\UBSharedBehaviour.cs" />
+    <Compile Include="UBehaviours\UBInstanceBehaviour.cs" />
+    <Compile Include="UBehaviours\UBGlobals.cs" />
+    <Compile Include="UBehaviours\UBInclude.cs" />
+    <Compile Include="UBehaviours\UBSettingAttribute.cs" />
+    <Compile Include="Variables\UBStaticVariableDeclare.cs" />
+    <Compile Include="UBehaviours\TriggerInfo.cs" />
+    <Compile Include="Triggers\UBCustomTrigger.cs" />
+    <Compile Include="Triggers\UBInstanceTrigger.cs" />
+    <Compile Include="Triggers\UBLateUpdateTrigger.cs" />
+    <Compile Include="Triggers\UBMouseDownTrigger.cs" />
+    <Compile Include="Triggers\UBMouseUpTrigger.cs" />
+    <Compile Include="Triggers\UBOnAnimatorIKTrigger.cs" />
+    <Compile Include="Triggers\UBOnAnimatorMoveTrigger.cs" />
+    <Compile Include="Triggers\UBOnBecameInvisibleTrigger.cs" />
+    <Compile Include="Triggers\UBOnBecameVisibleTrigger.cs" />
+    <Compile Include="Triggers\UBOnCollisionEnter2DTrigger.cs" />
+    <Compile Include="Triggers\UBOnCollisionEnterTrigger.cs" />
+    <Compile Include="Triggers\UBOnCollisionExit2DTrigger.cs" />
+    <Compile Include="Triggers\UBOnCollisionExitTrigger.cs" />
+    <Compile Include="Triggers\UBOnCollisionStay2DTrigger.cs" />
+    <Compile Include="Triggers\UBOnCollisionStayTrigger.cs" />
+    <Compile Include="Triggers\UBOnConnectedToServerTrigger.cs" />
+    <Compile Include="Triggers\UBOnControllerColliderHitTrigger.cs" />
+    <Compile Include="Triggers\UBOnFailedToConnectToMasterServerTrigger.cs" />
+    <Compile Include="Triggers\UBOnFailedToConnectTrigger.cs" />
+    <Compile Include="Triggers\UBOnJointBreakTrigger.cs" />
+    <Compile Include="Triggers\UBOnLevelWasLoadedTrigger.cs" />
+    <Compile Include="Triggers\UBOnMasterServerEventTrigger.cs" />
+    <Compile Include="Triggers\UBOnServerInitializedTrigger.cs" />
+    <Compile Include="Triggers\UBOnTriggerEnter2DTrigger.cs" />
+    <Compile Include="Triggers\UBOnTriggerEnterTrigger.cs" />
+    <Compile Include="Triggers\UBOnTriggerExit2DTrigger.cs" />
+    <Compile Include="Triggers\UBOnTriggerExitTrigger.cs" />
+    <Compile Include="Triggers\UBOnTriggerStay2DTrigger.cs" />
+    <Compile Include="Triggers\UBOnTriggerStayTrigger.cs" />
+    <Compile Include="Triggers\UBTrigger.cs" />
+    <Compile Include="Triggers\UBUpdateTrigger.cs" />
+    <Compile Include="Attributes\InstanceOnlyAttribute.cs" />
+    <Compile Include="Serialization\IUBSerializable.cs" />
+    <Compile Include="Runtime\IUBVariableDeclare.cs" />
+    <Compile Include="Variables\UBAnimation.cs" />
+    <Compile Include="Variables\UBBool.cs" />
+    <Compile Include="Variables\UBColor.cs" />
+    <Compile Include="Variables\UBEnum.cs" />
+    <Compile Include="Variables\UBFloat.cs" />
+    <Compile Include="Variables\UBGameObject.cs" />
+    <Compile Include="Variables\UBInt.cs" />
+    <Compile Include="Variables\UBMaterial.cs" />
+    <Compile Include="Variables\UBObject.cs" />
+    <Compile Include="Variables\UBQuaternion.cs" />
+    <Compile Include="Variables\UBRect.cs" />
+    <Compile Include="Variables\UBString.cs" />
+    <Compile Include="Variables\UBSystemObject.cs" />
+    <Compile Include="Variables\UBTexture.cs" />
+    <Compile Include="Variables\UBTransform.cs" />
+    <Compile Include="Variables\UBVariable.cs" />
+    <Compile Include="Variables\UBVariableBase.cs" />
+    <Compile Include="Variables\UBVariableDeclare.cs" />
+    <Compile Include="Variables\UBVariableType.cs" />
+    <Compile Include="Variables\UBVarType.cs" />
+    <Compile Include="Variables\UBVector2.cs" />
+    <Compile Include="Variables\UBVector3.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\UBehaviours\ /Y
+copy $(TargetPath) C:\Users\micah\Documents\uFrame1GettingStarted\Assets\uFrameComplete\uBehaviours\ /Y
+IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\UBehaviours\ /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

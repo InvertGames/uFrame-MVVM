@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B9147095-B836-4396-875F-9A1AEB8E94CF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Invert.uBehaviours.Editor</RootNamespace>
+    <AssemblyName>Invert.uBehaviours.Editor</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEditor">
+      <HintPath>..\Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActionGenerators\ActionClassGenerator.cs" />
+    <Compile Include="ActionGenerators\ConditionMethodActionBuilder.cs" />
+    <Compile Include="ActionGenerators\ConditionPropertyActionBuilder.cs" />
+    <Compile Include="ActionGenerators\GetPropertyActionClassGenerator.cs" />
+    <Compile Include="ActionGenerators\MethodActionClassGenerator.cs" />
+    <Compile Include="ActionGenerators\SetPropertyActionClassGenerator.cs" />
+    <Compile Include="ActionSheetHelpers.cs" />
+    <Compile Include="ActionSheetListDrawer.cs" />
+    <Compile Include="CodeGeneration\ClassGenerator.cs" />
+    <Compile Include="CodeGeneration\MethodGenerator.cs" />
+    <Compile Include="CodeGeneration\UBGeneratorHelper.cs" />
+    <Compile Include="DebugExecutionHandler.cs" />
+    <Compile Include="DocsByReflection.cs" />
+    <Compile Include="DocsByReflectionExtensions.cs" />
+    <Compile Include="Drawers\TriggerListDrawer.cs" />
+    <Compile Include="EnumTypesDrawer.cs" />
+    <Compile Include="IActionHandler.cs" />
+    <Compile Include="InstanceEditor.cs" />
+    <Compile Include="InstanceTemplatesListDrawer.cs" />
+    <Compile Include="ITypesGeneratorFactory.cs" />
+    <Compile Include="ModelDesignerWindow.cs" />
+    <Compile Include="PBStringDrawer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TBehavioursEditor.cs" />
+    <Compile Include="TBehavioursEditorBase.cs" />
+    <Compile Include="TBehavioursInstanceEditor.cs" />
+    <Compile Include="TEditor.cs" />
+    <Compile Include="TGlobalsEditor.cs" />
+    <Compile Include="TypeActionsGenerator.cs" />
+    <Compile Include="UBActionContent.cs" />
+    <Compile Include="UBActionEditor.cs" />
+    <Compile Include="UBActionGeneratorWindow.cs" />
+    <Compile Include="UBActionMode.cs" />
+    <Compile Include="UBActionsWindow.cs" />
+    <Compile Include="UBAnimationDrawer.cs" />
+    <Compile Include="UBAssetManager.cs" />
+    <Compile Include="UBBoolDrawer.cs" />
+    <Compile Include="UBCodeGenerator.cs" />
+    <Compile Include="UBColorDrawer.cs" />
+    <Compile Include="UBDrawers.cs" />
+    <Compile Include="UBEditor.cs" />
+    <Compile Include="UBehaviourCSharpGenerator.cs" />
+    <Compile Include="UBehavioursEditor.cs" />
+    <Compile Include="UBehavioursInstanceEditor.cs" />
+    <Compile Include="UBEnumDrawer.cs" />
+    <Compile Include="UBExplorerWindow.cs" />
+    <Compile Include="UBExtensions.cs" />
+    <Compile Include="UBFloatDrawer.cs" />
+    <Compile Include="UBGameObjectDrawer.cs" />
+    <Compile Include="UBInputDialog.cs" />
+    <Compile Include="UBIntDrawer.cs" />
+    <Compile Include="UBListWindow.cs" />
+    <Compile Include="UBMaterialDrawer.cs" />
+    <Compile Include="UBObjectDrawer.cs" />
+    <Compile Include="UBQuaternionDrawer.cs" />
+    <Compile Include="UBRectDrawer.cs" />
+    <Compile Include="UBStringDrawer.cs" />
+    <Compile Include="UBStyles.cs" />
+    <Compile Include="UBTextureDrawer.cs" />
+    <Compile Include="UBTransformDrawer.cs" />
+    <Compile Include="UBTriggerContent.cs" />
+    <Compile Include="UBTriggersWindow.cs" />
+    <Compile Include="UBTypesWindow.cs" />
+    <Compile Include="UBUtils.cs" />
+    <Compile Include="UBVector2Drawer.cs" />
+    <Compile Include="UBVector3Drawer.cs" />
+    <Compile Include="VariableDeclareDrawer.cs" />
+    <Compile Include="VariableDrawer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UBehaviours\Invert.uBehaviours.csproj">
+      <Project>{A0448E5C-C0A6-40CA-8C82-BDD4472B5E62}</Project>
+      <Name>Invert.uBehaviours</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uBehaviours\Editor\ /Y
+copy $(TargetPath) C:\Users\micah\Documents\uFrame1GettingStarted\Assets\uFrameComplete\uBehaviours\Editor\ /Y
+IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uBehaviours\Editor\ /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

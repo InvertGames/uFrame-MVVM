@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{93FAEB5C-683E-4093-89CE-6082890A331E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Invert.uFrame.Editor</RootNamespace>
+    <AssemblyName>Invert.uFrame.Editor</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Invert.uBehaviours, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Invert.uBehaviours.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEditor">
+      <HintPath>..\uFrame\Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\uFrame\Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ElementDesigner\Data\AdditiveSceneData.cs" />
+    <Compile Include="ElementDesigner\Data\DiagramSubItem.cs" />
+    <Compile Include="ElementDesigner\Data\PluginData.cs" />
+    <Compile Include="ElementDesigner\DefaultElementsRepository.cs" />
+    <Compile Include="ElementDesigner\Links\AssociationLink.cs" />
+    <Compile Include="ElementDesigner\Links\BeizureLink.cs" />
+    <Compile Include="ElementDesigner\Commands\DiagramCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\IDiagramCommand.cs" />
+    <Compile Include="ElementDesigner\ContextMenuItem.cs" />
+    <Compile Include="ElementDesigner\Filters\DefaultFilter.cs" />
+    <Compile Include="ElementDesigner\DiagramContextMenuAttribute.cs" />
+    <Compile Include="ElementDesigner\Drawers\DiagramEnumDrawer.cs" />
+    <Compile Include="ElementDesigner\Drawers\DiagramItemDrawer.cs" />
+    <Compile Include="ElementDesigner\Drawers\DiagramSubItemGroup.cs" />
+    <Compile Include="ElementDesigner\ElementItemType.cs" />
+    <Compile Include="ElementDesigner\Windows\ElementItemTypesWindow.cs" />
+    <Compile Include="ElementDesigner\Filters\FilterCollapsedDictionary.cs" />
+    <Compile Include="ElementDesigner\Filters\FilterDictionary.cs" />
+    <Compile Include="ElementDesigner\Filters\FilterLocations.cs" />
+    <Compile Include="ElementDesigner\Links\GenericLink.cs" />
+    <Compile Include="ElementDesigner\Interfaces\IDiagramFilter.cs" />
+    <Compile Include="ElementDesigner\Drawers\IElementDrawer.cs" />
+    <Compile Include="ElementDesigner\Interfaces\IElementsDataRepository.cs" />
+    <Compile Include="ElementDesigner\Links\InheritanceLink.cs" />
+    <Compile Include="ElementDesigner\Interfaces\ISubSystemType.cs" />
+    <Compile Include="ElementDesigner\NodeCurvePointStyle.cs" />
+    <Compile Include="ElementDesigner\RectExtensions.cs" />
+    <Compile Include="ElementDesigner\Drawers\SceneManagerDrawer.cs" />
+    <Compile Include="ElementDesigner\Links\SceneManagerSystemLink.cs" />
+    <Compile Include="ElementDesigner\Drawers\SubSystemDrawer.cs" />
+    <Compile Include="ElementDesigner\Links\SubSystemLink.cs" />
+    <Compile Include="ElementDesigner\Links\TransitionLink.cs" />
+    <Compile Include="ElementDesigner\Windows\ImportTypeListWindow.cs" />
+    <Compile Include="ElementDesigner\Data\ViewBehaviourData.cs" />
+    <Compile Include="ElementDesigner\Data\ViewComponentData.cs" />
+    <Compile Include="ElementDesigner\Drawers\ViewComponentDrawer.cs" />
+    <Compile Include="ElementDesigner\Links\ViewComponentLink.cs" />
+    <Compile Include="ElementDesigner\Drawers\ViewDrawer.cs" />
+    <Compile Include="ElementDesigner\Links\ViewLink.cs" />
+    <Compile Include="Refactoring\ChangeParameterTypeRefactor.cs" />
+    <Compile Include="Refactoring\RefactorContext.cs" />
+    <Compile Include="Refactoring\Refactorer.cs" />
+    <Compile Include="Refactoring\RenameCollectionRefactorer.cs" />
+    <Compile Include="Refactoring\RenameCommandRefactorer.cs" />
+    <Compile Include="Refactoring\RenameElementRefactorer.cs" />
+    <Compile Include="Refactoring\RenameIdentifierRefactorer.cs" />
+    <Compile Include="Refactoring\RenamePropertyRefactorer.cs" />
+    <Compile Include="Refactoring\RenameRefactorer.cs" />
+    <Compile Include="Refactoring\RenameSceneManagerRefactorer.cs" />
+    <Compile Include="Refactoring\RenameViewComponentRefactorer.cs" />
+    <Compile Include="Refactoring\RenameViewRefactorer.cs" />
+    <Compile Include="Windows\CompilingWindow.cs" />
+    <Compile Include="Extensions\EditorExtensions.cs" />
+    <Compile Include="ElementDesigner\Drawers\DiagramItem.cs" />
+    <Compile Include="ElementDesigner\Drawers\DiagramItemHeader.cs" />
+    <Compile Include="ElementDesigner\Data\ElementData.cs" />
+    <Compile Include="ElementDesigner\Data\ElementDataBase.cs" />
+    <Compile Include="ElementDesigner\Data\ElementDesignerData.cs" />
+    <Compile Include="ElementDesigner\Drawers\ElementDrawer.cs" />
+    <Compile Include="ElementDesigner\ElementsDiagram.cs" />
+    <Compile Include="ElementDesigner\Data\EnumData.cs" />
+    <Compile Include="ElementDesigner\Data\EnumItem.cs" />
+    <Compile Include="ElementDesigner\Interfaces\IDiagramItem.cs" />
+    <Compile Include="ElementDesigner\Links\IDiagramLink.cs" />
+    <Compile Include="ElementDesigner\Interfaces\IDiagramSubItem.cs" />
+    <Compile Include="ElementDesigner\Interfaces\IDrawable.cs" />
+    <Compile Include="ElementDesigner\Data\ImportedElementData.cs" />
+    <Compile Include="ElementDesigner\Interfaces\ISelectable.cs" />
+    <Compile Include="ElementDesigner\Interfaces\IViewModelItem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ElementDesigner\Data\SceneManagerData.cs" />
+    <Compile Include="ElementDesigner\Data\SceneManagerTransition.cs" />
+    <Compile Include="ElementDesigner\Filters\SceneFlowFilter.cs" />
+    <Compile Include="ElementDesigner\Data\SubSystemData.cs" />
+    <Compile Include="ElementDesigner\UFStyles.cs" />
+    <Compile Include="ElementDesigner\Data\ViewData.cs" />
+    <Compile Include="ElementDesigner\Data\ViewModelCollectionData.cs" />
+    <Compile Include="ElementDesigner\Data\ViewModelCommandData.cs" />
+    <Compile Include="ElementDesigner\Data\ViewModelPropertyData.cs" />
+    <Compile Include="Extensions\UFrameAssetManager.cs" />
+    <Compile Include="Windows\uFrameStartDialog.cs" />
+    <Compile Include="Windows\uFrameToolsWindow.cs" />
+    <Compile Include="IAssemblyNameProvider.cs" />
+    <Compile Include="Extensions\uFrameVersionProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UBehaviours.Editor\Invert.uBehaviours.Editor.csproj">
+      <Project>{8798C199-235A-4A93-A018-CAAB690CBBBE}</Project>
+      <Name>Invert.uBehaviours.Editor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
+IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
