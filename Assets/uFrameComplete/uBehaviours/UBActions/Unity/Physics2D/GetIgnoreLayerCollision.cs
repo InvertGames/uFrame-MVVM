@@ -1,0 +1,20 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UBehaviours.Actions;
+
+[UBCategory("Physics2D")]
+public class GetIgnoreLayerCollision2D : UBConditionAction {
+
+	[UBRequired] public UBInt _Layer1 = new UBInt();
+	[UBRequired] public UBInt _Layer2 = new UBInt();
+	public override bool PerformCondition(IUBContext context){
+return Physics2D.GetIgnoreLayerCollision(_Layer1.GetValue(context),_Layer2.GetValue(context))		;
+
+	}
+
+	public override string WriteExpressionCode(IUBCSharpGenerator sb){
+		return sb.Expression("Physics2D.GetIgnoreLayerCollision(#_Layer1#, #_Layer2#)");
+	}
+
+}
