@@ -304,6 +304,7 @@ public abstract class WavesFPSGameControllerBase : FPSGameController {
     }
     
     public override void Initialize(ViewModel viewModel) {
+        base.Initialize(viewModel);
         this.InitializeWavesFPSGame(((WavesFPSGameViewModel)(viewModel)));
     }
 }

@@ -116,7 +116,6 @@ public class CheckersGameController : CheckersGameControllerBase
 
     public override void InitializeCheckersGame(CheckersGameViewModel checkersGame)
     {
-        
         this.SubscribeToProperty(checkersGame, checkersGame._CurrentPlayerProperty, CurrentPlayerChanged);
     }
 

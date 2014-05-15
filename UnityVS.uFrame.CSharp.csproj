@@ -2472,6 +2472,7 @@
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Triggers\ViewModelCommandTrigger.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Triggers\ViewModelPropertyTrigger.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\UFrameBehaviours.cs" />
+    <Compile Include="Assets\uFrameEnterprise\EnterpriseDataRepository.cs" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
