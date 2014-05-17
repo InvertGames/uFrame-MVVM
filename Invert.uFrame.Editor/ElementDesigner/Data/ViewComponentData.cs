@@ -177,8 +177,11 @@ public class ViewComponentData : DiagramItem
     {
         var gameObject = new GameObject();
         var behaviour = gameObject.AddComponent(this.Name) as MonoBehaviour;
-        var monoScript = MonoScript.FromMonoBehaviour(behaviour);
-        AssetDatabase.OpenAsset(monoScript);
+        if (behaviour != null)
+        {
+            var monoScript = MonoScript.FromMonoBehaviour(behaviour);
+            AssetDatabase.OpenAsset(monoScript);
+        }
         GameObject.DestroyImmediate(gameObject);
     }
 }
