@@ -320,7 +320,7 @@ public abstract class ViewBase : ViewContainer
         // Add any programming bindings
         Bind();
         // Initialize the bindings
-        for (int i = Bindings.Count - 1; i >= 0; i--)
+        for (var i = 0; i < Bindings.Count; i++)
             Bindings[i].Bind();
 
         for (var i = 0; i < transform.childCount; i++)
