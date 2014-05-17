@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
+using UnityEditor;
 
 [Serializable]
 public class ViewComponentData : DiagramItem
@@ -169,5 +170,15 @@ public class ViewComponentData : DiagramItem
                 viewComponentData.BaseIdentifier = null;
             }
         }
+    }
+
+    [DiagramContextMenu("Open Code")]
+    public void OpenViewComponent(IElementsDataRepository repository)
+    {
+        var gameObject = new GameObject();
+        var behaviour = gameObject.AddComponent(this.Name) as MonoBehaviour;
+        var monoScript = MonoScript.FromMonoBehaviour(behaviour);
+        AssetDatabase.OpenAsset(monoScript);
+        GameObject.DestroyImmediate(gameObject);
     }
 }
