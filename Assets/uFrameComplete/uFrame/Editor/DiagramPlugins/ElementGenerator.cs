@@ -924,7 +924,7 @@ public class ControllerFileGenerator : ElementGenerator
             {
                 //commands.Where(p=>p.Identifier == SceneManagerTransition.Id)
                 var transitionItem = DiagramData.SceneManagers.FirstOrDefault(p => p.Identifier == SceneManagerTransition.ToIdentifier);
-                if (transitionItem == null) continue;
+                if (transitionItem == null || transitionItem.SubSystem == null) continue;
 
                 var settingsField = new CodeMemberField(transitionItem.NameAsSettings, SceneManagerTransition.NameAsSettingsField)
                 {
