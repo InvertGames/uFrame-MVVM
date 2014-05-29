@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEditor;
 using UnityEngine;
@@ -368,8 +369,62 @@ public abstract class DefaultElementsRepository : IElementsDataRepository
         return true;
     }
 
+    public void DoToolbarCommands(IEnumerable<ToolbarCommand> commands)
+    {
+        foreach (var command in commands)
+        {
+            var dynamicOptionsCommand = command as IDynamicOptionsCommand;
+            var parentCommand = command as IParentCommand;
+            if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
+            {
+                foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(this))
+                {
+                    if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
+                    {
+                        dynamicOptionsCommand.SelectedOption = multiCommandOption;
+                        command.Execute(this);
+                    }
+                }
+            }
+            else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
+            {
+                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
+                {
+                    foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(this))
+                    {
+                        var genericMenu = new GenericMenu();
+                        Invert.uFrame.Editor.ElementDesigner.ContextMenuItem option = multiCommandOption;
+                        ToolbarCommand closureSafeCommand = command;
+                        genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
+                            () =>
+                            {
+                                dynamicOptionsCommand.SelectedOption = option;
+                                closureSafeCommand.Execute(this);
+                            });
+                        genericMenu.ShowAsContext();
+                    }
+                }
+            }
+            else
+            {
+                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
+                {
+                    command.Execute(this);
+                }
+            }
+        }
+    }
     public abstract DiagramItem ImportType(Type item);
 
+    /// <summary>
+    /// Should navigate to a view in the scene based on the type.
+    /// </summary>
+    /// <param name="data">The View Data</param>
+    public abstract void NavigateToView(ViewData data);
+
+    /// <summary>
+    /// Execute all the refactorings queued in the diagram
+    /// </summary>
     public void ProcessRefactorings()
     {
         var refactorer = new RefactorContext(Diagram.Refactorings);
@@ -381,7 +436,5 @@ public abstract class DefaultElementsRepository : IElementsDataRepository
         Debug.Log(string.Format("Applied {0} refactors.", refactorer.Refactors.Count));
         Diagram.Applied();
     }
-
-   
 
 }

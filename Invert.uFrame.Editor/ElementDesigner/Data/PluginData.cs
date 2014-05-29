@@ -78,18 +78,17 @@ namespace Invert.uFrame.Editor.ElementDesigner.Data
 
     public interface IDiagramPlugin
     {
-
         IElementDrawer GetDrawer(ElementsDiagram diagram, IDiagramItem data);
-
-        void OnAddContextItems(ElementsDiagram diagram, GenericMenu menu);
-
+        void Initialize();
     }
 
     public abstract class DiagramPlugin :IDiagramPlugin
     {
-        public abstract IElementDrawer GetDrawer(ElementsDiagram diagram, IDiagramItem data);
-        public abstract void OnAddContextItems(ElementsDiagram diagram, GenericMenu menu);
 
-       
+        public abstract void Initialize();
+
+        public abstract IElementDrawer GetDrawer(ElementsDiagram diagram, IDiagramItem data);
+   
+        
     }
 }

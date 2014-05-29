@@ -397,6 +397,11 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
         get { return CachedItemGroups.SelectMany(p => p.Items); }
     }
 
+    public virtual void DoubleClicked()
+    {
+            
+    }
+
     private float CalculateGroupBounds(DiagramSubItemGroup group, float width, float startY)
     {
         var sy = startY;

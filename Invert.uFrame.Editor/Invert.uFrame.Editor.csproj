@@ -100,6 +100,7 @@
     <Compile Include="Refactoring\RenameSceneManagerRefactorer.cs" />
     <Compile Include="Refactoring\RenameViewComponentRefactorer.cs" />
     <Compile Include="Refactoring\RenameViewRefactorer.cs" />
+    <Compile Include="Strategy\Class1.cs" />
     <Compile Include="Windows\CompilingWindow.cs" />
     <Compile Include="Extensions\EditorExtensions.cs" />
     <Compile Include="ElementDesigner\Drawers\DiagramItem.cs" />
@@ -135,10 +136,14 @@
     <Compile Include="Extensions\uFrameVersionProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UBehaviours.Editor\Invert.uBehaviours.Editor.csproj">
-      <Project>{8798C199-235A-4A93-A018-CAAB690CBBBE}</Project>
+    <ProjectReference Include="..\Invert.uBehaviours.Editor\Invert.uBehaviours.Editor.csproj">
+      <Project>{b9147095-b836-4396-875f-9a1aeb8e94cf}</Project>
       <Name>Invert.uBehaviours.Editor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ElementDesigner\Commands\Context\" />
+    <Folder Include="ElementDesigner\Commands\Toolbar\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
