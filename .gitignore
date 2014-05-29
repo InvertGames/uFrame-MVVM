@@ -7,3 +7,12 @@ Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll
 Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll.meta
 *.cache
 UnityVS.uFrame.sln.GhostDoc.xml
+CarExample
+AssetStoreTools
+/Assets/AssetStoreTools.meta
+/Assets/CarExample.meta
+/Assets/PrivateStuff.meta
+/Assets/uFrameEnterprise.meta
+Assets/PrivateStuff/AssetStoreTools.meta
+Assets/PrivateStuff/AssetStoreStuff.meta
+/Assets/PrivateStuff
