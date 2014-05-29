@@ -78,12 +78,12 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         {
             return
                 ViewModels.Cast<IDiagramItem>()
-                .Concat(ImportedElements.Cast<IDiagramItem>())
-                .Concat(Enums.Cast<IDiagramItem>())
-                .Concat(Views.Cast<IDiagramItem>())
-                .Concat(SceneManagers.Cast<IDiagramItem>())
-                .Concat(SubSystems.Cast<IDiagramItem>())
-                .Concat(ViewComponents.Cast<IDiagramItem>()
+                    .Concat(ImportedElements.Cast<IDiagramItem>())
+                    .Concat(Enums.Cast<IDiagramItem>())
+                    .Concat(Views.Cast<IDiagramItem>())
+                    .Concat(SceneManagers.Cast<IDiagramItem>())
+                    .Concat(SubSystems.Cast<IDiagramItem>())
+                    .Concat(ViewComponents.Cast<IDiagramItem>()
                 );
         }
     }

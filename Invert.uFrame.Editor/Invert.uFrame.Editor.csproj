@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DLL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -26,7 +26,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;DLL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -49,6 +49,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\GameContainer.cs">
+      <Link>GameContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\IGameContainer.cs">
+      <Link>IGameContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\InjectAttribute.cs">
+      <Link>InjectAttribute.cs</Link>
+    </Compile>
     <Compile Include="ElementDesigner\Data\AdditiveSceneData.cs" />
     <Compile Include="ElementDesigner\Data\DiagramSubItem.cs" />
     <Compile Include="ElementDesigner\Data\PluginData.cs" />
