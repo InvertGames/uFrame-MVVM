@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
+
 #if DEBUG
 namespace System.Runtime.CompilerServices
 {
     public class ExtensionAttribute : Attribute { }
 }
 #endif
+
 public class ElementsDesigner : EditorWindow
 {
     private static float HEIGHT = 768;
@@ -134,7 +137,8 @@ public class ElementsDesigner : EditorWindow
             Mathf.RoundToInt(32),
             Mathf.RoundToInt(32));
         GUILayout.BeginHorizontal(EditorStyles.toolbar);
-        DoToolbar(diagramRect);
+        //DoToolbar(diagramRect);
+        DoToolbar2();
         GUILayout.EndHorizontal();
 
         GUI.Box(diagramRect, string.Empty, style);
@@ -223,6 +227,13 @@ public class ElementsDesigner : EditorWindow
         Diagram.DeselectAll();
     }
 
+    public virtual void OpenDiagramByAttribute(Type type)
+    {
+        var attribute = type.GetCustomAttributes(typeof(DiagramInfoAttribute), true).FirstOrDefault() as DiagramInfoAttribute;
+        if (attribute == null) return;
+        LoadDiagramByName(attribute.DiagramName);
+    }
+
     public void Update()
     {
         if (Diagram == null) return;
@@ -308,7 +319,6 @@ public class ElementsDesigner : EditorWindow
             var scale = GUILayout.HorizontalSlider(UFStyles.Scale, 0.55f, 1f, GUILayout.Width(200f));
             if (scale != UFStyles.Scale)
             {
-               
                 UFStyles.Scale = scale;
 
                 Diagram.Refresh();
@@ -316,7 +326,6 @@ public class ElementsDesigner : EditorWindow
                 //var scrollMax = new Vector2(diagramSize.width - diagramRect.width,
                 //    diagramSize.height - diagramRect.height);
                 //_scrollPosition = scrollMax / 2;
-            
             }
             if (GUILayout.Button("Add New", EditorStyles.toolbarButton))
             {
@@ -364,6 +373,39 @@ public class ElementsDesigner : EditorWindow
             }
     }
 
+    private void DoToolbar2()
+    {
+        if (
+         GUILayout.Button(
+             new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.name),
+             EditorStyles.toolbarPopup))
+        {
+            SelectDiagram();
+        }
+        //if (Diagram != null && Diagram.Data != null)
+        //{
+        //    if (GUILayout.Button(new GUIContent("Scene Flow"), EditorStyles.toolbarButton))
+        //    {
+        //        Diagram.Data.PopToFilter(Diagram.Data.SceneFlowFilter);
+        //        Diagram.Refresh(true);
+        //    }
+
+        //    foreach (var filter in Diagram.Data.FilterPath)
+        //    {
+        //        if (GUILayout.Button(new GUIContent(filter.Name), EditorStyles.toolbarButton))
+        //        {
+        //            Diagram.Data.PopToFilter(filter);
+        //            Diagram.Refresh(true);
+        //        }
+        //    }
+        //}
+        
+        DoToolbarCommands(ElementsDiagram.ToolbarCommands.Where(p => p.Position == ToolbarCommand.ToolbarPosition.Left));
+        GUILayout.FlexibleSpace();
+        DoToolbarCommands(ElementsDiagram.ToolbarCommands.Where(p=>p.Position== ToolbarCommand.ToolbarPosition.Right));
+    }
+
+   
     private void HandlePanning(Rect diagramRect)
     {
         if (Event.current.button == 2 && Event.current.type == EventType.MouseDown)
@@ -402,7 +444,7 @@ public class ElementsDesigner : EditorWindow
         });
         Diagram.SelectionChanged += DiagramOnSelectionChanged;
         Diagram.AddNewBehaviourClicked += DiagramOnAddNewBehaviourClicked;
-        
+
         LastLoadedDiagram = diagram.name;
 
         Diagram.Data.ApplyFilter();
@@ -410,6 +452,13 @@ public class ElementsDesigner : EditorWindow
         Selection.activeObject = diagram;
         // var newScrollPosition = new Vector2(Diagram.DiagramSize.width, Diagram.DiagramSize.height).normalized / 2;
         //_scrollPosition = new Vector2(250,250);
+    }
+
+    private void LoadDiagramByName(string diagramName)
+    {
+        var diagram = UFrameAssetManager.Diagrams.FirstOrDefault(p => p.Name == diagramName);
+        if (diagram == null) return;
+        LoadDiagram(diagram);
     }
 
     private void SelectDiagram()
@@ -445,5 +494,39 @@ public class ElementsDesigner : EditorWindow
             });
         }
         menu.ShowAsContext();
+    }
+}
+
+
+
+public class ImportCommand : ToolbarCommand
+{
+    public override void Perform(ElementsDiagram diagram)
+    {
+        var typesList = ActionSheetHelpers.GetDerivedTypes<ViewModel>(false, false).ToList();
+        typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<Enum>(false, false));
+        typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<SceneManager>(false, false));
+        typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<ViewBase>(false, false));
+
+        ImportTypeListWindow.InitTypeListWindow("Choose Type", typesList, (item) =>
+        {
+            if (diagram.Repository.IsImportOnly(item))
+            {
+                EditorUtility.DisplayDialog("Can't do that", string.Format("Can't import {0} because it already belongs to another diagram.", item.FullName), "OK");
+
+                return;
+            }
+
+            var result = diagram.Repository.ImportType(item);
+            if (result != null)
+            {
+                result.Data = diagram.Data;
+                if (diagram.Data.CurrentFilter.IsAllowed(result, item))
+                {
+                    diagram.Data.CurrentFilter.Locations[result] = new Vector2(15f, 15f);
+                }
+            }
+            diagram.Refresh(true);
+        });
     }
 }

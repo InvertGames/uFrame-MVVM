@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 
 [CustomEditor(typeof(EventBinding), true)]
 public class ComponentEventBindingEditor : ComponentCommandBindingEditor

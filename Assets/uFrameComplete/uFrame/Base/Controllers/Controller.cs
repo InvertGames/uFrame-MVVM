@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -228,12 +228,25 @@ public abstract class Controller : IViewModelObserver
         InitializeInternal(vm,preInitializer);
         return vm;
     }
+
+    protected virtual ViewModel ResolveByName(string resolveName)
+    {
+        return GameManager.Container.Resolve<ViewModel>(resolveName);
+    }
+    public TViewModel Ensure<TViewModel>() where TViewModel : ViewModel
+    {
+        return (TViewModel)GetByType(typeof(TViewModel));
+    }
+    public TViewModel EnsureByName<TViewModel>(string instanceName) where TViewModel : ViewModel
+    {
+        return (TViewModel)GetByName(instanceName);
+    }
     public virtual ViewModel GetByName(string resolveName, bool initialize = true, Action<ViewModel> preInitializer = null)
     {
         if (string.IsNullOrEmpty(resolveName)) 
             throw new Exception("GetByName on a controller can't be called with a null or empty resolve name.");
         
-        var viewModel = GameManager.Container.Resolve<ViewModel>(resolveName);
+        var viewModel = ResolveByName(resolveName);
         if (viewModel == null)
         {
             viewModel = CreateEmpty();

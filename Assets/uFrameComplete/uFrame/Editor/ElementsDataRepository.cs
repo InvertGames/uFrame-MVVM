@@ -143,6 +143,19 @@ public class ElementsDataRepository : DefaultElementsRepository
         return null;
     }
 
+    public override void NavigateToView(ViewData data)
+    {
+        var currentViewType = data.CurrentViewType;
+        if (currentViewType != null)
+        {
+            uFrameEditorSceneManager.NavigateToFirstView(currentViewType);
+        }
+        else
+        {
+            Debug.Log("The view you are attempting to navigate to (by double clicking) couldn't be found.  Try saving the diagram before attempting to navigate.");
+        }
+    }
+
     public override void Save()
     {
         ProcessRefactorings();

@@ -25,7 +25,6 @@ public class ElementGenerator : ElementGeneratorBase
         _diagramData = diagramData;
     }
 
-   
 }
 
 public class ViewFileGenerator : ElementGenerator
@@ -253,19 +252,38 @@ public class ViewFileGenerator : ElementGenerator
                     new CodeSnippetExpression(string.Format("this.{0} == null ? null : this.{0}.ViewModelObject as {1}", property.ViewFieldName, relatedViewModel.NameAsViewModel))));
             }
         }
+        AddExecuteMethods(data, decl);
+        decl.Members.Add(initializeViewModelMethod);
+        Namespace.Types.Add(decl);
+    }
+
+    private void AddExecuteMethods(ElementData data, CodeTypeDeclaration decl,bool useViewReference = false)
+    {
         foreach (var viewModelCommandData in data.Commands)
         {
-            var executeMethod = new CodeMemberMethod { Name = viewModelCommandData.NameAsExecuteMethod, Attributes = MemberAttributes.Public };
+            var executeMethod = new CodeMemberMethod
+            {
+                Name = viewModelCommandData.NameAsExecuteMethod,
+                Attributes = MemberAttributes.Public
+            };
+
+            CodeExpression executeCommandReference = new CodeThisReferenceExpression();
+            if (useViewReference)
+                executeCommandReference = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View");
+               
             var relatedElement = DiagramData.GetElement(viewModelCommandData);
             if (relatedElement == null)
             {
+                
+        
+
                 if (viewModelCommandData.RelatedTypeName != null)
                 {
                     executeMethod.Parameters.Add(new CodeParameterDeclarationExpression(
                         viewModelCommandData.RelatedTypeName, "arg"));
 
                     executeMethod.Statements.Add(new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), "ExecuteCommand",
+                        executeCommandReference, "ExecuteCommand",
                         new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name)),
                         new CodeVariableReferenceExpression("arg")
                         ));
@@ -273,7 +291,7 @@ public class ViewFileGenerator : ElementGenerator
                 else
                 {
                     executeMethod.Statements.Add(new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), "ExecuteCommand",
+                        executeCommandReference, "ExecuteCommand",
                         new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name))
                         ));
                 }
@@ -284,15 +302,13 @@ public class ViewFileGenerator : ElementGenerator
                     relatedElement.NameAsViewModel, relatedElement.NameAsVariable));
 
                 executeMethod.Statements.Add(new CodeMethodInvokeExpression(
-                    new CodeThisReferenceExpression(), "ExecuteCommand",
+                    executeCommandReference, "ExecuteCommand",
                     new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name)),
                     new CodeVariableReferenceExpression(relatedElement.NameAsVariable)
                     ));
             }
             decl.Members.Add(executeMethod);
         }
-        decl.Members.Add(initializeViewModelMethod);
-        Namespace.Types.Add(decl);
     }
 
     private void AddComponentReferences(CodeTypeDeclaration decl, ElementData data)
@@ -361,6 +377,7 @@ public class ViewFileGenerator : ElementGenerator
                     new CodeCastExpression(viewModelProperty.Type, new CodePropertyReferenceExpression(new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View"), "ViewModelObject"))
                     ));
                 decl.Members.Add(viewModelProperty);
+                AddExecuteMethods(element,decl,true);
             }
         }
         Namespace.Types.Add(decl);
@@ -855,8 +872,14 @@ public class ControllerFileGenerator : ElementGenerator
             };
             tDecleration.Members.Add(initializeOverrideMethod);
             initializeOverrideMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)), "viewModel"));
+
+            if (data.BaseElement != null)
+            {
+                initializeOverrideMethod.Statements.Add(new CodeSnippetExpression("base.Initialize(viewModel)"));
+            }
             initializeOverrideMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), initializeTypedMethod.Name,
                 new CodeCastExpression(new CodeTypeReference(data.NameAsViewModel), new CodeVariableReferenceExpression("viewModel"))));
+          
         }
       
 

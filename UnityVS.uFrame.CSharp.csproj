@@ -60,6 +60,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CarExample\NewElementDesignerData.designer.cs" />
+    <Compile Include="Assets\CarExample\NewElementDesignerDataControllers.designer.cs" />
+    <Compile Include="Assets\CarExample\NewElementDesignerDataViews.designer.cs" />
     <Compile Include="Assets\PrivateStuff\AssetStoreStuff\WebTutorials\Views.cs" />
     <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Scripts\dfComponentMemberInfo.cs" />
     <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Scripts\dfControlKeyBinding.cs" />
@@ -2389,6 +2392,7 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\FPSCrosshair.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\FPSMapCamera.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\MouseLook.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\RapidFire.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\RocketLauncher.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Controllers\DeathMatchGameController.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Controllers\FPSBulletController.cs" />
@@ -2431,7 +2435,6 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\FPSWeaponFire.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\FPSWeaponView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\HUDPlayerView.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\NewView1.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\WavesFPSHudView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\WavesHudView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\GUIExample(NGUI&amp;DF Only)\Controllers\GUIGameController.cs" />
@@ -2458,6 +2461,8 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Transitions\SceneManagers\IntroductionSceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Transitions\ViewModels\IntroductionGameViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Transitions\ViewModels\IntroductionMenuScreenViewModel.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Transitions\ViewModels\MenuElementViewModel.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Transitions\ViewModels\MyGameElementViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Transitions\Views\IntroductionMenuView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Actions\Event.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Actions\ExecuteCommand.cs" />

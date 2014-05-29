@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -45,6 +45,47 @@ public class ViewEditor : uFrameEditor
         }
     }
 
+    public void OnSceneGUI()
+    {
+        Handles.BeginGUI();
+        var padding = 10f;
+        var titleContent = new GUIContent(target.name);
+        var subTitleContent = new GUIContent(target.GetType().Name);
+        var titleSize = UFStyles.ViewBarTitleStyle.CalcSize(titleContent);
+        var subTitleSize = UFStyles.ViewBarSubTitleStyle.CalcSize(subTitleContent);
+        var maxTextWidth = Mathf.Max(titleSize.x, subTitleSize.x);
+        var barWidth = (padding*4f) + maxTextWidth + (36 * 3);
+        var rect = new Rect(15f, 15f, barWidth, 48f);
+        UFStyles.DrawExpandableBox(rect, UFStyles.SceneViewBar, "");
+        GUILayout.BeginArea(rect);
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(padding);
+        if (GUILayout.Button(new GUIContent("", "View " + subTitleContent.text + " in Element Designer"), UFStyles.EyeBall))
+        {
+            uFrameEditorSceneManager.NavigateBack(target as ViewBase);
+        }
+        GUILayout.Space(padding);
+        GUILayout.BeginVertical();
+        GUILayout.Space(6f);
+        GUILayout.Label(titleContent,UFStyles.ViewBarTitleStyle,GUILayout.Width(maxTextWidth));
+        GUILayout.Label(subTitleContent, UFStyles.ViewBarSubTitleStyle, GUILayout.Width(maxTextWidth));
+
+        GUILayout.EndVertical();
+        GUILayout.Space(padding);
+        if (GUILayout.Button(new GUIContent("", "Move to the previous " + subTitleContent.text), UFStyles.NavigatePreviousStyle))
+        {
+            uFrameEditorSceneManager.NavigatePrevious();
+        }
+        if (GUILayout.Button(new GUIContent("","Move to the next " + subTitleContent.text), UFStyles.NavigateNextStyle))
+        {
+            uFrameEditorSceneManager.NavigateNext();
+        }
+        GUILayout.Space(padding);
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+        Handles.EndGUI();
+    }
     public override void OnInspectorGUI()
     {
         UBEditor.IsGlobals = false;
@@ -180,6 +221,12 @@ public class ViewEditor : uFrameEditor
                     }
                     property.Reset();
                 }
+            }
+           
+            var btnContent = new GUIContent("Show In Designer");
+            if (GUI.Button(UBEditor.GetRect(UFStyles.ButtonStyle),btnContent,UFStyles.ButtonStyle))
+            {
+                uFrameEditorSceneManager.NavigateBack(target as ViewBase);
             }
         }
 
