@@ -255,10 +255,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
         if (t == typeof(ViewData)) return true;
         if (t == typeof(ElementData)) return false;
         if (t == typeof(EnumData)) return false;
-
-
         return true;
-
     }
 
     public bool IsItemAllowed(object item, Type t)

@@ -21,12 +21,12 @@ public class GameContainer : IGameContainer
 
     {
         private Dictionary<Type, object> _instances;
-        private Dictionary<Type, Type> _mappings;
+        private TypeMappingCollection _mappings;
         private Dictionary<string, object> _namedInstances;
 
-        public Dictionary<Type, Type> Mappings
+        public TypeMappingCollection Mappings
         {
-            get { return _mappings ?? (_mappings = new Dictionary<Type, Type>()); }
+            get { return _mappings ?? (_mappings = new TypeMappingCollection()); }
             set { _mappings = value; }
         }
 
@@ -66,9 +66,9 @@ public class GameContainer : IGameContainer
             }
             foreach (var namedInstance in NamedInstances)
             {
-                if (typeof (TType).IsAssignableFrom(namedInstance.Value.GetType()))
+                if (typeof(TType).IsAssignableFrom(namedInstance.Value.GetType()))
                 {
-                    yield return (TType) namedInstance.Value;
+                    yield return (TType)namedInstance.Value;
                 }
             }
         }
@@ -94,7 +94,7 @@ public class GameContainer : IGameContainer
             foreach (var memberInfo in members)
             {
                 var injectAttribute =
-                    memberInfo.GetCustomAttributes(typeof (InjectAttribute), true).FirstOrDefault() as InjectAttribute;
+                    memberInfo.GetCustomAttributes(typeof(InjectAttribute), true).FirstOrDefault() as InjectAttribute;
                 if (injectAttribute != null)
                 {
 
@@ -154,16 +154,12 @@ public class GameContainer : IGameContainer
         /// </summary>
         /// <typeparam name="TSource">The base type.</typeparam>
         /// <typeparam name="TTarget">The concrete type</typeparam>
-        public void Register<TSource, TTarget>()
+        public void Register<TSource, TTarget>(string name = null)
         {
-            if (Mappings.ContainsKey(typeof (TSource)))
-            {
-                Mappings[typeof (TSource)] = typeof (TTarget);
-                return;
-            }
-            Mappings.Add(typeof (TSource), typeof (TTarget));
+            Mappings[typeof(TSource), null] = typeof(TTarget);
         }
 
+       
         /// <summary>
         /// Register an instance of a type.
         /// </summary>
@@ -173,7 +169,7 @@ public class GameContainer : IGameContainer
         /// <returns></returns>
         public TBase RegisterInstance<TBase>(TBase instance = null, bool injectNow = true) where TBase : class
         {
-            return RegisterInstance(typeof (TBase), instance, injectNow) as TBase;
+            return RegisterInstance(typeof(TBase), instance, injectNow) as TBase;
         }
 
         /// <summary>
@@ -237,7 +233,7 @@ public class GameContainer : IGameContainer
         /// <returns>The/An instance of 'instanceType'</returns>
         public T Resolve<T>() where T : class
         {
-            return (T) Resolve(typeof (T));
+            return (T)Resolve(typeof(T));
         }
 
         /// <summary>
@@ -269,9 +265,10 @@ public class GameContainer : IGameContainer
                 {
                     return null;
                 }
-                if (Mappings.ContainsKey(instanceType))
+                var mappedType = Mappings[instanceType];
+                if (mappedType != null)
                 {
-                    var obj = Activator.CreateInstance(Mappings[instanceType]);
+                    var obj = Activator.CreateInstance(mappedType);
                     Inject(obj);
                     return obj;
                 }
@@ -297,64 +294,121 @@ public class GameContainer : IGameContainer
             }
         }
 
-        private Dictionary<Type, Dictionary<Type,Type>> _adapterMappings = new Dictionary<Type, Dictionary<Type,Type>>();
+        private Dictionary<Type, Dictionary<Type, Type>> _adapterMappings = new Dictionary<Type, Dictionary<Type, Type>>();
         public void RegisterAdapter<TFor, TBase, TConcrete>()
         {
-            if (AdapterMappings.ContainsKey(typeof (TFor)))
+            if (AdapterMappings.ContainsKey(typeof(TFor)))
             {
-                var dictionary = AdapterMappings[typeof (TFor)] ?? (AdapterMappings[typeof(TFor)] = new Dictionary<Type, Type>());
-                if (dictionary.ContainsKey(typeof (TBase)))
+                var dictionary = AdapterMappings[typeof(TFor)] ?? (AdapterMappings[typeof(TFor)] = new Dictionary<Type, Type>());
+                if (dictionary.ContainsKey(typeof(TBase)))
                 {
-                    dictionary[typeof (TBase)] = typeof (TConcrete);
+                    dictionary[typeof(TBase)] = typeof(TConcrete);
                 }
                 else
                 {
-                    dictionary.Add(typeof(TBase),typeof(TConcrete));
+                    dictionary.Add(typeof(TBase), typeof(TConcrete));
                 }
             }
             else
             {
                 AdapterMappings.Add(typeof(TFor), new Dictionary<Type, Type>());
-                AdapterMappings[typeof(TFor)].Add(typeof(TBase),typeof(TConcrete));
+                AdapterMappings[typeof(TFor)].Add(typeof(TBase), typeof(TConcrete));
             }
         }
         public TBase ResolveAdapter<TBase>(Type tfor)
         {
-          
+
             if (!AdapterMappings.ContainsKey(tfor)) return default(TBase);
             var dictionary = AdapterMappings[tfor];
             if (dictionary == null || !dictionary.ContainsKey(typeof(TBase))) return default(TBase);
-           
-            var result = (TBase)Activator.CreateInstance(dictionary[typeof (TBase)]);
+
+            var result = (TBase)Activator.CreateInstance(dictionary[typeof(TBase)]);
             Inject(result);
             return result;
         }
         public TBase ResolveAdapter<TFor, TBase>()
         {
-          
-            if (!AdapterMappings.ContainsKey(typeof (TFor))) 
-                return default(TBase);
-            var dictionary = AdapterMappings[typeof (TFor)];
-            if (dictionary == null || !dictionary.ContainsKey(typeof (TBase))) return default(TBase);
 
-            var result = (TBase) Activator.CreateInstance(dictionary[typeof (TBase)]);
+            if (!AdapterMappings.ContainsKey(typeof(TFor)))
+                return default(TBase);
+            var dictionary = AdapterMappings[typeof(TFor)];
+            if (dictionary == null || !dictionary.ContainsKey(typeof(TBase))) return default(TBase);
+
+            var result = (TBase)Activator.CreateInstance(dictionary[typeof(TBase)]);
             Inject(result);
             return result;
         }
     }
 
-    public class AdapterMapping
-    {
-        public Type TBase { get; set; }
-        public Type TConcrete { get; set; }
 
-        public AdapterMapping(Type @base, Type concrete)
+    public class TypeMappingCollection : List<TypeMapping>
+    {
+        public Type this[Type from]
         {
-            TBase = @base;
-            TConcrete = concrete;
+            get
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && (string.IsNullOrEmpty(p.Name)));
+                if (mapping != null)
+                {
+                    return mapping.To;
+                }
+                return null;
+            }
+            set
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && (string.IsNullOrEmpty(p.Name)));
+                if (mapping == null)
+                {
+                    Add(new TypeMapping() { From = from, Name = null });
+                }
+                else
+                {
+                    mapping.To = value;
+                }
+
+            }
+        }
+        public Type this[Type from, string name]
+        {
+            get
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && p.Name == name);
+                if (mapping != null)
+                {
+                    return mapping.To;
+                }
+                return null;
+            }
+            set
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && p.Name == name);
+                if (mapping == null)
+                {
+                    Add(new TypeMapping() {From = from, Name = name});
+                }
+                else
+                {
+                    mapping.To = value;
+                    mapping.Name = name;
+                }
+            }
         }
     }
+    public class TypeMapping
+    {
+        public Type From
+        {
+            get;
+            set;
+        }
 
+        public Type To
+        {
+            get;
+            set;
+        }
+        public string Name { get; set; }
+    }
 #if DLL
 }
 

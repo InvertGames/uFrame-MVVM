@@ -259,42 +259,58 @@ var currentSceneManager = GameManager.ActiveSceneManager;
         {
             // If the instace already exist destroy this
             Instance._Start = _Start;
-            Destroy(gameObject);
+            Instance.Startup();
+           
         }
         else
         {
             Instance = this;
             // Don't destory this through scene switching
             DontDestroyOnLoad(gameObject);
-            var games = FindObjectsOfType<SceneManager>();
-            foreach (var game in games)
-            {
-                AddGame(game);
-            }
-            if (_Start == null)
-            {
-                if (games.Length > 0)
-                {
-                    _Start = games.First();
-                }
-                else
-                    Debug.LogWarning("There is not a start game assigned to GameManager. Set the start game in the GameManager inspector.");
-            }
+            Startup();
 
             //_Start.Container;
         }
-
-        ActiveSceneManager = _Start;
-    
     }
-
-
 
     public void Start()
     {
-        if (_Start != null)
+       
+
+        if (Instance != null && Instance != this)
+        {
             SwitchGame(_Start);
+            DestroyImmediate(gameObject);
+        }
+        else
+        {
+            if (_Start != null)
+                SwitchGame(_Start);
+        }
     }
+
+    public virtual void Startup()
+    {
+        var games = FindObjectsOfType<SceneManager>();
+        foreach (var game in games)
+        {
+            AddGame(game);
+        }
+        if (_Start == null)
+        {
+            if (games.Length > 0)
+            {
+                _Start = games.First();
+            }
+            else
+                Debug.LogWarning(
+                    "There is not a start game assigned to GameManager. Set the start game in the GameManager inspector.");
+        }
+        ActiveSceneManager = _Start;
+    }
+
+
+
     public string GetPath(string elementPath, string path)
     {
         return Regex.Replace(path, "@ElementPath", elementPath);
