@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Invert.uFrame;
 using UnityEngine;
 
 public class ElementGenerator : ElementGeneratorBase
@@ -1514,3 +1515,4 @@ public class ViewModelFileGenerator : ElementGenerator
         Namespace.Types.Add(tDecleration);
     }
 }
+

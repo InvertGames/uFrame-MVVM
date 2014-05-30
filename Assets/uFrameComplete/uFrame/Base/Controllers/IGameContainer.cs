@@ -26,7 +26,7 @@ namespace Invert.uFrame
         /// </summary>
         /// <typeparam name="TSource">The base type.</typeparam>
         /// <typeparam name="TTarget">The concrete type</typeparam>
-        void Register<TSource, TTarget>();
+        void Register<TSource, TTarget>(string name = null);
 
         /// <summary>
         /// Register an instance of a type.

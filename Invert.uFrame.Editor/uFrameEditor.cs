@@ -88,6 +88,7 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IUFrameContainer>(container);
             container.RegisterInstance<uFrameContainer>(container);
 
+            // Drawers
             container.RegisterAdapter<ViewData,IElementDrawer,ViewDrawer>();
             container.RegisterAdapter<ViewComponentData, IElementDrawer, ViewComponentDrawer>();
             container.RegisterAdapter<ElementData, IElementDrawer, ElementDrawer>();
@@ -96,6 +97,13 @@ namespace Invert.uFrame.Editor
             container.RegisterAdapter<SubSystemData, IElementDrawer, SubSystemDrawer>();
             container.RegisterAdapter<SceneManagerData, IElementDrawer, SceneManagerDrawer>();
             container.RegisterAdapter<EnumData, IElementDrawer, DiagramEnumDrawer>();
+
+            // Code Generation
+            container.Register<DesignerFileGenerator, ControllersFileGenerator>("Controllers");
+            container.Register<DesignerFileGenerator, ViewsFileGenerator>("Views");
+            container.Register<DesignerFileGenerator, ViewModelsFileGenerator>("ViewModels");
+
+
 
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
             {
@@ -139,5 +147,31 @@ namespace Invert.uFrame.Editor
         {
             return Commands.Where(p => p is IContextMenuItemCommand && typeof(T).IsAssignableFrom(p.For));
         }
+    }
+
+    public class DesignerFileGenerator
+    {
+        [Inject]
+        public IUFrameContainer Container
+        {
+            get;
+            set;
+        }
+
+        
+
+    }
+
+    public class ControllersFileGenerator : DesignerFileGenerator
+    {
+
+    }
+    public class ViewsFileGenerator : DesignerFileGenerator
+    {
+
+    }
+    public class ViewModelsFileGenerator : DesignerFileGenerator
+    {
+
     }
 }
