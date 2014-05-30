@@ -139,7 +139,7 @@ public static class ViewExtensions
             view.OverrideViewModel = false;
             view.ForceResolveViewModel = false;
             view.ViewModelObject = model;
-
+            //view.InitializeViewModel(model);
             view.SetupBindings();
         }
 

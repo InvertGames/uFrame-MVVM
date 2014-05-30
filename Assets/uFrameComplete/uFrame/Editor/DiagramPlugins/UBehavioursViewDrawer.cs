@@ -46,6 +46,10 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins
 
     public class UBehavioursViewDrawer : ViewDrawer
     {
+        public UBehavioursViewDrawer()
+        {
+        }
+
         public UBehavioursViewDrawer(ViewData data, ElementsDiagram diagram)
             : base(data, diagram)
         {

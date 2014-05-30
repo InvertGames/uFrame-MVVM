@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
@@ -399,13 +400,56 @@ public class ElementsDesigner : EditorWindow
         //        }
         //    }
         //}
-        
-        DoToolbarCommands(ElementsDiagram.ToolbarCommands.Where(p => p.Position == ToolbarCommand.ToolbarPosition.Left));
+        DrawToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Left));
         GUILayout.FlexibleSpace();
-        DoToolbarCommands(ElementsDiagram.ToolbarCommands.Where(p=>p.Position== ToolbarCommand.ToolbarPosition.Right));
+        DrawToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Right));
     }
 
-   
+    public void DrawToolbar(IEnumerable<ToolbarCommand> commands)
+    {
+        foreach (var command in commands)
+        {
+            var dynamicOptionsCommand = command as IDynamicOptionsCommand;
+            var parentCommand = command as IParentCommand;
+            if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
+            {
+                foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Diagram))
+                {
+                    if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
+                    {
+                        dynamicOptionsCommand.SelectedOption = multiCommandOption;
+                        command.Execute(Diagram);
+                    }
+                }
+            }
+            else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
+            {
+                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
+                {
+                    foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Diagram))
+                    {
+                        var genericMenu = new GenericMenu();
+                        Invert.uFrame.Editor.ElementDesigner.ContextMenuItem option = multiCommandOption;
+                        ToolbarCommand closureSafeCommand = command;
+                        genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
+                            () =>
+                            {
+                                dynamicOptionsCommand.SelectedOption = option;
+                                closureSafeCommand.Execute(Diagram);
+                            });
+                        genericMenu.ShowAsContext();
+                    }
+                }
+            }
+            else
+            {
+                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
+                {
+                    command.Execute(this);
+                }
+            }
+        }
+    }
     private void HandlePanning(Rect diagramRect)
     {
         if (Event.current.button == 2 && Event.current.type == EventType.MouseDown)

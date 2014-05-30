@@ -1,13 +1,9 @@
 using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Microsoft.CSharp;
 using UnityEngine;
 
 public class ElementGenerator : ElementGeneratorBase
@@ -116,6 +112,7 @@ public class ViewFileGenerator : ElementGenerator
         {
             TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public
         };
+
         if (data.IsControllerDerived)
         {
             var baseType = DiagramData.AllElements.First(p => p.Name == data.BaseTypeShortName);
@@ -173,7 +170,7 @@ public class ViewFileGenerator : ElementGenerator
         var initializeViewModelMethod = new CodeMemberMethod
         {
             Name = "InitializeViewModel",
-            Attributes = MemberAttributes.Override | MemberAttributes.Family
+            Attributes = MemberAttributes.Override | MemberAttributes.Public
         };
 
         initializeViewModelMethod.Parameters.Add(

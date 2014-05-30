@@ -1,0 +1,20 @@
+namespace Invert.uFrame.Editor.ElementDesigner.Commands
+{
+    public class AddElementCollectionCommand : DiagramCommand<ElementData>
+    {
+        public override void Perform(ElementData item)
+        {
+            item.Collections.Add(new ViewModelCollectionData()
+            {
+                Name = item.Data.GetUniqueName("NewCollection"),
+                ItemType = typeof(string)
+            });
+        }
+
+        public override string CanPerform(ElementData item)
+        {
+            if (item == null) return "Arg can't be null";
+            return null;
+        }
+    }
+}

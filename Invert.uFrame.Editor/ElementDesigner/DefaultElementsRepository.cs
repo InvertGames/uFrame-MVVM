@@ -369,51 +369,7 @@ public abstract class DefaultElementsRepository : IElementsDataRepository
         return true;
     }
 
-    public void DoToolbarCommands(IEnumerable<ToolbarCommand> commands)
-    {
-        foreach (var command in commands)
-        {
-            var dynamicOptionsCommand = command as IDynamicOptionsCommand;
-            var parentCommand = command as IParentCommand;
-            if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
-            {
-                foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(this))
-                {
-                    if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
-                    {
-                        dynamicOptionsCommand.SelectedOption = multiCommandOption;
-                        command.Execute(this);
-                    }
-                }
-            }
-            else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
-            {
-                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-                {
-                    foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(this))
-                    {
-                        var genericMenu = new GenericMenu();
-                        Invert.uFrame.Editor.ElementDesigner.ContextMenuItem option = multiCommandOption;
-                        ToolbarCommand closureSafeCommand = command;
-                        genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
-                            () =>
-                            {
-                                dynamicOptionsCommand.SelectedOption = option;
-                                closureSafeCommand.Execute(this);
-                            });
-                        genericMenu.ShowAsContext();
-                    }
-                }
-            }
-            else
-            {
-                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-                {
-                    command.Execute(this);
-                }
-            }
-        }
-    }
+    
     public abstract DiagramItem ImportType(Type item);
 
     /// <summary>

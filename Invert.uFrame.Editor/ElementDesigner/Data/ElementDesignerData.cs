@@ -333,6 +333,18 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         }
     }
 
+    public string GetUniqueName(string name)
+    {
+        var tempName = name;
+        var index = 1;
+        while (AllDiagramItems.Any(p => p.Name.ToUpper() == tempName.ToUpper()))
+        {
+            tempName = name + index;
+            index++;
+        }
+        return tempName;
+    }
+
     public ElementDataBase[] GetAssociatedElements(ElementDataBase data)
     {
         return GetAssociatedElementsInternal(data).Concat(new[] { data }).Distinct().ToArray();

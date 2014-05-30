@@ -6,6 +6,10 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
 {
     private ElementDataBase _forElement;
 
+    public ViewDrawer()
+    {
+    }
+
     public override GUIStyle BackgroundStyle
     {
         get

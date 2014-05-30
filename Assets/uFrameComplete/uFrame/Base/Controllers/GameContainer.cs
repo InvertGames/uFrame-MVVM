@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
+
 #if DLL
 
 namespace Invert.uFrame
@@ -40,7 +42,36 @@ public class GameContainer : IGameContainer
             set { _namedInstances = value; }
         }
 
+        public Dictionary<Type, Dictionary<Type, Type>> AdapterMappings
+        {
+            get { return _adapterMappings; }
+            set { _adapterMappings = value; }
+        }
 
+
+        /// <summary>
+        /// Resolves all instances of TType or subclasses of TType.  Either named or not.
+        /// </summary>
+        /// <typeparam name="TType">The Type to resolve</typeparam>
+        /// <returns>List of objects.</returns>
+        public IEnumerable<TType> ResolveAll<TType>()
+        {
+            foreach (var instance in Instances)
+            {
+                if (instance.Value == null) continue;
+                if (typeof(TType).IsAssignableFrom(instance.Key))
+                {
+                    yield return (TType)instance.Value;
+                }
+            }
+            foreach (var namedInstance in NamedInstances)
+            {
+                if (typeof (TType).IsAssignableFrom(namedInstance.Value.GetType()))
+                {
+                    yield return (TType) namedInstance.Value;
+                }
+            }
+        }
         /// <summary>
         /// Clears all type-mappings and instances.
         /// </summary>
@@ -266,6 +297,62 @@ public class GameContainer : IGameContainer
             }
         }
 
+        private Dictionary<Type, Dictionary<Type,Type>> _adapterMappings = new Dictionary<Type, Dictionary<Type,Type>>();
+        public void RegisterAdapter<TFor, TBase, TConcrete>()
+        {
+            if (AdapterMappings.ContainsKey(typeof (TFor)))
+            {
+                var dictionary = AdapterMappings[typeof (TFor)] ?? (AdapterMappings[typeof(TFor)] = new Dictionary<Type, Type>());
+                if (dictionary.ContainsKey(typeof (TBase)))
+                {
+                    dictionary[typeof (TBase)] = typeof (TConcrete);
+                }
+                else
+                {
+                    dictionary.Add(typeof(TBase),typeof(TConcrete));
+                }
+            }
+            else
+            {
+                AdapterMappings.Add(typeof(TFor), new Dictionary<Type, Type>());
+                AdapterMappings[typeof(TFor)].Add(typeof(TBase),typeof(TConcrete));
+            }
+        }
+        public TBase ResolveAdapter<TBase>(Type tfor)
+        {
+          
+            if (!AdapterMappings.ContainsKey(tfor)) return default(TBase);
+            var dictionary = AdapterMappings[tfor];
+            if (dictionary == null || !dictionary.ContainsKey(typeof(TBase))) return default(TBase);
+           
+            var result = (TBase)Activator.CreateInstance(dictionary[typeof (TBase)]);
+            Inject(result);
+            return result;
+        }
+        public TBase ResolveAdapter<TFor, TBase>()
+        {
+          
+            if (!AdapterMappings.ContainsKey(typeof (TFor))) 
+                return default(TBase);
+            var dictionary = AdapterMappings[typeof (TFor)];
+            if (dictionary == null || !dictionary.ContainsKey(typeof (TBase))) return default(TBase);
+
+            var result = (TBase) Activator.CreateInstance(dictionary[typeof (TBase)]);
+            Inject(result);
+            return result;
+        }
+    }
+
+    public class AdapterMapping
+    {
+        public Type TBase { get; set; }
+        public Type TConcrete { get; set; }
+
+        public AdapterMapping(Type @base, Type concrete)
+        {
+            TBase = @base;
+            TConcrete = concrete;
+        }
     }
 
 #if DLL

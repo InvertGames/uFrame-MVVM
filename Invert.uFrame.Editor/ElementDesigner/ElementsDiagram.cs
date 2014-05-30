@@ -1,3 +1,4 @@
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Data;
 using System;
@@ -30,42 +31,6 @@ public class ElementsDiagram
 
     private SerializedObject _serializedObject;
     private Event _currentEvent;
-    private static IDiagramCommand[] _commands;
-    private static ToolbarCommand[] _toolbarCommands;
-
-    public static DiagramPlugin[] Plugins
-    {
-        get
-        {
-            if (_plugins != null) return _plugins;
-
-            _plugins =
-                GetDerivedTypes<DiagramPlugin>(false, false)
-                    .Select(p => Activator.CreateInstance(p) as DiagramPlugin)
-                    .ToArray();
-
-            foreach (var diagramPlugin in _plugins)
-            {
-                diagramPlugin.Initialize();
-            }
-
-            return _plugins;
-        }
-        set { _plugins = value; }
-    }
-
-    public static IDiagramCommand[] Commands
-    {
-        get
-        {
-            return _commands ?? (_commands = GetDerivedTypes<DiagramCommand>(false, false).Select(p => Activator.CreateInstance(p) as IDiagramCommand).ToArray());
-        }
-    }
-
-    public static ToolbarCommand[] ToolbarCommands
-    {
-        get { return _toolbarCommands ?? (_toolbarCommands = Commands.OfType<ToolbarCommand>().ToArray()); }
-    }
 
     public IEnumerable<IDiagramItem> AllSelected
     {
@@ -250,237 +215,82 @@ public class ElementsDiagram
         Data = repository.GetData();
     }
 
-    public static IEnumerable<Type> GetDerivedTypes<T>(bool includeAbstract = false, bool includeBase = true)
-    {
-        var type = typeof(T);
-        if (includeBase)
-            yield return type;
-        if (includeAbstract)
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var t in assembly
-                .GetTypes()
-                .Where(x => x.IsSubclassOf(type)))
-                {
-                    yield return t;
-                }
-            }
-        }
-        else
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var t in assembly
-                    .GetTypes()
-                    .Where(x => x.IsSubclassOf(type) && !x.IsAbstract))
-                {
-                    yield return t;
-                }
-            }
-        }
-    }
+  
 
-    public static DiagramPlugin GetPlugin(PluginData data)
+    public void ExecuteCommand(IDiagramCommand command,object arg)
     {
-        return Plugins.FirstOrDefault(p => p.GetType() == data.PluginType);
-    }
-
-    public void AddNewEnum(bool addAtMousePosition)
-    {
-        Undo.RecordObject(Data, "Add New Enum");
-        var data = new EnumData()
-        {
-            Data = Data,
-            Name = GetUniqueName("NewEnum"),
-            Location = new Vector2(15, 15)
-        };
-        Data.Enums.Add(data);
-        if (addAtMousePosition)
-        {
-            data.Location = LastMouseDownPosition;
-        }
+        Undo.RecordObject(Data, command.Title);
+        command.Execute(arg);
         Refresh(true);
         EditorUtility.SetDirty(Data);
     }
 
-    public void AddNewPluginItem(IDiagramPlugin plugin, string name)
-    {
-        Undo.RecordObject(Data, "Add " + name);
-        var data = new PluginData()
-        {
-            Data = Data,
-            PluginType = plugin.GetType(),
-            Name = GetUniqueName(name),
-            Location = new Vector2(15, 15)
-        };
-        Data.PluginItems.Add(data);
-        data.Location = LastMouseDownPosition;
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
 
-    public void AddNewSceneManager(bool addAtMousePosition)
-    {
-        Undo.RecordObject(Data, "Add New SceneManager");
-        var data = new SceneManagerData()
-        {
-            Data = Data,
-            Name = GetUniqueName("NewSceneManager"),
-            Location = new Vector2(15, 15)
-        };
-        Data.SceneManagers.Add(data);
-        if (addAtMousePosition)
-        {
-            data.Location = LastMouseDownPosition;
-        }
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    public void AddNewSubDiagram(bool addAtMousePosition)
-    {
-        Undo.RecordObject(Data, "Add New Sub System");
-        var data = new SubSystemData()
-        {
-            Data = Data,
-            Name = GetUniqueName("New Sub System"),
-            Location = new Vector2(15, 15)
-        };
-        Data.SubSystems.Add(data);
-        if (addAtMousePosition)
-        {
-            data.Location = LastMouseDownPosition;
-        }
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    public void AddNewView(bool addAtMousePosition)
-    {
-        Undo.RecordObject(Data, "Add New Definition");
-        var data = new ViewData()
-        {
-            Data = Data,
-            Name = GetUniqueName("NewView"),
-            Location = new Vector2(15, 15)
-        };
-        Data.Views.Add(data);
-        if (addAtMousePosition)
-        {
-            data.Location = LastMouseDownPosition;
-        }
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    public void AddNewViewComponent(bool addAtMousePosition)
-    {
-        Undo.RecordObject(Data, "Add New View Component");
-        var data = new ViewComponentData()
-        {
-            Data = Data,
-            Name = GetUniqueName("NewViewComponent"),
-            Location = new Vector2(15, 15)
-        };
-        Data.ViewComponents.Add(data);
-        if (addAtMousePosition)
-        {
-            data.Location = LastMouseDownPosition;
-        }
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    public void AddNewViewModel(ElementData data)
-    {
-        Undo.RecordObject(Data, "Add Element");
-        Data.ViewModels.Add(data);
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    public void AddNewViewModel(bool addAtMousePosition)
-    {
-        var data = new ElementData
-        {
-            Data = Data,
-            Name = GetUniqueName("NewElement"),
-            //BaseTypeName = typeof(ViewModel).FullName,
-            Dirty = true
-        };
-
-        if (addAtMousePosition)
-        {
-            data.Location = LastMouseDownPosition;
-        }
-        data.Filter.Locations[data] = data.Location;
-        AddNewViewModel(data);
-    }
-
+    
     public IElementDrawer CreateDrawerFor(IDiagramItem item)
     {
-        foreach (var diagramPlugin in Plugins)
-        {
-            var drawer = diagramPlugin.GetDrawer(this, item);
-            if (drawer != null)
-            {
-                return drawer;
-            }
-        }
-        var type = item.GetType();
-        var elementData = item as ElementDataBase;
-        if (elementData != null)
-        {
-            var drawer = new ElementDrawer(elementData, this);
+        return uFrameEditor.CreateDrawer(item, this);
+        //foreach (var diagramPlugin in Plugins)
+        //{
+        //    var drawer = diagramPlugin.GetDrawer(this, item);
+        //    if (drawer != null)
+        //    {
+        //        return drawer;
+        //    }
+        //}
+        //var type = item.GetType();
+        //var elementData = item as ElementDataBase;
+        //if (elementData != null)
+        //{
+        //    var drawer = new ElementDrawer(elementData, this);
 
-            var data = elementData as ElementData;
-            if (data != null)
-            {
-                drawer.PropertiesHeader.OnAddItem += () => AddNewProperty(data);
-                drawer.CollectionsHeader.OnAddItem += () => AddNewCollection(data);
-                drawer.CommandsHeader.OnAddItem += () => AddNewCommand(data);
-                drawer.BehavioursHeader.OnAddItem += () => AddNewBehaviour(data);
-            }
-            return drawer;
-        }
-        if (type == typeof(EnumData))
-        {
-            return new DiagramEnumDrawer(item as EnumData, this);
-        }
-        if (type == typeof(ViewComponentData))
-        {
-            return new ViewComponentDrawer(item as ViewComponentData, this);
-        }
-        if (type == typeof(SubSystemData))
-        {
-            return new SubSystemDrawer(item as SubSystemData, this);
-        }
-        if (type == typeof(ViewData))
-        {
-            return new ViewDrawer(item as ViewData, this);
-        }
-        if (type == typeof(SceneManagerData))
-        {
-            return new SceneManagerDrawer(item as SceneManagerData, this);
-        }
-        if (type == typeof(EnumData))
-        {
-            return new DiagramEnumDrawer(item as EnumData, this);
-        }
-        if (type == typeof(PluginData))
-        {
-            var data = item as PluginData;
-            if (data == null) return null;
-            foreach (var diagramPlugin in Plugins)
-            {
-                if (diagramPlugin.GetType() == data.PluginType)
-                {
-                    return diagramPlugin.GetDrawer(this, data);
-                }
-            }
-        }
-        return null;
+        //    var data = elementData as ElementData;
+        //    if (data != null)
+        //    {
+        //        drawer.PropertiesHeader.OnAddItem += () => AddNewProperty(data);
+        //        drawer.CollectionsHeader.OnAddItem += () => AddNewCollection(data);
+        //        drawer.CommandsHeader.OnAddItem += () => AddNewCommand(data);
+        //        drawer.BehavioursHeader.OnAddItem += () => AddNewBehaviour(data);
+        //    }
+        //    return drawer;
+        //}
+        //if (type == typeof(EnumData))
+        //{
+        //    return new DiagramEnumDrawer(item as EnumData, this);
+        //}
+        //if (type == typeof(ViewComponentData))
+        //{
+        //    return new ViewComponentDrawer(item as ViewComponentData, this);
+        //}
+        //if (type == typeof(SubSystemData))
+        //{
+        //    return new SubSystemDrawer(item as SubSystemData, this);
+        //}
+        //if (type == typeof(ViewData))
+        //{
+        //    return new ViewDrawer(item as ViewData, this);
+        //}
+        //if (type == typeof(SceneManagerData))
+        //{
+        //    return new SceneManagerDrawer(item as SceneManagerData, this);
+        //}
+        //if (type == typeof(EnumData))
+        //{
+        //    return new DiagramEnumDrawer(item as EnumData, this);
+        //}
+        //if (type == typeof(PluginData))
+        //{
+        //    var data = item as PluginData;
+        //    if (data == null) return null;
+        //    foreach (var diagramPlugin in Plugins)
+        //    {
+        //        if (diagramPlugin.GetType() == data.PluginType)
+        //        {
+        //            return diagramPlugin.GetDrawer(this, data);
+        //        }
+        //    }
+        //}
+        //return null;
     }
 
     public void DeselectAll()
@@ -658,26 +468,11 @@ public class ElementsDiagram
             }
             UFStyles.DrawExpandableBox(SelectionRect, UFStyles.BoxHighlighter4, string.Empty);
         }
-
-        //GUI.matrix = beforeScale;
     }
-    
 
     public DiagramItemDrawer<TData> GetDrawer<TData>(TData data) where TData : IDiagramItem
     {
         return ElementDrawers.OfType<DiagramItemDrawer<TData>>().FirstOrDefault(p => p.Data.Equals(data));
-    }
-
-    public string GetUniqueName(string name)
-    {
-        var tempName = name;
-        var index = 1;
-        while (Data.AllDiagramItems.Any(p => p.Name.ToUpper() == tempName.ToUpper()))
-        {
-            tempName = name + index;
-            index++;
-        }
-        return tempName;
     }
 
     public void HandleInput()
@@ -742,6 +537,7 @@ public class ElementsDiagram
     {
         if (refreshDrawers)
             ElementDrawers.Clear();
+
         foreach (var diagramItem in Data.DiagramItems)
         {
             diagramItem.Data = Data;
@@ -766,24 +562,32 @@ public class ElementsDiagram
     public void ShowAddNewContextMenu(bool addAtMousePosition = false)
     {
         var menu = new GenericMenu();
+        var contextCommands = uFrameEditor.GetContextCommandsFor<ElementsDiagram>();
+        foreach (var contextCommand in contextCommands)
+        {
+            IDiagramCommand command = contextCommand;
+            menu.AddItem(new GUIContent(((IContextMenuItemCommand)contextCommand).Path), ((IContextMenuItemCommand)contextCommand).Checked, () =>
+            {
+                ExecuteCommand(command,this);
+            });
+        }
+        //if (Data.CurrentFilter.IsAllowed(null, typeof(ElementData)))
+        //    menu.AddItem(new GUIContent("New Element"), false, () => { AddNewViewModel(addAtMousePosition); });
 
-        if (Data.CurrentFilter.IsAllowed(null, typeof(ElementData)))
-            menu.AddItem(new GUIContent("New Element"), false, () => { AddNewViewModel(addAtMousePosition); });
+        //if (Data.CurrentFilter.IsAllowed(null, typeof(EnumData)))
+        //    menu.AddItem(new GUIContent("New Enum"), false, () => { AddNewEnum(addAtMousePosition); });
 
-        if (Data.CurrentFilter.IsAllowed(null, typeof(EnumData)))
-            menu.AddItem(new GUIContent("New Enum"), false, () => { AddNewEnum(addAtMousePosition); });
+        //if (Data.CurrentFilter.IsAllowed(null, typeof(ViewData)))
+        //    menu.AddItem(new GUIContent("New View"), false, () => { AddNewView(addAtMousePosition); });
 
-        if (Data.CurrentFilter.IsAllowed(null, typeof(ViewData)))
-            menu.AddItem(new GUIContent("New View"), false, () => { AddNewView(addAtMousePosition); });
+        //if (Data.CurrentFilter.IsAllowed(null, typeof(ViewComponentData)))
+        //    menu.AddItem(new GUIContent("New View Component"), false, () => { AddNewViewComponent(addAtMousePosition); });
 
-        if (Data.CurrentFilter.IsAllowed(null, typeof(ViewComponentData)))
-            menu.AddItem(new GUIContent("New View Component"), false, () => { AddNewViewComponent(addAtMousePosition); });
+        //if (Data.CurrentFilter.IsAllowed(null, typeof(SceneManagerData)))
+        //    menu.AddItem(new GUIContent("New Scene Manager"), false, () => { AddNewSceneManager(addAtMousePosition); });
 
-        if (Data.CurrentFilter.IsAllowed(null, typeof(SceneManagerData)))
-            menu.AddItem(new GUIContent("New Scene Manager"), false, () => { AddNewSceneManager(addAtMousePosition); });
-
-        if (Data.CurrentFilter.IsAllowed(null, typeof(SubSystemData)))
-            menu.AddItem(new GUIContent("New Sub System"), false, () => { AddNewSubDiagram(addAtMousePosition); });
+        //if (Data.CurrentFilter.IsAllowed(null, typeof(SubSystemData)))
+        //    menu.AddItem(new GUIContent("New Sub System"), false, () => { AddNewSubDiagram(addAtMousePosition); });
 
         //foreach (var diagramPlugin in Plugins)
         //{
@@ -978,57 +782,11 @@ public class ElementsDiagram
         //}
     }
 
-    protected virtual void OnAddNewBehaviourClicked(ElementData data)
-    {
-        ViewModelDataEventHandler handler = AddNewBehaviourClicked;
-        if (handler != null) handler(data);
-    }
 
     protected virtual void OnSelectionChanged(IDiagramItem olddata, IDiagramItem newdata)
     {
         SelectionChangedEventArgs handler = SelectionChanged;
         if (handler != null) handler(olddata, newdata);
-    }
-
-    private void AddNewBehaviour(ElementData data)
-    {
-        OnAddNewBehaviourClicked(data);
-    }
-
-    private void AddNewCollection(ElementData data)
-    {
-        Undo.RecordObject(Data, "Add New Collection");
-        data.Collections.Add(new ViewModelCollectionData()
-        {
-            Name = GetUniqueName("NewCollection"),
-            ItemType = typeof(string)
-        });
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    private void AddNewCommand(ElementData data)
-    {
-        Undo.RecordObject(Data, "Add New Command");
-        data.Commands.Add(new ViewModelCommandData()
-        {
-            Name = GetUniqueName("NewCommand"),
-        });
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
-    private void AddNewProperty(ElementData data)
-    {
-        Undo.RecordObject(Data, "Add New Property");
-        data.Properties.Add(new ViewModelPropertyData()
-        {
-            DefaultValue = string.Empty,
-            Name = GetUniqueName("String1"),
-            Type = typeof(string)
-        });
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
     }
 
     private void DoViewModelInspector(ElementDataBase selected)
@@ -1065,10 +823,6 @@ public class ElementsDiagram
         //    }
 
         //}
-    }
-
-    private void OnAdd(string name, string value)
-    {
     }
 
     private void OnDoubleClick()

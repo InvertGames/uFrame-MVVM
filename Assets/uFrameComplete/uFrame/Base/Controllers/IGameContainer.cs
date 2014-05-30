@@ -79,6 +79,8 @@ namespace Invert.uFrame
         /// <param name="name"></param>
         /// <returns></returns>
         T Resolve<T>(string name) where T : class;
+
+        TType ResolveAdapter<TFor, TType>();
     }
 
 #if DLL

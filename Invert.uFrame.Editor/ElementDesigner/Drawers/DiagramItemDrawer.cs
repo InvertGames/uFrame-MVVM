@@ -1,12 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame;
 using UnityEditor;
 using UnityEngine;
 
 public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : IDiagramItem
 {
     private static GUIStyle _itemStyle;
+    private TData _data;
+    [Inject]
+    public IUFrameContainer Container { get; set; }
+    protected DiagramItemDrawer()
+    {
+    }
 
     protected DiagramItemDrawer(TData data, ElementsDiagram diagram)
     {
@@ -14,7 +21,15 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
         Diagram = diagram;
     }
 
-    public TData Data { get; set; }
+    public TData Data
+    {
+        get { return _data; }
+        set
+        {
+            _data = value;
+            CalculateBounds();
+        }
+    }
 
     public float HeaderSize { get { return 35 ; } }
 
@@ -179,7 +194,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
     {
         foreach (var diagramSubItemGroup in CachedItemGroups)
         {
-            diagramSubItemGroup.Header.Draw(Scale, BackgroundStyle);
+            diagramSubItemGroup.Header.Draw(Diagram, Scale, BackgroundStyle);
             foreach (var item in diagramSubItemGroup.Items)
             {
                 DrawItem(item, diagram, importOnly);
@@ -377,7 +392,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
     }
 
     public bool IsSelected { get { return Data.IsSelected; } }
-    public IDiagramItem Model { get { return Data; } }
+    public IDiagramItem Model { get { return Data; } set { Data = (TData)value; } }
 
     private float CalculateContentBounds(float startY, float width)
     {
