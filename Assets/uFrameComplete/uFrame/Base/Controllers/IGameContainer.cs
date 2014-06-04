@@ -95,7 +95,7 @@ public interface IGameContainer
         /// <returns>List of objects.</returns>
         IEnumerable<TType> ResolveAll<TType>();
 
-        IEnumerable<object> ResolveAll(Type type);
+        //IEnumerable<object> ResolveAll(Type type);
     }
 
 #if DLL

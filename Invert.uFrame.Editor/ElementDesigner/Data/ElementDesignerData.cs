@@ -72,6 +72,28 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
 
     private static DiagramPlugin[] _plugins;
 
+    public string ControllersFileName
+    {
+        get
+        {
+            return name + "Controllers.designer.cs";
+        }
+    }
+    public string ViewModelsFileName
+    {
+        get
+        {
+            return name + ".designer.cs";
+        }
+    }
+    public string ViewsFileName
+    {
+        get
+        {
+            return name + "Views.designer.cs";
+        }
+    }
+
     public IEnumerable<IDiagramItem> AllDiagramItems
     {
         get

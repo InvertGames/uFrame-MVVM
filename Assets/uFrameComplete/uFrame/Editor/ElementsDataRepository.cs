@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Invert.uFrame.Editor;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class ElementsDataRepository : DefaultElementsRepository
@@ -158,30 +159,30 @@ public class ElementsDataRepository : DefaultElementsRepository
         }
     }
 
-    public void Save2(ElementDesignerData data)
-    {
-        var designerFiles = uFrameEditor.Container.ResolveAll<IDesignerFile>();
-        foreach (var designerFile in designerFiles)
-        {
-            var designerFileTypes = designerFile.TypesToContain.ToArray();
-            var diagramItems = data.AllDiagramItems.Where(p => designerFileTypes.Contains(p.GetType()));
 
-            foreach (var diagramItem in diagramItems)
-            {
-                designerFile.HandleContainedType(diagramItem);
 
-            }
-
-        }
-        foreach (var typeFiles in data.AllDiagramItems.GroupBy(p => p.GetType()))
-        {
-            
-        }
-        
-        var generators = uFrameEditor.CodeGenerators;
-        
-    }
     public override void Save()
+    {
+        var codeGenerators = uFrameEditor.GetAllCodeGenerators(Diagram).ToArray();
+        Debug.Log("Code Gens: " + codeGenerators.Length);
+        var fileGenerators = uFrameEditor.GetAllFileGenerators(Diagram).ToArray();
+        Debug.Log(fileGenerators.Length);
+        foreach (var codeFileGenerator in fileGenerators)
+        {
+            var fileInfo = new FileInfo(Path.Combine(AssetPath, codeFileGenerator.Filename));
+            var directory = Path.GetDirectoryName(fileInfo.FullName);
+            if (directory != null && !Directory.Exists(directory))
+            {
+                
+                Directory.CreateDirectory(directory);
+            }
+            Debug.Log(directory);
+           
+        }
+        AssetDatabase.Refresh();
+
+    }
+    public  void Save2()
     {
         ProcessRefactorings();
 

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Data;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using Microsoft.CSharp;
 
 namespace Invert.uFrame.Editor
 {
@@ -85,8 +87,6 @@ namespace Invert.uFrame.Editor
             get { return _toolbarCommands ?? (_toolbarCommands = Commands.OfType<ToolbarCommand>().ToArray()); }
         }
 
-     
-
         private static void InitializeContainer(uFrameContainer container)
         {
             container.Register<DiagramItemHeader,DiagramItemHeader>();
@@ -104,20 +104,9 @@ namespace Invert.uFrame.Editor
             container.RegisterAdapter<SceneManagerData, IElementDrawer, SceneManagerDrawer>();
             container.RegisterAdapter<EnumData, IElementDrawer, DiagramEnumDrawer>();
 
-            // Code Generation
-            container.Register<ElementGenerator>(new ViewModelGenerator(false), "ViewModel");
-            container.Register<ElementGenerator>(new ViewModelGenerator(true), "EditableViewModel");
-
-
-
-            //container.Register<DesignerFileGenerator, ControllersFileGenerator>("Controllers");
-
-            //container.Register<DesignerFileGenerator, ViewsFileGenerator>("Views");
-            //container.Register<DesignerFileGenerator, ViewModelsFileGenerator>("ViewModels");
-
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
             { 
-                container.RegisterInstance(Activator.CreateInstance(diagramPlugin) as DiagramPlugin, diagramPlugin.Name,false);
+                container.RegisterInstance(Activator.CreateInstance(diagramPlugin) as IDiagramPlugin, diagramPlugin.Name,false);
             }
 
             foreach (var commandType in GetDerivedTypes<DiagramCommand>(false, false))
@@ -135,7 +124,11 @@ namespace Invert.uFrame.Editor
             container.InjectAll();
             foreach (var diagramPlugin in Plugins)
             {
+#if DEBUG
+                UnityEngine.Debug.Log("Loaded Plugin: " + diagramPlugin);
+#endif
                 diagramPlugin.Initialize(Container);
+
             }
 
             
@@ -167,20 +160,67 @@ namespace Invert.uFrame.Editor
             return Commands.Where(p => p is IContextMenuItemCommand && typeof(T).IsAssignableFrom(p.For));
         }
 
+        public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ElementDesignerData diagramData)
+        {
+            // Grab all the code generators
+            var diagramItemGenerators = Container.ResolveAll<DiagramItemGenerator>().ToArray();
 
+            foreach (var diagramItemGenerator in diagramItemGenerators)
+            {
+                DiagramItemGenerator generator = diagramItemGenerator;
+                var items = diagramData.AllDiagramItems.Where(p => p.GetType() == generator.DiagramItemType);
+
+                foreach (var item in items)
+                {
+                    var codeGenerators = generator.GetGenerators(diagramData, item);
+                    foreach (var codeGenerator in codeGenerators)
+                    {
+                        yield return codeGenerator;
+                    }
+                }
+            }
+
+        }
+
+        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(ElementDesignerData diagramData)
+        {
+            var codeGenerators = GetAllCodeGenerators(diagramData).ToArray();
+            var groups = codeGenerators.GroupBy(p => p.Filename);
+            foreach (var @group in groups)
+            {
+                var generator = new CodeFileGenerator()
+                {
+                    Filename = @group.Key,
+                    Generators = @group.ToArray()
+                };
+                yield return generator;
+            }
+        }
     }
-
+    
     public class CodeFileGenerator
     {
         public CodeNamespace Namespace { get; set; }
         public CodeCompileUnit Unit { get; set; }
 
-        public string[] Generators
+        public bool RemoveComments { get; set; }
+        public string NamespaceName { get; set; }
+        public CodeFileGenerator(string ns = null)
+        {
+            NamespaceName = ns;
+        }
+
+        public void Generate()
+        {
+            AddNamespaces();
+        }
+        public CodeGenerator[] Generators
         {
             get; set; 
         }
 
-       
+        public string Filename { get; set; }
+
         public virtual void AddNamespaces()
         {
             Namespace.Imports.Add(new CodeNamespaceImport("System"));
@@ -189,17 +229,94 @@ namespace Invert.uFrame.Editor
             Unit.Namespaces.Add(Namespace);
         }
 
-        public virtual void GetGenerators(string name)
+        public override string ToString()
         {
-            
+            Namespace = new CodeNamespace(NamespaceName);
+            Unit = new CodeCompileUnit();
+            Unit.Namespaces.Add(Namespace);
+            foreach (var codeGenerator in Generators)
+            {
+                codeGenerator.Initialize(this);
+            }
+            var provider = new CSharpCodeProvider();
+
+            var sb = new StringBuilder();
+            var tw1 = new IndentedTextWriter(new StringWriter(sb), "    ");
+            provider.GenerateCodeFromCompileUnit(Unit, tw1, new CodeGeneratorOptions());
+            tw1.Close();
+            if (!RemoveComments)
+            {
+                var removedLines = sb.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Skip(9).ToArray();
+                return string.Join(Environment.NewLine, removedLines);
+            }
+            return sb.ToString();
         }
-        
     }
 
-    public class ViewModelFileGenerator : CodeFileGenerator
+    public abstract class CodeGenerator
     {
-        
+        private CodeNamespace _ns;
+        private CodeCompileUnit _unit;
+
+        public virtual Type RelatedType
+        {
+            get; set;
+        }
+
+        public virtual string Filename
+        {
+            get;
+            set;
+        }
+
+        public virtual void Initialize(CodeFileGenerator fileGenerator)
+        {
+            _unit = fileGenerator.Unit;
+            _ns = fileGenerator.Namespace;
+        }
+
+        public CodeNamespace Namespace
+        {
+            get { return _ns; }
+        }
+
+        public CodeCompileUnit Unit
+        {
+            get { return _unit; }
+        }
     }
-   
+
+    public abstract class DiagramItemGenerator
+    {
+        public abstract Type DiagramItemType
+        {
+            get;
+        }
+
+        [Inject]
+        public IUFrameContainer Container { get; set; }
+
+        [Inject]
+        public IElementsDataRepository Repository { get; set; }
+
+        public object ObjectData { get; set; }
+
+        public abstract IEnumerable<CodeGenerator> GetGenerators(ElementDesignerData diagramData, IDiagramItem item);
+    }
+
+    public abstract class DiagramItemGenerator<TData> : DiagramItemGenerator where TData : DiagramItem
+    {
+        public override Type DiagramItemType
+        {
+            get { return typeof (TData); }
+        }
+
+        public sealed override IEnumerable<CodeGenerator> GetGenerators(ElementDesignerData diagramData, IDiagramItem item)
+        {
+            return CreateGenerators(diagramData, item as TData);
+        }
+        public abstract IEnumerable<CodeGenerator> CreateGenerators(ElementDesignerData diagramData, TData item);
+
+    }
 
 }

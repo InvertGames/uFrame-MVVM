@@ -24,6 +24,13 @@ public class SceneManagerData : DiagramItem
             return Type.GetType(UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsSceneManager));
         }
     }
+    public Type CurrentSettingsType
+    {
+        get
+        {
+            return Type.GetType(UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsSettings));
+        }
+    }
     public override string Label
     {
         get { return Name; }

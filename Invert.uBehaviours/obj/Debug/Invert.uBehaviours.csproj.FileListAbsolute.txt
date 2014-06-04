@@ -5,3 +5,4 @@ D:\Invert\Git\uFrame\Invert.uBehaviours\bin\Debug\UnityEngine.dll
 D:\Invert\Git\uFrame\Invert.uBehaviours\bin\Debug\UnityEngine.xml
 D:\Invert\Git\uFrame\Invert.uBehaviours\obj\Debug\Invert.uBehaviours.dll
 D:\Invert\Git\uFrame\Invert.uBehaviours\obj\Debug\Invert.uBehaviours.pdb
+D:\Invert\Git\uFrame\Invert.uBehaviours\obj\Debug\Invert.uBehaviours.csprojResolveAssemblyReference.cache
