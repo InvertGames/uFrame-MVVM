@@ -21,7 +21,6 @@ public class ElementGenerator : ElementGeneratorBase
     {
         _diagramData = diagramData;
     }
-
 }
 
 public class ViewFileGenerator : ElementGenerator
@@ -1321,6 +1320,7 @@ public class ViewModelFileGenerator : ElementGenerator
 {
     public ViewModelFileGenerator(ElementDesignerData diagramData) : base(diagramData)
     {
+        
     }
     public CodeMemberProperty ToCommandCodeMemberProperty(ViewModelCommandData itemData)
     {

@@ -407,7 +407,7 @@ public class ElementsDesigner : EditorWindow
 
     public void DrawToolbar(IEnumerable<ToolbarCommand> commands)
     {
-        foreach (var command in commands)
+        foreach (var command in commands.OrderBy(p=>p.Order))
         {
             var dynamicOptionsCommand = command as IDynamicOptionsCommand;
             var parentCommand = command as IParentCommand;
@@ -445,7 +445,7 @@ public class ElementsDesigner : EditorWindow
             {
                 if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
                 {
-                    command.Execute(this);
+                    command.Execute(Diagram);
                 }
             }
         }
@@ -493,7 +493,7 @@ public class ElementsDesigner : EditorWindow
 
         Diagram.Data.ApplyFilter();
         Diagram.Refresh(true);
-        Selection.activeObject = diagram;
+    
         // var newScrollPosition = new Vector2(Diagram.DiagramSize.width, Diagram.DiagramSize.height).normalized / 2;
         //_scrollPosition = new Vector2(250,250);
     }
@@ -518,6 +518,7 @@ public class ElementsDesigner : EditorWindow
             {
                 LastLoadedDiagram = diagramName;
                 LoadDiagram(diagram);
+                Selection.activeObject = diagram;
             });
         }
         menu.ShowAsContext();

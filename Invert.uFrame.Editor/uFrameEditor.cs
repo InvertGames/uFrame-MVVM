@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Data;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 
 namespace Invert.uFrame.Editor
 {
@@ -27,6 +29,8 @@ namespace Invert.uFrame.Editor
         private static IDiagramCommand[] _commands;
         private static ToolbarCommand[] _toolbarCommands;
         private static IDiagramPlugin[] _plugins;
+
+        private static IEnumerable<CodeGenerator> _generators;
 
         public static IDiagramPlugin[] Plugins
         {
@@ -81,6 +85,8 @@ namespace Invert.uFrame.Editor
             get { return _toolbarCommands ?? (_toolbarCommands = Commands.OfType<ToolbarCommand>().ToArray()); }
         }
 
+     
+
         private static void InitializeContainer(uFrameContainer container)
         {
             container.Register<DiagramItemHeader,DiagramItemHeader>();
@@ -99,27 +105,40 @@ namespace Invert.uFrame.Editor
             container.RegisterAdapter<EnumData, IElementDrawer, DiagramEnumDrawer>();
 
             // Code Generation
-            container.Register<DesignerFileGenerator, ControllersFileGenerator>("Controllers");
-            container.Register<DesignerFileGenerator, ViewsFileGenerator>("Views");
-            container.Register<DesignerFileGenerator, ViewModelsFileGenerator>("ViewModels");
+            container.Register<ElementGenerator>(new ViewModelGenerator(false), "ViewModel");
+            container.Register<ElementGenerator>(new ViewModelGenerator(true), "EditableViewModel");
 
 
+
+            //container.Register<DesignerFileGenerator, ControllersFileGenerator>("Controllers");
+
+            //container.Register<DesignerFileGenerator, ViewsFileGenerator>("Views");
+            //container.Register<DesignerFileGenerator, ViewModelsFileGenerator>("ViewModels");
 
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
-            {
-                container.RegisterInstance(diagramPlugin.Name, Activator.CreateInstance(diagramPlugin) as DiagramPlugin,false);
+            { 
+                container.RegisterInstance(Activator.CreateInstance(diagramPlugin) as DiagramPlugin, diagramPlugin.Name,false);
             }
 
             foreach (var commandType in GetDerivedTypes<DiagramCommand>(false, false))
             {
-                container.RegisterInstance(commandType.Name, Activator.CreateInstance(commandType) as DiagramCommand, false);
+                
+                var command = Activator.CreateInstance(commandType) as DiagramCommand;
+                if (command != null)
+                {
+                    container.RegisterInstance<IDiagramCommand>(command, command.Name, false);    
+                }
+                
             }
-            container.InjectAll();
 
+            
+            container.InjectAll();
             foreach (var diagramPlugin in Plugins)
             {
                 diagramPlugin.Initialize(Container);
             }
+
+            
         }
 
         public static IElementDrawer CreateDrawer(IDiagramItem data, ElementsDiagram diagram)
@@ -147,31 +166,40 @@ namespace Invert.uFrame.Editor
         {
             return Commands.Where(p => p is IContextMenuItemCommand && typeof(T).IsAssignableFrom(p.For));
         }
+
+
     }
 
-    public class DesignerFileGenerator
+    public class CodeFileGenerator
     {
-        [Inject]
-        public IUFrameContainer Container
+        public CodeNamespace Namespace { get; set; }
+        public CodeCompileUnit Unit { get; set; }
+
+        public string[] Generators
         {
-            get;
-            set;
+            get; set; 
         }
 
+       
+        public virtual void AddNamespaces()
+        {
+            Namespace.Imports.Add(new CodeNamespaceImport("System"));
+            Namespace.Imports.Add(new CodeNamespaceImport("System.Collections"));
+            Namespace.Imports.Add(new CodeNamespaceImport("System.Linq"));
+            Unit.Namespaces.Add(Namespace);
+        }
+
+        public virtual void GetGenerators(string name)
+        {
+            
+        }
         
-
     }
 
-    public class ControllersFileGenerator : DesignerFileGenerator
+    public class ViewModelFileGenerator : CodeFileGenerator
     {
-
+        
     }
-    public class ViewsFileGenerator : DesignerFileGenerator
-    {
+   
 
-    }
-    public class ViewModelsFileGenerator : DesignerFileGenerator
-    {
-
-    }
 }

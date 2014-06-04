@@ -250,7 +250,7 @@ public abstract class Controller : IViewModelObserver
         if (viewModel == null)
         {
             viewModel = CreateEmpty();
-            Container.RegisterInstance(resolveName, viewModel);
+            Container.RegisterInstance(viewModel, resolveName);
         }
 
         if (initialize)
@@ -260,7 +260,7 @@ public abstract class Controller : IViewModelObserver
     }
     public virtual ViewModel GetByType(Type viewModelType, bool initialize = true, Action<ViewModel> preInitializer = null)
     {
-        var viewModel = GameManager.Container.Resolve(viewModelType) as ViewModel;
+        var viewModel = GameManager.Container.Resolve(viewModelType,null, true) as ViewModel;
 
         if (viewModel == null)
         {

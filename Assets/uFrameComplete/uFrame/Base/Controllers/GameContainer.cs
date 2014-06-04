@@ -20,9 +20,9 @@ public class GameContainer : IGameContainer
 #endif
 
     {
-        private Dictionary<Type, object> _instances;
+        private TypeInstanceCollection _instances;
         private TypeMappingCollection _mappings;
-        private Dictionary<string, object> _namedInstances;
+
 
         public TypeMappingCollection Mappings
         {
@@ -30,16 +30,10 @@ public class GameContainer : IGameContainer
             set { _mappings = value; }
         }
 
-        protected Dictionary<Type, object> Instances
+        protected TypeInstanceCollection Instances
         {
-            get { return _instances ?? (_instances = new Dictionary<Type, object>()); }
+            get { return _instances ?? (_instances = new TypeInstanceCollection()); }
             set { _instances = value; }
-        }
-
-        protected Dictionary<string, object> NamedInstances
-        {
-            get { return _namedInstances ?? (_namedInstances = new Dictionary<string, object>()); }
-            set { _namedInstances = value; }
         }
 
         public Dictionary<Type, Dictionary<Type, Type>> AdapterMappings
@@ -56,19 +50,37 @@ public class GameContainer : IGameContainer
         /// <returns>List of objects.</returns>
         public IEnumerable<TType> ResolveAll<TType>()
         {
-            foreach (var instance in Instances)
+            foreach (var instance1 in Instances.Where(p => p.Base == typeof(TType) && !string.IsNullOrEmpty(p.Name)))
             {
-                if (instance.Value == null) continue;
-                if (typeof(TType).IsAssignableFrom(instance.Key))
-                {
-                    yield return (TType)instance.Value;
-                }
+                yield return (TType)instance1.Instance;
             }
-            foreach (var namedInstance in NamedInstances)
+
+            //foreach (var instance in Instances)
+            //{
+
+            //    if (instance.Instance == null) continue;
+            //    if (typeof(TType).IsAssignableFrom(instance.Key))
+            //    {
+            //        yield return (TType)instance.Value;
+            //    }
+            //}
+            //foreach (var namedInstance in NamedInstances)
+            //{
+            //    if (typeof(TType).IsAssignableFrom(namedInstance.Value.GetType()))
+            //    {
+            //        yield return (TType)namedInstance.Value;
+            //    }
+            //}
+            foreach (var mapping in Mappings)
             {
-                if (typeof(TType).IsAssignableFrom(namedInstance.Value.GetType()))
+                if (!string.IsNullOrEmpty(mapping.Name))
                 {
-                    yield return (TType)namedInstance.Value;
+                    if (typeof(TType).IsAssignableFrom(mapping.From))
+                    {
+                        var item = Activator.CreateInstance(mapping.To);
+                        Inject(item);
+                        yield return (TType)item;
+                    }
                 }
             }
         }
@@ -78,8 +90,8 @@ public class GameContainer : IGameContainer
         public void Clear()
         {
             Instances.Clear();
-            NamedInstances.Clear();
             Mappings.Clear();
+            AdapterMappings.Clear();
         }
 
         /// <summary>
@@ -103,9 +115,7 @@ public class GameContainer : IGameContainer
                         var propertyInfo = memberInfo as PropertyInfo;
                         if (string.IsNullOrEmpty(injectAttribute.Name))
                         {
-                            var injectInstance = Instances.ContainsKey(propertyInfo.PropertyType)
-                                ? Instances[propertyInfo.PropertyType]
-                                : null;
+                            var injectInstance = Instances[propertyInfo.PropertyType];
                             if (injectInstance != null)
                             {
                                 propertyInfo.SetValue(obj, injectInstance, null);
@@ -113,10 +123,7 @@ public class GameContainer : IGameContainer
                         }
                         else
                         {
-                            if (NamedInstances.ContainsKey(injectAttribute.Name))
-                            {
-                                propertyInfo.SetValue(obj, NamedInstances[injectAttribute.Name], null);
-                            }
+                            propertyInfo.SetValue(obj, Instances[propertyInfo.PropertyType, injectAttribute.Name], null);
                         }
 
                     }
@@ -125,23 +132,15 @@ public class GameContainer : IGameContainer
                         var fieldInfo = memberInfo as FieldInfo;
                         if (string.IsNullOrEmpty(injectAttribute.Name))
                         {
-                            var injectInstance = Instances.ContainsKey(fieldInfo.FieldType)
-                                ? Instances[fieldInfo.FieldType]
-                                : null;
+                            var injectInstance = Instances[fieldInfo.FieldType];
                             if (injectInstance != null)
                             {
-                                if (fieldInfo.FieldType != obj.GetType())
-                                    Inject(injectInstance);
-
                                 fieldInfo.SetValue(obj, injectInstance);
                             }
                         }
                         else
                         {
-                            if (NamedInstances.ContainsKey(injectAttribute.Name))
-                            {
-                                fieldInfo.SetValue(obj, NamedInstances[injectAttribute.Name]);
-                            }
+                            fieldInfo.SetValue(obj, Instances[fieldInfo.FieldType, injectAttribute.Name]);
                         }
 
                     }
@@ -156,74 +155,52 @@ public class GameContainer : IGameContainer
         /// <typeparam name="TTarget">The concrete type</typeparam>
         public void Register<TSource, TTarget>(string name = null)
         {
-            Mappings[typeof(TSource), null] = typeof(TTarget);
+            Mappings[typeof(TSource), name] = typeof(TTarget);
         }
 
-       
+
         /// <summary>
-        /// Register an instance of a type.
+        /// Register a named instance
         /// </summary>
-        /// <typeparam name="TBase"></typeparam>
-        /// <param name="instance"></param>
-        /// <param name="injectNow"></param>
-        /// <returns></returns>
-        public TBase RegisterInstance<TBase>(TBase instance = null, bool injectNow = true) where TBase : class
+        /// <param name="baseType">The type to register the instance for.</param>        
+        /// <param name="instance">The instance that will be resolved be the name</param>
+        /// <param name="injectNow">Perform the injection immediately</param>
+        public void RegisterInstance(Type baseType, object instance = null, bool injectNow = true)
         {
-            return RegisterInstance(typeof(TBase), instance, injectNow) as TBase;
+            RegisterInstance(baseType, instance, null, injectNow);
         }
 
         /// <summary>
         /// Register a named instance
         /// </summary>
+        /// <param name="baseType">The type to register the instance for.</param>
         /// <param name="name">The name for the instance to be resolved.</param>
         /// <param name="instance">The instance that will be resolved be the name</param>
         /// <param name="injectNow">Perform the injection immediately</param>
-        public void RegisterInstance(string name, object instance, bool injectNow = true)
+        public void RegisterInstance(Type baseType, object instance = null, string name = null, bool injectNow = true)
         {
-            if (NamedInstances.ContainsKey(name))
-            {
-                NamedInstances[name] = instance;
-            }
-            else
-            {
-                NamedInstances.Add(name, instance);
-            }
+
+
+            Instances[baseType, name] = instance;
             if (injectNow)
             {
                 Inject(instance);
             }
         }
 
-        /// <summary>
-        /// Register an instance of a type.
-        /// </summary>
-        /// <param name="type">The type of the instance</param>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        public object RegisterInstance(Type type, object instance = null, bool injectNow = true)
+        public void RegisterInstance<TBase>(TBase instance) where TBase : class
         {
-            var model = instance ?? Activator.CreateInstance(type);
+            RegisterInstance<TBase>(instance, true);
+        }
 
-            if (injectNow)
-                Inject(model);
+        public void RegisterInstance<TBase>(TBase instance, bool injectNow) where TBase : class
+        {
+            RegisterInstance<TBase>(instance, null, injectNow);
+        }
 
-            // If its a derived type lets register that type too
-            var modelType = model.GetType();
-            if (type != modelType)
-            {
-                if (Instances.ContainsKey(modelType))
-                    Instances[modelType] = model;
-                else
-                    Instances.Add(modelType, model);
-            }
-
-            // Register the instance
-            if (Instances.ContainsKey(type))
-                Instances[type] = model;
-            else
-                Instances.Add(type, model);
-
-            return model;
+        public void RegisterInstance<TBase>(TBase instance, string name, bool injectNow = true) where TBase : class
+        {
+            RegisterInstance(typeof(TBase), instance, name, injectNow);
         }
 
         /// <summary>
@@ -231,66 +208,48 @@ public class GameContainer : IGameContainer
         /// </summary>
         /// <typeparam name="T">The type of instance to resolve</typeparam>
         /// <returns>The/An instance of 'instanceType'</returns>
-        public T Resolve<T>() where T : class
+        public T Resolve<T>(string name = null, bool requireInstance = false) where T : class
         {
-            return (T)Resolve(typeof(T));
-        }
-
-        /// <summary>
-        /// Resolve by the name
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public T Resolve<T>(string name) where T : class
-        {
-            if (NamedInstances.ContainsKey(name))
-            {
-                return NamedInstances[name] as T;
-            }
-            return null;
+            return (T)Resolve(typeof(T), name, requireInstance);
         }
 
         /// <summary>
         /// If an instance of instanceType exist then it will return that instance otherwise it will create a new one based off mappings.
         /// </summary>
-        /// <param name="instanceType">The type of instance to resolve</param>
+        /// <param name="baseType">The type of instance to resolve</param>
+        /// <param name="name">The type of instance to resolve</param>
         /// <param name="requireInstance">If true will return null if an instance isn't registered.</param>
         /// <returns>The/An instance of 'instanceType'</returns>
-        public object Resolve(Type instanceType, bool requireInstance = false)
+        public object Resolve(Type baseType, string name = null, bool requireInstance = false)
         {
-            if (!Instances.ContainsKey(instanceType))
+            // Look for an instance first
+            var item = Instances[baseType, name];
+            if (item != null)
             {
-                if (requireInstance)
-                {
-                    return null;
-                }
-                var mappedType = Mappings[instanceType];
-                if (mappedType != null)
-                {
-                    var obj = Activator.CreateInstance(mappedType);
-                    Inject(obj);
-                    return obj;
-                }
-                else
-                {
-                    var obj = Activator.CreateInstance(instanceType);
-                    Inject(obj);
-                    return obj;
-                }
+                return item;
             }
-            return Instances[instanceType];
+            if (requireInstance)
+                return null;
+            // Check if there is a mapping of the type
+            var namedMapping = Mappings[baseType, name];
+            if (namedMapping != null)
+            {
+                var obj = Activator.CreateInstance(namedMapping);
+                Inject(obj);
+                return obj;
+            }
+            return null;
         }
 
         public void InjectAll()
         {
             foreach (var instance in Instances)
             {
-                Inject(instance.Value);
+                Inject(instance.Instance);
             }
-            foreach (var namedInstance in NamedInstances)
+            foreach (var namedInstance in Instances)
             {
-                Inject(namedInstance.Value);
+                Inject(namedInstance.Instance);
             }
         }
 
@@ -339,61 +298,6 @@ public class GameContainer : IGameContainer
             return result;
         }
     }
-
-
-    public class TypeMappingCollection : List<TypeMapping>
-    {
-        public Type this[Type from]
-        {
-            get
-            {
-                var mapping = this.FirstOrDefault(p => p.From == from && (string.IsNullOrEmpty(p.Name)));
-                if (mapping != null)
-                {
-                    return mapping.To;
-                }
-                return null;
-            }
-            set
-            {
-                var mapping = this.FirstOrDefault(p => p.From == from && (string.IsNullOrEmpty(p.Name)));
-                if (mapping == null)
-                {
-                    Add(new TypeMapping() { From = from, Name = null });
-                }
-                else
-                {
-                    mapping.To = value;
-                }
-
-            }
-        }
-        public Type this[Type from, string name]
-        {
-            get
-            {
-                var mapping = this.FirstOrDefault(p => p.From == from && p.Name == name);
-                if (mapping != null)
-                {
-                    return mapping.To;
-                }
-                return null;
-            }
-            set
-            {
-                var mapping = this.FirstOrDefault(p => p.From == from && p.Name == name);
-                if (mapping == null)
-                {
-                    Add(new TypeMapping() {From = from, Name = name});
-                }
-                else
-                {
-                    mapping.To = value;
-                    mapping.Name = name;
-                }
-            }
-        }
-    }
     public class TypeMapping
     {
         public Type From
@@ -407,6 +311,80 @@ public class GameContainer : IGameContainer
             get;
             set;
         }
+        public string Name { get; set; }
+    }
+    public class TypeMappingCollection : List<TypeMapping>
+    {
+        public Type this[Type from, string name = null]
+        {
+            get
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && p.Name == name);
+                if (mapping != null)
+                {
+                    return mapping.To;
+                }
+                return null;
+            }
+            set
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && p.Name == name);
+                if (mapping == null)
+                {
+                    Add(new TypeMapping() { From = from, Name = name, To = value });
+                }
+                else
+                {
+                    mapping.To = value;
+                    mapping.Name = name;
+                }
+            }
+        }
+    }
+    public class TypeInstanceCollection : List<RegisteredInstance>
+    {
+
+        public object this[Type from, string name = null]
+        {
+            get
+            {
+                var mapping = this.FirstOrDefault(p => p.Base == from && p.Name == name);
+                if (mapping != null)
+                {
+                    return mapping.Instance;
+                }
+                return null;
+            }
+            set
+            {
+                var mapping = this.FirstOrDefault(p => p.Base == from && p.Name == name);
+                if (mapping == null)
+                {
+                    Add(new RegisteredInstance() { Base = from, Name = name, Instance = value });
+                }
+                else
+                {
+                    mapping.Instance = value;
+                    mapping.Name = name;
+                }
+            }
+        }
+    }
+
+    public class RegisteredInstance
+    {
+        public Type Base
+        {
+            get;
+            set;
+        }
+
+        public object Instance
+        {
+            get;
+            set;
+        }
+
         public string Name { get; set; }
     }
 #if DLL

@@ -17,12 +17,12 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             return null;
         }
 
-        public string Path
+        public override string Path
         {
             get { return "Add Item/" + Title; }
         }
 
-        public bool Checked { get; set; }
+
     }
 
     public class RenameCommand : DiagramCommand<IDiagramItem>
@@ -117,12 +117,12 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 
         public override void Perform(IDiagramItem item)
         {
-            
+            throw new NotImplementedException();
         }
 
         public override string CanPerform(IDiagramItem item)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

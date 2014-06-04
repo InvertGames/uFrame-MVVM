@@ -48,7 +48,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
         }
 
         public abstract string CanPerform(object arg);
-        public string Path { get { return Name; } }
+        public virtual string Path { get { return Name; } }
         public bool Checked { get; set; }
     }
 }

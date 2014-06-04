@@ -22,7 +22,7 @@
     <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -44,6 +44,61 @@
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="AssetStoreTools">
+      <HintPath>Assets\AssetStoreTools\Editor\AssetStoreTools.dll</HintPath>
+    </Reference>
+    <Reference Include="AssetStoreToolsExtra">
+      <HintPath>Assets\AssetStoreTools\Editor\AssetStoreToolsExtra.dll</HintPath>
+    </Reference>
+    <Reference Include="dfScriptLite">
+      <HintPath>Assets\PrivateStuff\Daikon Forge\DataBinding\Plugins\dfScriptLite.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Photon3Unity3D">
+      <HintPath>Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\Photon3Unity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.de.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\de\PlayMakerEditor.de.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.es-ES.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\es-ES\PlayMakerEditor.es-ES.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.fr.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\fr\PlayMakerEditor.fr.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.it.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\it\PlayMakerEditor.it.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.ja.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\ja\PlayMakerEditor.ja.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.nl.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\nl\PlayMakerEditor.nl.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\PlayMakerEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditorResources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\PlayMakerEditorResources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.pt-BR.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\pt-BR\PlayMakerEditor.pt-BR.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.sv-SE.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\sv-SE\PlayMakerEditor.sv-SE.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.zh-CN.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\zh-CN\PlayMakerEditor.zh-CN.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMakerEditor.zh-TW.resources">
+      <HintPath>Assets\PrivateStuff\PlayMaker\Editor\zh-TW\PlayMakerEditor.zh-TW.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMaker">
+      <HintPath>Assets\PrivateStuff\PlayMaker\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="Invert.uBehaviours.Editor">
       <HintPath>Assets\uFrameComplete\uBehaviours\Editor\Invert.uBehaviours.Editor.dll</HintPath>
@@ -75,6 +130,184 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfDataObjectProxyInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfEventDrivenPropertyBindingInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfExpressionBindingInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfExpressionEditorWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfSpriteAnimationInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfTextEditorWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\EventBindingEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\KeyBindingEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\PropertyBindingEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\ProxyPropertyBindingEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfAnimationClipInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfButtonInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfCheckboxInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfControlInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfDesignGuideEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfDragHandleInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfDropdownListInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfDynamicFontInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfEditorUtil.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfFontDefinitionInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfGUIManagerInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfGUIWizard.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfLabelInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfListboxInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfMaterialEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfPanelFlowLayoutInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfPanelInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfPrefabSelectionDialog.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfProgressbarInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfRadialSpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfResizeHandleInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfRichTextLabelInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfScriptWizard.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfScrollbarInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfScrollPanelInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfSlicedSpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfSliderInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfSpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfSpriteSelectionDialog.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTabPageContainerInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTabstripInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTextboxInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTextureAtlasInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTexturePacker.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTexturePackerImporter.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTextureSpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfTiledSpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfWebSpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Editor\dfWelcomeDialog.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Editor\dfUpgradeHelper.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Examples\ActionBar\Editor\SpellInventoryInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Examples\ActionBar\Editor\SpellSlotInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenColor32Inspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenColorInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenEventBindingInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenFloatInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenGroupInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenInspectorBase.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenRotationInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenVector2Inspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenVector3Inspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Daikon Forge\Tweening\Editor\TweenVector4Inspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Examples\Scripts\InventorySystem\Editor\InvDatabaseInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Examples\Scripts\InventorySystem\Editor\InvFindItem.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\ActiveAnimationEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\BMFontReader.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\ComponentSelector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\EventDelegateEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\FreeType.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUIContextMenu.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUIEditorTools.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUIHandles.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUIHelp.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUIJson.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUIMenu.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUISelectionTools.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUISettings.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUISnap.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\NGUITransformInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\PropertyBindingEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\PropertyReferenceDrawer.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\SpriteSelector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenAlphaEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenColorEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenFOVEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenHeightEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenOrthoSizeEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenPositionEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenRotationEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenScaleEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenTransformEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenVolumeEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\TweenWidthEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UI2DSpriteEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIAnchorEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIAtlasInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIAtlasMaker.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIButtonColorEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIButtonEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIButtonKeysEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIButtonMessageEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UICameraEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UICameraTool.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UICreateNewUIWizard.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UICreateWidgetWizard.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIDragObjectEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIDrawCallInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIDrawCallViewer.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIEventTriggerEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIFontInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIFontMaker.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIForwardEventsEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIGridEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIImageButtonInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIInputEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIKeyNavigationEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UILabelInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UILocalizeEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIPanelInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIPanelTool.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIPlayAnimationEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIPlayTweenEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIPopupListInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIProgressBarEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIRectEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIRootEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIScrollBarEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIScrollViewEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UISliderEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UISpriteAnimationInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UISpriteInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIStretchEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UITableEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UITextureInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UITexturePacker.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIToggleInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UITweenerEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIWidgetContainerEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIWidgetInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\NGUI\Scripts\Editor\UIWrapContentEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras\Scripts\Editor\AutoCamInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras\Scripts\Editor\FreeLookCamInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cross Platform Input\Scripts\Editor\CrossPlatformInputInitialize.cs" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Scripts\Editor\WheelEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\AccountService.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\PhotonConverter.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\PhotonEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\PhotonViewHandler.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\PhotonViewInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\PhotonViewPrefabApply.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\ServerSettingsInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker\Editor\PlayMakerPhotonEditorUtility.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker\Editor\PlayMakerPhotonGameObjectProxyEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker\Editor\PlayMakerPhotonWizard.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Actions\Editor\LookAtActionEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Actions\Editor\SetCameraFOVActionEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\AboutWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\ContextToolWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmActionWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmComponentInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmEditorHelpers.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmEditorWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmErrorWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmEventsWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmGlobalsWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmLogWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmSelectorWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmStateWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmTemplate.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmTemplateEditor.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\FsmTemplateWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerBugReportWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerCustomActionWizard.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerGlobalsInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerGUIInspector.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerMainMenu.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerWelcomeWindow.cs" />
+    <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\ReportWindow.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\Editor\TriggerListDrawer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\BehaviourSubItem.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\ElementGenerator.cs" />
@@ -101,14 +334,123 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\uFrameInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ViewInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Editor\ViewModelCommandsDrawer.cs" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\uFrameImageLinks.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\UnityEngine-Debug.xml" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Shaders\Default UI Shader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Shaders\Dynamic Font Shader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders\ColoredCharacterShader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders\ColorPickerHSB.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders\ColorPickerHue.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Resources\Fonts\OpenSans Font License.txt" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Resources\Fonts\SIL Open Font License.txt" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Shaders\Radar Sweep Shader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Shaders\TechBlueShader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Resources\Change Log.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Refractive\Refractive Font - Header.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Refractive\Refractive Font - Normal.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\SciFi\SciFi Font - Header.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\SciFi\SciFi Font - Normal.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden\Arimo14.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden\Arimo18.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden\Arimo20.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Models\Orc Armor\Orc Armor.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Models\Orc\Orc Skin.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Resources\Localization.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Refractive.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Additive Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Depth.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Masked Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\ReadMe - 3.5.8.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras\Camera Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\First Person Character\First Person Character Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\Third Person Character\Third Person Character Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cross Platform Input\Cross Platform Input Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField\DepthOfFieldDX11.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField\DepthOfFieldScatter.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Light Shafts Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\ColorFilter.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Coord.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Depth.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\DepthBreaks.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\FinalInterpolation.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\InterpolateAlongRays.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Raymarch.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\SamplePositions.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Shared.cginc" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Particle Systems Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Add (Soft).shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Add.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Alpha.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Shaders\Mobile-Spec.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders\BumpedSpecularDisplacement.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders\BumpedSpecularSmooth.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-Basic.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-BasicOutline.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-Lighted.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-LightedOutline.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping\Shaders\WorldCoord Diffuse.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Aircraft\Aircraft Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Car Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Rolling Ball\Rolling Ball Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\changelog.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker\ReleaseNotes.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\Photon3Unity3D.xml" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\release_history.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\readme.txt" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Readme.txt" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Resources\PlayMakerAssemblies.txt" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Versions\readme.txt" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />
+    <None Include="Assets\XmlDocs\Assembly-CSharp.XML" />
+    <None Include="Assets\XmlDocs\UBehaviours.XML" />
+    <None Include="Assets\XmlDocs\UnityEngine.xml" />
+    <None Include="Assets\AssetStoreTools\Editor\AssetStoreTools.dll" />
+    <None Include="Assets\AssetStoreTools\Editor\AssetStoreToolsExtra.dll" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork\Newtonsoft.Json.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\de\PlayMakerEditor.de.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\es-ES\PlayMakerEditor.es-ES.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\fr\PlayMakerEditor.fr.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\it\PlayMakerEditor.it.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\ja\PlayMakerEditor.ja.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\nl\PlayMakerEditor.nl.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerEditor.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerEditorResources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\pt-BR\PlayMakerEditor.pt-BR.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\sv-SE\PlayMakerEditor.sv-SE.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\zh-CN\PlayMakerEditor.zh-CN.resources.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Editor\zh-TW\PlayMakerEditor.zh-TW.resources.dll" />
     <None Include="Assets\uFrameComplete\uBehaviours\Editor\Invert.uBehaviours.Editor.dll" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Invert.uFrame.Editor.dll" />
     <None Include="Assets\UnityVS\Editor\SyntaxTree.VisualStudio.Unity.Bridge.dll" />
     <None Include="Assets\UnityVS\Editor\SyntaxTree.VisualStudio.Unity.Messaging.dll" />
     <None Include="Assets\UnityVS\Editor\UnityVS.VersionSpecific.dll" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2012\UnityVS.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

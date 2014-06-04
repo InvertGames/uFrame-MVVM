@@ -106,9 +106,9 @@ public abstract class BeizureLink : IDiagramLink
 
         var shadowCol = new Color(0, 0, 0, 0.1f);
 
-        for (int i = 0; i < 3; i++) // Draw a shadow
+        //for (int i = 0; i < 3; i++) // Draw a shadow
 
-            Handles.DrawBezier(_startPos, _endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
+        //    Handles.DrawBezier(_startPos, _endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
 
         Handles.DrawBezier(_startPos, _endPos, startTan, endTan, color, null, width);
 

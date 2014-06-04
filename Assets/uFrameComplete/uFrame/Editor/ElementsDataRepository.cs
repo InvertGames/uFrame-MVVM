@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using Invert.uFrame.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -156,6 +158,29 @@ public class ElementsDataRepository : DefaultElementsRepository
         }
     }
 
+    public void Save2(ElementDesignerData data)
+    {
+        var designerFiles = uFrameEditor.Container.ResolveAll<IDesignerFile>();
+        foreach (var designerFile in designerFiles)
+        {
+            var designerFileTypes = designerFile.TypesToContain.ToArray();
+            var diagramItems = data.AllDiagramItems.Where(p => designerFileTypes.Contains(p.GetType()));
+
+            foreach (var diagramItem in diagramItems)
+            {
+                designerFile.HandleContainedType(diagramItem);
+
+            }
+
+        }
+        foreach (var typeFiles in data.AllDiagramItems.GroupBy(p => p.GetType()))
+        {
+            
+        }
+        
+        var generators = uFrameEditor.CodeGenerators;
+        
+    }
     public override void Save()
     {
         ProcessRefactorings();
