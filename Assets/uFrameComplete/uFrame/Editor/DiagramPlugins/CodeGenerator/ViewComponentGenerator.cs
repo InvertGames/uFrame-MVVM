@@ -2,11 +2,6 @@ using System.CodeDom;
 
 public class ViewComponentGenerator : ViewClassGenerator
 {
-    public bool IsDesignerFile
-    {
-        get;
-        set;
-    }
 
     public ViewComponentData ViewComponentData
     {

@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DLL</DefineConstants>
@@ -58,15 +58,18 @@
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\InjectAttribute.cs">
       <Link>InjectAttribute.cs</Link>
     </Compile>
+    <Compile Include="CodeFileGenerator.cs" />
+    <Compile Include="CodeGenerator.cs" />
+    <Compile Include="DiagramItemGenerator.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\AddNewCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\AutoLayoutCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Hooks\CommandHook.cs" />
     <Compile Include="ElementDesigner\Commands\Hooks\CommandHookLifetime.cs" />
     <Compile Include="ElementDesigner\Commands\Hooks\CommandHookMode.cs" />
-    <Compile Include="ElementDesigner\Commands\Context\ContextDiagramCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Context\ContextEditorCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\ContextMenuCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Context\ContextMenuItem.cs" />
-    <Compile Include="ElementDesigner\Commands\Diagram\DiagramCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Diagram\EditorCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\AddElementCollectionCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\AddElementPropertyCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\AddEnumItemCommand.cs" />
@@ -95,7 +98,7 @@
     <Compile Include="ElementDesigner\Links\AssociationLink.cs" />
     <Compile Include="ElementDesigner\Links\BeizureLink.cs" />
     <Compile Include="ElementDesigner\Interfaces\IRefactoring.cs" />
-    <Compile Include="ElementDesigner\Commands\Diagram\IDiagramCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Diagram\IEditorCommand.cs" />
     <Compile Include="ElementDesigner\ContextMenuItem.cs" />
     <Compile Include="ElementDesigner\Filters\DefaultFilter.cs" />
     <Compile Include="ElementDesigner\DiagramContextMenuAttribute.cs" />

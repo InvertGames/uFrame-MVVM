@@ -22,7 +22,7 @@
     <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -45,23 +45,202 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="dfScriptLite">
+      <HintPath>Assets\PrivateStuff\Daikon Forge\DataBinding\Plugins\dfScriptLite.dll</HintPath>
+    </Reference>
+    <Reference Include="Photon3Unity3D">
+      <HintPath>Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\Photon3Unity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMaker">
+      <HintPath>Assets\PrivateStuff\PlayMaker\PlayMaker.dll</HintPath>
+    </Reference>
     <Reference Include="Invert.uBehaviours">
       <HintPath>Assets\uFrameComplete\uBehaviours\Invert.uBehaviours.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Scripts\DepthOfFieldScatter.js" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Scripts\PostEffectsBase.js" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Utility\DragRigidbody.js" />
+    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Utility\TimedObjectDestructor.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\CharacterMotor.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\FPSInputController.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\PlatformInputController.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\ThirdPersonCamera.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\ThirdPersonController.js" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\uFrameImageLinks.txt" />
+    <None Include="Assets\PrivateStuff\AssetStoreStuff\UnityEngine-Debug.xml" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Shaders\Default UI Shader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Shaders\Dynamic Font Shader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders\ColoredCharacterShader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders\ColorPickerHSB.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders\ColorPickerHue.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Resources\Fonts\OpenSans Font License.txt" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Resources\Fonts\SIL Open Font License.txt" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Shaders\Radar Sweep Shader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Examples\Shaders\TechBlueShader.shader" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\Resources\Change Log.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Refractive\Refractive Font - Header.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Refractive\Refractive Font - Normal.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\SciFi\SciFi Font - Header.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\SciFi\SciFi Font - Normal.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden\Arimo14.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden\Arimo18.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden\Arimo20.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Models\Orc Armor\Orc Armor.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Models\Orc\Orc Skin.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Resources\Localization.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Refractive.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Additive Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Depth.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Examples\Shaders\Unlit - Masked Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\ReadMe - 3.5.8.txt" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Premultiplied Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Text.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Colored.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 1.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 2.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
+    <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras\Camera Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\First Person Character\First Person Character Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\Third Person Character\Third Person Character Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cross Platform Input\Cross Platform Input Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField\DepthOfFieldDX11.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField\DepthOfFieldScatter.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Light Shafts Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\ColorFilter.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Coord.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Depth.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\DepthBreaks.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\FinalInterpolation.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\InterpolateAlongRays.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Raymarch.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\SamplePositions.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Shared.cginc" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Particle Systems Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Add (Soft).shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Add.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Alpha.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Shaders\Mobile-Spec.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders\BumpedSpecularDisplacement.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders\BumpedSpecularSmooth.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-Basic.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-BasicOutline.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-Lighted.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-LightedOutline.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping\Shaders\WorldCoord Diffuse.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Aircraft\Aircraft Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Car Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
+    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Rolling Ball\Rolling Ball Guidelines.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\changelog.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker\ReleaseNotes.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\Photon3Unity3D.xml" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\release_history.txt" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\readme.txt" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Readme.txt" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Resources\PlayMakerAssemblies.txt" />
+    <None Include="Assets\PrivateStuff\PlayMaker\Versions\readme.txt" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />
+    <None Include="Assets\XmlDocs\Assembly-CSharp.XML" />
+    <None Include="Assets\XmlDocs\UBehaviours.XML" />
+    <None Include="Assets\XmlDocs\UnityEngine.xml" />
+    <None Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Plugins\dfScriptLite.dll" />
+    <None Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\Photon3Unity3D.dll" />
+    <None Include="Assets\PrivateStuff\PlayMaker\PlayMaker.dll" />
     <None Include="Assets\uFrameComplete\uBehaviours\Invert.uBehaviours.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets" />
+    <Folder Include="Assets\PrivateStuff" />
+    <Folder Include="Assets\PrivateStuff\AssetStoreStuff" />
+    <Folder Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\DataBinding" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Plugins" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\DFGUI" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\DFGUI\Shaders" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Examples" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Examples\Color Picker\Shaders" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Examples\Resources" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Examples\Resources\Fonts" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Examples\Shaders" />
+    <Folder Include="Assets\PrivateStuff\Daikon Forge\Resources" />
+    <Folder Include="Assets\PrivateStuff\NGUI" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Atlases" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Fantasy" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Refractive" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Atlases\SciFi" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Atlases\Wooden" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Models" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Models\Orc" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Models\Orc Armor" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Resources" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Examples\Shaders" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Resources" />
+    <Folder Include="Assets\PrivateStuff\NGUI\Resources\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\First Person Character" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\Third Person Character" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cross Platform Input" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Scripts" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Utility" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Aircraft" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders" />
+    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Rolling Ball" />
+    <Folder Include="Assets\PrivateStuff\Photon Unity Networking" />
+    <Folder Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker" />
+    <Folder Include="Assets\PrivateStuff\Photon Unity Networking\Plugins" />
+    <Folder Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork" />
+    <Folder Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library" />
+    <Folder Include="Assets\PrivateStuff\PlayMaker" />
+    <Folder Include="Assets\PrivateStuff\PlayMaker\Resources" />
+    <Folder Include="Assets\PrivateStuff\PlayMaker\Versions" />
     <Folder Include="Assets\uFrameComplete" />
     <Folder Include="Assets\uFrameComplete\uBehaviours" />
     <Folder Include="Assets\uFrameComplete\uBehaviours\XmlDocs" />
@@ -71,6 +250,7 @@
     <Folder Include="Assets\uFrameComplete\uFrame\Examples" />
     <Folder Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter" />
     <Folder Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components" />
+    <Folder Include="Assets\XmlDocs" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2012\UnityVS.UnityScript.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.UnityScript.targets" />
 </Project>

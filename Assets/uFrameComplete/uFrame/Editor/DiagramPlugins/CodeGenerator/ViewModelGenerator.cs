@@ -10,8 +10,6 @@ public class ViewModelGenerator : CodeGenerator
         Data = data;
     }
 
-    public bool IsDesignerFile { get; set; }
-
     public ElementDesignerData DiagramData
     {
         get; set;

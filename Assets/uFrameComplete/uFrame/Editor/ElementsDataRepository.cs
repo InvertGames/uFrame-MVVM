@@ -163,20 +163,29 @@ public class ElementsDataRepository : DefaultElementsRepository
 
     public override void Save()
     {
+        // Go ahead and process any code refactors
+        ProcessRefactorings();
+
         var codeGenerators = uFrameEditor.GetAllCodeGenerators(Diagram).ToArray();
         Debug.Log("Code Gens: " + codeGenerators.Length);
         var fileGenerators = uFrameEditor.GetAllFileGenerators(Diagram).ToArray();
         Debug.Log(fileGenerators.Length);
         foreach (var codeFileGenerator in fileGenerators)
         {
+            // Grab the information for the file
             var fileInfo = new FileInfo(Path.Combine(AssetPath, codeFileGenerator.Filename));
+            // Make sure we are allowed to generate the file
+            if (!codeFileGenerator.CanGenerate(fileInfo)) continue;
+            // Get the path to the directory
             var directory = Path.GetDirectoryName(fileInfo.FullName);
+            // Create it if it doesn't exist
             if (directory != null && !Directory.Exists(directory))
             {
-                
                 Directory.CreateDirectory(directory);
             }
-            Debug.Log(directory);
+            // Write the file
+            File.WriteAllText(fileInfo.FullName,codeFileGenerator.ToString());
+            Debug.Log("Created file: " + fileInfo.FullName);
            
         }
         AssetDatabase.Refresh();
@@ -184,7 +193,7 @@ public class ElementsDataRepository : DefaultElementsRepository
     }
     public  void Save2()
     {
-        ProcessRefactorings();
+        
 
         // Important ensure all data properties are wired up
         foreach (var allDiagramItem in Diagram.AllDiagramItems)

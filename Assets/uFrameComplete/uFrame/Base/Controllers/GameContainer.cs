@@ -109,40 +109,15 @@ public class GameContainer : IGameContainer
                     memberInfo.GetCustomAttributes(typeof(InjectAttribute), true).FirstOrDefault() as InjectAttribute;
                 if (injectAttribute != null)
                 {
-
                     if (memberInfo is PropertyInfo)
                     {
                         var propertyInfo = memberInfo as PropertyInfo;
-                        if (string.IsNullOrEmpty(injectAttribute.Name))
-                        {
-                            var injectInstance = Instances[propertyInfo.PropertyType];
-                            if (injectInstance != null)
-                            {
-                                propertyInfo.SetValue(obj, injectInstance, null);
-                            }
-                        }
-                        else
-                        {
-                            propertyInfo.SetValue(obj, Instances[propertyInfo.PropertyType, injectAttribute.Name], null);
-                        }
-
+                        propertyInfo.SetValue(obj, Resolve(propertyInfo.PropertyType, injectAttribute.Name), null);
                     }
                     else if (memberInfo is FieldInfo)
                     {
                         var fieldInfo = memberInfo as FieldInfo;
-                        if (string.IsNullOrEmpty(injectAttribute.Name))
-                        {
-                            var injectInstance = Instances[fieldInfo.FieldType];
-                            if (injectInstance != null)
-                            {
-                                fieldInfo.SetValue(obj, injectInstance);
-                            }
-                        }
-                        else
-                        {
-                            fieldInfo.SetValue(obj, Instances[fieldInfo.FieldType, injectAttribute.Name]);
-                        }
-
+                        fieldInfo.SetValue(obj, Resolve(fieldInfo.FieldType, injectAttribute.Name));
                     }
                 }
             }
@@ -158,6 +133,10 @@ public class GameContainer : IGameContainer
             Mappings[typeof(TSource), name] = typeof(TTarget);
         }
 
+        public void Register(Type source, Type target, string name = null)
+        {
+            Mappings[source, name] = target;
+        }
 
         /// <summary>
         /// Register a named instance

@@ -7,10 +7,6 @@ using Invert.uFrame.Editor;
 
 public class ControllerGenerator : CodeGenerator
 {
-    public bool IsDesignerFile
-    {
-        get; set;
-    }
     public override void Initialize(CodeFileGenerator fileGenerator)
     {
         base.Initialize(fileGenerator);

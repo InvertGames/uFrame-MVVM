@@ -61,7 +61,7 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
                 _collectionsHeader = Container.Resolve<DiagramItemHeader>();
                 _collectionsHeader.Label = "Collections";
                 _collectionsHeader.HeaderType = typeof (ViewModelCollectionData);
-                _collectionsHeader.AddCommand = Container.Resolve<AddElementCollectionCommand>();
+                _collectionsHeader.AddCommand = Container.Resolve<IEditorCommand>("AddElementCollection");
             }
             return _collectionsHeader;
         }

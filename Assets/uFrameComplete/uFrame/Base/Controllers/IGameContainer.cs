@@ -96,6 +96,7 @@ public interface IGameContainer
         IEnumerable<TType> ResolveAll<TType>();
 
         //IEnumerable<object> ResolveAll(Type type);
+        void Register(Type source, Type target, string name = null);
     }
 
 #if DLL

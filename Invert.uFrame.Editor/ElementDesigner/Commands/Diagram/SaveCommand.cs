@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using System.Linq;
 
 namespace Invert.uFrame.Editor.ElementDesigner
 {
-    public class SaveCommand : ToolbarCommand
+    public class SaveCommand : ElementsDiagramToolbarCommand
     {
         public override void Perform(ElementsDiagram item)
         {
@@ -12,7 +13,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
         }
     }
 
-    public class PrintPlugins : ToolbarCommand
+    public class PrintPlugins : ElementsDiagramToolbarCommand
     {
         public override string Name
         {
@@ -21,12 +22,11 @@ namespace Invert.uFrame.Editor.ElementDesigner
 
         public override void Perform(ElementsDiagram item)
         {
-            foreach (var diagramPlugin in uFrameEditor.Plugins)
+            foreach (var diagramPlugin in uFrameEditor.GetAllCodeGenerators(item.Data))
             {
-                UnityEngine.Debug.Log(diagramPlugin.GetType().Name);
+                UnityEngine.Debug.Log((diagramPlugin.IsDesignerFile ? "Designer File" : "Editable File" ) + 
+                    diagramPlugin.GetType().Name + diagramPlugin.Filename );
             }
-            
-            
         }
     }
 }

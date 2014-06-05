@@ -9,11 +9,6 @@ public class ViewGenerator : ViewClassGenerator
         get; set;
     }
 
-    public bool IsDesignerFile
-    {
-        get; set;
-    }
-
     public override void Initialize(CodeFileGenerator fileGenerator)
     {
         base.Initialize(fileGenerator);
@@ -52,10 +47,6 @@ public class ViewGenerator : ViewClassGenerator
             bindMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "Bind"));
 
         }
-
-
-
-
         Namespace.Types.Add(decl);
     }
 }

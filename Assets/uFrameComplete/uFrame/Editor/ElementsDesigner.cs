@@ -400,55 +400,33 @@ public class ElementsDesigner : EditorWindow
         //        }
         //    }
         //}
-        DrawToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Left));
+        var diagramData = (Diagram == null ? null : Diagram.Data);
+        //uFrameEditor.DoCommands<ToolbarUI>(c=>c is IToolbarCommand, this, Diagram, diagramData);
+        uFrameEditor.DoCommands<ToolbarUI>(IsToolbarLeft, this, Diagram, diagramData);
         GUILayout.FlexibleSpace();
-        DrawToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Right));
+        uFrameEditor.DoCommands<ToolbarUI>(IsToolbarRight, this, Diagram, diagramData);
+        //uFrameEditor.DoToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Left),this,Diagram,diagramData);
+        //GUILayout.FlexibleSpace();
+        //uFrameEditor.DoToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Right), this, Diagram, diagramData);
     }
 
-    public void DrawToolbar(IEnumerable<ToolbarCommand> commands)
+    public bool IsToolbarLeft(IEditorCommand command)
     {
-        foreach (var command in commands.OrderBy(p=>p.Order))
-        {
-            var dynamicOptionsCommand = command as IDynamicOptionsCommand;
-            var parentCommand = command as IParentCommand;
-            if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
-            {
-                foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Diagram))
-                {
-                    if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
-                    {
-                        dynamicOptionsCommand.SelectedOption = multiCommandOption;
-                        command.Execute(Diagram);
-                    }
-                }
-            }
-            else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
-            {
-                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-                {
-                    foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Diagram))
-                    {
-                        var genericMenu = new GenericMenu();
-                        Invert.uFrame.Editor.ElementDesigner.ContextMenuItem option = multiCommandOption;
-                        ToolbarCommand closureSafeCommand = command;
-                        genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
-                            () =>
-                            {
-                                dynamicOptionsCommand.SelectedOption = option;
-                                closureSafeCommand.Execute(Diagram);
-                            });
-                        genericMenu.ShowAsContext();
-                    }
-                }
-            }
-            else
-            {
-                if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-                {
-                    command.Execute(Diagram);
-                }
-            }
-        }
+        var tbarCommand = command as IToolbarCommand;
+        if (tbarCommand == null) return false;
+        if (tbarCommand.Position == ToolbarPosition.Left) return true;
+        return false;
+    }
+    public bool IsToolbarRight(IEditorCommand command)
+    {
+        var tbarCommand = command as IToolbarCommand;
+        if (tbarCommand == null) return false;
+        if (tbarCommand.Position == ToolbarPosition.Right) return true;
+        return false;
+    }
+    public void DrawToolbar(IEnumerable<IToolbarCommand> commands)
+    {
+        
     }
     private void HandlePanning(Rect diagramRect)
     {
@@ -544,7 +522,7 @@ public class ElementsDesigner : EditorWindow
 
 
 
-public class ImportCommand : ToolbarCommand
+public class ImportCommand : ElementsDiagramToolbarCommand
 {
     public override void Perform(ElementsDiagram diagram)
     {

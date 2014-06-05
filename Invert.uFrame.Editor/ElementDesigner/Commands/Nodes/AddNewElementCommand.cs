@@ -1,5 +1,9 @@
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
+    public class ElementDataCommand : IEditorCommand
+    {
+        
+    }
     public class AddNewElementCommand : AddItemCommand<ElementData>
     {
         public override void Perform(ElementsDiagram item)

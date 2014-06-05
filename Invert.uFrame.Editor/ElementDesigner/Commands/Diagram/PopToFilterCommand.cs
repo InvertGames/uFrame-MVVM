@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Invert.uFrame.Editor.ElementDesigner
 {
-    public class PopToFilterCommand : ToolbarCommand, IDynamicOptionsCommand
+    public class PopToFilterCommand : ElementsDiagramToolbarCommand, IDynamicOptionsCommand
     {
 
         public override void Perform(ElementsDiagram item)
@@ -12,13 +12,26 @@ namespace Invert.uFrame.Editor.ElementDesigner
             item.Refresh(true);
         }
 
-        public IEnumerable<ContextMenuItem> GetOptions(ElementsDiagram item)
+        public IEnumerable<ContextMenuItem> GetOptions(object arg)
         {
-
-            yield return new ContextMenuItem() { Name = item.Data.SceneFlowFilter.Name, Checked = item.Data.CurrentFilter == item.Data.SceneFlowFilter };
+            var item = arg as ElementsDiagram;
+            if (item == null)
+            {
+                yield break;
+            }
+            
+            yield return new ContextMenuItem()
+            {
+                Name = item.Data.SceneFlowFilter.Name, 
+                Checked = item.Data.CurrentFilter == item.Data.SceneFlowFilter
+            };
             foreach (var filter in item.Data.FilterPath)
             {
-                yield return new ContextMenuItem() {Name = filter.Name,Checked = item.Data.CurrentFilter == filter};
+                yield return new ContextMenuItem()
+                {
+                    Name = filter.Name,
+                    Checked = item.Data.CurrentFilter == filter
+                };
             }
         }
 

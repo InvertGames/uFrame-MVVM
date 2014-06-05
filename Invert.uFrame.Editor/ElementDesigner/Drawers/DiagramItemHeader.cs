@@ -12,7 +12,7 @@ public class DiagramItemHeader : IDrawable
 
     public event AddItemClickedEventHandler OnAddItem;
 
-    public IDiagramCommand AddCommand { get; set; }
+    public IEditorCommand AddCommand { get; set; }
 
     protected virtual void OnOnAddItem()
     {

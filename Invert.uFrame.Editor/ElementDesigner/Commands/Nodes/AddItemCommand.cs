@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
-    public abstract class AddItemCommand<TType> : DiagramCommand<ElementsDiagram>, IContextMenuItemCommand
+    public abstract class AddItemCommand<TType> : EditorCommand<ElementsDiagram>, IChildCommand
     {
         public override string CanPerform(ElementsDiagram item)
         {
@@ -23,9 +23,18 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         }
 
 
+        public Type ChildCommandFor
+        {
+            get { return typeof (AddNewCommand); }
+        }
     }
 
-    public class RenameCommand : DiagramCommand<IDiagramItem>
+    public interface IChildCommand
+    {
+        Type ChildCommandFor { get; }
+    }
+
+    public class RenameCommand : EditorCommand<IDiagramItem>
     {
         public override void Perform(IDiagramItem item)
         {
@@ -39,7 +48,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         }
     }
 
-    public class DeleteCommand : DiagramCommand<IDiagramItem>
+    public class DeleteCommand : EditorCommand<IDiagramItem>
     {
         public override void Perform(IDiagramItem item)
         {
@@ -51,7 +60,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             throw new NotImplementedException();
         }
     }
-    public class HideCommand : DiagramCommand<IDiagramItem>
+    public class HideCommand : EditorCommand<IDiagramItem>
     {
         public override void Perform(IDiagramItem item)
         {
@@ -63,7 +72,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             throw new NotImplementedException();
         }
     }
-    public class OpenSceneManagerFileCommand : DiagramCommand<IDiagramItem>
+    public class OpenSceneManagerFileCommand : EditorCommand<IDiagramItem>
     {
         public override void Perform(IDiagramItem item)
         {
@@ -75,7 +84,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             throw new NotImplementedException();
         }
     }
-    public class OpenControllerFileCommand : DiagramCommand<IDiagramItem>
+    public class OpenControllerFileCommand : EditorCommand<IDiagramItem>
     {
         public override void Perform(IDiagramItem item)
         {
@@ -87,7 +96,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             throw new NotImplementedException();
         }
     }
-    public class OpenViewFileCommand : DiagramCommand<IDiagramItem>
+    public class OpenViewFileCommand : EditorCommand<IDiagramItem>
     {
         public override void Perform(IDiagramItem item)
         {
@@ -99,7 +108,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             throw new NotImplementedException();
         }
     }
-    public class OpenViewComponentFileCommand : DiagramCommand<IDiagramItem>
+    public class OpenViewComponentFileCommand : EditorCommand<IDiagramItem>
     {
 
         public override void Perform(IDiagramItem item)
@@ -112,7 +121,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             throw new NotImplementedException();
         }
     }
-    public class OpenViewModelFileCommand : DiagramCommand<IDiagramItem>
+    public class OpenViewModelFileCommand : EditorCommand<IDiagramItem>
     {
 
         public override void Perform(IDiagramItem item)

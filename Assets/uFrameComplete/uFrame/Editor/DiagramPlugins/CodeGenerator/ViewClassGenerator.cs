@@ -14,6 +14,13 @@ public abstract class ViewClassGenerator : CodeGenerator
         get; set;
     }
 
+    public override void Initialize(CodeFileGenerator fileGenerator)
+    {
+        base.Initialize(fileGenerator);
+       
+        Namespace.Imports.Add(new CodeNamespaceImport("UnityEngine"));
+    }
+
     public CodeConditionStatement AddBindingCondition(CodeTypeDeclaration decl, CodeStatementCollection statements, IViewModelItem item, ElementDataBase relatedElement)
     {
         var bindField = new CodeMemberField

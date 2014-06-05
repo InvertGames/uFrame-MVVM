@@ -217,7 +217,7 @@ public class ElementsDiagram
 
   
 
-    public void ExecuteCommand(IDiagramCommand command,object arg)
+    public void ExecuteCommand(IEditorCommand command,object arg)
     {
         Undo.RecordObject(Data, command.Title);
         command.Execute(arg);
@@ -565,7 +565,7 @@ public class ElementsDiagram
         var contextCommands = uFrameEditor.GetContextCommandsFor<ElementsDiagram>();
         foreach (var contextCommand in contextCommands)
         {
-            IDiagramCommand command = contextCommand;
+            IEditorCommand command = contextCommand;
             menu.AddItem(new GUIContent(((IContextMenuItemCommand)contextCommand).Path), ((IContextMenuItemCommand)contextCommand).Checked, () =>
             {
                 ExecuteCommand(command,this);

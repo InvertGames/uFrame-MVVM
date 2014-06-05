@@ -223,8 +223,6 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
         Namespace.Types.Add(decl);
     }
 
-    public bool IsDesignerFile { get; set; }
-
     public virtual void AddSceneManagerSettings( SceneManagerData sceneManagerData, List<ElementDataBase> rootElements)
     {
         var decl = new CodeTypeDeclaration

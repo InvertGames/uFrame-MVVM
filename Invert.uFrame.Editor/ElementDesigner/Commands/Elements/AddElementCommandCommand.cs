@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
-    public class AddElementCommandCommand : DiagramCommand<ElementData>
+    public class AddElementCommandCommand : EditorCommand<ElementData>
     {
         public override void Perform(ElementData item)
         {

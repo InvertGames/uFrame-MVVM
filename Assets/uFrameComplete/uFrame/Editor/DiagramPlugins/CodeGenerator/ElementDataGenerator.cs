@@ -65,6 +65,8 @@ public class ElementDataGenerator : DiagramItemGenerator<ElementData>
         {
             ElementData = item,
             DiagramData = diagramData,
+            IsDesignerFile = true,
+            
             Filename = diagramData.ViewsFileName
         };
     }
@@ -100,7 +102,6 @@ public class ViewDataGenerator : DiagramItemGenerator<ViewData>
             DiagramData = diagramData,
             View = item,
             Filename = diagramData.ViewsFileName,
-            RelatedType = item.CurrentViewType
         };
     }
 }
