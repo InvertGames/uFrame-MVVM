@@ -29,7 +29,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
             get { return this.GetType().Name.Replace("Command",""); }
         }
 
-        public string Title
+        public virtual string Title
         {
             get
             {

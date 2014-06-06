@@ -44,13 +44,7 @@ public class SceneManagerData : DiagramItem
         //if (scItem == null) return;
         //Transitions.Add(new SceneManagerTransition() { ToIdentifier = scItem.Name,Name ="To" + scItem.Name });
     }
-    [DiagramContextMenu("Open Code")]
-    public void OpenSceneManager(IElementsDataRepository repository)
-    {
-        var filename = repository.GetContainerCustomFilename(this.Name);
-        var scriptAsset = AssetDatabase.LoadAssetAtPath(filename, typeof(TextAsset));
-        AssetDatabase.OpenAsset(scriptAsset);
-    }
+
     public override bool CanCreateLink(IDrawable target)
     {
         return false;

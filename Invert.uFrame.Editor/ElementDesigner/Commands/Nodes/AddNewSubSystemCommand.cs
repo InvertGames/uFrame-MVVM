@@ -4,6 +4,10 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddNewSubSystemCommand : AddItemCommand<SubSystemData>
     {
+        public override string Title
+        {
+            get { return "Add New Subsystem"; }
+        }
         public override void Perform(ElementsDiagram item)
         {
             var data = new SubSystemData()

@@ -4,6 +4,6 @@ namespace Invert.uFrame.Editor.ElementDesigner
 {
     public abstract class ContextMenuCommand<TFor> : EditorCommand<TFor>
     {
-        public abstract IEnumerable<ContextMenuItem> GetMenuOptions();
+        public abstract IEnumerable<UFContextMenuItem> GetMenuOptions();
     }
 }

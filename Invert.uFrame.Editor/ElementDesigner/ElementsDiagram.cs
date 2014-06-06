@@ -1,5 +1,6 @@
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
+using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ElementDesigner.Data;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-public class ElementsDiagram
+public class ElementsDiagram : ICommandHandler
 {
     public delegate void SelectionChangedEventArgs(IDiagramItem oldData, IDiagramItem newData);
 
@@ -134,6 +135,7 @@ public class ElementsDiagram
     {
         get { return UFStyles.Scale; }
     }
+
     public IElementDrawer MouseOverViewData
     {
         get
@@ -153,6 +155,7 @@ public class ElementsDiagram
             return Selected.Model;
         }
     }
+    
     public IElementDrawer Selected
     {
         get { return _selected; }
@@ -561,16 +564,21 @@ public class ElementsDiagram
 
     public void ShowAddNewContextMenu(bool addAtMousePosition = false)
     {
-        var menu = new GenericMenu();
-        var contextCommands = uFrameEditor.GetContextCommandsFor<ElementsDiagram>();
-        foreach (var contextCommand in contextCommands)
-        {
-            IEditorCommand command = contextCommand;
-            menu.AddItem(new GUIContent(((IContextMenuItemCommand)contextCommand).Path), ((IContextMenuItemCommand)contextCommand).Checked, () =>
-            {
-                ExecuteCommand(command,this);
-            });
-        }
+        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(this, typeof(IDiagramContextCommand));
+        menu.Go();
+
+        //var menu = new GenericMenu();
+        //var contextCommands = uFrameEditor.GetContextCommandsFor<ElementsDiagram>();
+        //foreach (var contextCommand in contextCommands)
+        //{
+        //    IEditorCommand command = contextCommand;
+        //    menu.AddItem(new GUIContent(((IContextMenuItemCommand)contextCommand).Path), ((IContextMenuItemCommand)contextCommand).Checked, () =>
+        //    {
+        //        ExecuteCommand(command,this);
+        //    });
+        //}
+
+
         //if (Data.CurrentFilter.IsAllowed(null, typeof(ElementData)))
         //    menu.AddItem(new GUIContent("New Element"), false, () => { AddNewViewModel(addAtMousePosition); });
 
@@ -595,96 +603,100 @@ public class ElementsDiagram
         //    diagramPlugin.OnAddContextItems(this, menu);
         //}
 
-        menu.AddSeparator("");
-        foreach (var item in Data.ImportableItems)
-        {
-            IDiagramItem item1 = item;
-            menu.AddItem(new GUIContent(item.Name), false, () =>
-            {
-                Undo.RecordObject(Data, "Import " + item1.Name);
-                Data.CurrentFilter.Locations[item1] = new Vector2(0f, 0f);
-                Refresh(true);
-                EditorUtility.SetDirty(Data);
-            });
-        }
-        menu.AddSeparator("");
+        //menu.AddSeparator("");
+        //foreach (var item in Data.ImportableItems)
+        //{
+        //    IDiagramItem item1 = item;
+        //    menu.AddItem(new GUIContent(item.Name), false, () =>
+        //    {
+        //        Undo.RecordObject(Data, "Import " + item1.Name);
+        //        Data.CurrentFilter.Locations[item1] = new Vector2(0f, 0f);
+        //        Refresh(true);
+        //        EditorUtility.SetDirty(Data);
+        //    });
+        //}
+        //menu.AddSeparator("");
 
-        menu.AddItem(new GUIContent("Import All"), false, () =>
-        {
-            Undo.RecordObject(Data, "Import All");
-            foreach (var importableItem in Data.ImportableItems)
-            {
-                Data.CurrentFilter.Locations[importableItem] = new Vector2(0f, 0f);
-            }
-            Refresh(true);
-            EditorUtility.SetDirty(Data);
-        });
+        //menu.AddItem(new GUIContent("Import All"), false, () =>
+        //{
+        //    Undo.RecordObject(Data, "Import All");
+        //    foreach (var importableItem in Data.ImportableItems)
+        //    {
+        //        Data.CurrentFilter.Locations[importableItem] = new Vector2(0f, 0f);
+        //    }
+        //    Refresh(true);
+        //    EditorUtility.SetDirty(Data);
+        //});
 
-        menu.ShowAsContext();
+        //menu.ShowAsContext();
     }
 
     public void ShowContextMenu()
     {
-        var menu = new GenericMenu();
 
-        DecorateContextMenu(SelectedData, menu);
+        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(Selected, typeof (IDiagramItemCommand), Selected.CommandsType);
+        menu.Go();
 
-        menu.AddSeparator(string.Empty);
-        var links = Data.Links.Where(p => p.Target == SelectedData);
-        foreach (var diagramLink in links)
-        {
-            if (!(diagramLink.Target is IDiagramItem)) continue;
+        //var menu = new GenericMenu();
 
-            IDiagramLink link = diagramLink;
-            menu.AddItem(new GUIContent(diagramLink.Source.Label), true, () =>
-            {
-                link.Source.RemoveLink(link.Target as IDiagramItem);
-                Refresh();
-            });
-        }
+        //DecorateContextMenu(SelectedData, menu);
 
-        menu.AddSeparator(string.Empty);
-        menu.AddItem(new GUIContent("Delete"), false, () =>
-        {
-            var selected = SelectedData;
-            var customFiles = Repository.GetCustomFilePaths(SelectedData, false).ToArray();
-            var customFileFullPaths = Repository.GetCustomFilePaths(SelectedData, true).Where(File.Exists).ToArray();
-            if (selected is IDiagramFilter)
-            {
-                var filter = selected as IDiagramFilter;
-                if (filter.Locations.Keys.Count > 1)
-                {
-                    EditorUtility.DisplayDialog("Delete sub items first.",
-                        "There are items defined inside this item please hide or delete them before removing this item.", "OK");
-                    return;
-                }
-            }
-            if (EditorUtility.DisplayDialog("Confirm", "Are you sure you want to delete this?", "Yes", "No"))
-            {
+        //menu.AddSeparator(string.Empty);
+        //var links = Data.Links.Where(p => p.Target == SelectedData);
+        //foreach (var diagramLink in links)
+        //{
+        //    if (!(diagramLink.Target is IDiagramItem)) continue;
 
-                selected.RemoveFromDiagram();
-                if (customFileFullPaths.Length > 0)
-                {
-                    if (EditorUtility.DisplayDialog("Confirm",
-                        "You have files associated with this. Delete them to?" + Environment.NewLine +
-                        string.Join(Environment.NewLine, customFiles), "Yes Delete Them", "Don't Delete them"))
-                    {
-                        foreach (var customFileFullPath in customFileFullPaths)
-                        {
-                            File.Delete(customFileFullPath);
-                        }
-                        Repository.Save();
-                    }
-                }
+        //    IDiagramLink link = diagramLink;
+        //    menu.AddItem(new GUIContent(diagramLink.Source.Label), true, () =>
+        //    {
+        //        link.Source.RemoveLink(link.Target as IDiagramItem);
+        //        Refresh();
+        //    });
+        //}
 
-                Refresh(true);
-            }
-        });
+        //menu.AddSeparator(string.Empty);
+        //menu.AddItem(new GUIContent("Delete"), false, () =>
+        //{
+        //    var selected = SelectedData;
+        //    var customFiles = Repository.GetCustomFilePaths(SelectedData, false).ToArray();
+        //    var customFileFullPaths = Repository.GetCustomFilePaths(SelectedData, true).Where(File.Exists).ToArray();
+        //    if (selected is IDiagramFilter)
+        //    {
+        //        var filter = selected as IDiagramFilter;
+        //        if (filter.Locations.Keys.Count > 1)
+        //        {
+        //            EditorUtility.DisplayDialog("Delete sub items first.",
+        //                "There are items defined inside this item please hide or delete them before removing this item.", "OK");
+        //            return;
+        //        }
+        //    }
+        //    if (EditorUtility.DisplayDialog("Confirm", "Are you sure you want to delete this?", "Yes", "No"))
+        //    {
 
-        if (menu.GetItemCount() > 0)
-        {
-            menu.ShowAsContext();
-        }
+        //        selected.RemoveFromDiagram();
+        //        if (customFileFullPaths.Length > 0)
+        //        {
+        //            if (EditorUtility.DisplayDialog("Confirm",
+        //                "You have files associated with this. Delete them to?" + Environment.NewLine +
+        //                string.Join(Environment.NewLine, customFiles), "Yes Delete Them", "Don't Delete them"))
+        //            {
+        //                foreach (var customFileFullPath in customFileFullPaths)
+        //                {
+        //                    File.Delete(customFileFullPath);
+        //                }
+        //                Repository.Save();
+        //            }
+        //        }
+
+        //        Refresh(true);
+        //    }
+        //});
+
+        //if (menu.GetItemCount() > 0)
+        //{
+        //    menu.ShowAsContext();
+        //}
     }
 
     public void ShowItemContextMenu(object item)
@@ -781,7 +793,6 @@ public class ElementsDiagram
         //    diagramPlugin.OnAddContextItems(this, menu);
         //}
     }
-
 
     protected virtual void OnSelectionChanged(IDiagramItem olddata, IDiagramItem newdata)
     {
@@ -900,6 +911,7 @@ public class ElementsDiagram
         get { return Event.current; }
         set { _currentEvent = value; }
     }
+
     private void OnMouseUp()
     {
         if (CurrentEvent.button == 1)
@@ -966,5 +978,38 @@ public class ElementsDiagram
             EditorUtility.SetDirty(Data);
         }
         DidDrag = false;
+    }
+
+    public void Execute(IEditorCommand command)
+    {
+        EditorUtility.SetDirty(Data);
+        Undo.RecordObject(Data, command.Title);
+        this.ExecuteCommand(command);
+        Refresh();
+    }
+
+    public IEnumerable<object> ContextObjects
+    {
+        get
+        {
+            yield return this;
+            if (Data != null)
+            {
+                yield return Data;
+            }
+            if (Repository != null)
+            {
+                yield return Repository;
+            }
+            
+            foreach (var diagramItem in AllSelected)
+            {
+                yield return diagramItem;
+                if (diagramItem.Data != null)
+                {
+                    yield return diagramItem.Data;
+                }
+            }
+        }
     }
 }

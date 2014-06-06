@@ -41,5 +41,8 @@ namespace Invert.uFrame.Editor
             get;
             set;
         }
+
+        public Type GeneratorFor { get; set; }
+        public object ObjectData { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using Invert.uFrame;
 using Invert.uFrame.Editor;
+using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Data;
 using UnityEngine;
 
@@ -15,5 +16,6 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.Register<DiagramItemGenerator,ViewDataGenerator>("ViewData");
         container.Register<DiagramItemGenerator,SceneManagerDataGenerator>("SceneManagerData");
 
+        container.RegisterInstance<IToolbarCommand>(new ImportCommand(),"Import");
     }
 }

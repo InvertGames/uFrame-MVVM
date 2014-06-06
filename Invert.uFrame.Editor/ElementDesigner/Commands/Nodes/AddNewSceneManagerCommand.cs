@@ -4,6 +4,10 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddNewSceneManagerCommand : AddItemCommand<SceneManagerData>
     {
+        public override string Title
+        {
+            get { return "Add New Scene Manager"; }
+        }
         public override void Perform(ElementsDiagram item)
         {
             var data = new SceneManagerData()

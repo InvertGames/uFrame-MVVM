@@ -245,52 +245,7 @@ public abstract class DefaultElementsRepository : IElementsDataRepository
         get { return _serializedObject ?? (_serializedObject = new SerializedObject(Diagram)); }
         set { _serializedObject = value; }
     }
-    public IEnumerable<string> GetCustomFilePaths(IDiagramItem item, bool fullPaths, bool includeRefactors = false)
-    {
-        var sceneManager = item as SceneManagerData;
-        if (sceneManager != null)
-        {
-            yield return fullPaths ? GetContainerCustomFileFullPath(sceneManager.Name) : GetContainerCustomFilename(sceneManager.Name);
-            if (includeRefactors)
-            {
-                yield return fullPaths ? GetContainerCustomFileFullPath(sceneManager.OldName) : GetContainerCustomFilename(sceneManager.OldName);
-            }
-        }
-        var element = item as ElementData;
-        if (element != null)
-        {
-            yield return fullPaths ? GetViewModelCustomFileFullPath(element.Name) : GetViewModelCustomFilename(element.Name);
-            yield return fullPaths ? GetControllerCustomFileFullPath(element.Name) : GetControllerCustomFilename(element.Name);
-            if (includeRefactors)
-            {
-                yield return fullPaths ? GetViewModelCustomFileFullPath(element.OldName) : GetViewModelCustomFilename(element.OldName);
-                yield return fullPaths ? GetControllerCustomFileFullPath(element.OldName) : GetControllerCustomFilename(element.OldName);
-            }
-            //yield return fullPaths ? GetViewCustomFileFullPath(element) : GetContainerCustomFilename(element);
-        }
-        var view = item as ViewData;
-        if (view != null)
-        {
-            yield return fullPaths ?
-                GetViewCustomFileFullPath(view.Name) :
-                GetViewCustomFilename(view.Name);
-            if (includeRefactors)
-            {
-                yield return fullPaths ? GetViewCustomFileFullPath(view.OldName) : GetViewCustomFilename(view.OldName);
-            }
-        }
-        var viewComponent = item as ViewComponentData;
-        if (viewComponent != null)
-        {
-            yield return fullPaths ?
-                GetViewComponentCustomFileFullPath(viewComponent.Name) :
-                GetViewComponentCustomFilename(viewComponent.Name);
-            if (includeRefactors)
-            {
-                yield return fullPaths ? GetViewComponentCustomFileFullPath(viewComponent.OldName) : GetViewComponentCustomFilename(viewComponent.OldName);
-            }
-        }
-    }
+
     public virtual IEnumerable<ElementItemType> GetAvailableTypes(bool allowNone, bool primitiveOnly = false)
     {
         if (allowNone)

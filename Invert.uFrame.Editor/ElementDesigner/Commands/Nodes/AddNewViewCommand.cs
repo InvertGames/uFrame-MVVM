@@ -4,6 +4,10 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddNewViewCommand : AddItemCommand<ViewData>
     {
+        public override string Title
+        {
+            get { return "Add New View"; }
+        }
         public override void Perform(ElementsDiagram item)
         {
             var data = new ViewData()

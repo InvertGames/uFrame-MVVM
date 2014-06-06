@@ -12,7 +12,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
             item.Refresh(true);
         }
 
-        public IEnumerable<ContextMenuItem> GetOptions(object arg)
+        public IEnumerable<UFContextMenuItem> GetOptions(object arg)
         {
             var item = arg as ElementsDiagram;
             if (item == null)
@@ -20,14 +20,14 @@ namespace Invert.uFrame.Editor.ElementDesigner
                 yield break;
             }
             
-            yield return new ContextMenuItem()
+            yield return new UFContextMenuItem()
             {
                 Name = item.Data.SceneFlowFilter.Name, 
                 Checked = item.Data.CurrentFilter == item.Data.SceneFlowFilter
             };
             foreach (var filter in item.Data.FilterPath)
             {
-                yield return new ContextMenuItem()
+                yield return new UFContextMenuItem()
                 {
                     Name = filter.Name,
                     Checked = item.Data.CurrentFilter == filter
@@ -40,7 +40,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
             get { return ToolbarPosition.Left; }
         }
 
-        public ContextMenuItem SelectedOption { get; set; }
+        public UFContextMenuItem SelectedOption { get; set; }
         public MultiOptionType OptionsType { get{ return MultiOptionType.Buttons; } }
     }
 }

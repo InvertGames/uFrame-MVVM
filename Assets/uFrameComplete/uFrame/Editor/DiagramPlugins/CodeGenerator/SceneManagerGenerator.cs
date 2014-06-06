@@ -85,22 +85,23 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
         if (IsDesignerFile)
         {
             //var commands = sceneManager.SubSystem.IncludedCommands.ToArray();
-            foreach (var SceneManagerTransition in sceneManager.Transitions)
+            foreach (var sceneManagerTransition in sceneManager.Transitions)
             {
                 //commands.Where(p=>p.Identifier == SceneManagerTransition.Id)
-                var transitionItem = DiagramData.SceneManagers.FirstOrDefault(p => p.Identifier == SceneManagerTransition.ToIdentifier);
+                var transitionItem = DiagramData.SceneManagers.FirstOrDefault(p => p.Identifier == sceneManagerTransition.ToIdentifier);
                 if (transitionItem == null || transitionItem.SubSystem == null) continue;
 
-                var settingsField = new CodeMemberField(transitionItem.NameAsSettings, SceneManagerTransition.NameAsSettingsField)
+                var settingsField = new CodeMemberField(transitionItem.NameAsSettings, sceneManagerTransition.NameAsSettingsField)
                 {
                     Attributes = MemberAttributes.Public,
                     InitExpression = new CodeObjectCreateExpression(transitionItem.NameAsSettings)
                 };
+
                 decl.Members.Add(settingsField);
 
                 var transitionMethod = new CodeMemberMethod()
                 {
-                    Name = SceneManagerTransition.Name,
+                    Name = sceneManagerTransition.Name,
                     Attributes = MemberAttributes.Public
                 };
 
@@ -212,10 +213,10 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
                     setupMethod.Statements.Add(condition);
                 }
             }
-            var settingsField2 = new CodeMemberField(decl.Name, sceneManager.NameAsSettingsField)
+            var settingsField2 = new CodeMemberField(sceneManager.NameAsSettings, sceneManager.NameAsSettingsField)
             {
                 Attributes = MemberAttributes.Public,
-                InitExpression = new CodeObjectCreateExpression(decl.Name)
+                InitExpression = new CodeObjectCreateExpression(sceneManager.NameAsSettings)
             };
             decl.Members.Add(settingsField2);
             AddSceneManagerSettings(sceneManager, rootElements);
@@ -258,6 +259,7 @@ public class SceneManagerGenerator : SceneManagerClassGenerator
     {
         base.Initialize(fileGenerator);
         AddSceneManager(Data);
+        
         //AddSceneManagerSettings(DiagramData);
     }
 }

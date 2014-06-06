@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame;
+using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
         }
     }
 
-    public float HeaderSize { get { return 35 ; } }
+    public virtual float HeaderSize { get { return 35 ; } }
 
     public float Scale
     {
@@ -111,7 +112,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
         return itemRect;
     }
 
-    protected void DrawHeader(ElementsDiagram diagram, bool importOnly)
+    protected virtual void DrawHeader(ElementsDiagram diagram, bool importOnly)
     {
 
 
@@ -187,6 +188,11 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
     }
 
     public ElementsDiagram Diagram { get; set; }
+
+    public virtual Type CommandsType
+    {
+        get { return typeof (IDiagramItem); }
+    }
 
     protected abstract IEnumerable<DiagramSubItemGroup> GetItemGroups();
 
@@ -365,7 +371,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
         }
 
 
-        if (GUILayout.Button(string.Empty, UBStyles.RemoveButtonStyle))
+        if (GUILayout.Button(string.Empty, UBStyles.RemoveButtonStyle.Scale(Scale)))
         {
             Undo.RecordObject(diagram.Data, "RemoveFromDiagram " + item.Name);
             item.Remove(diagram.SelectedData);
@@ -436,4 +442,19 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
         return sy;
     }
 
+    public void Execute(IEditorCommand command)
+    {
+        UnityEngine.Debug.Log("Exeucting: " + command.Name);
+        Diagram.Execute(command);
+    }
+
+    public IEnumerable<object> ContextObjects
+    {
+        get
+        {
+            yield return this;
+            yield return Data;
+            yield return Diagram;
+        }
+    }
 }

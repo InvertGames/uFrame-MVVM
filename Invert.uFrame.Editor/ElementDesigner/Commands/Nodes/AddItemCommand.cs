@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
-    public abstract class AddItemCommand<TType> : EditorCommand<ElementsDiagram>, IChildCommand
+    public abstract class AddItemCommand<TType> : AddNewCommand, IDiagramContextCommand
     {
         public override string CanPerform(ElementsDiagram item)
         {
@@ -19,13 +19,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 
         public override string Path
         {
-            get { return "Add Item/" + Title; }
-        }
-
-
-        public Type ChildCommandFor
-        {
-            get { return typeof (AddNewCommand); }
+            get { return  "Add New/" + Title; }
         }
     }
 
@@ -34,7 +28,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         Type ChildCommandFor { get; }
     }
 
-    public class RenameCommand : EditorCommand<IDiagramItem>
+    public class RenameCommand : EditorCommand<IDiagramItem>, IDiagramItemCommand
     {
         public override void Perform(IDiagramItem item)
         {
@@ -48,90 +42,190 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         }
     }
 
-    public class DeleteCommand : EditorCommand<IDiagramItem>
+    public interface IDiagramContextCommand
+    {
+        
+    }
+    public interface IDiagramItemCommand
+    {
+        
+    }
+
+    public interface IDiagramSubItemCommand
+    {
+        
+    }
+    
+    public class DeleteCommand : EditorCommand<IDiagramItem>, IDiagramItemCommand
     {
         public override void Perform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            item.RemoveFromDiagram();
         }
 
         public override string CanPerform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
-    public class HideCommand : EditorCommand<IDiagramItem>
+    public class HideCommand : EditorCommand<IDiagramItem>, IDiagramItemCommand
     {
         public override void Perform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            item.Data.CurrentFilter.Locations.Remove(item.Identifier);
         }
 
         public override string CanPerform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            if (item == null) return "Diagram Item must not be null.";
+            return null;
         }
     }
-    public class OpenSceneManagerFileCommand : EditorCommand<IDiagramItem>
+
+    public class OpenCommand : EditorCommand<IDiagramItem>, IDynamicOptionsCommand, IDiagramItemCommand
     {
         public override void Perform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            //var filename = repository.GetControllerCustomFilename(this.Name);
+
+            //var scriptAsset = AssetDatabase.LoadAssetAtPath(filename, typeof(TextAsset));
+
+            //AssetDatabase.OpenAsset(scriptAsset);
         }
 
         public override string CanPerform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            return null;
         }
+
+        public IEnumerable<UFContextMenuItem> GetOptions(object item)
+        {
+            var diagramItem = item as IDiagramItem;
+            if (diagramItem == null) yield break;
+            var generators = uFrameEditor.GetAllCodeGenerators(diagramItem.Data)
+                .Where(p =>!p.IsDesignerFile && p.ObjectData == item);
+
+            foreach (var codeGenerator in generators)
+            {
+                yield return new UFContextMenuItem()
+                {
+                    Name = "Open/" + codeGenerator.Filename,
+                    Value = codeGenerator
+                };
+            }
+        }
+
+        public UFContextMenuItem SelectedOption { get; set; }
+        public MultiOptionType OptionsType { get; private set; }
     }
-    public class OpenControllerFileCommand : EditorCommand<IDiagramItem>
+
+    public class RemoveLinkCommand : EditorCommand<IDiagramItem>, IDynamicOptionsCommand, IDiagramItemCommand
     {
         public override void Perform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            var link = SelectedOption.Value as IDiagramLink;
+
+            if (link != null) 
+                link.Source.RemoveLink(item);
         }
 
         public override string CanPerform(IDiagramItem item)
         {
-            throw new NotImplementedException();
+            return null;
         }
+
+        public IEnumerable<UFContextMenuItem> GetOptions(object item)
+        {
+            var diagramItem = item as IDiagramItem;
+            if (diagramItem == null) yield break;
+            var links = diagramItem.Data.Links.Where(p => p.Target == item);
+            foreach (var link in links)
+            {
+                yield return new UFContextMenuItem()
+                {
+                    Checked = true,
+                    Name = "Remove Link From/" + link.Source.Label,
+                    Value = link
+                };
+            }
+
+        }
+
+        public UFContextMenuItem SelectedOption { get; set; }
+        public MultiOptionType OptionsType { get; private set; }
     }
-    public class OpenViewFileCommand : EditorCommand<IDiagramItem>
+
+    public class SelectViewBaseElement : EditorCommand<ViewData>, IDynamicOptionsCommand, IDiagramItemCommand
     {
-        public override void Perform(IDiagramItem item)
+        public override void Perform(ViewData item)
         {
-            throw new NotImplementedException();
+            if (item == null) return;
+            var view = SelectedOption.Value as ViewData;
+            if (view == null)
+            {
+                item.BaseViewIdentifier = null;
+            }
+            else
+            {
+                item.BaseViewIdentifier = view.Identifier;    
+            }
+            
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(ViewData item)
         {
-            throw new NotImplementedException();
+            if (item == null) return "This operation can only be performed on a view.";
+            return null;
         }
+
+        public IEnumerable<UFContextMenuItem> GetOptions(object item)
+        {
+            var view = item as ViewData;
+            if (view == null) yield break;
+            var element = view.ViewForElement;
+            if (element == null) yield break;
+
+            var baseViews = element.AllBaseTypes.SelectMany(
+                p => view.Data.AllDiagramItems.OfType<ViewData>().Where(x => x.ViewForElement == p));
+            yield return new UFContextMenuItem()
+            {
+                Name = "Base View/" + element.NameAsViewBase,
+                Value = null
+            };
+            foreach (var baseView in baseViews)
+            {
+                yield return new UFContextMenuItem()
+                {
+                    Name = "Base View/" + baseView.NameAsView,
+                    Value = baseView
+                };
+            }
+
+        }
+
+        public UFContextMenuItem SelectedOption { get; set; }
+        public MultiOptionType OptionsType { get; private set; }
     }
-    public class OpenViewComponentFileCommand : EditorCommand<IDiagramItem>
+
+    public class ScaleCommand : EditorCommand<float>
     {
+        public float Scale { get; set; }
 
-        public override void Perform(IDiagramItem item)
+        public override void Perform(float item)
         {
-            throw new NotImplementedException();
+
+            UFStyles.Scale = Scale;
+
+            
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(float item)
         {
-            throw new NotImplementedException();
-        }
-    }
-    public class OpenViewModelFileCommand : EditorCommand<IDiagramItem>
-    {
-
-        public override void Perform(IDiagramItem item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string CanPerform(IDiagramItem item)
-        {
-            throw new NotImplementedException();
+            if (Scale < 0.5f)
+            {
+                return "Can't scale that small";
+            }
+            return null;
         }
     }
 }

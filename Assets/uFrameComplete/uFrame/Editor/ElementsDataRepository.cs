@@ -159,8 +159,6 @@ public class ElementsDataRepository : DefaultElementsRepository
         }
     }
 
-
-
     public override void Save()
     {
         // Go ahead and process any code refactors
@@ -191,10 +189,8 @@ public class ElementsDataRepository : DefaultElementsRepository
         AssetDatabase.Refresh();
 
     }
-    public  void Save2()
+    public void Save2()
     {
-        
-
         // Important ensure all data properties are wired up
         foreach (var allDiagramItem in Diagram.AllDiagramItems)
         {

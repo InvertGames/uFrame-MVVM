@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class ViewDrawer : DiagramItemDrawer<ViewData>
@@ -48,6 +49,26 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
     {
         base.DoubleClicked();
         Diagram.Repository.NavigateToView(this.Data);
+    }
+
+    public override float HeaderSize
+    {
+        get { return base.HeaderSize + 6; }
+    }
+
+    protected override void DrawHeader(ElementsDiagram diagram, bool importOnly)
+    {
+        base.DrawHeader(diagram, importOnly);
+        var subTitlePosition = Data.HeaderPosition;
+        subTitlePosition.y += 15;
+        var style = new GUIStyle(EditorStyles.miniLabel);
+        style.alignment = TextAnchor.MiddleCenter;
+        GUI.Label(subTitlePosition,Data.BaseViewName,style);
+    }
+
+    protected override void DrawContent(ElementsDiagram diagram, bool importOnly)
+    {
+        base.DrawContent(diagram, importOnly);
     }
 
     protected override void DrawSelectedItem(IDiagramSubItem item, ElementsDiagram diagram)

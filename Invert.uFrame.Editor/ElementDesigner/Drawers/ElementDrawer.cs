@@ -214,10 +214,10 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
             {
                 rtn = ElementDataBase.TypeNameAliases[rtn];
             }
-            GUILayout.Label(rtn, style, GUILayout.Width(_maxTypeWidth));
+            GUILayout.Label(rtn, style, GUILayout.Width(_maxTypeWidth * Scale));
             style.fontStyle = FontStyle.Bold;
             style.alignment = TextAnchor.MiddleLeft;
-            GUILayout.Label(vmItem.Name, style, GUILayout.Width(_maxNameWidth));
+            GUILayout.Label(vmItem.Name, style, GUILayout.Width(_maxNameWidth * Scale));
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }

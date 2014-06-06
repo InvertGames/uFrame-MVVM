@@ -37,8 +37,7 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
     [SerializeField, HideInInspector]
     private DefaultFilter _defaultFilter = new DefaultFilter();
 
-    [SerializeField]
-    private bool _generateViewBindings = true;
+   
 
     [SerializeField, HideInInspector]
     private List<ImportedElementData> _importedElements = new List<ImportedElementData>();
@@ -182,11 +181,7 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         get { return AllDiagramItems.OfType<IDiagramFilter>(); }
     }
 
-    public bool GenerateViewBindings
-    {
-        get { return _generateViewBindings; }
-        set { _generateViewBindings = value; }
-    }
+
 
     public IEnumerable<IDiagramItem> ImportableItems
     {

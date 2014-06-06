@@ -43,43 +43,36 @@ public class GameContainer : IGameContainer
         }
 
 
+
+        public IEnumerable<TType> ResolveAll<TType>()
+        {
+            foreach (var obj in ResolveAll(typeof(TType)))
+            {
+                yield return (TType) obj;
+            }
+        }
+
         /// <summary>
         /// Resolves all instances of TType or subclasses of TType.  Either named or not.
         /// </summary>
         /// <typeparam name="TType">The Type to resolve</typeparam>
         /// <returns>List of objects.</returns>
-        public IEnumerable<TType> ResolveAll<TType>()
+       public IEnumerable<object> ResolveAll(Type type)
         {
-            foreach (var instance1 in Instances.Where(p => p.Base == typeof(TType) && !string.IsNullOrEmpty(p.Name)))
+            foreach (var instance1 in Instances.Where(p => p.Base == type && !string.IsNullOrEmpty(p.Name)))
             {
-                yield return (TType)instance1.Instance;
+                yield return instance1.Instance;
             }
 
-            //foreach (var instance in Instances)
-            //{
-
-            //    if (instance.Instance == null) continue;
-            //    if (typeof(TType).IsAssignableFrom(instance.Key))
-            //    {
-            //        yield return (TType)instance.Value;
-            //    }
-            //}
-            //foreach (var namedInstance in NamedInstances)
-            //{
-            //    if (typeof(TType).IsAssignableFrom(namedInstance.Value.GetType()))
-            //    {
-            //        yield return (TType)namedInstance.Value;
-            //    }
-            //}
             foreach (var mapping in Mappings)
             {
                 if (!string.IsNullOrEmpty(mapping.Name))
                 {
-                    if (typeof(TType).IsAssignableFrom(mapping.From))
+                    if (type.IsAssignableFrom(mapping.From))
                     {
                         var item = Activator.CreateInstance(mapping.To);
                         Inject(item);
-                        yield return (TType)item;
+                        yield return item;
                     }
                 }
             }

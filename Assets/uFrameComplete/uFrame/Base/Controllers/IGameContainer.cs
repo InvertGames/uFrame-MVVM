@@ -97,6 +97,13 @@ public interface IGameContainer
 
         //IEnumerable<object> ResolveAll(Type type);
         void Register(Type source, Type target, string name = null);
+
+        /// <summary>
+        /// Resolves all instances of TType or subclasses of TType.  Either named or not.
+        /// </summary>
+        /// <typeparam name="TType">The Type to resolve</typeparam>
+        /// <returns>List of objects.</returns>
+        IEnumerable<object> ResolveAll(Type type);
     }
 
 #if DLL

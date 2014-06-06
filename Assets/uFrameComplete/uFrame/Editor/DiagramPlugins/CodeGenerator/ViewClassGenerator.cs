@@ -11,13 +11,14 @@ public abstract class ViewClassGenerator : CodeGenerator
 
     public ElementDesignerData DiagramData
     {
-        get; set;
+        get;
+        set;
     }
 
     public override void Initialize(CodeFileGenerator fileGenerator)
     {
         base.Initialize(fileGenerator);
-       
+
         Namespace.Imports.Add(new CodeNamespaceImport("UnityEngine"));
     }
 
@@ -88,7 +89,6 @@ public abstract class ViewClassGenerator : CodeGenerator
             new CodeSnippetExpression(string.Format("return typeof({0})", data.NameAsViewModel)));
         decl.Members.Add(viewModelTypeProperty);
 
-
         AddComponentReferences(decl, data);
 
         var multiInstanceProperty = new CodeMemberProperty
@@ -99,17 +99,12 @@ public abstract class ViewClassGenerator : CodeGenerator
             HasSet = false,
             HasGet = true
         };
+
         multiInstanceProperty.GetStatements.Add(
             new CodeSnippetExpression(string.Format("return {0}", data.IsMultiInstance ? "true" : "false")));
         decl.Members.Add(multiInstanceProperty);
-        //var tViewModelTypeParameter = new CodeTypeParameter("TViewModel") { };
-        //tViewModelTypeParameter.Constraints.Add(new CodeTypeReference(_diagramData.NameAsViewModel));
-        //decl.TypeParameters.Add(tViewModelTypeParameter);
-        if (DiagramData.GenerateViewBindings)
-        {
-            GenerateBindMethod(decl, data);
-        }
-
+        
+        GenerateBindMethod(decl, data);
         var viewModelProperty = new CodeMemberProperty { Name = data.Name, Attributes = MemberAttributes.Public | MemberAttributes.Final, Type = new CodeTypeReference(data.NameAsViewModel) };
         viewModelProperty.GetStatements.Add(
             new CodeMethodReturnStatement(new CodeCastExpression(new CodeTypeReference(data.NameAsViewModel),
@@ -118,6 +113,7 @@ public abstract class ViewClassGenerator : CodeGenerator
             new CodeAssignStatement(
                 new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "ViewModelObject"),
                 new CodePropertySetValueReferenceExpression()));
+
         decl.Members.Add(viewModelProperty);
 
         var initializeViewModelMethod = new CodeMemberMethod
@@ -290,7 +286,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         }
     }
 
-  
+
     public void AddPropertyBinding(CodeTypeDeclaration decl, string modelName, CodeStatementCollection statements, ViewModelPropertyData propertyData, bool asTwoWay, ElementDataBase relatedElement)
     {
         var memberInvoke = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "BindProperty");

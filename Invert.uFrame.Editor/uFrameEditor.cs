@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Security.Cryptography.X509Certificates;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ElementDesigner.Data;
 using UnityEditor;
-using UnityEngine;
 
 namespace Invert.uFrame.Editor
 {
@@ -42,13 +43,13 @@ namespace Invert.uFrame.Editor
             set { _plugins = value; }
         }
 
-        //public static IEditorCommand[] Commands
-        //{
-        //    get
-        //    {
-        //        return _commands ?? (_commands = Container.ResolveAll<IEditorCommand>().ToArray());
-        //    }
-        //}
+        public static IEditorCommand[] Commands
+        {
+            get
+            {
+                return _commands ?? (_commands = Container.ResolveAll<IEditorCommand>().ToArray());
+            }
+        }
 
         public static IEnumerable<Type> GetDerivedTypes<T>(bool includeAbstract = false, bool includeBase = true)
         {
@@ -94,13 +95,39 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<uFrameContainer>(container);
 
             // Command Drawers
-            container.RegisterInstance(new ToolbarUI());
-            container.RegisterInstance(new ContextMenuUI());
+            container.Register<ToolbarUI, ToolbarUI>();
+            container.Register<ContextMenuUI, ContextMenuUI>();
+            //container.RegisterInstance(new ContextMenuUI());
 
-            container.Register<ElementDataCommand,AddElementCollectionCommand>("Collection");
-            container.Register<ElementDataCommand,AddElementCollectionCommand>("Property");
-            container.Register<ElementDataCommand,AddElementCollectionCommand>("Command");
-            
+            container.RegisterInstance<IToolbarCommand>(new PopToFilterCommand(), "PopToFilterCommand");
+            container.RegisterInstance<IToolbarCommand>(new SaveCommand(), "SaveCommand");
+            container.RegisterInstance<IToolbarCommand>(new AutoLayoutCommand(), "AutoLayoutCommand");
+
+            container.RegisterInstance<IToolbarCommand>(new AddNewCommand(), "AddNewCommand");
+
+
+            container.RegisterInstance<AddNewCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
+            container.RegisterInstance<AddNewCommand>(new AddNewSubSystemCommand(), "AddNewSubSystemCommand");
+            container.RegisterInstance<AddNewCommand>(new AddNewElementCommand(), "AddNewElementCommand");
+            container.RegisterInstance<AddNewCommand>(new AddNewEnumCommand(), "AddNewEnumCommand");
+            container.RegisterInstance<AddNewCommand>(new AddNewViewCommand(), "AddNewViewCommand");
+            container.RegisterInstance<AddNewCommand>(new AddNewViewComponentCommand(), "AddNewViewComponentCommand");
+
+            container.RegisterInstance<IDiagramContextCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
+            container.RegisterInstance<IDiagramContextCommand>(new AddNewSubSystemCommand(), "AddNewSubSystemCommand");
+            container.RegisterInstance<IDiagramContextCommand>(new AddNewElementCommand(), "AddNewElementCommand");
+            container.RegisterInstance<IDiagramContextCommand>(new AddNewEnumCommand(), "AddNewEnumCommand");
+            container.RegisterInstance<IDiagramContextCommand>(new AddNewViewCommand(), "AddNewViewCommand");
+            container.RegisterInstance<IDiagramContextCommand>(new AddNewViewComponentCommand(), "AddNewViewComponentCommand");
+            container.RegisterInstance<IDiagramContextCommand>(new ShowItemCommand(),"ShowItem");
+
+            container.RegisterInstance<IDiagramItemCommand>(new OpenCommand(), "OpenCode");
+            container.RegisterInstance<IDiagramItemCommand>(new DeleteCommand(), "Delete");
+            container.RegisterInstance<IDiagramItemCommand>(new RenameCommand(), "Reanme");
+            container.RegisterInstance<IDiagramItemCommand>(new HideCommand(), "Hide");
+            container.RegisterInstance<IDiagramItemCommand>(new RemoveLinkCommand(), "RemoveLink");
+            container.RegisterInstance<IDiagramItemCommand>(new SelectViewBaseElement(), "SelectView");
+
 
 
             // Drawers
@@ -117,18 +144,6 @@ namespace Invert.uFrame.Editor
             {
                 container.RegisterInstance(Activator.CreateInstance(diagramPlugin) as IDiagramPlugin, diagramPlugin.Name, false);
             }
-
-            foreach (var commandType in GetDerivedTypes<EditorCommand>(false, false))
-            {
-
-                var command = Activator.CreateInstance(commandType) as EditorCommand;
-                if (command != null)
-                {
-                    container.RegisterInstance<IEditorCommand>(command, command.Name, false);
-                    container.RegisterInstance(command.GetType(), command, null, false);
-                }
-            }
-
 
             container.InjectAll();
             foreach (var diagramPlugin in Plugins)
@@ -187,11 +202,12 @@ namespace Invert.uFrame.Editor
                     var codeGenerators = generator.GetGenerators(diagramData, item);
                     foreach (var codeGenerator in codeGenerators)
                     {
+                        codeGenerator.ObjectData = item;
+                        codeGenerator.GeneratorFor = diagramItemGenerator.DiagramItemType;
                         yield return codeGenerator;
                     }
                 }
             }
-
         }
 
         public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(ElementDesignerData diagramData)
@@ -216,9 +232,10 @@ namespace Invert.uFrame.Editor
 
         }
 
-        public static void ExecuteCommand(IEditorCommand command, params object[] objects)
+        public static void ExecuteCommand(this ICommandHandler handler, IEditorCommand command)
         {
-            foreach (var o in objects)
+            var objs = handler.ContextObjects.ToArray();
+            foreach (var o in objs)
             {
                 if (o == null) continue;
 
@@ -230,193 +247,146 @@ namespace Invert.uFrame.Editor
 
         }
 
-        public static TCommandUI DoCommands<TCommandUI>(params object[] contextObjects) where TCommandUI : class, ICommandUI
-        {
-            return DoCommands<TCommandUI>(null, contextObjects);
-        }
-
-        public static TCommandUI DoCommands<TCommandUI>(Predicate<IEditorCommand> filter, params object[] contextObjects) where TCommandUI : class, ICommandUI
-        {
-            var commandUI = Container.Resolve<TCommandUI>();
-            commandUI.Initialize();
-
-            var commands = new List<IEditorCommand>();
-            foreach (var contextObject in contextObjects)
-            {
-                if (contextObject == null) continue;
-
-                var objCommands = Commands.Where(p => p.For.IsAssignableFrom(contextObject.GetType()) && !(p is IChildCommand));
-                if (filter != null)
-                {
-                    objCommands = objCommands.Where(p => filter(p));
-                }
-                foreach (var command in objCommands)
-                {
-                    if (!commands.Contains(command))
-                    {
-                        //if (command.CanPerform(contextObject) == null)
-                        //{
-                        commands.Add(command);
-                        //}
-                    }
-                }
-            }
-
-            // Loop through each command
-            foreach (var editorCommand in commands)
-            {
-                if (editorCommand is IParentCommand)
-                {
-
-                }
-                else if (editorCommand is IChildCommand)
-                {
-
-                }
-                else if (editorCommand is IDynamicOptionsCommand)
-                {
-                    var cmd = editorCommand as IDynamicOptionsCommand;
-                    var options = cmd.GetOptions(contextObjects.FirstOrDefault(p => cmd.For.IsAssignableFrom(p.GetType())));
-                    //if (cmd.OptionsType == MultiOptionType.Buttons)
-                    //{
-                    //    foreach (var contextMenuItem in options)
-                    //    {
-                    //        contextMenuItem.Name
-                    //    }
-                    //}
-
-                }
-                else
-                {
-                    commandUI.DoSingleCommand(editorCommand, contextObjects);
-                }
-            }
-            return commandUI;
-        }
-
-        public static void DoToolbar(IEnumerable<IToolbarCommand> commands, params object[] contextObjects)
-        {
-            foreach (var command in commands.OrderBy(p => p.Order))
-            {
-                var dynamicOptionsCommand = command as IDynamicOptionsCommand;
-                var parentCommand = command as IParentCommand;
-                if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
-                {
-                    foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Container.Resolve(command.For)))
-                    {
-                        if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
-                        {
-                            dynamicOptionsCommand.SelectedOption = multiCommandOption;
-
-                            ExecuteCommand(command, contextObjects);
-                        }
-                    }
-                }
-                else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
-                {
-                    if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-                    {
-                        foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Container.Resolve(command.For)))
-                        {
-                            var genericMenu = new GenericMenu();
-                            Invert.uFrame.Editor.ElementDesigner.ContextMenuItem option = multiCommandOption;
-                            var closureSafeCommand = command;
-                            genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
-                                () =>
-                                {
-                                    dynamicOptionsCommand.SelectedOption = option;
-                                    ExecuteCommand(closureSafeCommand, contextObjects);
-                                    closureSafeCommand.Execute(Container.Resolve(closureSafeCommand.For));
-                                });
-                            genericMenu.ShowAsContext();
-                        }
-                    }
-                }
-                else if (parentCommand != null)
-                {
-                    var contextCommands = Commands.OfType<IChildCommand>().Where(p => p.ChildCommandFor == parentCommand.GetType()).Cast<IContextMenuItemCommand>();
-                    //DoContextOptions(contextCommands);
-
-                }
-                else
-                {
-                    if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-                    {
-                        ExecuteCommand(command, contextObjects);
-                    }
-                }
-            }
-        }
-
-        //private static void DoContextOptions(IEnumerable<IContextMenuItemCommand> contextCommands)
+        //public static TCommandUI DoCommands<TCommandUI>(params object[] contextObjects) where TCommandUI : class, ICommandUI
         //{
-        //    GenericMenu menu = new GenericMenu();
-        //    foreach (var contextMenuItemCommand in contextCommands)
+        //    return DoCommands<TCommandUI>(null, contextObjects);
+        //}
+
+        //public static TCommandUI DoCommands<TCommandUI>(Predicate<IEditorCommand> filter, params object[] contextObjects) where TCommandUI : class, ICommandUI
+        //{
+        //    var commandUI = Container.Resolve<TCommandUI>();
+        //    commandUI.Initialize();
+
+
+
+
+        //    var commands = new List<IEditorCommand>();
+        //    foreach (var contextObject in contextObjects)
         //    {
-        //        contextMenuItemCommand.Path = 
+        //        if (contextObject == null) continue;
+
+        //        var objCommands = Commands.Where(p => p.For.IsAssignableFrom(contextObject.GetType()) && !(p is IChildCommand));
+        //        if (filter != null)
+        //        {
+        //            objCommands = objCommands.Where(p => filter(p));
+        //        }
+        //        foreach (var command in objCommands)
+        //        {
+        //            if (!commands.Contains(command))
+        //            {
+        //                //if (command.CanPerform(contextObject) == null)
+        //                //{
+        //                commands.Add(command);
+        //                //}
+        //            }
+        //        }
+        //    }
+
+        //    // Loop through each command
+        //    foreach (var editorCommand in commands)
+        //    {
+        //        if (editorCommand is IParentCommand)
+        //        {
+        //            var parentCommandType = editorCommand.GetType();
+
+        //            var childs = Container.ResolveAll(parentCommandType).Cast<IEditorCommand>().ToArray();
+        //            commandUI.DoMultiCommand(editorCommand, childs, contextObjects);
+        //        }
+        //        else if (editorCommand is IChildCommand)
+        //        {
+
+        //        }
+        //        else if (editorCommand is IDynamicOptionsCommand)
+        //        {
+        //            var cmd = editorCommand as IDynamicOptionsCommand;
+        //            var options = cmd.GetOptions(contextObjects.FirstOrDefault(p => cmd.For.IsAssignableFrom(p.GetType())));
+        //            if (cmd.OptionsType == MultiOptionType.Buttons)
+        //            {
+        //                foreach (var contextMenuItem in options)
+        //                {
+        //                    commandUI.DoSingleCommand(editorCommand, contextObjects, contextMenuItem);
+        //                }
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            commandUI.DoSingleCommand(editorCommand, contextObjects);
+        //        }
+        //    }
+        //    return commandUI;
+        //}
+
+        //public static void DoToolbar(IEnumerable<IToolbarCommand> commands, params object[] contextObjects)
+        //{
+        //    foreach (var command in commands.OrderBy(p => p.Order))
+        //    {
+        //        var dynamicOptionsCommand = command as IDynamicOptionsCommand;
+        //        var parentCommand = command as IParentCommand;
+        //        if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
+        //        {
+        //            foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Container.Resolve(command.For)))
+        //            {
+        //                if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
+        //                {
+        //                    dynamicOptionsCommand.SelectedOption = multiCommandOption;
+
+        //                    ExecuteCommand(command, contextObjects);
+        //                }
+        //            }
+        //        }
+        //        else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
+        //        {
+        //            if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
+        //            {
+        //                foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Container.Resolve(command.For)))
+        //                {
+        //                    var genericMenu = new GenericMenu();
+        //                    Invert.uFrame.Editor.ElementDesigner.UFContextMenuItem option = multiCommandOption;
+        //                    var closureSafeCommand = command;
+        //                    genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
+        //                        () =>
+        //                        {
+        //                            dynamicOptionsCommand.SelectedOption = option;
+        //                            ExecuteCommand(closureSafeCommand, contextObjects);
+        //                            closureSafeCommand.Execute(Container.Resolve(closureSafeCommand.For));
+        //                        });
+        //                    genericMenu.ShowAsContext();
+        //                }
+        //            }
+        //        }
+        //        else if (parentCommand != null)
+        //        {
+        //            var contextCommands = Commands.OfType<IChildCommand>().Where(p => p.ChildCommandFor == parentCommand.GetType()).Cast<IContextMenuItemCommand>();
+        //            //DoContextOptions(contextCommands);
+
+        //        }
+        //        else
+        //        {
+        //            if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
+        //            {
+        //                ExecuteCommand(command, contextObjects);
+        //            }
+        //        }
         //    }
         //}
-    }
-    [AttributeUsage(AttributeTargets.Class)]
-    public class CommandName : Attribute
-    {
-        public string Name { get; set; }
 
-        public CommandName(string name)
+        public static TCommandUI CreateCommandUI<TCommandUI>( ICommandHandler handler, params Type[] contextTypes) where TCommandUI : class,ICommandUI
         {
-            Name = name;
-        }
-    }
-    public interface ICommandUI
-    {
-        void Initialize();
-        void DoSingleCommand(IEditorCommand command, object[] contextObjects);
-        void DoMultiCommand(IEditorCommand parentCommand, IEditorCommand[] childCommand, object[] contextObjects);
-    }
-
-    public class ToolbarUI : ICommandUI
-    {
-
-        public void Initialize()
-        {
-
-        }
-        public void DoSingleCommand(IEditorCommand command, object[] contextObjects)
-        {
-            if (GUILayout.Button(command.Title, EditorStyles.toolbarButton))
+            var ui = Container.Resolve<TCommandUI>() as ICommandUI;
+            ui.Handler = handler;
+            foreach (var contextType in contextTypes)
             {
-                uFrameEditor.ExecuteCommand(command, contextObjects);
+                var commands = Container.ResolveAll(contextType).Cast<IEditorCommand>().ToArray();
+
+                foreach (var command in commands)
+                {
+                    
+                    ui.AddCommand(command);
+                }
+
             }
-        }
-
-        public void DoMultiCommand(IEditorCommand parentCommand, IEditorCommand[] childCommand, object[] contextObjects)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ContextMenuUI : ICommandUI
-    {
-        private GenericMenu _contextMenu;
-
-        public GenericMenu ContextMenu
-        {
-            get { return _contextMenu ?? (_contextMenu = new GenericMenu()); }
-            set { _contextMenu = value; }
-        }
-
-        public void Initialize()
-        {
-            _contextMenu = new GenericMenu();
-        }
-        public void DoSingleCommand(IEditorCommand command, object[] contextObjects)
-        {
-
-        }
-
-        public void DoMultiCommand(IEditorCommand parentCommand, IEditorCommand[] childCommand, object[] contextObjects)
-        {
-
+            return (TCommandUI)ui;
         }
     }
 }

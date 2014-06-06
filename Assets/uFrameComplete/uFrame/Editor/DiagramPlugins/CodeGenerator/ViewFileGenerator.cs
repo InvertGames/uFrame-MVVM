@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class ViewFileGenerator : ElementGenerator
 {
-    public ViewFileGenerator(ElementDesignerData diagramData) : base(diagramData)
+    public ViewFileGenerator(ElementDesignerData diagramData)
+        : base(diagramData)
     {
 
     }
@@ -135,10 +136,9 @@ public class ViewFileGenerator : ElementGenerator
         //var tViewModelTypeParameter = new CodeTypeParameter("TViewModel") { };
         //tViewModelTypeParameter.Constraints.Add(new CodeTypeReference(_diagramData.NameAsViewModel));
         //decl.TypeParameters.Add(tViewModelTypeParameter);
-        if (DiagramData.GenerateViewBindings)
-        {
-            GenerateBindMethod(decl, data);
-        }
+
+        GenerateBindMethod(decl, data);
+
 
         var viewModelProperty = new CodeMemberProperty { Name = data.Name, Attributes = MemberAttributes.Public | MemberAttributes.Final, Type = new CodeTypeReference(data.NameAsViewModel) };
         viewModelProperty.GetStatements.Add(
@@ -237,7 +237,7 @@ public class ViewFileGenerator : ElementGenerator
         Namespace.Types.Add(decl);
     }
 
-    private void AddExecuteMethods(ElementData data, CodeTypeDeclaration decl,bool useViewReference = false)
+    private void AddExecuteMethods(ElementData data, CodeTypeDeclaration decl, bool useViewReference = false)
     {
         foreach (var viewModelCommandData in data.Commands)
         {
@@ -250,12 +250,12 @@ public class ViewFileGenerator : ElementGenerator
             CodeExpression executeCommandReference = new CodeThisReferenceExpression();
             if (useViewReference)
                 executeCommandReference = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View");
-               
+
             var relatedElement = DiagramData.GetElement(viewModelCommandData);
             if (relatedElement == null)
             {
-                
-        
+
+
 
                 if (viewModelCommandData.RelatedTypeName != null)
                 {
@@ -297,9 +297,9 @@ public class ViewFileGenerator : ElementGenerator
 
         foreach (var viewComponentData in data.ViewComponents)
         {
-           
+
             var backingField = new CodeMemberField(viewComponentData.Name, "_" + viewComponentData.Name);
-            backingField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof (SerializeField))));
+            backingField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
             var property = new CodeMemberProperty()
             {
                 Type = new CodeTypeReference(viewComponentData.Name),
@@ -357,7 +357,7 @@ public class ViewFileGenerator : ElementGenerator
                     new CodeCastExpression(viewModelProperty.Type, new CodePropertyReferenceExpression(new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View"), "ViewModelObject"))
                     ));
                 decl.Members.Add(viewModelProperty);
-                AddExecuteMethods(element,decl,true);
+                AddExecuteMethods(element, decl, true);
             }
         }
         Namespace.Types.Add(decl);
@@ -394,7 +394,7 @@ public class ViewFileGenerator : ElementGenerator
 
                 var prefabSetCondition =
                     new CodeConditionStatement(
-                        new CodeSnippetExpression(String.Format((string) "{0} == null", (object) viewPrefabField.Name)));
+                        new CodeSnippetExpression(String.Format((string)"{0} == null", (object)viewPrefabField.Name)));
 
                 prefabSetCondition.TrueStatements.Add(new CodeAssignStatement(
                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), propertyData.ViewFieldName),

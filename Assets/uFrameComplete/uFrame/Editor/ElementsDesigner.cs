@@ -13,7 +13,7 @@ namespace System.Runtime.CompilerServices
 }
 #endif
 
-public class ElementsDesigner : EditorWindow
+public class ElementsDesigner : EditorWindow, ICommandHandler
 {
     private static float HEIGHT = 768;
 
@@ -21,10 +21,24 @@ public class ElementsDesigner : EditorWindow
 
     private static float WIDTH = 1024;
 
+    public ICommandUI Toolbar
+    {
+        get
+        {
+            if (_toolbar != null) return _toolbar;
+
+
+            return _toolbar = uFrameEditor.CreateCommandUI<ToolbarUI>(this, typeof(IToolbarCommand));
+        }
+        set { _toolbar = value; }
+    }
+
     [SerializeField]
     private ElementsDiagram _diagram;
 
     private Vector2 _scrollPosition;
+    private ICommandUI _toolbar;
+
 
     public static ElementDesignerData SelectedElementDiagram
     {
@@ -34,7 +48,11 @@ public class ElementsDesigner : EditorWindow
     public ElementsDiagram Diagram
     {
         get { return _diagram; }
-        set { _diagram = value; }
+        set
+        {
+            _diagram = value;
+            _toolbar = null;
+        }
     }
 
     public float InspectorWidth
@@ -317,17 +335,7 @@ public class ElementsDesigner : EditorWindow
         GUILayout.FlexibleSpace();
         if (Diagram != null)
         {
-            var scale = GUILayout.HorizontalSlider(UFStyles.Scale, 0.55f, 1f, GUILayout.Width(200f));
-            if (scale != UFStyles.Scale)
-            {
-                UFStyles.Scale = scale;
-
-                Diagram.Refresh();
-                //var diagramSize = Diagram.DiagramSize;
-                //var scrollMax = new Vector2(diagramSize.width - diagramRect.width,
-                //    diagramSize.height - diagramRect.height);
-                //_scrollPosition = scrollMax / 2;
-            }
+            
             if (GUILayout.Button("Add New", EditorStyles.toolbarButton))
             {
                 Diagram.ShowAddNewContextMenu(false);
@@ -400,11 +408,12 @@ public class ElementsDesigner : EditorWindow
         //        }
         //    }
         //}
-        var diagramData = (Diagram == null ? null : Diagram.Data);
+
+        Toolbar.Go();
         //uFrameEditor.DoCommands<ToolbarUI>(c=>c is IToolbarCommand, this, Diagram, diagramData);
-        uFrameEditor.DoCommands<ToolbarUI>(IsToolbarLeft, this, Diagram, diagramData);
-        GUILayout.FlexibleSpace();
-        uFrameEditor.DoCommands<ToolbarUI>(IsToolbarRight, this, Diagram, diagramData);
+        //uFrameEditor.DoCommands<ToolbarUI>(IsToolbarLeft, this, Diagram, diagramData);
+        //GUILayout.FlexibleSpace();
+        //uFrameEditor.DoCommands<ToolbarUI>(IsToolbarRight, this, Diagram, diagramData);
         //uFrameEditor.DoToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Left),this,Diagram,diagramData);
         //GUILayout.FlexibleSpace();
         //uFrameEditor.DoToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Right), this, Diagram, diagramData);
@@ -426,7 +435,7 @@ public class ElementsDesigner : EditorWindow
     }
     public void DrawToolbar(IEnumerable<IToolbarCommand> commands)
     {
-        
+
     }
     private void HandlePanning(Rect diagramRect)
     {
@@ -471,7 +480,7 @@ public class ElementsDesigner : EditorWindow
 
         Diagram.Data.ApplyFilter();
         Diagram.Refresh(true);
-    
+
         // var newScrollPosition = new Vector2(Diagram.DiagramSize.width, Diagram.DiagramSize.height).normalized / 2;
         //_scrollPosition = new Vector2(250,250);
     }
@@ -517,6 +526,25 @@ public class ElementsDesigner : EditorWindow
             });
         }
         menu.ShowAsContext();
+    }
+
+    public void Execute(IEditorCommand command)
+    {
+        this.ExecuteCommand(command);
+        Diagram.Refresh();
+        Repaint();
+    }
+
+    public IEnumerable<object> ContextObjects
+    {
+        get
+        {
+            yield return this;
+            if (Diagram != null)
+                yield return Diagram;
+            if (Diagram != null && Diagram.Data != null)
+                yield return Diagram.Data;
+        }
     }
 }
 
