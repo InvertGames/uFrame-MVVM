@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame;
+using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,11 +46,13 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
     {
         get { return UFStyles.Item4; }
     }
+    [Inject("ViewDoubleClick")]
+    public IEditorCommand DoubleClickCommand { get; set; }
 
     public override void DoubleClicked()
     {
         base.DoubleClicked();
-        Diagram.Repository.NavigateToView(this.Data);
+       
     }
 
     public override float HeaderSize

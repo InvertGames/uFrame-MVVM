@@ -32,6 +32,7 @@ public class ElementsDiagram : ICommandHandler
 
     private SerializedObject _serializedObject;
     private Event _currentEvent;
+    private SerializedObject _o;
 
     public IEnumerable<IDiagramItem> AllSelected
     {
@@ -145,7 +146,7 @@ public class ElementsDiagram : ICommandHandler
         }
     }
 
-    public IElementsDataRepository Repository { get; set; }
+    protected IElementsDataRepository Repository { get; set; }
 
     public IDiagramItem SelectedData
     {
@@ -212,13 +213,38 @@ public class ElementsDiagram : ICommandHandler
 
     public Rect SelectionRect { get; set; }
 
-    public ElementsDiagram(IElementsDataRepository repository)
+    private SerializedObject SerializedObject
     {
-        Repository = repository;
-        Data = repository.GetData();
+        get { return _o ?? (_o = new SerializedObject(Data)); }
+        set { _o = value; }
     }
 
-  
+    public ElementsDiagram(string assetPath)
+    {
+        var fileExtension = Path.GetExtension(assetPath);
+        Repository = uFrameEditor.Container.Resolve<IElementsDataRepository>(fileExtension);
+        if (Repository != null)
+        {
+            Repository.LoadDiagram(assetPath);
+        }
+        else
+        {
+            throw new Exception(
+                string.Format("The asset with the extension {0} could not be loaded.  Do you have the plugin installed?",
+                fileExtension
+                ));
+        }
+
+        Data = Repository.LoadDiagram(assetPath);
+        
+
+        CodePathStrategy = uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.CodePathStrategyName ?? "Default");
+        CodePathStrategy.AssetPath = assetPath.Replace(string.Format("{0}{1}", Path.GetFileNameWithoutExtension(assetPath), fileExtension), ""); 
+    }
+
+    
+
+    public ICodePathStrategy CodePathStrategy { get; set; }
 
     public void ExecuteCommand(IEditorCommand command,object arg)
     {
@@ -228,8 +254,6 @@ public class ElementsDiagram : ICommandHandler
         EditorUtility.SetDirty(Data);
     }
 
-
-    
     public IElementDrawer CreateDrawerFor(IDiagramItem item)
     {
         return uFrameEditor.CreateDrawer(item, this);
@@ -302,7 +326,7 @@ public class ElementsDiagram : ICommandHandler
         {
             if (diagramItem.IsEditing)
             {
-                diagramItem.EndEditing(Repository);
+                diagramItem.EndEditing();
             }
             diagramItem.IsSelected = false;
         }
@@ -312,10 +336,17 @@ public class ElementsDiagram : ICommandHandler
     {
         get { return CurrentEvent.mousePosition; }
     }
+
     public float SnapSize
     {
         get { return Data.SnapSize * Scale; }
     }
+
+    public void Save()
+    {
+        Repository.SaveDiagram(Data);
+    }
+
     public void Draw()
     {
         //var beforeScale = GUI.matrix;
@@ -323,8 +354,8 @@ public class ElementsDiagram : ICommandHandler
         //var guiScale = Matrix4x4.Scale(new Vector3(0.75f, 0.75f, 0.75f));
         //GUI.matrix = guiTranslation * guiScale * guiTranslation.inverse;
 
-        Repository.SerializedObject.Update();
-
+        //Repository.FastUpdate();
+        SerializedObject.Update();
         string focusItem = null;
 
         foreach (var drawer in ElementDrawers.OrderBy(p => p.IsSelected).ToArray())
@@ -347,8 +378,8 @@ public class ElementsDiagram : ICommandHandler
         {
             EditorGUI.FocusTextInControl(focusItem);
         }
-
-        Repository.SerializedObject.ApplyModifiedProperties();
+        SerializedObject.ApplyModifiedProperties();
+        //Repository.FastSave();
         if (!EditorApplication.isCompiling)
         {
             HandleInput();
@@ -483,7 +514,7 @@ public class ElementsDiagram : ICommandHandler
 
         var e = Event.current;
 
-        if (e.type == EventType.MouseDown)
+        if (e.type == EventType.MouseDown && e.button == 0)
         {
             CurrentEvent = Event.current;
             LastMouseDownPosition = e.mousePosition;
@@ -495,7 +526,7 @@ public class ElementsDiagram : ICommandHandler
             }
             e.Use();
         }
-        if (CurrentEvent.rawType == EventType.MouseUp && IsMouseDown)
+        if (CurrentEvent.rawType == EventType.MouseUp && IsMouseDown && e.button == 0)
         {
             LastMouseUpPosition = e.mousePosition;
             IsMouseDown = false;
@@ -506,7 +537,7 @@ public class ElementsDiagram : ICommandHandler
         {
             if (SelectedData != null && SelectedData.IsEditing)
             {
-                SelectedData.EndEditing(Repository);
+                SelectedData.EndEditing();
                 e.Use();
                 this.Dirty = true;
             }
@@ -519,21 +550,6 @@ public class ElementsDiagram : ICommandHandler
                 e.Use();
             }
         }
-    }
-
-    public void LayoutDiagram()
-    {
-        Undo.RecordObject(Data, "Layout Diagram");
-        var x = 0f;
-        var y = 20f;
-        foreach (var viewModelData in Data.DiagramItems)
-        {
-            viewModelData.Location = new Vector2(x, y);
-            x += viewModelData.Position.width + 10f;
-            //y += viewModelData.Position.height + 10f;
-        }
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
     }
 
     public void Refresh(bool refreshDrawers = true)
@@ -556,10 +572,6 @@ public class ElementsDiagram : ICommandHandler
         }
         Data.UpdateLinks();
         Dirty = true;
-    }
-
-    public void RemoveItem(IViewModelItem item)
-    {
     }
 
     public void ShowAddNewContextMenu(bool addAtMousePosition = false)
@@ -711,81 +723,81 @@ public class ElementsDiagram : ICommandHandler
 
     protected virtual void DecorateContextMenu(object context, GenericMenu menu)
     {
-        var methods = context.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
-        var properties = context.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        //var methods = context.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
+        //var properties = context.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        foreach (var propertyInfo in properties)
-        {
-            var attribute = propertyInfo.GetCustomAttributes(typeof(DiagramContextMenuAttribute), true).FirstOrDefault() as DiagramContextMenuAttribute;
-            if (attribute == null) continue;
-            var value = (bool)propertyInfo.GetValue(context, null);
-            PropertyInfo info = propertyInfo;
-            menu.AddItem(new GUIContent(attribute.MenuPath), value, () =>
-            {
-                try
-                {
-                    info.SetValue(context, !value, null);
-                }
-                catch (Exception ex)
-                {
-                    EditorUtility.DisplayDialog("Can't do that", ex.InnerException.Message, "OK");
-                }
-            });
-        }
-        if (menu.GetItemCount() > 0)
-        {
-            menu.AddSeparator("");
-        }
+        //foreach (var propertyInfo in properties)
+        //{
+        //    var attribute = propertyInfo.GetCustomAttributes(typeof(DiagramContextMenuAttribute), true).FirstOrDefault() as DiagramContextMenuAttribute;
+        //    if (attribute == null) continue;
+        //    var value = (bool)propertyInfo.GetValue(context, null);
+        //    PropertyInfo info = propertyInfo;
+        //    menu.AddItem(new GUIContent(attribute.MenuPath), value, () =>
+        //    {
+        //        try
+        //        {
+        //            info.SetValue(context, !value, null);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            EditorUtility.DisplayDialog("Can't do that", ex.InnerException.Message, "OK");
+        //        }
+        //    });
+        //}
+        //if (menu.GetItemCount() > 0)
+        //{
+        //    menu.AddSeparator("");
+        //}
 
-        var items = new List<ContextMenuItem>();
-        foreach (var methodInfo in methods)
-        {
-            var attribute = methodInfo.GetCustomAttributes(typeof(DiagramContextMenuAttribute), true).FirstOrDefault() as DiagramContextMenuAttribute;
-            if (attribute == null) continue;
-            var item = new ContextMenuItem()
-            {
-                Attribute = attribute,
-                ActionMethod = methodInfo,
-            };
-            items.Add(item);
-        }
+        //var items = new List<ContextMenuItem>();
+        //foreach (var methodInfo in methods)
+        //{
+        //    var attribute = methodInfo.GetCustomAttributes(typeof(DiagramContextMenuAttribute), true).FirstOrDefault() as DiagramContextMenuAttribute;
+        //    if (attribute == null) continue;
+        //    var item = new ContextMenuItem()
+        //    {
+        //        Attribute = attribute,
+        //        ActionMethod = methodInfo,
+        //    };
+        //    items.Add(item);
+        //}
 
-        foreach (var contextMenuItem in items.OrderBy(p => p.Attribute.Index))
-        {
-            var checkedMethod = methods.FirstOrDefault(p => p.Name == contextMenuItem.ActionMethod.Name + "IsChecked");
-            var check = false;
-            if (checkedMethod != null)
-            {
-                check = (bool)checkedMethod.Invoke(context, null);
-            }
-            ContextMenuItem item = contextMenuItem;
-            menu.AddItem(new GUIContent(contextMenuItem.Attribute.MenuPath), check, () =>
-            {
-                Undo.RecordObject(this.Data, item.ActionMethod.Name);
-                var parameters = item.ActionMethod.GetParameters();
-                if (parameters.Length > 0)
-                {
-                    if (typeof(IDiagramItem).IsAssignableFrom(parameters[0].ParameterType))
-                    {
-                        item.ActionMethod.Invoke(context, new object[] { SelectedData });
-                    }
-                    else if (parameters[0].ParameterType == typeof(IElementsDataRepository))
-                    {
-                        item.ActionMethod.Invoke(context, new object[] { Repository });
-                    }
-                    else
-                    {
-                        item.ActionMethod.Invoke(context, new object[] { Data });
-                    }
-                }
-                else
-                {
-                    item.ActionMethod.Invoke(context, null);
-                }
-                Refresh(true);
-                EditorUtility.SetDirty(this.Data);
-            });
-        }
+        //foreach (var contextMenuItem in items.OrderBy(p => p.Attribute.Index))
+        //{
+        //    var checkedMethod = methods.FirstOrDefault(p => p.Name == contextMenuItem.ActionMethod.Name + "IsChecked");
+        //    var check = false;
+        //    if (checkedMethod != null)
+        //    {
+        //        check = (bool)checkedMethod.Invoke(context, null);
+        //    }
+        //    ContextMenuItem item = contextMenuItem;
+        //    menu.AddItem(new GUIContent(contextMenuItem.Attribute.MenuPath), check, () =>
+        //    {
+        //        Undo.RecordObject(this.Data, item.ActionMethod.Name);
+        //        var parameters = item.ActionMethod.GetParameters();
+        //        if (parameters.Length > 0)
+        //        {
+        //            if (typeof(IDiagramItem).IsAssignableFrom(parameters[0].ParameterType))
+        //            {
+        //                item.ActionMethod.Invoke(context, new object[] { SelectedData });
+        //            }
+        //            else if (parameters[0].ParameterType == typeof(IElementsDataRepository))
+        //            {
+        //                item.ActionMethod.Invoke(context, new object[] { Repository });
+        //            }
+        //            else
+        //            {
+        //                item.ActionMethod.Invoke(context, new object[] { Data });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            item.ActionMethod.Invoke(context, null);
+        //        }
+        //        Refresh(true);
+        //        EditorUtility.SetDirty(this.Data);
+        //    });
+        //}
 
         //foreach (var diagramPlugin in Plugins)
         //{
@@ -868,7 +880,6 @@ public class ElementsDiagram : ICommandHandler
 
     private void OnMouseDown()
     {
-
         var selected = MouseOverViewData;
         if (selected != null)
         {
@@ -896,7 +907,7 @@ public class ElementsDiagram : ICommandHandler
             {
                 if (diagramItem.IsEditing)
                 {
-                    diagramItem.EndEditing(Repository);
+                    diagramItem.EndEditing();
                 }
                 diagramItem.IsSelected = false;
             }
@@ -997,11 +1008,6 @@ public class ElementsDiagram : ICommandHandler
             {
                 yield return Data;
             }
-            if (Repository != null)
-            {
-                yield return Repository;
-            }
-            
             foreach (var diagramItem in AllSelected)
             {
                 yield return diagramItem;

@@ -68,6 +68,8 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
 
     [SerializeField, HideInInspector]
     private List<PluginData> _pluginItems = new List<PluginData>();
+    [SerializeField, HideInInspector]
+    private string _codePathStrategyName = "Default";
 
     private static DiagramPlugin[] _plugins;
 
@@ -544,13 +546,23 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         set { _pluginItems = value; }
     }
 
-    public void Applied()
+    public string AssetPath { get; set; }
+
+    public string CodePathStrategyName
+    {
+        get { return string.IsNullOrEmpty(_codePathStrategyName) ? "Default" : _codePathStrategyName; }
+        set { _codePathStrategyName = value; }
+    }
+
+    public ICodePathStrategy CodePathStrategy { get; set; }
+
+    public void RefactorApplied()
     {
         var refactorables = AllDiagramItems.OfType<IRefactorable>()
             .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>());
         foreach (var refactorable in refactorables)
         {
-            refactorable.Applied();
+            refactorable.RefactorApplied();
         }
     }
 }

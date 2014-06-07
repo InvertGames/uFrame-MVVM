@@ -35,7 +35,7 @@ public interface IGameContainer
         /// <typeparam name="TTarget">The concrete type</typeparam>
         void Register<TSource, TTarget>(string name = null);
 
-        void RegisterAdapter<TFor, TBase, TConcrete>();
+        void RegisterRelation<TFor, TBase, TConcrete>();
 
         /// <summary>
         /// Register an instance of a type.
@@ -84,9 +84,9 @@ public interface IGameContainer
         /// <returns>The/An instance of 'instanceType'</returns>
         object Resolve(Type baseType, string name = null, bool requireInstance = false);
 
-        TBase ResolveAdapter<TBase>(Type tfor);
+        TBase ResolveRelation<TBase>(Type tfor);
 
-        TBase ResolveAdapter<TFor, TBase>();
+        TBase ResolveRelation<TFor, TBase>();
 
         /// <summary>
         /// Resolves all instances of TType or subclasses of TType.  Either named or not.

@@ -178,15 +178,19 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
         }
         if (GUILayout.Button(rtn, UFStyles.ClearItemStyle))
         {
-            var typesList = item.GetAvailableRelatedTypes(Diagram.Repository);
-            ElementItemTypesWindow.InitTypeListWindow("Choose Type", typesList.ToArray(), (selected) =>
+            var commandName = item.GetType().Name.Replace("Data", "") + "TypeSelection";
+            var command = Container.Resolve<IEditorCommand>(commandName);
+            if (command == null)
             {
-                Undo.RecordObject(diagram.Data, "Set Type");
-                item.RelatedType = selected.AssemblyQualifiedName;
-                diagram.Data.UpdateLinks();
-                EditorUtility.SetDirty(diagram.Data);
-                EditorWindow.GetWindow<ElementItemTypesWindow>().Close();
-            });
+                Debug.Log("Type selection command not found for " + commandName);
+            }
+            else
+            {
+                Execute(command);
+            }
+         
+
+         
         }
         base.DrawSelectedItem(subItem, diagram);
     }

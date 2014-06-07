@@ -49,17 +49,7 @@ public class SceneManagerData : DiagramItem
     {
         return false;
     }
-    //[DiagramContextMenu("Create Scene", -10)]
-    //public void CreateScene(ElementsDataRepository repository)
-    //{
-    //    repository.CreateNewScene(this);
-    //}
-    [DiagramContextMenu("Create Scene", -9)]
-    public void CreateScene(IElementsDataRepository repository)
-    {
-        
-        repository.CreateScene(this);
-    }
+
     [DiagramContextMenu("Add to scene", 0)]
     public void AddToScene()
     {
@@ -153,10 +143,10 @@ public class SceneManagerData : DiagramItem
     {
         return new RenameSceneManagerRefactorer(this);
     }
-    public override void EndEditing(IElementsDataRepository repository)
+    public override void EndEditing()
     {
     
-        base.EndEditing(repository);
+        base.EndEditing();
     }
 
     public RenameSceneManagerRefactorer RenameRefactor { get; set; }

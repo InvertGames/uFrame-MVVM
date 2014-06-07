@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
@@ -279,15 +280,6 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         }
     }
 
-    private void DiagramOnAddNewBehaviourClicked(ElementData data)
-    {
-        var behaviour = UBAssetManager.CreateAsset<UFrameBehaviours>(Diagram.Repository.AssetPath, data.Name + "Behaviour");
-        behaviour.ViewModelType = data.CurrentViewModelType;
-        EditorUtility.SetDirty(behaviour);
-        data.Dirty = true;
-        Selection.activeObject = behaviour;
-    }
-
     private void DiagramOnSelectionChanged(IDiagramItem diagramItem, IDiagramItem item)
     {
         var behaviourItem = Diagram.SelectedItem as BehaviourSubItem;
@@ -297,146 +289,15 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         }
     }
 
-    private void DoToolbar(Rect diagramRect)
-    {
-        if (
-            GUILayout.Button(
-                new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.name),
-                EditorStyles.toolbarPopup))
-        {
-            SelectDiagram();
-        }
-        if (Diagram != null && Diagram.Data != null)
-        {
-            if (GUILayout.Button(new GUIContent("Scene Flow"), EditorStyles.toolbarButton))
-            {
-                Diagram.Data.PopToFilter(Diagram.Data.SceneFlowFilter);
-                Diagram.Refresh(true);
-            }
-
-            foreach (var filter in Diagram.Data.FilterPath)
-            {
-                if (GUILayout.Button(new GUIContent(filter.Name), EditorStyles.toolbarButton))
-                {
-                    Diagram.Data.PopToFilter(filter);
-                    Diagram.Refresh(true);
-                }
-            }
-        }
-
-        //if (Diagram != null && Diagram.Data != null && Diagram.Data.FilterPath.Any())
-        //{
-        //    if (GUILayout.Button(Diagram.Data.CurrentFilter.Name, EditorStyles.toolbarDropDown))
-        //    {
-        //        SelectFilter(filter);
-        //    }
-        //}
-
-        GUILayout.FlexibleSpace();
-        if (Diagram != null)
-        {
-            
-            if (GUILayout.Button("Add New", EditorStyles.toolbarButton))
-            {
-                Diagram.ShowAddNewContextMenu(false);
-            }
-            if (GUILayout.Button("Save", EditorStyles.toolbarButton))
-            {
-                Diagram.DeselectAll();
-                Diagram.Repository.Save();
-            }
-        }
-        if (Diagram != null)
-            if (GUILayout.Button("Auto Layout", EditorStyles.toolbarButton))
-            {
-                Diagram.LayoutDiagram();
-            }
-        if (Diagram != null)
-            if (GUILayout.Button("Import", EditorStyles.toolbarButton))
-            {
-                var typesList = ActionSheetHelpers.GetDerivedTypes<ViewModel>(false, false).ToList();
-                typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<Enum>(false, false));
-                typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<SceneManager>(false, false));
-                typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<ViewBase>(false, false));
-
-                ImportTypeListWindow.InitTypeListWindow("Choose Type", typesList, (item) =>
-                {
-                    if (Diagram.Repository.IsImportOnly(item))
-                    {
-                        EditorUtility.DisplayDialog("Can't do that", string.Format("Can't import {0} because it already belongs to another diagram.", item.FullName), "OK");
-
-                        return;
-                    }
-
-                    var result = Diagram.Repository.ImportType(item);
-                    if (result != null)
-                    {
-                        result.Data = Diagram.Data;
-                        if (Diagram.Data.CurrentFilter.IsAllowed(result, item))
-                        {
-                            Diagram.Data.CurrentFilter.Locations[result] = new Vector2(15f, 15f);
-                        }
-                    }
-                    Diagram.Refresh(true);
-                });
-            }
-    }
-
     private void DoToolbar2()
     {
-        if (
-         GUILayout.Button(
-             new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.name),
-             EditorStyles.toolbarPopup))
+        if (GUILayout.Button(new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.name),EditorStyles.toolbarPopup))
         {
             SelectDiagram();
         }
-        //if (Diagram != null && Diagram.Data != null)
-        //{
-        //    if (GUILayout.Button(new GUIContent("Scene Flow"), EditorStyles.toolbarButton))
-        //    {
-        //        Diagram.Data.PopToFilter(Diagram.Data.SceneFlowFilter);
-        //        Diagram.Refresh(true);
-        //    }
-
-        //    foreach (var filter in Diagram.Data.FilterPath)
-        //    {
-        //        if (GUILayout.Button(new GUIContent(filter.Name), EditorStyles.toolbarButton))
-        //        {
-        //            Diagram.Data.PopToFilter(filter);
-        //            Diagram.Refresh(true);
-        //        }
-        //    }
-        //}
-
         Toolbar.Go();
-        //uFrameEditor.DoCommands<ToolbarUI>(c=>c is IToolbarCommand, this, Diagram, diagramData);
-        //uFrameEditor.DoCommands<ToolbarUI>(IsToolbarLeft, this, Diagram, diagramData);
-        //GUILayout.FlexibleSpace();
-        //uFrameEditor.DoCommands<ToolbarUI>(IsToolbarRight, this, Diagram, diagramData);
-        //uFrameEditor.DoToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Left),this,Diagram,diagramData);
-        //GUILayout.FlexibleSpace();
-        //uFrameEditor.DoToolbar(uFrameEditor.ToolbarCommands.Where(p => p.Position == ToolbarPosition.Right), this, Diagram, diagramData);
     }
 
-    public bool IsToolbarLeft(IEditorCommand command)
-    {
-        var tbarCommand = command as IToolbarCommand;
-        if (tbarCommand == null) return false;
-        if (tbarCommand.Position == ToolbarPosition.Left) return true;
-        return false;
-    }
-    public bool IsToolbarRight(IEditorCommand command)
-    {
-        var tbarCommand = command as IToolbarCommand;
-        if (tbarCommand == null) return false;
-        if (tbarCommand.Position == ToolbarPosition.Right) return true;
-        return false;
-    }
-    public void DrawToolbar(IEnumerable<IToolbarCommand> commands)
-    {
-
-    }
     private void HandlePanning(Rect diagramRect)
     {
         if (Event.current.button == 2 && Event.current.type == EventType.MouseDown)
@@ -467,16 +328,12 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         }
     }
 
-    private void LoadDiagram(ElementDesignerData diagram)
+    private void LoadDiagram(string path)
     {
-        Diagram = new ElementsDiagram(new ElementsDataRepository()
-        {
-            Diagram = diagram
-        });
+        Diagram = uFrameEditor.Container.Resolve<ElementsDiagram>();
+        Diagram = new ElementsDiagram(path);
         Diagram.SelectionChanged += DiagramOnSelectionChanged;
-        Diagram.AddNewBehaviourClicked += DiagramOnAddNewBehaviourClicked;
-
-        LastLoadedDiagram = diagram.name;
+        LastLoadedDiagram = path;
 
         Diagram.Data.ApplyFilter();
         Diagram.Refresh(true);
@@ -549,35 +406,3 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
 }
 
 
-
-public class ImportCommand : ElementsDiagramToolbarCommand
-{
-    public override void Perform(ElementsDiagram diagram)
-    {
-        var typesList = ActionSheetHelpers.GetDerivedTypes<ViewModel>(false, false).ToList();
-        typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<Enum>(false, false));
-        typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<SceneManager>(false, false));
-        typesList.AddRange(ActionSheetHelpers.GetDerivedTypes<ViewBase>(false, false));
-
-        ImportTypeListWindow.InitTypeListWindow("Choose Type", typesList, (item) =>
-        {
-            if (diagram.Repository.IsImportOnly(item))
-            {
-                EditorUtility.DisplayDialog("Can't do that", string.Format("Can't import {0} because it already belongs to another diagram.", item.FullName), "OK");
-
-                return;
-            }
-
-            var result = diagram.Repository.ImportType(item);
-            if (result != null)
-            {
-                result.Data = diagram.Data;
-                if (diagram.Data.CurrentFilter.IsAllowed(result, item))
-                {
-                    diagram.Data.CurrentFilter.Locations[result] = new Vector2(15f, 15f);
-                }
-            }
-            diagram.Refresh(true);
-        });
-    }
-}

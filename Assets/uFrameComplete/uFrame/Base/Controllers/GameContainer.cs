@@ -226,7 +226,7 @@ public class GameContainer : IGameContainer
         }
 
         private Dictionary<Type, Dictionary<Type, Type>> _adapterMappings = new Dictionary<Type, Dictionary<Type, Type>>();
-        public void RegisterAdapter<TFor, TBase, TConcrete>()
+        public void RegisterRelation<TFor, TBase, TConcrete>()
         {
             if (AdapterMappings.ContainsKey(typeof(TFor)))
             {
@@ -246,7 +246,8 @@ public class GameContainer : IGameContainer
                 AdapterMappings[typeof(TFor)].Add(typeof(TBase), typeof(TConcrete));
             }
         }
-        public TBase ResolveAdapter<TBase>(Type tfor)
+
+        public TBase ResolveRelation<TBase>(Type tfor)
         {
 
             if (!AdapterMappings.ContainsKey(tfor)) return default(TBase);
@@ -257,7 +258,7 @@ public class GameContainer : IGameContainer
             Inject(result);
             return result;
         }
-        public TBase ResolveAdapter<TFor, TBase>()
+        public TBase ResolveRelation<TFor, TBase>()
         {
 
             if (!AdapterMappings.ContainsKey(typeof(TFor)))

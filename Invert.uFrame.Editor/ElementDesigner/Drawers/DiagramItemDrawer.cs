@@ -162,7 +162,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(diagram.Data, "Set Element Name");
-                Data.Rename(Diagram.Repository, newText);
+                Data.Rename(newText);
                 CalculateBounds();
                 EditorUtility.SetDirty(diagram.Data);
             }
@@ -364,7 +364,7 @@ public abstract class DiagramItemDrawer<TData> : IElementDrawer where TData : ID
             {
                 Undo.RecordObject(diagram.Data, "Rename");
 
-                item.Rename(Diagram.Repository, Data, newName);
+                item.Rename(Data, newName);
                 EditorUtility.SetDirty(diagram.Data);
 
             }

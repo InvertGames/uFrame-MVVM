@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
+using UnityEngine;
+
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddElementCollectionCommand : EditorCommand<ElementData>

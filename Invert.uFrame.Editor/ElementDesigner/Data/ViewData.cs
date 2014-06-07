@@ -42,10 +42,10 @@ public class ViewData : DiagramItem, ISubSystemType
     {
         return new RenameViewRefactorer(this);
     }
-    public override void EndEditing(IElementsDataRepository repository)
+    public override void EndEditing()
     {
         var oldAssemblyName = AssemblyQualifiedName;
-        base.EndEditing(repository);
+        base.EndEditing();
         foreach (var v in Data.Views.Where(p => p.ForAssemblyQualifiedName == oldAssemblyName))
         {
             v.ForAssemblyQualifiedName = AssemblyQualifiedName;
@@ -223,7 +223,10 @@ public class ViewData : DiagramItem, ISubSystemType
         if (viewData != null)
         {
             viewData.ForAssemblyQualifiedName = null;
+            viewData.BaseViewIdentifier = null;
         }
+        //viewData.BaseViewIdentifier = null;
+        BaseViewIdentifier = null;
         //var elementData = target as ElementData;
         //if (target is )
     }

@@ -12,29 +12,25 @@ public class ViewGenerator : ViewClassGenerator
     public override void Initialize(CodeFileGenerator fileGenerator)
     {
         base.Initialize(fileGenerator);
+        if (View.ViewForElement != null)
         AddView(View);
     }
 
     public void AddView(ViewData view)
     {
-        var data = DiagramData.AllDiagramItems.FirstOrDefault(p => p.AssemblyQualifiedName == view.ForAssemblyQualifiedName);
-        if (data == null) return;
+        
+        
 
         var decl = new CodeTypeDeclaration(view.NameAsView);
         decl.IsPartial = true;
         // var baseView = new CodeTypeReference(_diagramData.NameAsViewBase);
         //baseView.TypeArguments.Add(_diagramData.NameAsViewModel);
-        var elementData = data as ElementData;
+        
         if (IsDesignerFile)
         {
-            if (elementData == null)
-            {
-                decl.BaseTypes.Add(new CodeTypeReference(data.Name));
-            }
-            else
-            {
-                decl.BaseTypes.Add(new CodeTypeReference(elementData.NameAsViewBase));
-            }
+           
+                decl.BaseTypes.Add(new CodeTypeReference(view.BaseViewName));
+            
         }
         else
         {

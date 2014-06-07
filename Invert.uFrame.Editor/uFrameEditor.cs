@@ -1,20 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Security.Cryptography.X509Certificates;
-using Invert.uFrame.Editor.ElementDesigner;
+﻿using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ElementDesigner.Data;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace Invert.uFrame.Editor
 {
     public static class uFrameEditor
     {
+        private static IEditorCommand[] _commands;
         private static uFrameContainer _container;
+
+        private static IEnumerable<CodeGenerator> _generators;
+
+        private static IDiagramPlugin[] _plugins;
+
+        private static IToolbarCommand[] _toolbarCommands;
+
+        public static IEditorCommand[] Commands
+        {
+            get
+            {
+                return _commands ?? (_commands = Container.ResolveAll<IEditorCommand>().ToArray());
+            }
+        }
 
         public static uFrameContainer Container
         {
@@ -28,12 +41,6 @@ namespace Invert.uFrame.Editor
             set { _container = value; }
         }
 
-        private static IEditorCommand[] _commands;
-        private static IToolbarCommand[] _toolbarCommands;
-        private static IDiagramPlugin[] _plugins;
-
-        private static IEnumerable<CodeGenerator> _generators;
-
         public static IDiagramPlugin[] Plugins
         {
             get
@@ -43,12 +50,101 @@ namespace Invert.uFrame.Editor
             set { _plugins = value; }
         }
 
-        public static IEditorCommand[] Commands
+        public static IEnumerable<IEditorCommand> CreateCommandsFor<T>()
         {
-            get
+            var commands = Container.ResolveAll<T>();
+
+            return Commands.Where(p => typeof(T).IsAssignableFrom(p.For));
+        }
+
+        public static TCommandUI CreateCommandUI<TCommandUI>(ICommandHandler handler, params Type[] contextTypes) where TCommandUI : class,ICommandUI
+        {
+            var ui = Container.Resolve<TCommandUI>() as ICommandUI;
+            ui.Handler = handler;
+            foreach (var contextType in contextTypes)
             {
-                return _commands ?? (_commands = Container.ResolveAll<IEditorCommand>().ToArray());
+                var commands = Container.ResolveAll(contextType).Cast<IEditorCommand>().ToArray();
+
+                foreach (var command in commands)
+                {
+                    ui.AddCommand(command);
+                }
             }
+            return (TCommandUI)ui;
+        }
+
+        public static IElementDrawer CreateDrawer(IDiagramItem data, ElementsDiagram diagram)
+        {
+            if (data == null)
+            {
+                Debug.Log("Data is null.");
+            }
+            var drawer = Container.ResolveRelation<IElementDrawer>(data.GetType());
+            if (drawer == null)
+            {
+                Debug.Log("Couldn't Create drawer for.");
+            }
+            drawer.Diagram = diagram;
+            drawer.Model = data;
+            return drawer;
+        }
+
+        public static void ExecuteCommand(this ICommandHandler handler, IEditorCommand command)
+        {
+            var objs = handler.ContextObjects.ToArray();
+            foreach (var o in objs)
+            {
+                if (o == null) continue;
+
+                if (command.For.IsAssignableFrom(o.GetType()))
+                {
+                    command.Execute(o);
+                }
+            }
+        }
+
+
+        public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ElementDesignerData diagramData)
+        {
+            // Grab all the code generators
+            var diagramItemGenerators = Container.ResolveAll<DiagramItemGenerator>().ToArray();
+
+            foreach (var diagramItemGenerator in diagramItemGenerators)
+            {
+                DiagramItemGenerator generator = diagramItemGenerator;
+                var items = diagramData.AllDiagramItems.Where(p => p.GetType() == generator.DiagramItemType);
+
+                foreach (var item in items)
+                {
+                    var codeGenerators = generator.GetGenerators(diagramData, item);
+                    foreach (var codeGenerator in codeGenerators)
+                    {
+                        codeGenerator.ObjectData = item;
+                        codeGenerator.GeneratorFor = diagramItemGenerator.DiagramItemType;
+                        yield return codeGenerator;
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(ElementDesignerData diagramData)
+        {
+            var codeGenerators = GetAllCodeGenerators(diagramData).ToArray();
+            var groups = codeGenerators.GroupBy(p => p.Filename);
+            foreach (var @group in groups)
+            {
+                var generator = new CodeFileGenerator()
+                {
+                    Filename = @group.Key,
+                    Generators = @group.ToArray()
+                };
+                yield return generator;
+            }
+        }
+
+        public static IEnumerable<IEditorCommand> GetContextCommandsFor<T>()
+        {
+            return Commands.Where(p => p is IContextMenuItemCommand && typeof(T).IsAssignableFrom(p.For));
         }
 
         public static IEnumerable<Type> GetDerivedTypes<T>(bool includeAbstract = false, bool includeBase = true)
@@ -82,10 +178,10 @@ namespace Invert.uFrame.Editor
             }
         }
 
-        //public static IToolbarCommand[] ToolbarCommands
-        //{
-        //    get { return _toolbarCommands ?? (_toolbarCommands = Commands.OfType<IToolbarCommand>().ToArray()); }
-        //}
+        public static void ShowCommandContextMenu()
+        {
+            GenericMenu menu = new GenericMenu();
+        }
 
         private static void InitializeContainer(uFrameContainer container)
         {
@@ -94,17 +190,27 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IUFrameContainer>(container);
             container.RegisterInstance<uFrameContainer>(container);
 
+            // Register the diagram type
+            container.Register<ElementsDiagram,ElementsDiagram>();
+
+            // Repositories
+            container.RegisterInstance<IElementsDataRepository>(new DefaultElementsRepository(),".asset");
+
             // Command Drawers
             container.Register<ToolbarUI, ToolbarUI>();
             container.Register<ContextMenuUI, ContextMenuUI>();
             //container.RegisterInstance(new ContextMenuUI());
+
+            container.RegisterInstance(new AddElementCommandCommand());
+            container.RegisterInstance(new AddElementCollectionCommand());
+            container.RegisterInstance(new AddElementPropertyCommand());
+            container.RegisterInstance(new AddEnumItemCommand());
 
             container.RegisterInstance<IToolbarCommand>(new PopToFilterCommand(), "PopToFilterCommand");
             container.RegisterInstance<IToolbarCommand>(new SaveCommand(), "SaveCommand");
             container.RegisterInstance<IToolbarCommand>(new AutoLayoutCommand(), "AutoLayoutCommand");
 
             container.RegisterInstance<IToolbarCommand>(new AddNewCommand(), "AddNewCommand");
-
 
             container.RegisterInstance<AddNewCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewSubSystemCommand(), "AddNewSubSystemCommand");
@@ -119,7 +225,7 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IDiagramContextCommand>(new AddNewEnumCommand(), "AddNewEnumCommand");
             container.RegisterInstance<IDiagramContextCommand>(new AddNewViewCommand(), "AddNewViewCommand");
             container.RegisterInstance<IDiagramContextCommand>(new AddNewViewComponentCommand(), "AddNewViewComponentCommand");
-            container.RegisterInstance<IDiagramContextCommand>(new ShowItemCommand(),"ShowItem");
+            container.RegisterInstance<IDiagramContextCommand>(new ShowItemCommand(), "ShowItem");
 
             container.RegisterInstance<IDiagramItemCommand>(new OpenCommand(), "OpenCode");
             container.RegisterInstance<IDiagramItemCommand>(new DeleteCommand(), "Delete");
@@ -128,123 +234,29 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IDiagramItemCommand>(new RemoveLinkCommand(), "RemoveLink");
             container.RegisterInstance<IDiagramItemCommand>(new SelectViewBaseElement(), "SelectView");
 
-
-
             // Drawers
-            container.RegisterAdapter<ViewData, IElementDrawer, ViewDrawer>();
-            container.RegisterAdapter<ViewComponentData, IElementDrawer, ViewComponentDrawer>();
-            container.RegisterAdapter<ElementData, IElementDrawer, ElementDrawer>();
-            container.RegisterAdapter<ElementDataBase, IElementDrawer, ElementDrawer>();
-            container.RegisterAdapter<ImportedElementData, IElementDrawer, ElementDrawer>();
-            container.RegisterAdapter<SubSystemData, IElementDrawer, SubSystemDrawer>();
-            container.RegisterAdapter<SceneManagerData, IElementDrawer, SceneManagerDrawer>();
-            container.RegisterAdapter<EnumData, IElementDrawer, DiagramEnumDrawer>();
+            container.RegisterRelation<ViewData, IElementDrawer, ViewDrawer>();
+            container.RegisterRelation<ViewComponentData, IElementDrawer, ViewComponentDrawer>();
+            container.RegisterRelation<ElementData, IElementDrawer, ElementDrawer>();
+            container.RegisterRelation<ElementDataBase, IElementDrawer, ElementDrawer>();
+            container.RegisterRelation<ImportedElementData, IElementDrawer, ElementDrawer>();
+            container.RegisterRelation<SubSystemData, IElementDrawer, SubSystemDrawer>();
+            container.RegisterRelation<SceneManagerData, IElementDrawer, SceneManagerDrawer>();
+            container.RegisterRelation<EnumData, IElementDrawer, DiagramEnumDrawer>();
 
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
             {
-                container.RegisterInstance(Activator.CreateInstance(diagramPlugin) as IDiagramPlugin, diagramPlugin.Name, false);
+                container.RegisterInstance(Activator.CreateInstance((Type) diagramPlugin) as IDiagramPlugin, diagramPlugin.Name, false);
             }
 
             container.InjectAll();
             foreach (var diagramPlugin in Plugins)
             {
 #if DEBUG
-                UnityEngine.Debug.Log("Loaded Plugin: " + diagramPlugin);
+                Debug.Log("Loaded Plugin: " + diagramPlugin);
 #endif
                 diagramPlugin.Initialize(Container);
-
             }
-
-
-        }
-
-        public static IElementDrawer CreateDrawer(IDiagramItem data, ElementsDiagram diagram)
-        {
-            if (data == null)
-            {
-                UnityEngine.Debug.Log("Data is null.");
-            }
-            var drawer = Container.ResolveAdapter<IElementDrawer>(data.GetType());
-            if (drawer == null)
-            {
-                UnityEngine.Debug.Log("Couldn't Create drawer for.");
-            }
-            drawer.Diagram = diagram;
-            drawer.Model = data;
-            return drawer;
-        }
-
-        public static IEnumerable<IEditorCommand> CreateCommandsFor<T>()
-        {
-            var commands = Container.ResolveAll<T>();
-
-            return Commands.Where(p => typeof(T).IsAssignableFrom(p.For));
-
-        }
-        public static IEnumerable<IEditorCommand> GetContextCommandsFor<T>()
-        {
-            return Commands.Where(p => p is IContextMenuItemCommand && typeof(T).IsAssignableFrom(p.For));
-        }
-
-        public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ElementDesignerData diagramData)
-        {
-            // Grab all the code generators
-            var diagramItemGenerators = Container.ResolveAll<DiagramItemGenerator>().ToArray();
-
-            foreach (var diagramItemGenerator in diagramItemGenerators)
-            {
-
-                DiagramItemGenerator generator = diagramItemGenerator;
-                var items = diagramData.AllDiagramItems.Where(p => p.GetType() == generator.DiagramItemType);
-
-                foreach (var item in items)
-                {
-                    var codeGenerators = generator.GetGenerators(diagramData, item);
-                    foreach (var codeGenerator in codeGenerators)
-                    {
-                        codeGenerator.ObjectData = item;
-                        codeGenerator.GeneratorFor = diagramItemGenerator.DiagramItemType;
-                        yield return codeGenerator;
-                    }
-                }
-            }
-        }
-
-        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(ElementDesignerData diagramData)
-        {
-            var codeGenerators = GetAllCodeGenerators(diagramData).ToArray();
-            var groups = codeGenerators.GroupBy(p => p.Filename);
-            foreach (var @group in groups)
-            {
-                var generator = new CodeFileGenerator()
-                {
-                    Filename = @group.Key,
-                    Generators = @group.ToArray()
-                };
-                yield return generator;
-            }
-        }
-
-        public static void ShowCommandContextMenu()
-        {
-            GenericMenu menu = new GenericMenu();
-
-
-        }
-
-        public static void ExecuteCommand(this ICommandHandler handler, IEditorCommand command)
-        {
-            var objs = handler.ContextObjects.ToArray();
-            foreach (var o in objs)
-            {
-                if (o == null) continue;
-
-                if (command.For.IsAssignableFrom(o.GetType()))
-                {
-                    command.Execute(o);
-                }
-            }
-
         }
 
         //public static TCommandUI DoCommands<TCommandUI>(params object[] contextObjects) where TCommandUI : class, ICommandUI
@@ -256,9 +268,6 @@ namespace Invert.uFrame.Editor
         //{
         //    var commandUI = Container.Resolve<TCommandUI>();
         //    commandUI.Initialize();
-
-
-
 
         //    var commands = new List<IEditorCommand>();
         //    foreach (var contextObject in contextObjects)
@@ -294,7 +303,6 @@ namespace Invert.uFrame.Editor
         //        }
         //        else if (editorCommand is IChildCommand)
         //        {
-
         //        }
         //        else if (editorCommand is IDynamicOptionsCommand)
         //        {
@@ -370,23 +378,5 @@ namespace Invert.uFrame.Editor
         //        }
         //    }
         //}
-
-        public static TCommandUI CreateCommandUI<TCommandUI>( ICommandHandler handler, params Type[] contextTypes) where TCommandUI : class,ICommandUI
-        {
-            var ui = Container.Resolve<TCommandUI>() as ICommandUI;
-            ui.Handler = handler;
-            foreach (var contextType in contextTypes)
-            {
-                var commands = Container.ResolveAll(contextType).Cast<IEditorCommand>().ToArray();
-
-                foreach (var command in commands)
-                {
-                    
-                    ui.AddCommand(command);
-                }
-
-            }
-            return (TCommandUI)ui;
-        }
     }
 }

@@ -13,7 +13,8 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins
 
         public override void Initialize(uFrameContainer container)
         {
-            container.RegisterAdapter<ViewData,IElementDrawer,UBehavioursViewDrawer>();
+            container.RegisterInstance(new AddNewBehaviourCommand());
+            container.RegisterRelation<ViewData,IElementDrawer,UBehavioursViewDrawer>();
 
         }
     }
