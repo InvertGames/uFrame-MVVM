@@ -2,19 +2,19 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddElementPropertyCommand : EditorCommand<ElementData>
     {
-        public override void Perform(ElementData item)
+        public override void Perform(ElementData node)
         {
-            item.Properties.Add(new ViewModelPropertyData()
+            node.Properties.Add(new ViewModelPropertyData()
             {
                 DefaultValue = string.Empty,
-                Name = item.Data.GetUniqueName("String1"),
+                Name = node.Data.GetUniqueName("String1"),
                 Type = typeof(string)
             });
         }
 
-        public override string CanPerform(ElementData item)
+        public override string CanPerform(ElementData node)
         {
-            if (item == null) return "Arg can't be null";
+            if (node == null) return "Arg can't be null";
             return null;
         }
     }

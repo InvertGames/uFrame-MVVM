@@ -1,112 +1,97 @@
-﻿using System;
+﻿using Invert.uFrame.Editor.ElementDesigner.Data;
+using Invert.uFrame.Editor.Refactoring;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Invert.uFrame.Editor.ElementDesigner.Data;
-using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [SerializeField]
 public class ElementDesignerData : ScriptableObject, IRefactorable
 {
+    private static DiagramPlugin[] _plugins;
+
     [SerializeField]
     private Color _associationLinkColor = Color.white;
-    [SerializeField]
-    private Color _definitionLinkColor = Color.cyan;
-
-    [SerializeField]
-    private Color _transitionLinkColor = Color.green;
-
-    [SerializeField]
-    private Color _subSystemLinkColor = Color.grey;
-
-    [SerializeField]
-    private Color _inheritanceLinkColor = Color.red;
-
-    [SerializeField]
-    private Color _SceneManagerLinkColor = Color.yellow;
-
-    [SerializeField]
-    private Color _viewLinkColor = Color.magenta;
 
     [SerializeField, HideInInspector]
-    private List<EnumData> _enums = new List<EnumData>();
-
-    private Stack<IDiagramFilter> _filterStack;
+    private string _codePathStrategyName = "Default";
 
     [SerializeField, HideInInspector]
     private DefaultFilter _defaultFilter = new DefaultFilter();
 
-   
+    [SerializeField]
+    private Color _definitionLinkColor = Color.cyan;
+
+    [SerializeField, HideInInspector]
+    private List<EnumData> _enums = new List<EnumData>();
+
+    [NonSerialized]
+    private Stack<IDiagramFilter> _filterStack;
 
     [SerializeField, HideInInspector]
     private List<ImportedElementData> _importedElements = new List<ImportedElementData>();
+
+    [SerializeField]
+    private Color _inheritanceLinkColor = Color.red;
+
+    [NonSerialized]
     private List<IDiagramLink> _links = new List<IDiagramLink>();
 
     [SerializeField, HideInInspector]
     private List<string> _persistedFilterStack = new List<string>();
 
     [SerializeField, HideInInspector]
+    private List<PluginData> _pluginItems = new List<PluginData>();
+
+    [SerializeField, HideInInspector]
     private SceneFlowFilter _sceneFlowFilter = new SceneFlowFilter();
+
+    [SerializeField]
+    private Color _SceneManagerLinkColor = Color.yellow;
+
     [SerializeField, HideInInspector]
     private List<SceneManagerData> _SceneManagers = new List<SceneManagerData>();
 
     [SerializeField]
     private float _snapSize = 10f;
+
+    [SerializeField]
+    private Color _subSystemLinkColor = Color.grey;
+
     [SerializeField, HideInInspector]
     private List<SubSystemData> _subSystems = new List<SubSystemData>();
+
+    [SerializeField]
+    private Color _transitionLinkColor = Color.green;
+
     [SerializeField, HideInInspector]
     private string _version;
 
     [SerializeField, HideInInspector]
     private List<ViewComponentData> _viewComponents = new List<ViewComponentData>();
+
+    [SerializeField]
+    private Color _viewLinkColor = Color.magenta;
+
     [SerializeField, HideInInspector]//, HideInInspector]
     private List<ElementData> _viewModels = new List<ElementData>();
 
     [SerializeField, HideInInspector]
     private List<ViewData> _views = new List<ViewData>();
 
-    [SerializeField, HideInInspector]
-    private List<PluginData> _pluginItems = new List<PluginData>();
-    [SerializeField, HideInInspector]
-    private string _codePathStrategyName = "Default";
-
-    private static DiagramPlugin[] _plugins;
-
-    public string ControllersFileName
-    {
-        get
-        {
-            return name + "Controllers.designer.cs";
-        }
-    }
-    public string ViewModelsFileName
-    {
-        get
-        {
-            return name + ".designer.cs";
-        }
-    }
-    public string ViewsFileName
-    {
-        get
-        {
-            return name + "Views.designer.cs";
-        }
-    }
-
-    public IEnumerable<IDiagramItem> AllDiagramItems
+    public IEnumerable<IDiagramNode> AllDiagramItems
     {
         get
         {
             return
-                ViewModels.Cast<IDiagramItem>()
-                    .Concat(ImportedElements.Cast<IDiagramItem>())
-                    .Concat(Enums.Cast<IDiagramItem>())
-                    .Concat(Views.Cast<IDiagramItem>())
-                    .Concat(SceneManagers.Cast<IDiagramItem>())
-                    .Concat(SubSystems.Cast<IDiagramItem>())
-                    .Concat(ViewComponents.Cast<IDiagramItem>()
+                ViewModels.Cast<IDiagramNode>()
+                    .Concat(ImportedElements.Cast<IDiagramNode>())
+                    .Concat(Enums.Cast<IDiagramNode>())
+                    .Concat(Views.Cast<IDiagramNode>())
+                    .Concat(SceneManagers.Cast<IDiagramNode>())
+                    .Concat(SubSystems.Cast<IDiagramNode>())
+                    .Concat(ViewComponents.Cast<IDiagramNode>()
                 );
         }
     }
@@ -116,15 +101,33 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         get { return AllDiagramItems.OfType<ElementDataBase>(); }
     }
 
-    public IEnumerable<IDiagramItem> AllowedDiagramItems
+    public IEnumerable<IDiagramNode> AllowedDiagramItems
     {
         get { return AllDiagramItems.Where(p => CurrentFilter.IsAllowed(p, p.GetType())); }
     }
+
+    public string AssetPath { get; set; }
 
     public Color AssociationLinkColor
     {
         get { return _associationLinkColor; }
         set { _associationLinkColor = value; }
+    }
+
+    public ICodePathStrategy CodePathStrategy { get; set; }
+
+    public string CodePathStrategyName
+    {
+        get { return string.IsNullOrEmpty(_codePathStrategyName) ? "Default" : _codePathStrategyName; }
+        set { _codePathStrategyName = value; }
+    }
+
+    public string ControllersFileName
+    {
+        get
+        {
+            return name + "Controllers.designer.cs";
+        }
     }
 
     public IDiagramFilter CurrentFilter
@@ -151,7 +154,7 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         set { _definitionLinkColor = value; }
     }
 
-    public IEnumerable<IDiagramItem> DiagramItems
+    public IEnumerable<IDiagramNode> DiagramItems
     {
         get { return FilterItems(AllDiagramItems); }
     }
@@ -172,20 +175,17 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         get { return FilterStack.Reverse(); }
     }
 
-    //public bool GenerateSceneManager
-    //{
-    //    get { return _generateSceneManager; }
-    //    set { _generateSceneManager = value; }
-    //}
-
     public IEnumerable<IDiagramFilter> Filters
     {
         get { return AllDiagramItems.OfType<IDiagramFilter>(); }
     }
 
-
-
-    public IEnumerable<IDiagramItem> ImportableItems
+    //public bool GenerateSceneManager
+    //{
+    //    get { return _generateSceneManager; }
+    //    set { _generateSceneManager = value; }
+    //}
+    public IEnumerable<IDiagramNode> ImportableItems
     {
         get
         {
@@ -218,6 +218,26 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         get
         {
             return Regex.Replace(name, "[^a-zA-Z0-9_.]+", "");
+        }
+    }
+
+    public List<PluginData> PluginItems
+    {
+        get { return _pluginItems; }
+        set { _pluginItems = value; }
+    }
+
+    public int RefactorCount { get; set; }
+
+    public List<Refactorer> Refactorings
+    {
+        get
+        {
+            return
+                AllDiagramItems.OfType<IRefactorable>()
+                    .SelectMany(p => p.Refactorings)
+                    .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>().SelectMany(p => p.Refactorings))
+                    .ToList();
         }
     }
 
@@ -290,10 +310,26 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         set { _viewModels = value; }
     }
 
+    public string ViewModelsFileName
+    {
+        get
+        {
+            return name + ".designer.cs";
+        }
+    }
+
     public List<ViewData> Views
     {
         get { return _views; }
         set { _views = value; }
+    }
+
+    public string ViewsFileName
+    {
+        get
+        {
+            return name + "Views.designer.cs";
+        }
     }
 
     protected Stack<IDiagramFilter> FilterStack
@@ -330,7 +366,7 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         //UpdateLinks();
     }
 
-    public IEnumerable<IDiagramItem> FilterItems(IDiagramFilter filter)
+    public IEnumerable<IDiagramNode> FilterItems(IDiagramFilter filter)
     {
         return FilterItems(filter, AllDiagramItems);
     }
@@ -350,18 +386,6 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
 
             current = AllElements.FirstOrDefault(p => p.AssemblyQualifiedName == current.BaseTypeName);
         }
-    }
-
-    public string GetUniqueName(string name)
-    {
-        var tempName = name;
-        var index = 1;
-        while (AllDiagramItems.Any(p => p.Name.ToUpper() == tempName.ToUpper()))
-        {
-            tempName = name + index;
-            index++;
-        }
-        return tempName;
     }
 
     public ElementDataBase[] GetAssociatedElements(ElementDataBase data)
@@ -389,6 +413,18 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         }
     }
 
+    public string GetUniqueName(string name)
+    {
+        var tempName = name;
+        var index = 1;
+        while (AllDiagramItems.Any(p => p.Name.ToUpper() == tempName.ToUpper()))
+        {
+            tempName = name + index;
+            index++;
+        }
+        return tempName;
+    }
+
     public ElementData GetViewModel(string elementName)
     {
         return ViewModels.FirstOrDefault(p => p.Name == elementName);
@@ -409,6 +445,7 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
             PopFilter();
         }
     }
+
     public void PopToFilter(string filterName)
     {
         while (CurrentFilter.Name != filterName)
@@ -416,6 +453,7 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
             PopFilter();
         }
     }
+
     public void PushFilter(IDiagramFilter filter)
     {
         FilterLeave();
@@ -423,6 +461,17 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         if (!_persistedFilterStack.Contains(filter.Name))
             _persistedFilterStack.Add(filter.Name);
         ApplyFilter();
+    }
+
+    public void RefactorApplied()
+    {
+        RefactorCount = 0;
+        var refactorables = AllDiagramItems.OfType<IRefactorable>()
+            .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>());
+        foreach (var refactorable in refactorables)
+        {
+            refactorable.RefactorApplied();
+        }
     }
 
     public void ReloadFilterStack()
@@ -455,10 +504,10 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
             Links.AddRange(item.GetLinks(diagramItems));
         }
 
-        var diagramFilter = CurrentFilter as IDiagramItem;
+        var diagramFilter = CurrentFilter as IDiagramNode;
         if (diagramFilter != null)
         {
-            var diagramFilterItems = diagramFilter.Items.OfType<IDiagramItem>().ToArray();
+            var diagramFilterItems = diagramFilter.Items.OfType<IDiagramNode>().ToArray();
             foreach (var diagramItem in diagramItems)
             {
                 Links.AddRange(diagramItem.GetLinks(diagramFilterItems));
@@ -478,14 +527,12 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
         }
     }
 
-
-
-    protected IEnumerable<IDiagramItem> FilterItems(IEnumerable<IDiagramItem> allDiagramItems)
+    protected IEnumerable<IDiagramNode> FilterItems(IEnumerable<IDiagramNode> allDiagramItems)
     {
         return FilterItems(CurrentFilter, allDiagramItems);
     }
 
-    protected IEnumerable<IDiagramItem> FilterItems(IDiagramFilter filter, IEnumerable<IDiagramItem> allDiagramItems)
+    protected IEnumerable<IDiagramNode> FilterItems(IDiagramFilter filter, IEnumerable<IDiagramNode> allDiagramItems)
     {
         foreach (var item in allDiagramItems)
         {
@@ -525,44 +572,6 @@ public class ElementDesignerData : ScriptableObject, IRefactorable
                     yield return elementDataBase;
                 }
             }
-        }
-    }
-
-    public List<Refactorer> Refactorings
-    {
-        get
-        {
-            return
-                AllDiagramItems.OfType<IRefactorable>()
-                    .SelectMany(p => p.Refactorings)
-                    .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>().SelectMany(p => p.Refactorings))
-                    .ToList();
-        }
-    }
-
-    public List<PluginData> PluginItems
-    {
-        get { return _pluginItems; }
-        set { _pluginItems = value; }
-    }
-
-    public string AssetPath { get; set; }
-
-    public string CodePathStrategyName
-    {
-        get { return string.IsNullOrEmpty(_codePathStrategyName) ? "Default" : _codePathStrategyName; }
-        set { _codePathStrategyName = value; }
-    }
-
-    public ICodePathStrategy CodePathStrategy { get; set; }
-
-    public void RefactorApplied()
-    {
-        var refactorables = AllDiagramItems.OfType<IRefactorable>()
-            .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>());
-        foreach (var refactorable in refactorables)
-        {
-            refactorable.RefactorApplied();
         }
     }
 }

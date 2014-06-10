@@ -11,28 +11,28 @@ public class FilterLocations
     [SerializeField]
     private List<Vector2> _values = new List<Vector2>();
 
-    public Vector2 this[IDiagramItem item]
+    public Vector2 this[IDiagramNode node]
     {
         get
         {
-            var indexOf = Keys.IndexOf(item.Identifier);
+            var indexOf = Keys.IndexOf(node.Identifier);
             if (indexOf > -1)
             {
                 return Values[indexOf];
             }
 
-            return item.Location;
+            return node.Location;
         }
         set
         {
-            var indexOf = Keys.IndexOf(item.Identifier);
+            var indexOf = Keys.IndexOf(node.Identifier);
             if (indexOf > -1)
             {
                 Values[indexOf] = value;
             }
             else
             {
-                Add(item.Identifier, value);
+                Add(node.Identifier, value);
             }
         }
     }

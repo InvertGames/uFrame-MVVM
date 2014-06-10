@@ -77,10 +77,11 @@ public class ImportedElementData : ElementDataBase
 
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.ImportedElements.Remove(this);
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         
     }

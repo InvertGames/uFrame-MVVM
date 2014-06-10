@@ -8,18 +8,18 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddElementCollectionCommand : EditorCommand<ElementData>
     {
-        public override void Perform(ElementData item)
+        public override void Perform(ElementData node)
         {
-            item.Collections.Add(new ViewModelCollectionData()
+            node.Collections.Add(new ViewModelCollectionData()
             {
-                Name = item.Data.GetUniqueName("NewCollection"),
+                Name = node.Data.GetUniqueName("NewCollection"),
                 ItemType = typeof(string)
             });
         }
 
-        public override string CanPerform(ElementData item)
+        public override string CanPerform(ElementData node)
         {
-            if (item == null) return "Arg can't be null";
+            if (node == null) return "Arg can't be null";
             return null;
         }
     }

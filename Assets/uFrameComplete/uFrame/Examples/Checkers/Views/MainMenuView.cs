@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 
-public partial class MainMenuView {
+public abstract partial class MainMenuView {
     
     public override void Bind() {
         base.Bind();

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ViewComponentDrawer : DiagramItemDrawer<ViewComponentData>
+public class ViewComponentDrawer : DiagramNodeDrawer<ViewComponentData>
 {
-    private DiagramItemHeader _additiveScenesHeader;
+    private NodeItemHeader _additiveScenesHeader;
 
     public override GUIStyle BackgroundStyle
     {
@@ -30,9 +30,9 @@ public class ViewComponentDrawer : DiagramItemDrawer<ViewComponentData>
         get { return false; }
     }
 
-    public DiagramItemHeader AdditiveScenesHeader
+    public NodeItemHeader AdditiveScenesHeader
     {
-        get { return _additiveScenesHeader ?? (_additiveScenesHeader = new DiagramItemHeader() { Label = "Additive Scenes", HeaderType = typeof(AdditiveSceneData) }); }
+        get { return _additiveScenesHeader ?? (_additiveScenesHeader = new NodeItemHeader() { Label = "Additive Scenes", HeaderType = typeof(AdditiveSceneData) }); }
         set { _additiveScenesHeader = value; }
     }
 

@@ -11,11 +11,11 @@ public class FilterDictionary<TValue>
     [SerializeField]
     private List<TValue> _values = new List<TValue>();
 
-    public TValue this[IDiagramItem item]
+    public TValue this[IDiagramNode node]
     {
         get
         {
-            var indexOf = Keys.IndexOf(item.Identifier);
+            var indexOf = Keys.IndexOf(node.Identifier);
             if (indexOf > -1)
             {
                 return Values[indexOf];
@@ -25,14 +25,14 @@ public class FilterDictionary<TValue>
         }
         set
         {
-            var indexOf = Keys.IndexOf(item.Identifier);
+            var indexOf = Keys.IndexOf(node.Identifier);
             if (indexOf > -1)
             {
                 Values[indexOf] = value;
             }
             else
             {
-                Add(item.Identifier, value);
+                Add(node.Identifier, value);
             }
         }
     }

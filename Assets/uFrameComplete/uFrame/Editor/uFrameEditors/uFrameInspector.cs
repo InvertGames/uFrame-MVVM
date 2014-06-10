@@ -174,8 +174,10 @@ public class uFrameInspector : Editor
             if (requireInstanceAttribute != null)
             {
                 var method = t.GetType()
-                    .GetMethod(requireInstanceAttribute.MethodName, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-                if (method == null)
+                    .GetMethod(requireInstanceAttribute.MethodName,  BindingFlags.Public | BindingFlags.Instance);
+
+                if (method == null || (method.DeclaringType != null 
+                    && method.DeclaringType.Name.EndsWith("ViewBase"))) // TODO: Remove this hack and use attributes
                 {
                     var value = (bool)fieldInfo.GetValue(target);
                     if (value)

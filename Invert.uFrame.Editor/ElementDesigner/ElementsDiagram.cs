@@ -12,7 +12,7 @@ using UnityEngine;
 
 public class ElementsDiagram : ICommandHandler
 {
-    public delegate void SelectionChangedEventArgs(IDiagramItem oldData, IDiagramItem newData);
+    public delegate void SelectionChangedEventArgs(IDiagramNode oldData, IDiagramNode newData);
 
     public delegate void ViewModelDataEventHandler(ElementData data);
 
@@ -24,9 +24,9 @@ public class ElementsDiagram : ICommandHandler
 
     private ElementDesignerData _data;
 
-    private List<IElementDrawer> _elementDrawers = new List<IElementDrawer>();
+    private List<INodeDrawer> _nodeDrawers = new List<INodeDrawer>();
 
-    private IElementDrawer _selected;
+    private INodeDrawer _selected;
 
     private ISelectable _selectedItem;
 
@@ -34,7 +34,7 @@ public class ElementsDiagram : ICommandHandler
     private Event _currentEvent;
     private SerializedObject _o;
 
-    public IEnumerable<IDiagramItem> AllSelected
+    public IEnumerable<IDiagramNode> AllSelected
     {
         get
         {
@@ -42,7 +42,21 @@ public class ElementsDiagram : ICommandHandler
         }
     }
 
-    public IDiagramItem CurrentMouseOverItem { get; set; }
+    public IDiagramNode CurrentMouseOverNode { get; set; }
+
+    public ISelectable CurrentMouseOverNodeItem
+    {
+        get
+        {
+            var node = MouseOverViewData;
+            if (node == null)
+                return null;
+
+           return node.Items.OfType<ISelectable>()
+                .FirstOrDefault(p => p.Position.Scale(Scale).Contains(Event.current.mousePosition));
+
+        }
+    }
 
     public ElementDesignerData Data
     {
@@ -118,10 +132,10 @@ public class ElementsDiagram : ICommandHandler
         }
     }
 
-    public List<IElementDrawer> ElementDrawers
+    public List<INodeDrawer> NodeDrawers
     {
-        get { return _elementDrawers; }
-        set { _elementDrawers = value; }
+        get { return _nodeDrawers; }
+        set { _nodeDrawers = value; }
     }
 
     public bool IsMouseDown { get; set; }
@@ -137,18 +151,18 @@ public class ElementsDiagram : ICommandHandler
         get { return UFStyles.Scale; }
     }
 
-    public IElementDrawer MouseOverViewData
+    public INodeDrawer MouseOverViewData
     {
         get
         {
-            return ElementDrawers.FirstOrDefault(p => p.Model.Position.Scale(Scale).Contains(CurrentMousePosition));
+            return NodeDrawers.FirstOrDefault(p => p.Model.Position.Scale(Scale).Contains(CurrentMousePosition));
             //return Data.DiagramItems.LastOrDefault(p => p.Position.Contains(CurrentMousePosition));
         }
     }
 
     protected IElementsDataRepository Repository { get; set; }
 
-    public IDiagramItem SelectedData
+    public IDiagramNode SelectedData
     {
         get
         {
@@ -157,7 +171,7 @@ public class ElementsDiagram : ICommandHandler
         }
     }
     
-    public IElementDrawer Selected
+    public INodeDrawer Selected
     {
         get { return _selected; }
         set
@@ -190,7 +204,7 @@ public class ElementsDiagram : ICommandHandler
         get { return _selectedItem; }
         set
         {
-            foreach (var item in ElementDrawers.SelectMany(p => p.Items))
+            foreach (var item in NodeDrawers.SelectMany(p => p.Items))
                 item.IsSelected = false;
 
             var old = _selectedItem;
@@ -221,7 +235,9 @@ public class ElementsDiagram : ICommandHandler
 
     public ElementsDiagram(string assetPath)
     {
+        Debug.Log(assetPath);
         var fileExtension = Path.GetExtension(assetPath);
+        if (string.IsNullOrEmpty(fileExtension)) fileExtension = ".asset";
         Repository = uFrameEditor.Container.Resolve<IElementsDataRepository>(fileExtension);
         if (Repository != null)
         {
@@ -254,9 +270,9 @@ public class ElementsDiagram : ICommandHandler
         EditorUtility.SetDirty(Data);
     }
 
-    public IElementDrawer CreateDrawerFor(IDiagramItem item)
+    public INodeDrawer CreateDrawerFor(IDiagramNode node)
     {
-        return uFrameEditor.CreateDrawer(item, this);
+        return uFrameEditor.CreateDrawer(node, this);
         //foreach (var diagramPlugin in Plugins)
         //{
         //    var drawer = diagramPlugin.GetDrawer(this, item);
@@ -358,7 +374,7 @@ public class ElementsDiagram : ICommandHandler
         SerializedObject.Update();
         string focusItem = null;
 
-        foreach (var drawer in ElementDrawers.OrderBy(p => p.IsSelected).ToArray())
+        foreach (var drawer in NodeDrawers.OrderBy(p => p.IsSelected).ToArray())
         {
             //drawer.CalculateBounds();
             var shouldFocus = drawer.ShouldFocus;
@@ -393,10 +409,11 @@ public class ElementsDiagram : ICommandHandler
             }
 
             var newPosition = DragDelta;//CurrentMousePosition - SelectionOffset;
-            foreach (var diagramItem in AllSelected)
+            var allSelected = AllSelected.ToArray();
+            foreach (var diagramItem in allSelected)
             {
                 diagramItem.Location += (newPosition * (1f / Scale));
-
+                
                 //diagramItem.Location = new Vector2(Mathf.Round((diagramItem.Location.x)/ SnapSize) * SnapSize, Mathf.Round(diagramItem.Location.y / SnapSize) * SnapSize);
 
                 //var newPositionRect = new Rect(newPosition.x, newPosition.y, diagramItem.Position.width,
@@ -405,7 +422,7 @@ public class ElementsDiagram : ICommandHandler
                 //diagramItem.Position = newPositionRect;
             }
 
-            foreach (var viewModelDrawer in ElementDrawers)
+            foreach (var viewModelDrawer in NodeDrawers.Where(p=>p.IsSelected))
             {
                 viewModelDrawer.CalculateBounds();
             }
@@ -421,9 +438,9 @@ public class ElementsDiagram : ICommandHandler
                     var mouseOver = MouseOverViewData;
                     var canCreateLink = SelectedData.CanCreateLink(mouseOver == null ? null : mouseOver.Model);
 
-                    CurrentMouseOverItem = mouseOver == null ? null : mouseOver.Model;
+                    CurrentMouseOverNode = mouseOver == null ? null : mouseOver.Model;
 
-                    UFStyles.DrawNodeCurve(SelectedData.Position.Scale(UFStyles.Scale), mouseOver != null && canCreateLink ? CurrentMouseOverItem.Position.Scale(UFStyles.Scale) :
+                    UFStyles.DrawNodeCurve(SelectedData.Position.Scale(UFStyles.Scale), mouseOver != null && canCreateLink ? CurrentMouseOverNode.Position.Scale(UFStyles.Scale) :
                             new Rect(CurrentMousePosition.x, CurrentMousePosition.y, 4, 4), Color.yellow, 6);
                 }
                 else
@@ -433,11 +450,11 @@ public class ElementsDiagram : ICommandHandler
                         var mouseOver = MouseOverViewData;
                         var canCreateLink = SelectedItem.CanCreateLink(mouseOver == null ? null : mouseOver.Model);
 
-                        CurrentMouseOverItem = mouseOver == null ? null : mouseOver.Model;
+                        CurrentMouseOverNode = mouseOver == null ? null : mouseOver.Model;
 
                         UFStyles.DrawNodeCurve(SelectedItem.Position.Scale(UFStyles.Scale),
-                            CurrentMouseOverItem != null && canCreateLink
-                                ? CurrentMouseOverItem.Position.Scale(UFStyles.Scale)
+                            CurrentMouseOverNode != null && canCreateLink
+                                ? CurrentMouseOverNode.Position.Scale(UFStyles.Scale)
                                 : new Rect(CurrentMousePosition.x, CurrentMousePosition.y, 4, 4),
                             Color.green, 6);
                     }
@@ -450,7 +467,7 @@ public class ElementsDiagram : ICommandHandler
             }
             else
             {
-                CurrentMouseOverItem = null;
+                CurrentMouseOverNode = null;
             }
         }
         else if (IsMouseDown)
@@ -492,7 +509,7 @@ public class ElementsDiagram : ICommandHandler
         else
         {
             SelectionRect = new Rect();
-            CurrentMouseOverItem = null;
+            CurrentMouseOverNode = null;
         }
         if (SelectionRect.width > 20 && SelectionRect.height > 20)
         {
@@ -504,9 +521,9 @@ public class ElementsDiagram : ICommandHandler
         }
     }
 
-    public DiagramItemDrawer<TData> GetDrawer<TData>(TData data) where TData : IDiagramItem
+    public DiagramNodeDrawer<TData> GetDrawer<TData>(TData data) where TData : IDiagramNode
     {
-        return ElementDrawers.OfType<DiagramItemDrawer<TData>>().FirstOrDefault(p => p.Data.Equals(data));
+        return NodeDrawers.OfType<DiagramNodeDrawer<TData>>().FirstOrDefault(p => p.Data.Equals(data));
     }
 
     public void HandleInput()
@@ -514,7 +531,7 @@ public class ElementsDiagram : ICommandHandler
 
         var e = Event.current;
 
-        if (e.type == EventType.MouseDown && e.button == 0)
+        if (e.type == EventType.MouseDown && e.button != 2)
         {
             CurrentEvent = Event.current;
             LastMouseDownPosition = e.mousePosition;
@@ -526,7 +543,7 @@ public class ElementsDiagram : ICommandHandler
             }
             e.Use();
         }
-        if (CurrentEvent.rawType == EventType.MouseUp && IsMouseDown && e.button == 0)
+        if (CurrentEvent.rawType == EventType.MouseUp && IsMouseDown)
         {
             LastMouseUpPosition = e.mousePosition;
             IsMouseDown = false;
@@ -555,7 +572,7 @@ public class ElementsDiagram : ICommandHandler
     public void Refresh(bool refreshDrawers = true)
     {
         if (refreshDrawers)
-            ElementDrawers.Clear();
+            NodeDrawers.Clear();
 
         foreach (var diagramItem in Data.DiagramItems)
         {
@@ -563,7 +580,7 @@ public class ElementsDiagram : ICommandHandler
             diagramItem.Dirty = true;
             var drawer = CreateDrawerFor(diagramItem);
             if (drawer == null) continue;
-            ElementDrawers.Add(drawer);
+            NodeDrawers.Add(drawer);
 
             if (refreshDrawers)
             {
@@ -646,7 +663,7 @@ public class ElementsDiagram : ICommandHandler
     public void ShowContextMenu()
     {
 
-        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(Selected, typeof (IDiagramItemCommand), Selected.CommandsType);
+        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(Selected, typeof (IDiagramNodeCommand), Selected.CommandsType);
         menu.Go();
 
         //var menu = new GenericMenu();
@@ -713,12 +730,8 @@ public class ElementsDiagram : ICommandHandler
 
     public void ShowItemContextMenu(object item)
     {
-        var menu = new GenericMenu();
-        DecorateContextMenu(item, menu);
-        if (menu.GetItemCount() > 0)
-        {
-            menu.ShowAsContext();
-        }
+        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(this, typeof(IDiagramNodeItemCommand));
+        menu.Go();
     }
 
     protected virtual void DecorateContextMenu(object context, GenericMenu menu)
@@ -806,7 +819,7 @@ public class ElementsDiagram : ICommandHandler
         //}
     }
 
-    protected virtual void OnSelectionChanged(IDiagramItem olddata, IDiagramItem newdata)
+    protected virtual void OnSelectionChanged(IDiagramNode olddata, IDiagramNode newdata)
     {
         SelectionChangedEventArgs handler = SelectionChanged;
         if (handler != null) handler(olddata, newdata);
@@ -896,10 +909,14 @@ public class ElementsDiagram : ICommandHandler
                     }
                 }
             }
-            SelectionOffset = LastMouseDownPosition - new Vector2(selected.Model.Position.x, selected.Model.Position.y);
-            LastDragPosition = LastMouseDownPosition;
+            if (Event.current.button != 2)
+            {
+                SelectionOffset = LastMouseDownPosition - new Vector2(selected.Model.Position.x, selected.Model.Position.y);
+                LastDragPosition = LastMouseDownPosition;    
+            }
+            
         }
-        else
+        else 
         {
             //if (AllSelected.All(p => p != SelectedData))
             //{
@@ -942,24 +959,24 @@ public class ElementsDiagram : ICommandHandler
             IsMouseDown = false;
             return;
         }
-        if (CurrentMouseOverItem != null)
+        if (CurrentMouseOverNode != null)
         {
             if (SelectedItem != null)
             {
-                if (SelectedItem.CanCreateLink(CurrentMouseOverItem))
+                if (SelectedItem.CanCreateLink(CurrentMouseOverNode))
                 {
                     Undo.RecordObject(Data, "Create Link");
-                    SelectedItem.CreateLink(SelectedData, CurrentMouseOverItem);
+                    SelectedItem.CreateLink(SelectedData, CurrentMouseOverNode);
                     Refresh();
                     EditorUtility.SetDirty(Data);
                 }
             }
             else
             {
-                if (SelectedData.CanCreateLink(CurrentMouseOverItem))
+                if (SelectedData.CanCreateLink(CurrentMouseOverNode))
                 {
                     Undo.RecordObject(Data, "Create Link");
-                    SelectedData.CreateLink(SelectedData, CurrentMouseOverItem);
+                    SelectedData.CreateLink(SelectedData, CurrentMouseOverNode);
                     Refresh();
                     EditorUtility.SetDirty(Data);
                 }
@@ -1004,6 +1021,7 @@ public class ElementsDiagram : ICommandHandler
         get
         {
             yield return this;
+            yield return SelectedItem;
             if (Data != null)
             {
                 yield return Data;

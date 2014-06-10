@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 
 [Serializable]
-public class ViewComponentData : DiagramItem
+public class ViewComponentData : DiagramNode
 {
   
     [SerializeField]
@@ -66,7 +66,7 @@ public class ViewComponentData : DiagramItem
             }
         }
     }
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var viewComponentData = target as ViewComponentData;
         if (viewComponentData != null)
@@ -109,10 +109,10 @@ public class ViewComponentData : DiagramItem
         return target is ViewComponentData || target is ElementData;
     }
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
 
-        foreach (var diagramItem in elementDesignerData.OfType<ViewComponentData>().Where(p=>p.BaseIdentifier == Identifier))
+        foreach (var diagramItem in nodes.OfType<ViewComponentData>().Where(p=>p.BaseIdentifier == Identifier))
         {
             yield return new ViewComponentLink()
             {
@@ -121,7 +121,7 @@ public class ViewComponentData : DiagramItem
             };
         }
 
-        var element = elementDesignerData.FirstOrDefault(p => p.Identifier == ElementIdentifier);
+        var element = nodes.FirstOrDefault(p => p.Identifier == ElementIdentifier);
         if (element != null)
         {
             if (element != this && element.Identifier != this.Identifier)
@@ -129,13 +129,13 @@ public class ViewComponentData : DiagramItem
                 yield return new GenericLink()
                 {
                     Element = element,
-                    Item = this
+                    Node = this
                 };
             }
         }
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         var viewComponent = target as ViewComponentData;
         if (viewComponent != null)
@@ -145,7 +145,7 @@ public class ViewComponentData : DiagramItem
         }
     }
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
         get { yield break; }
     }
@@ -162,6 +162,7 @@ public class ViewComponentData : DiagramItem
 
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.ViewComponents.Remove(this);
         foreach (var viewComponentData in Data.ViewComponents)
         {

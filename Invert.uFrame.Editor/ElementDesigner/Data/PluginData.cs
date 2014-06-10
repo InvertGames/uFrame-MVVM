@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Invert.uFrame.Editor.ElementDesigner.Data
 {
     [Serializable]
-    public class PluginData : DiagramItem
+    public class PluginData : DiagramNode
     {
         [SerializeField]
         private string _pluginTypeName;
@@ -20,7 +20,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Data
             get { return Name; }
         }
 
-        public override void CreateLink(IDiagramItem container, IDrawable target)
+        public override void CreateLink(IDiagramNode container, IDrawable target)
         {
             
         }
@@ -30,17 +30,17 @@ namespace Invert.uFrame.Editor.ElementDesigner.Data
             return false;
         }
 
-        public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+        public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
         {
             yield break;
         }
 
-        public override void RemoveLink(IDiagramItem target)
+        public override void RemoveLink(IDiagramNode target)
         {
             
         }
 
-        public override IEnumerable<IDiagramSubItem> Items
+        public override IEnumerable<IDiagramNodeItem> Items
         {
             get { yield break; }
         }
@@ -59,11 +59,11 @@ namespace Invert.uFrame.Editor.ElementDesigner.Data
 
         public override void RemoveFromDiagram()
         {
-            
+            base.RemoveFromDiagram();
         }
     }
 
-    public class PluginDrawer : DiagramItemDrawer<PluginData>
+    public class PluginDrawer : DiagramNodeDrawer<PluginData>
     {
         public PluginDrawer()
         {
@@ -82,12 +82,13 @@ namespace Invert.uFrame.Editor.ElementDesigner.Data
 
     public interface IDiagramPlugin
     {
+        decimal LoadPriority { get; }
         void Initialize(uFrameContainer container);
     }
 
     public abstract class DiagramPlugin :IDiagramPlugin
     {
-
+        public virtual decimal LoadPriority { get { return 1; } }
         public abstract void Initialize(uFrameContainer container);
     }
 }

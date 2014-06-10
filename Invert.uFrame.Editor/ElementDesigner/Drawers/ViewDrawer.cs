@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame;
@@ -5,7 +6,7 @@ using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
 
-public class ViewDrawer : DiagramItemDrawer<ViewData>
+public class ViewDrawer : DiagramNodeDrawer<ViewData>
 {
     private ElementDataBase _forElement;
 
@@ -35,7 +36,7 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
     }
 
 
-    private DiagramItemHeader _behavioursHeader;
+    private NodeItemHeader _behavioursHeader;
 
     protected override IEnumerable<DiagramSubItemGroup> GetItemGroups()
     {
@@ -52,7 +53,10 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
     public override void DoubleClicked()
     {
         base.DoubleClicked();
-       
+        if (DoubleClickCommand != null)
+        {
+            Execute(DoubleClickCommand);
+        }
     }
 
     public override float HeaderSize
@@ -63,9 +67,10 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
     protected override void DrawHeader(ElementsDiagram diagram, bool importOnly)
     {
         base.DrawHeader(diagram, importOnly);
-        var subTitlePosition = Data.HeaderPosition;
-        subTitlePosition.y += 15;
+        var subTitlePosition = Data.HeaderPosition.Scale(Scale);
+        subTitlePosition.y += (15 * Scale);
         var style = new GUIStyle(EditorStyles.miniLabel);
+        style.fontSize = Mathf.RoundToInt(10 * Scale);
         style.alignment = TextAnchor.MiddleCenter;
         GUI.Label(subTitlePosition,Data.BaseViewName,style);
     }
@@ -75,8 +80,8 @@ public class ViewDrawer : DiagramItemDrawer<ViewData>
         base.DrawContent(diagram, importOnly);
     }
 
-    protected override void DrawSelectedItem(IDiagramSubItem item, ElementsDiagram diagram)
+    protected override void DrawSelectedItem(IDiagramNodeItem nodeItem, ElementsDiagram diagram)
     {
-        base.DrawSelectedItem(item, diagram);
+        base.DrawSelectedItem(nodeItem, diagram);
     }
 }

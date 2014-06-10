@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 [Serializable]
-public class SceneManagerData : DiagramItem
+public class SceneManagerData : DiagramNode
 {
     [SerializeField]
     private List<SceneManagerTransition> _transitions = new List<SceneManagerTransition>();
@@ -38,7 +38,7 @@ public class SceneManagerData : DiagramItem
 
     [SerializeField] private string _subSystemIdentifier;
 
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         //var scItem = target as sceneManagerData;
         //if (scItem == null) return;
@@ -50,24 +50,8 @@ public class SceneManagerData : DiagramItem
         return false;
     }
 
-    [DiagramContextMenu("Add to scene", 0)]
-    public void AddToScene()
-    {
-        var sceneManagerAssemblyName = UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel",
-            this.NameAsSceneManager);
-        var type = Type.GetType(sceneManagerAssemblyName);
-        if (type == null)
-        {
-            EditorUtility.DisplayDialog("Can't add to scene", "The diagram must be saved and have no compiler errors.",
-                "OK");
-            return;
-        }
 
-        GameObject obj = new GameObject("_SceneManager");
-        obj.AddComponent(type);
-
-    }
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
 
         // Sync commands to here
@@ -100,7 +84,7 @@ public class SceneManagerData : DiagramItem
         foreach (var transition in Transitions)
         {
             
-            var linkedTo = elementDesignerData.OfType<SceneManagerData>().FirstOrDefault(p => p.Identifier == transition.ToIdentifier);
+            var linkedTo = nodes.OfType<SceneManagerData>().FirstOrDefault(p => p.Identifier == transition.ToIdentifier);
             if (linkedTo == null) continue;
 
 
@@ -113,12 +97,12 @@ public class SceneManagerData : DiagramItem
         yield break;
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         
     }
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
         get
         {
@@ -127,7 +111,7 @@ public class SceneManagerData : DiagramItem
             //{
             //    yield return command;
             //}
-            return Transitions.Cast<IDiagramSubItem>();
+            return Transitions.Cast<IDiagramNodeItem>();
         }
     }
 
@@ -153,6 +137,7 @@ public class SceneManagerData : DiagramItem
 
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.SceneManagers.Remove(this);
     }
 

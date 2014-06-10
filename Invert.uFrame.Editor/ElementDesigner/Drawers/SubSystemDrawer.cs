@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SubSystemDrawer : DiagramItemDrawer<SubSystemData>
+public class SubSystemDrawer : DiagramNodeDrawer<SubSystemData>
 {
-    private DiagramItemHeader _transitionsHeader;
+    private NodeItemHeader _transitionsHeader;
 
     public override GUIStyle BackgroundStyle
     {
@@ -34,9 +34,9 @@ public class SubSystemDrawer : DiagramItemDrawer<SubSystemData>
         }
     }
 
-    public DiagramItemHeader TransitionsHeader
+    public NodeItemHeader TransitionsHeader
     {
-        get { return _transitionsHeader ?? (_transitionsHeader = new DiagramItemHeader() { Label = "Types", HeaderType = typeof(IDiagramItem) }); }
+        get { return _transitionsHeader ?? (_transitionsHeader = new NodeItemHeader() { Label = "Types", HeaderType = typeof(IDiagramNode) }); }
         set { _transitionsHeader = value; }
     }
 

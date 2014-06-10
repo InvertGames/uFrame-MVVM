@@ -7,7 +7,7 @@ using UnityEngine;
 
 
 [Serializable]
-public class ViewModelCollectionData : DiagramSubItem, IViewModelItem
+public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
 {
     public bool AllowEmptyRelatedType
     {
@@ -31,9 +31,9 @@ public class ViewModelCollectionData : DiagramSubItem, IViewModelItem
     {
         return new RenameCollectionRefactorer(this);
     }
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
-        var element = target as IDiagramItem;
+        var element = target as IDiagramNode;
         if (element != null)
         {
             RelatedType = element.AssemblyQualifiedName;
@@ -45,7 +45,7 @@ public class ViewModelCollectionData : DiagramSubItem, IViewModelItem
         return target is ElementDataBase || target is EnumData;
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         RelatedType = typeof(string).AssemblyQualifiedName;
     }
@@ -64,9 +64,9 @@ public class ViewModelCollectionData : DiagramSubItem, IViewModelItem
         }
     }
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] data)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] diagramNode)
     {
-        foreach (var viewModelData in data)
+        foreach (var viewModelData in diagramNode)
         {
             if (viewModelData.Name == null) continue;
             if (viewModelData.Name == RelatedTypeName)
@@ -82,9 +82,9 @@ public class ViewModelCollectionData : DiagramSubItem, IViewModelItem
 
     public override string FullLabel { get { return RelatedTypeName + Name; } }
 
-    public override void Remove(IDiagramItem diagramItem)
+    public override void Remove(IDiagramNode diagramNode)
     {
-        var data = diagramItem as ElementDataBase;
+        var data = diagramNode as ElementDataBase;
         data.Collections.Remove(this);
         data.Dirty = true;
     }

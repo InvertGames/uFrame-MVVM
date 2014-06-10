@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class EnumItem : IDiagramSubItem
+public class EnumItem : IDiagramNodeItem
 {
     [SerializeField]
     private string _name;
@@ -25,14 +25,14 @@ public class EnumItem : IDiagramSubItem
 
     [SerializeField]
     private string _identifier;
-    public void Remove(IDiagramItem diagramItem)
+    public void Remove(IDiagramNode diagramNode)
     {
-        var data = diagramItem as EnumData;
+        var data = diagramNode as EnumData;
         data.EnumItems.Remove(this);
         data.Dirty = true;
     }
 
-    public void Rename(IDiagramItem data, string name)
+    public void Rename(IDiagramNode data, string name)
     {
         Name = name;
     }
@@ -46,7 +46,7 @@ public class EnumItem : IDiagramSubItem
         get { return Name; }
     }
 
-    public void CreateLink(IDiagramItem container, IDrawable target)
+    public void CreateLink(IDiagramNode container, IDrawable target)
     {
         
     }
@@ -56,13 +56,13 @@ public class EnumItem : IDiagramSubItem
         return false;
     }
 
-    public IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         yield break;
     }
 
     public bool IsSelected { get; set; }
-    public void RemoveLink(IDiagramItem target)
+    public void RemoveLink(IDiagramNode target)
     {
         throw new NotImplementedException();
     }

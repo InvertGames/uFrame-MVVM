@@ -18,7 +18,6 @@ public class ElementData : ElementDataBase, IDiagramFilter
     [SerializeField]
     private string _baseType;
 
-
     //public bool IsImportOnly
     //{
     //    get
@@ -52,13 +51,13 @@ public class ElementData : ElementDataBase, IDiagramFilter
         set { _commands = value.ToList(); }
     }
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
         get
         {
             if (Data.CurrentFilter == this)
             {
-                return IncludedViews.Cast<IDiagramSubItem>().Concat(IncludedComponents.Cast<IDiagramSubItem>());
+                return IncludedViews.Cast<IDiagramNodeItem>().Concat(IncludedComponents.Cast<IDiagramNodeItem>());
             }
             return base.Items;
         }
@@ -80,6 +79,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
 
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.ViewModels.Remove(this);
         
         foreach (var vm in Data.ViewModels)
@@ -116,7 +116,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
         }
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         var elementData = target as ElementData;
         if (elementData != null)

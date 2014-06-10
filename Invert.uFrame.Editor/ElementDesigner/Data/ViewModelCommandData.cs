@@ -5,7 +5,7 @@ using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [Serializable]
-public class ViewModelCommandData : DiagramSubItem, IViewModelItem
+public class ViewModelCommandData : DiagramNodeItem, IViewModelItem
 {
     [SerializeField]
     private bool _isYield;
@@ -120,7 +120,7 @@ public class ViewModelCommandData : DiagramSubItem, IViewModelItem
         return target is ElementDataBase || target is SceneManagerData || target is EnumData;
     }
 
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var sceneManagerData = target as SceneManagerData;
         if (sceneManagerData != null)
@@ -130,7 +130,7 @@ public class ViewModelCommandData : DiagramSubItem, IViewModelItem
         }
         if (target is EnumData || target is ElementDataBase)
         {
-            var element = target as IDiagramItem;
+            var element = target as IDiagramNode;
             RelatedType = element.AssemblyQualifiedName;
         }
     }
@@ -141,9 +141,9 @@ public class ViewModelCommandData : DiagramSubItem, IViewModelItem
     }
 
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] data)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] diagramNode)
     {
-        foreach (var viewModelData in data)
+        foreach (var viewModelData in diagramNode)
         {
             if (viewModelData.Name == null) continue;
             //var scd = viewModelData as SceneManagerData;
@@ -170,9 +170,9 @@ public class ViewModelCommandData : DiagramSubItem, IViewModelItem
     }
 
     [DiagramContextMenu("Delete", 0)]
-    public override void Remove(IDiagramItem diagramItem)
+    public override void Remove(IDiagramNode diagramNode)
     {
-        var data = diagramItem as ElementDataBase;
+        var data = diagramNode as ElementDataBase;
         if (data != null)
         {
             data.Commands.Remove(this);
@@ -182,13 +182,13 @@ public class ViewModelCommandData : DiagramSubItem, IViewModelItem
         }
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         
         RelatedType = null;
     }
 
-    public override void Rename(IDiagramItem data, string name)
+    public override void Rename(IDiagramNode data, string name)
     {
         base.Rename(data, name);
         foreach (var sceneManagerData in data.Data.SceneManagers)

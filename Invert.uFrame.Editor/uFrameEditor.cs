@@ -73,13 +73,13 @@ namespace Invert.uFrame.Editor
             return (TCommandUI)ui;
         }
 
-        public static IElementDrawer CreateDrawer(IDiagramItem data, ElementsDiagram diagram)
+        public static INodeDrawer CreateDrawer(IDiagramNode data, ElementsDiagram diagram)
         {
             if (data == null)
             {
                 Debug.Log("Data is null.");
             }
-            var drawer = Container.ResolveRelation<IElementDrawer>(data.GetType());
+            var drawer = Container.ResolveRelation<INodeDrawer>(data.GetType());
             if (drawer == null)
             {
                 Debug.Log("Couldn't Create drawer for.");
@@ -107,11 +107,11 @@ namespace Invert.uFrame.Editor
         public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ElementDesignerData diagramData)
         {
             // Grab all the code generators
-            var diagramItemGenerators = Container.ResolveAll<DiagramItemGenerator>().ToArray();
+            var diagramItemGenerators = Container.ResolveAll<NodeItemGenerator>().ToArray();
 
             foreach (var diagramItemGenerator in diagramItemGenerators)
             {
-                DiagramItemGenerator generator = diagramItemGenerator;
+                NodeItemGenerator generator = diagramItemGenerator;
                 var items = diagramData.AllDiagramItems.Where(p => p.GetType() == generator.DiagramItemType);
 
                 foreach (var item in items)
@@ -185,7 +185,7 @@ namespace Invert.uFrame.Editor
 
         private static void InitializeContainer(uFrameContainer container)
         {
-            container.Register<DiagramItemHeader, DiagramItemHeader>();
+            container.Register<NodeItemHeader, NodeItemHeader>();
 
             container.RegisterInstance<IUFrameContainer>(container);
             container.RegisterInstance<uFrameContainer>(container);
@@ -199,19 +199,20 @@ namespace Invert.uFrame.Editor
             // Command Drawers
             container.Register<ToolbarUI, ToolbarUI>();
             container.Register<ContextMenuUI, ContextMenuUI>();
-            //container.RegisterInstance(new ContextMenuUI());
+            
 
             container.RegisterInstance(new AddElementCommandCommand());
             container.RegisterInstance(new AddElementCollectionCommand());
             container.RegisterInstance(new AddElementPropertyCommand());
             container.RegisterInstance(new AddEnumItemCommand());
 
+            // Toolbar commands
             container.RegisterInstance<IToolbarCommand>(new PopToFilterCommand(), "PopToFilterCommand");
             container.RegisterInstance<IToolbarCommand>(new SaveCommand(), "SaveCommand");
             container.RegisterInstance<IToolbarCommand>(new AutoLayoutCommand(), "AutoLayoutCommand");
-
             container.RegisterInstance<IToolbarCommand>(new AddNewCommand(), "AddNewCommand");
 
+            // For the add new menu
             container.RegisterInstance<AddNewCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewSubSystemCommand(), "AddNewSubSystemCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewElementCommand(), "AddNewElementCommand");
@@ -219,6 +220,7 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<AddNewCommand>(new AddNewViewCommand(), "AddNewViewCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewViewComponentCommand(), "AddNewViewComponentCommand");
 
+            // For no selection diagram context menu
             container.RegisterInstance<IDiagramContextCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
             container.RegisterInstance<IDiagramContextCommand>(new AddNewSubSystemCommand(), "AddNewSubSystemCommand");
             container.RegisterInstance<IDiagramContextCommand>(new AddNewElementCommand(), "AddNewElementCommand");
@@ -227,22 +229,27 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IDiagramContextCommand>(new AddNewViewComponentCommand(), "AddNewViewComponentCommand");
             container.RegisterInstance<IDiagramContextCommand>(new ShowItemCommand(), "ShowItem");
 
-            container.RegisterInstance<IDiagramItemCommand>(new OpenCommand(), "OpenCode");
-            container.RegisterInstance<IDiagramItemCommand>(new DeleteCommand(), "Delete");
-            container.RegisterInstance<IDiagramItemCommand>(new RenameCommand(), "Reanme");
-            container.RegisterInstance<IDiagramItemCommand>(new HideCommand(), "Hide");
-            container.RegisterInstance<IDiagramItemCommand>(new RemoveLinkCommand(), "RemoveLink");
-            container.RegisterInstance<IDiagramItemCommand>(new SelectViewBaseElement(), "SelectView");
+            // For node context menu
+            container.RegisterInstance<IDiagramNodeCommand>(new OpenCommand(), "OpenCode");
+            container.RegisterInstance<IDiagramNodeCommand>(new DeleteCommand(), "Delete");
+            container.RegisterInstance<IDiagramNodeCommand>(new RenameCommand(), "Reanme");
+            container.RegisterInstance<IDiagramNodeCommand>(new HideCommand(), "Hide");
+            container.RegisterInstance<IDiagramNodeCommand>(new RemoveLinkCommand(), "RemoveLink");
+            container.RegisterInstance<IDiagramNodeCommand>(new SelectViewBaseElement(), "SelectView");
+            container.RegisterInstance<IDiagramNodeCommand>(new MarkIsTemplateCommand(), "MarkAsTemplate");
+
+            // For node item context menu
+            container.RegisterInstance<IDiagramNodeItemCommand>(new MarkIsYieldCommand(),"MarkIsYield");
 
             // Drawers
-            container.RegisterRelation<ViewData, IElementDrawer, ViewDrawer>();
-            container.RegisterRelation<ViewComponentData, IElementDrawer, ViewComponentDrawer>();
-            container.RegisterRelation<ElementData, IElementDrawer, ElementDrawer>();
-            container.RegisterRelation<ElementDataBase, IElementDrawer, ElementDrawer>();
-            container.RegisterRelation<ImportedElementData, IElementDrawer, ElementDrawer>();
-            container.RegisterRelation<SubSystemData, IElementDrawer, SubSystemDrawer>();
-            container.RegisterRelation<SceneManagerData, IElementDrawer, SceneManagerDrawer>();
-            container.RegisterRelation<EnumData, IElementDrawer, DiagramEnumDrawer>();
+            container.RegisterRelation<ViewData, INodeDrawer, ViewDrawer>();
+            container.RegisterRelation<ViewComponentData, INodeDrawer, ViewComponentDrawer>();
+            container.RegisterRelation<ElementData, INodeDrawer, ElementDrawer>();
+            container.RegisterRelation<ElementDataBase, INodeDrawer, ElementDrawer>();
+            container.RegisterRelation<ImportedElementData, INodeDrawer, ElementDrawer>();
+            container.RegisterRelation<SubSystemData, INodeDrawer, SubSystemDrawer>();
+            container.RegisterRelation<SceneManagerData, INodeDrawer, SceneManagerDrawer>();
+            container.RegisterRelation<EnumData, INodeDrawer, DiagramEnumDrawer>();
 
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
             {
@@ -250,7 +257,7 @@ namespace Invert.uFrame.Editor
             }
 
             container.InjectAll();
-            foreach (var diagramPlugin in Plugins)
+            foreach (var diagramPlugin in Plugins.OrderBy(p=>p.LoadPriority))
             {
 #if DEBUG
                 Debug.Log("Loaded Plugin: " + diagramPlugin);

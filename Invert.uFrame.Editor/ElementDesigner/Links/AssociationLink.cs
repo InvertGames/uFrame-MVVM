@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AssociationLink : BeizureLink
 {
-    public IDiagramItem Element { get; set; }
+    public IDiagramNode Element { get; set; }
 
     public IViewModelItem Item { get; set; }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class SubSystemData : DiagramItem, IDiagramFilter
+public class SubSystemData : DiagramNode, IDiagramFilter
 {
  
     [SerializeField]
@@ -15,7 +15,7 @@ public class SubSystemData : DiagramItem, IDiagramFilter
         get { return Name; }
     }
 
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var subSystem = target as SubSystemData;
         if (subSystem != null)
@@ -42,11 +42,11 @@ public class SubSystemData : DiagramItem, IDiagramFilter
         return target is SceneManagerData;
     }
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] items)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         foreach (var import in Imports)
         {
-            var item = items.OfType<SubSystemData>().FirstOrDefault(p => p.Identifier == import);
+            var item = nodes.OfType<SubSystemData>().FirstOrDefault(p => p.Identifier == import);
             if (item != null)
             {
                 yield return new SubSystemLink()
@@ -56,7 +56,7 @@ public class SubSystemData : DiagramItem, IDiagramFilter
                 };
             }
         }
-        var scenes = items.OfType<SceneManagerData>().Where(p => p.SubSystemIdentifier == Identifier);
+        var scenes = nodes.OfType<SceneManagerData>().Where(p => p.SubSystemIdentifier == Identifier);
         foreach (var SceneManagerData in scenes)
         {
             yield return new SceneManagerSystemLink()
@@ -67,7 +67,7 @@ public class SubSystemData : DiagramItem, IDiagramFilter
         }
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         var subSystem = target as SubSystemData;
         if (subSystem != null)
@@ -81,7 +81,7 @@ public class SubSystemData : DiagramItem, IDiagramFilter
         }
     }
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
         get
         {
@@ -106,14 +106,14 @@ public class SubSystemData : DiagramItem, IDiagramFilter
         }
     }
 
-    public IEnumerable<IDiagramSubItem> SubItems
+    public IEnumerable<IDiagramNodeItem> SubItems
     {
         get
         {
             var items =
                 Data.AllDiagramItems.OfType<ISubSystemType>()
                     .Where(p => Locations.Keys.Contains(p.Identifier))
-                    .Cast<IDiagramSubItem>();
+                    .Cast<IDiagramNodeItem>();
 
             foreach (var item in items)
                 yield return item;
@@ -183,7 +183,7 @@ public class SubSystemData : DiagramItem, IDiagramFilter
             }
         }
     } 
-    public IEnumerable<IDiagramSubItem> IncludedItems
+    public IEnumerable<IDiagramNodeItem> IncludedItems
     {
         get
         {
@@ -203,6 +203,7 @@ public class SubSystemData : DiagramItem, IDiagramFilter
 
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.SubSystems.Remove(this);
     }
 

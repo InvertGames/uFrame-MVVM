@@ -7,14 +7,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{68BE0193-FE40-BD95-D644-D5C75A89F7D9}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -309,26 +311,33 @@
     <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\PlayMakerWelcomeWindow.cs" />
     <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\ReportWindow.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\Editor\TriggerListDrawer.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\BehaviourSubItem.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ControllerFileGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ControllerGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ElementDataGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ElementGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ElementGeneratorBase.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\EnumCodeGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\SceneManagerGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\UFrameEditorPlugin.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewBaseGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewClassGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewComponentGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewFileGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewModelFileGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\CodeGenerator\ViewModelGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\UBehavioursPlugin.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\UBehavioursViewDrawer.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\ElementsDataRepository.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\ElementsDesigner.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\BehaviourNodeItem.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ControllerGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ElementDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\EnumCodeGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\EnumDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerClassGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerSettingsGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ViewDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddManagerToSceneCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddManagerToSceneSelectionCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddViewToSceneCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddViewToSceneSelectionCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\CreateSceneCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\ExtensionAttribute.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\FindInSceneCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\ImportCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\SelectItemTypeCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\UFrameEditorPlugin.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewBaseGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewClassGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewComponentGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ViewModelGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\UBehavioursPlugin.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\UBehavioursViewDrawer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\AssemblyNameProvider.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ComponentBindingInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ComponentCollectionBindingInspector.cs" />
@@ -465,5 +474,6 @@
     <None Include="Assets\UnityVS\Editor\SyntaxTree.VisualStudio.Unity.Messaging.dll" />
     <None Include="Assets\UnityVS\Editor\UnityVS.VersionSpecific.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

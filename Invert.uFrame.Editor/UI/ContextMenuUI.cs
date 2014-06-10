@@ -23,45 +23,53 @@ namespace Invert.uFrame.Editor
 
         public void CreateMenuItems(GenericMenu genericMenu)
         {
-
-            foreach (var editorCommand in Commands)
+            var groups = Commands.GroupBy(p => p.Group).OrderBy(p => p.Key == "Default").ToArray();
+            foreach (var group in groups)
             {
+                
+                //genericMenu.AddDisabledItem(new GUIContent(group.Key));
 
-                IEditorCommand command = editorCommand;
-                var argument = Handler.ContextObjects.FirstOrDefault(p => command.For.IsAssignableFrom(p.GetType()));
-
-                var dynamicCommand = command as IDynamicOptionsCommand;
-                if (dynamicCommand != null)
+                foreach (var editorCommand in group.OrderBy(p => p.Order))
                 {
-                    foreach (var option in dynamicCommand.GetOptions(argument))
+                    
+
+                    IEditorCommand command = editorCommand;
+                    var argument = Handler.ContextObjects.FirstOrDefault(p => p != null && command.For.IsAssignableFrom(p.GetType()));
+
+                    var dynamicCommand = command as IDynamicOptionsCommand;
+                    if (dynamicCommand != null)
                     {
-                        UFContextMenuItem option1 = option;
-                        genericMenu.AddItem(new GUIContent(Flatten ? editorCommand.Title : option.Name), option.Checked, () =>
+                        foreach (var option in dynamicCommand.GetOptions(argument).OrderBy(p=>p.Name))
                         {
-                            dynamicCommand.SelectedOption = option1;
-                            Handler.Execute(command);
-                        });
-                    }
-                }
-                else
-                {
-                    if (command.CanPerform(argument) != null)
-                    {
-                        genericMenu.AddDisabledItem(new GUIContent(Flatten ? editorCommand.Title : editorCommand.Path));
+                            UFContextMenuItem option1 = option;
+                            genericMenu.AddItem(new GUIContent(Flatten ? editorCommand.Title : option.Name), option.Checked, () =>
+                            {
+                                dynamicCommand.SelectedOption = option1;
+                                Handler.Execute(command);
+                            });
+                        }
                     }
                     else
                     {
-                        genericMenu.AddItem(new GUIContent(editorCommand.Path), editorCommand.Checked, () =>
+                        if (command.CanPerform(argument) != null)
                         {
-                            
-                            Handler.Execute(command);
-                        });
+                            if (command.ShowAsDiabled)
+                                genericMenu.AddDisabledItem(new GUIContent(Flatten ? editorCommand.Title : editorCommand.Path));
+                        }
+                        else
+                        {
+                            genericMenu.AddItem(new GUIContent(Flatten ? editorCommand.Title : editorCommand.Path), editorCommand.IsChecked(argument), () =>
+                            {
+
+                                Handler.Execute(command);
+                            });
+                        }
                     }
+
+
                 }
-                
-                
-             
-                
+                if (group != groups.Last() && @group.Any())
+                genericMenu.AddSeparator("");
             }
         }
         public void Go()

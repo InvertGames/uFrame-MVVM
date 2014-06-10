@@ -8,16 +8,16 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             get { return "Add New Subsystem"; }
         }
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             var data = new SubSystemData()
             {
-                Data = item.Data,
-                Name = item.Data.GetUniqueName("New Sub System"),
+                Data = node.Data,
+                Name = node.Data.GetUniqueName("New Sub System"),
                 Location = new Vector2(15, 15)
             };
-            item.Data.SubSystems.Add(data);
-            data.Location = item.LastMouseDownPosition;
+            node.Data.SubSystems.Add(data);
+            data.Location = node.LastMouseDownPosition;
         }
     }
 }

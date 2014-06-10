@@ -1,18 +1,21 @@
+using System;
+using System.Diagnostics;
+
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddEnumItemCommand : EditorCommand<EnumData>
     {
-        public override void Perform(EnumData item)
+        public override void Perform(EnumData node)
         {
-            item.EnumItems.Add(new EnumItem()
+            node.EnumItems.Add(new EnumItem()
             {
-                Name = item.Data.GetUniqueName("Item")
+                Name = node.Data.GetUniqueName("Item")
             });
         }
 
-        public override string CanPerform(EnumData item)
+        public override string CanPerform(EnumData node)
         {
-            if (item == null) return "Arg can't be null";
+            if (node == null) return "Arg can't be null";
             return null;
         }
 

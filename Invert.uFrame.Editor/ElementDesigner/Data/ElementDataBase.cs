@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class ElementDataBase : DiagramItem, ISubSystemType
+public abstract class ElementDataBase : DiagramNode, ISubSystemType
 {
     public static Dictionary<string, string> TypeNameAliases = new Dictionary<string, string>()
     {
@@ -14,8 +14,22 @@ public abstract class ElementDataBase : DiagramItem, ISubSystemType
         {"System.Double","double"},
         {"System.Single","float"},
         {"System.String","string"},
+        {"UnityEngine.Vector2","Vector2"},
+        {"UnityEngine.Vector3","Vector3"},
     };
 
+    public static string TypeAlias(string typeName)
+    {
+        if (typeName == null)
+        {
+            return "[None]";
+        }
+        if (TypeNameAliases.ContainsKey(typeName))
+        {
+            return TypeNameAliases[typeName];
+        }
+        return typeName;
+    }
     public ElementDataBase BaseElement { get { return Data.AllElements.FirstOrDefault(p => p.Name == BaseTypeShortName); } }
 
     public abstract string BaseTypeName { get; set; }
@@ -87,6 +101,9 @@ public abstract class ElementDataBase : DiagramItem, ISubSystemType
     [SerializeField]
     private bool _isMultiInstance;
 
+    [SerializeField]
+    private bool _isTemplate;
+
     [DiagramContextMenu("Has Multiple Instances",2)]
     public bool IsMultiInstance
     {
@@ -133,13 +150,13 @@ public abstract class ElementDataBase : DiagramItem, ISubSystemType
         }
     }
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
         get
         {
-            return Properties.Cast<IDiagramSubItem>()
-                .Concat(Collections.Cast<IDiagramSubItem>())
-                .Concat(Commands.Cast<IDiagramSubItem>());
+            return Properties.Cast<IDiagramNodeItem>()
+                .Concat(Collections.Cast<IDiagramNodeItem>())
+                .Concat(Commands.Cast<IDiagramNodeItem>());
         }
     }
 
@@ -228,7 +245,7 @@ public abstract class ElementDataBase : DiagramItem, ISubSystemType
         return elementData != null && Name != elementData.Name && BaseTypeShortName != elementData.Name;
     }
 
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var element = target as ElementDataBase;
         if (element != null)
@@ -242,9 +259,9 @@ public abstract class ElementDataBase : DiagramItem, ISubSystemType
         }
     }
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
-        foreach (var modelData in elementDesignerData.OfType<ElementDataBase>())
+        foreach (var modelData in nodes.OfType<ElementDataBase>())
         {
             if (BaseTypeShortName == modelData.Name)
             {
@@ -304,6 +321,13 @@ public abstract class ElementDataBase : DiagramItem, ISubSystemType
             return UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsViewModel);
         }
     }
+
+    public bool IsTemplate
+    {
+        get { return _isTemplate; }
+        set { _isTemplate = value; }
+    }
+
     //[DiagramContextMenu("")]
     //public void CreateNewBehaviour()
     //{

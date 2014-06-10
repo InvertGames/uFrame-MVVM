@@ -9,19 +9,19 @@ namespace Invert.uFrame.Editor.ElementDesigner
 {
     public class SaveCommand : ElementsDiagramToolbarCommand
     {
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             // Go ahead and process any code refactors
-            ProcessRefactorings(item);
+            ProcessRefactorings(node);
 
             //var codeGenerators = uFrameEditor.GetAllCodeGenerators(item.Data).ToArray();
 
-            var fileGenerators = uFrameEditor.GetAllFileGenerators(item.Data).ToArray();
+            var fileGenerators = uFrameEditor.GetAllFileGenerators(node.Data).ToArray();
             
             foreach (var codeFileGenerator in fileGenerators)
             {
                 // Grab the information for the file
-                var fileInfo = new FileInfo(System.IO.Path.Combine(item.CodePathStrategy.AssetPath, codeFileGenerator.Filename));
+                var fileInfo = new FileInfo(System.IO.Path.Combine(node.CodePathStrategy.AssetPath, codeFileGenerator.Filename));
                 // Make sure we are allowed to generate the file
                 if (!codeFileGenerator.CanGenerate(fileInfo)) continue;
                 // Get the path to the directory
@@ -33,14 +33,14 @@ namespace Invert.uFrame.Editor.ElementDesigner
                 }
                 // Write the file
                 File.WriteAllText(fileInfo.FullName, codeFileGenerator.ToString());
-                Debug.Log("Created file: " + fileInfo.FullName);
+                //Debug.Log("Created file: " + fileInfo.FullName);
 
             }
             AssetDatabase.Refresh();
 
-            item.Save();
-            item.DeselectAll();
-            item.Refresh();
+            node.Save();
+            node.DeselectAll();
+            node.Refresh();
         }
 
         /// <summary>
@@ -49,7 +49,9 @@ namespace Invert.uFrame.Editor.ElementDesigner
         public void ProcessRefactorings(ElementsDiagram diagram)
         {
             var refactorer = new RefactorContext(diagram.Data.Refactorings);
-            var files = uFrameEditor.GetAllFileGenerators(diagram.Data).Select(p => System.IO.Path.Combine(diagram.CodePathStrategy.AssetPath, p.Filename)).ToArray();
+            Debug.Log(diagram.CodePathStrategy.AssetPath);
+            var files = uFrameEditor.GetAllFileGenerators(diagram.Data).Where(p=>!p.Filename.EndsWith(".designer.cs")).Select(p => System.IO.Path.Combine(diagram.CodePathStrategy.AssetPath, p.Filename)).ToArray();
+
 
             if (refactorer.Refactors.Count > 0)
             {
@@ -67,9 +69,9 @@ namespace Invert.uFrame.Editor.ElementDesigner
             get { return "Print Plugins"; }
         }
 
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
-            foreach (var diagramPlugin in uFrameEditor.GetAllCodeGenerators(item.Data))
+            foreach (var diagramPlugin in uFrameEditor.GetAllCodeGenerators(node.Data))
             {
                 UnityEngine.Debug.Log((diagramPlugin.IsDesignerFile ? "Designer File" : "Editable File" ) + 
                     diagramPlugin.GetType().Name + diagramPlugin.Filename );

@@ -15,7 +15,7 @@ public class SceneFlowFilter : DefaultFilter
 
     public override bool IsItemAllowed(object item, Type t)
     {
-        if (t == typeof (IDiagramItem))
+        if (t == typeof (IDiagramNode))
         {
             return true;
         }

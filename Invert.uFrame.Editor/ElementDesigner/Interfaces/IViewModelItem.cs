@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public interface IViewModelItem : IDiagramSubItem, IRefactorable
+public interface IViewModelItem : IDiagramNodeItem, IRefactorable
 {
     string RelatedType { get; set; }
     string RelatedTypeName { get; }

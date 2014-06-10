@@ -7,7 +7,7 @@ using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [Serializable]
-public class ViewModelPropertyData : DiagramSubItem,IViewModelItem
+public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
 {
     [SerializeField]
     private string _type;
@@ -48,9 +48,9 @@ public class ViewModelPropertyData : DiagramSubItem,IViewModelItem
         return new RenamePropertyRefactorer(this);
     }
 
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
-        var element = target as IDiagramItem;
+        var element = target as IDiagramNode;
         if (element != null)
         {
             RelatedType = element.AssemblyQualifiedName;
@@ -62,7 +62,7 @@ public class ViewModelPropertyData : DiagramSubItem,IViewModelItem
         return target is ElementDataBase || target is EnumData;
     }
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         RelatedType = typeof (string).AssemblyQualifiedName;
     }
@@ -109,9 +109,9 @@ public class ViewModelPropertyData : DiagramSubItem,IViewModelItem
         }
     }
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] data)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] diagramNode)
     {
-        foreach (var viewModelData in data)
+        foreach (var viewModelData in diagramNode)
         {
             if (viewModelData.Name == null) continue;
             if (viewModelData.Name == RelatedTypeName)
@@ -134,9 +134,9 @@ public class ViewModelPropertyData : DiagramSubItem,IViewModelItem
     
     public override bool IsSelectable { get { return true; } }
 
-    public override void Remove(IDiagramItem diagramItem)
+    public override void Remove(IDiagramNode diagramNode)
     {
-        var data = diagramItem as ElementDataBase;
+        var data = diagramNode as ElementDataBase;
         data.Properties.Remove(this);
         data.Dirty = true;
     }

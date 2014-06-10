@@ -8,16 +8,16 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             get { return "Add New View"; }
         }
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             var data = new ViewData()
             {
-                Data = item.Data,
-                Name = item.Data.GetUniqueName("NewView"),
+                Data = node.Data,
+                Name = node.Data.GetUniqueName("NewView"),
                 Location = new Vector2(15, 15)
             };
-            item.Data.Views.Add(data);
-            data.Location = item.LastMouseDownPosition;
+            node.Data.Views.Add(data);
+            data.Location = node.LastMouseDownPosition;
         }
     }
 }

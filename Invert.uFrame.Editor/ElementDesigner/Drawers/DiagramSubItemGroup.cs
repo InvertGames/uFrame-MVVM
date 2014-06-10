@@ -1,6 +1,6 @@
 public class DiagramSubItemGroup
 {
-    public DiagramItemHeader Header { get; set; }
-    public IDiagramSubItem[] Items { get; set; }
+    public NodeItemHeader Header { get; set; }
+    public IDiagramNodeItem[] Items { get; set; }
 
 }

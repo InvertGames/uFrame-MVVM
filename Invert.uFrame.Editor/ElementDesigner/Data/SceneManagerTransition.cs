@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 [Serializable]
-public class SceneManagerTransition : IDiagramSubItem
+public class SceneManagerTransition : IDiagramNodeItem
 {
     [SerializeField]
     private string _toIdentifier;
@@ -34,7 +34,7 @@ public class SceneManagerTransition : IDiagramSubItem
         get { return Name; }
     }
 
-    public void CreateLink(IDiagramItem container, IDrawable target)
+    public void CreateLink(IDiagramNode container, IDrawable target)
     {
         ToIdentifier = ((SceneManagerData) target).Identifier;
     }
@@ -44,7 +44,7 @@ public class SceneManagerTransition : IDiagramSubItem
         return target is SceneManagerData;
     }
 
-    public IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         //elementDesignerData.OfType<ElementDataBase>().SelectMany(p=>p.Commands).FirstOrDefault(p=>p.n)
         yield break;
@@ -59,7 +59,7 @@ public class SceneManagerTransition : IDiagramSubItem
     }
 
     public bool IsSelected { get; set; }
-    public void RemoveLink(IDiagramItem target)
+    public void RemoveLink(IDiagramNode target)
     {
         ToIdentifier = null;
     }
@@ -82,14 +82,14 @@ public class SceneManagerTransition : IDiagramSubItem
         get { return string.Format("_{0}Transition", Name); }
     }
 
-    public void Remove(IDiagramItem data)
+    public void Remove(IDiagramNode diagramNode)
     {
         //var SceneManagerData = data as SceneManagerData;
         //if (SceneManagerData != null) 
         //    SceneManagerData.Transitions.Remove(this);
     }
 
-    public void Rename(IDiagramItem data, string name)
+    public void Rename(IDiagramNode data, string name)
     {
         Name = name;
     }

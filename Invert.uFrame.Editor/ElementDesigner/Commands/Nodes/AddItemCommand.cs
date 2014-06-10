@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using UnityEditor;
+using UnityEngine;
 
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public abstract class AddItemCommand<TType> : AddNewCommand, IDiagramContextCommand
     {
-        public override string CanPerform(ElementsDiagram item)
+        public override string CanPerform(ElementsDiagram node)
         {
-            if (item == null) return "Diagram must be loaded first.";
+            if (node == null) return "Diagram must be loaded first.";
 
-            if (!item.Data.CurrentFilter.IsAllowed(null, typeof(TType)))
+            if (!node.Data.CurrentFilter.IsAllowed(null, typeof(TType)))
                 return "Item is not allowed in this part of the diagram.";
 
             return null;
@@ -28,16 +31,16 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         Type ChildCommandFor { get; }
     }
 
-    public class RenameCommand : EditorCommand<IDiagramItem>, IDiagramItemCommand
+    public class RenameCommand : EditorCommand<IDiagramNode>, IDiagramNodeCommand
     {
-        public override void Perform(IDiagramItem item)
+        public override void Perform(IDiagramNode node)
         {
-            item.BeginEditing();
+            node.BeginEditing();
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(IDiagramNode node)
         {
-            if (item == null) return "Invalid argument";
+            if (node == null) return "Invalid argument";
             return null;
         }
     }
@@ -46,61 +49,101 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
     {
         
     }
-    public interface IDiagramItemCommand
+    public interface IDiagramNodeCommand
     {
         
     }
 
-    public interface IDiagramSubItemCommand
+    public interface IDiagramNodeItemCommand
     {
         
     }
     
-    public class DeleteCommand : EditorCommand<IDiagramItem>, IDiagramItemCommand
+    public class DeleteCommand : EditorCommand<IDiagramNode>, IDiagramNodeCommand
     {
-        public override void Perform(IDiagramItem item)
+        public override void Perform(IDiagramNode node)
         {
-            item.RemoveFromDiagram();
+
+            if (node == null) return;
+            var pathStrategy = EditorWindow.GetWindow<ElementsDesigner>().Diagram.CodePathStrategy;
+   
+            var generators = uFrameEditor.GetAllCodeGenerators(node.Data)
+                .Where(p => !p.IsDesignerFile && p.ObjectData == node).ToArray();
+
+            var customFiles = generators.Select(p=>p.Filename).ToArray();
+            var customFileFullPaths = generators.Select(p=>System.IO.Path.Combine(pathStrategy.AssetPath, p.Filename)).Where(File.Exists).ToArray();
+
+            if (node is IDiagramFilter)
+            {
+                var filter = node as IDiagramFilter;
+                if (filter.Locations.Keys.Count > 1)
+                {
+                    EditorUtility.DisplayDialog("Delete sub items first.",
+                        "There are items defined inside this item please hide or delete them before removing this item.", "OK");
+                    return;
+                }
+            }
+            if (EditorUtility.DisplayDialog("Confirm", "Are you sure you want to delete this?", "Yes", "No"))
+            {
+                node.RemoveFromDiagram();
+                if (customFileFullPaths.Length > 0)
+                {
+                    if (EditorUtility.DisplayDialog("Confirm",
+                        "You have files associated with this. Delete them to?" + Environment.NewLine +
+                        string.Join(Environment.NewLine, customFiles), "Yes Delete Them", "Don't Delete them"))
+                    {
+                        foreach (var customFileFullPath in customFileFullPaths)
+                        {
+                            File.Delete(customFileFullPath);
+                        }
+                        var saveCommand = uFrameEditor.Container.Resolve<IToolbarCommand>("SaveCommand");
+                        //Execute the save command
+                        EditorWindow.GetWindow<ElementsDesigner>().Execute(saveCommand);
+                    }
+                }
+            }
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(IDiagramNode node)
         {
             return null;
         }
     }
-    public class HideCommand : EditorCommand<IDiagramItem>, IDiagramItemCommand
+    public class HideCommand : EditorCommand<IDiagramNode>, IDiagramNodeCommand
     {
-        public override void Perform(IDiagramItem item)
+        public override void Perform(IDiagramNode node)
         {
-            item.Data.CurrentFilter.Locations.Remove(item.Identifier);
+            node.Data.CurrentFilter.Locations.Remove(node.Identifier);
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(IDiagramNode node)
         {
-            if (item == null) return "Diagram Item must not be null.";
+            if (node == null) return "Diagram Item must not be null.";
             return null;
         }
     }
 
-    public class OpenCommand : EditorCommand<IDiagramItem>, IDynamicOptionsCommand, IDiagramItemCommand
+    public class OpenCommand : EditorCommand<IDiagramNode>, IDynamicOptionsCommand, IDiagramNodeCommand
     {
-        public override void Perform(IDiagramItem item)
+        public override void Perform(IDiagramNode node)
         {
+            var generator = SelectedOption.Value as CodeGenerator;
+            if (generator == null) return;
+            var pathStrategy = EditorWindow.GetWindow<ElementsDesigner>().Diagram.CodePathStrategy;
+            var filePath = System.IO.Path.Combine(pathStrategy.AssetPath, generator.Filename);
             //var filename = repository.GetControllerCustomFilename(this.Name);
-
-            //var scriptAsset = AssetDatabase.LoadAssetAtPath(filename, typeof(TextAsset));
-
-            //AssetDatabase.OpenAsset(scriptAsset);
+            var scriptAsset = AssetDatabase.LoadAssetAtPath(filePath, typeof(TextAsset));
+            AssetDatabase.OpenAsset(scriptAsset);
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(IDiagramNode node)
         {
             return null;
         }
 
         public IEnumerable<UFContextMenuItem> GetOptions(object item)
         {
-            var diagramItem = item as IDiagramItem;
+            var diagramItem = item as IDiagramNode;
             if (diagramItem == null) yield break;
             var generators = uFrameEditor.GetAllCodeGenerators(diagramItem.Data)
                 .Where(p =>!p.IsDesignerFile && p.ObjectData == item);
@@ -119,24 +162,24 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         public MultiOptionType OptionsType { get; private set; }
     }
 
-    public class RemoveLinkCommand : EditorCommand<IDiagramItem>, IDynamicOptionsCommand, IDiagramItemCommand
+    public class RemoveLinkCommand : EditorCommand<IDiagramNode>, IDynamicOptionsCommand, IDiagramNodeCommand
     {
-        public override void Perform(IDiagramItem item)
+        public override void Perform(IDiagramNode node)
         {
             var link = SelectedOption.Value as IDiagramLink;
 
             if (link != null) 
-                link.Source.RemoveLink(item);
+                link.Source.RemoveLink(node);
         }
 
-        public override string CanPerform(IDiagramItem item)
+        public override string CanPerform(IDiagramNode node)
         {
             return null;
         }
 
         public IEnumerable<UFContextMenuItem> GetOptions(object item)
         {
-            var diagramItem = item as IDiagramItem;
+            var diagramItem = item as IDiagramNode;
             if (diagramItem == null) yield break;
             var links = diagramItem.Data.Links.Where(p => p.Target == item);
             foreach (var link in links)
@@ -155,26 +198,30 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         public MultiOptionType OptionsType { get; private set; }
     }
 
-    public class SelectViewBaseElement : EditorCommand<ViewData>, IDynamicOptionsCommand, IDiagramItemCommand
+    public class SelectViewBaseElement : EditorCommand<ViewData>, IDynamicOptionsCommand, IDiagramNodeCommand
     {
-        public override void Perform(ViewData item)
+        public override string Group
         {
-            if (item == null) return;
+            get { return "View"; }
+        }
+        public override void Perform(ViewData node)
+        {
+            if (node == null) return;
             var view = SelectedOption.Value as ViewData;
             if (view == null)
             {
-                item.BaseViewIdentifier = null;
+                node.BaseViewIdentifier = null;
             }
             else
             {
-                item.BaseViewIdentifier = view.Identifier;    
+                node.BaseViewIdentifier = view.Identifier;    
             }
             
         }
 
-        public override string CanPerform(ViewData item)
+        public override string CanPerform(ViewData node)
         {
-            if (item == null) return "This operation can only be performed on a view.";
+            if (node == null) return "This operation can only be performed on a view.";
             return null;
         }
 
@@ -211,7 +258,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
     {
         public float Scale { get; set; }
 
-        public override void Perform(float item)
+        public override void Perform(float node)
         {
 
             UFStyles.Scale = Scale;
@@ -219,7 +266,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             
         }
 
-        public override string CanPerform(float item)
+        public override string CanPerform(float node)
         {
             if (Scale < 0.5f)
             {

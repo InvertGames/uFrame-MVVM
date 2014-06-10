@@ -11,7 +11,7 @@ using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
 using UnityEngine;
 
-public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
+public class ElementDrawer : DiagramNodeDrawer<ElementDataBase>
 {
     public ElementDrawer()
     {
@@ -19,7 +19,14 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
 
     public override GUIStyle BackgroundStyle
     {
-        get { return UFStyles.DiagramBox3; }
+        get
+        {
+            if (Data.IsTemplate)
+            {
+                return UFStyles.DiagramBox4;
+            }
+            return UFStyles.DiagramBox3;
+        }
     }
 
     public override GUIStyle ItemStyle
@@ -34,13 +41,13 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
 
 
 
-    public DiagramItemHeader PropertiesHeader
+    public NodeItemHeader PropertiesHeader
     {
         get
         {
             if (_propertiesHeader == null)
             {
-                _propertiesHeader = Container.Resolve<DiagramItemHeader>();
+                _propertiesHeader = Container.Resolve<NodeItemHeader>();
 
                 _propertiesHeader.Label = "Properties";
                 _propertiesHeader.HeaderType = typeof (ViewModelPropertyData);
@@ -51,30 +58,30 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
         set { _propertiesHeader = value; }
     }
 
-    public DiagramItemHeader CollectionsHeader
+    public NodeItemHeader CollectionsHeader
     {
         get
         {
             
              if (_collectionsHeader == null)
             {
-                _collectionsHeader = Container.Resolve<DiagramItemHeader>();
+                _collectionsHeader = Container.Resolve<NodeItemHeader>();
                 _collectionsHeader.Label = "Collections";
                 _collectionsHeader.HeaderType = typeof (ViewModelCollectionData);
-                _collectionsHeader.AddCommand = Container.Resolve<IEditorCommand>("AddElementCollection");
+                _collectionsHeader.AddCommand = Container.Resolve<AddElementCollectionCommand>();
             }
             return _collectionsHeader;
         }
         set { _collectionsHeader = value; }
     }
 
-    public DiagramItemHeader CommandsHeader
+    public NodeItemHeader CommandsHeader
     {
         get
         {
             if (_commandsHeader == null)
             {
-                _commandsHeader = Container.Resolve<DiagramItemHeader>();
+                _commandsHeader = Container.Resolve<NodeItemHeader>();
                 _commandsHeader.Label = "Commands";
                 _commandsHeader.HeaderType = typeof(ViewModelCommandData);
                 _commandsHeader.AddCommand = Container.Resolve<AddElementCommandCommand>();
@@ -85,9 +92,9 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
     }
 
 
-    private DiagramItemHeader _propertiesHeader;
-    private DiagramItemHeader _collectionsHeader;
-    private DiagramItemHeader _commandsHeader;
+    private NodeItemHeader _propertiesHeader;
+    private NodeItemHeader _collectionsHeader;
+    private NodeItemHeader _commandsHeader;
 
     private float _width;
 
@@ -129,7 +136,7 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
         {
             foreach (var item in Data.ViewModelItems)
             {
-                var newSize = style.CalcSize(new GUIContent(item.RelatedTypeName));
+                var newSize = style.CalcSize(new GUIContent(ElementDataBase.TypeAlias(item.RelatedTypeName)));
 
                 if (maxLengthItem.x < newSize.x)
                 {
@@ -137,12 +144,12 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
                 }
             }
         }
-        return maxLengthItem.x + 2;
+        return maxLengthItem.x + 8;
 
     }
     public float MaxNameWidth(GUIStyle style)
     {
-        style.fontStyle= FontStyle.Bold;
+        //style.fontStyle= FontStyle.Bold;
         var maxLengthItem = Vector2.zero;
         if (AllowCollapsing && !Data.IsCollapsed)
         {
@@ -158,15 +165,15 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
         }
 
 
-        return maxLengthItem.x + 2;
+        return maxLengthItem.x + 8;
 
     }
-    protected override void DrawSelectedItem(IDiagramSubItem subItem, ElementsDiagram diagram)
+    protected override void DrawSelectedItem(IDiagramNodeItem nodeItem, ElementsDiagram diagram)
     {
-        var item = subItem as IViewModelItem;
+        var item = nodeItem as IViewModelItem;
         if (item == null)
         {
-            base.DrawSelectedItem(subItem, diagram);
+            base.DrawSelectedItem(nodeItem, diagram);
             return;
         }
         GUILayout.Space(7);
@@ -192,10 +199,10 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
 
          
         }
-        base.DrawSelectedItem(subItem, diagram);
+        base.DrawSelectedItem(nodeItem, diagram);
     }
 
-    protected override void DrawItemLabel(IDiagramSubItem item)
+    protected override void DrawItemLabel(IDiagramNodeItem item)
     {
         var vmItem = item as IViewModelItem;
         if (vmItem == null)
@@ -218,9 +225,11 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
             {
                 rtn = ElementDataBase.TypeNameAliases[rtn];
             }
+            //GUILayout.Label((_maxTypeWidth * Scale).ToString(), style, GUILayout.Width(_maxTypeWidth * Scale));
             GUILayout.Label(rtn, style, GUILayout.Width(_maxTypeWidth * Scale));
             style.fontStyle = FontStyle.Bold;
             style.alignment = TextAnchor.MiddleLeft;
+            //GUILayout.Label((_maxNameWidth * Scale).ToString(), style, GUILayout.Width(_maxNameWidth * Scale));
             GUILayout.Label(vmItem.Name, style, GUILayout.Width(_maxNameWidth * Scale));
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
@@ -250,17 +259,17 @@ public class ElementDrawer : DiagramItemDrawer<ElementDataBase>
         yield return new DiagramSubItemGroup()
         {
             Header = PropertiesHeader,
-            Items = Data.Properties.Cast<IDiagramSubItem>().ToArray()
+            Items = Data.Properties.Cast<IDiagramNodeItem>().ToArray()
         };
         yield return new DiagramSubItemGroup()
         {
             Header = CollectionsHeader,
-            Items = Data.Collections.Cast<IDiagramSubItem>().ToArray()
+            Items = Data.Collections.Cast<IDiagramNodeItem>().ToArray()
         };
         yield return new DiagramSubItemGroup()
         {
             Header = CommandsHeader,
-            Items = Data.Commands.Cast<IDiagramSubItem>().ToArray()
+            Items = Data.Commands.Cast<IDiagramNodeItem>().ToArray()
         };
     }
 }

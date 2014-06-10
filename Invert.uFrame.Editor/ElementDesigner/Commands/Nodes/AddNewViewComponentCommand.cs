@@ -9,31 +9,31 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             get { return "Add New View Component"; }
         }
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             var data = new ViewComponentData()
             {
-                Data = item.Data,
-                Name = item.Data.GetUniqueName("NewViewComponent"),
+                Data = node.Data,
+                Name = node.Data.GetUniqueName("NewViewComponent"),
                 Location = new Vector2(15, 15)
             };
-            item.Data.ViewComponents.Add(data);
-            data.Location = item.LastMouseDownPosition;
+            node.Data.ViewComponents.Add(data);
+            data.Location = node.LastMouseDownPosition;
         }
     }
 
     public class ShowItemCommand : EditorCommand<ElementDesignerData>,
         IToolbarCommand, IDiagramContextCommand, IDynamicOptionsCommand
     {
-        public override void Perform(ElementDesignerData item)
+        public override void Perform(ElementDesignerData node)
         {
-            var diagramItem = SelectedOption.Value as IDiagramItem;
-            item.CurrentFilter.Locations[diagramItem] = new Vector2(0f, 0f);
+            var diagramItem = SelectedOption.Value as IDiagramNode;
+            node.CurrentFilter.Locations[diagramItem] = new Vector2(0f, 0f);
         }
 
-        public override string CanPerform(ElementDesignerData item)
+        public override string CanPerform(ElementDesignerData node)
         {
-            if (item == null) return "Designer Data must not be null";
+            if (node == null) return "Designer Data must not be null";
             return null;
         }
 

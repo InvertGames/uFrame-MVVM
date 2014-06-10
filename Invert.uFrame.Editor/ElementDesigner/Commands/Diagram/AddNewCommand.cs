@@ -10,7 +10,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
             get { return "Add New"; }
         }
 
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             // No implementation
         }
@@ -18,9 +18,9 @@ namespace Invert.uFrame.Editor.ElementDesigner
 
     public abstract class ElementsDiagramToolbarCommand : ToolbarCommand<ElementsDiagram>
     {
-        public override string CanPerform(ElementsDiagram item)
+        public override string CanPerform(ElementsDiagram node)
         {
-            if (item == null) return "No Diagram Open";
+            if (node == null) return "No Diagram Open";
             return null;
         }
     }

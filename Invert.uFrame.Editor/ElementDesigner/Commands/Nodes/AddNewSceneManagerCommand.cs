@@ -8,16 +8,16 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             get { return "Add New Scene Manager"; }
         }
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             var data = new SceneManagerData()
             {
-                Data = item.Data,
-                Name = item.Data.GetUniqueName("NewSceneManager"),
+                Data = node.Data,
+                Name = node.Data.GetUniqueName("NewSceneManager"),
                 Location = new Vector2(15, 15)
             };
-            item.Data.SceneManagers.Add(data);
-            data.Location = item.LastMouseDownPosition;
+            node.Data.SceneManagers.Add(data);
+            data.Location = node.LastMouseDownPosition;
         }
     }
 }

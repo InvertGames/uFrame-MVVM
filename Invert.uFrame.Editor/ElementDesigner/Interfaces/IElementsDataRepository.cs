@@ -5,6 +5,8 @@ using UnityEditor;
 
 public interface IElementsDataRepository
 {
+    
     ElementDesignerData LoadDiagram(string path);
     void SaveDiagram(ElementDesignerData data);
+    Dictionary<string, string> GetProjectDiagrams();
 }

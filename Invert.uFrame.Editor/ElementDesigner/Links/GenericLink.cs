@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class GenericLink : BeizureLink
 {
-    public IDiagramItem Element { get; set; }
+    public IDiagramNode Element { get; set; }
 
-    public IDiagramItem Item { get; set; }
+    public IDiagramNode Node { get; set; }
 
-    public override ISelectable Source { get { return Item; } }
+    public override ISelectable Source { get { return Node; } }
 
     public override ISelectable Target { get { return Element; } }
 

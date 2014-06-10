@@ -226,9 +226,20 @@ public class DefaultElementsRepository : IElementsDataRepository
 public interface ICodePathStrategy
 {
     string AssetPath { get; set; }
+    string BehavioursPath { get;  }
+    string ScenesPath { get;  }
 }
 
 public class DefaultCodePathStrategy : ICodePathStrategy
 {
     public string AssetPath { get; set; }
+
+    public string BehavioursPath
+    {
+        get { return Path.Combine(AssetPath, "Behaviours"); }
+    }
+    public string ScenesPath
+    {
+        get { return Path.Combine(AssetPath, "Scenes"); }
+    }
 }

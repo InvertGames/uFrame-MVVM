@@ -4,7 +4,7 @@ public class ViewLink : BeizureLink
 {
     public ViewData Data { get; set; }
 
-    public IDiagramItem Element { get; set; }
+    public IDiagramNode Element { get; set; }
 
     public override ISelectable Source { get { return Element; } }
 

@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 [Serializable]
-public class ViewData : DiagramItem, ISubSystemType
+public class ViewData : DiagramNode, ISubSystemType
 {
     [SerializeField]
     private string _forAssemblyQualifiedName;
@@ -23,7 +23,7 @@ public class ViewData : DiagramItem, ISubSystemType
         get { return Data.ViewComponents.Where(p => ComponentIdentifiers.Contains(p.Identifier)); }
     }
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
         get
         {
@@ -138,13 +138,14 @@ public class ViewData : DiagramItem, ISubSystemType
 
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.Views.Remove(this);
         foreach (var source in Data.Views.Where(p=>p.ForAssemblyQualifiedName == this.AssemblyQualifiedName))
         {
             source.ForAssemblyQualifiedName = null;
         }
     }
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var i = target as ViewData;
 
@@ -155,7 +156,7 @@ public class ViewData : DiagramItem, ISubSystemType
     {
         return target is ViewData && target != this;
     }
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         var vm = ViewForElement;
         //var items = new UFrameBehaviours[] { };
@@ -167,7 +168,7 @@ public class ViewData : DiagramItem, ISubSystemType
 
         //Behaviours = items.Select(p => new BehaviourSubItem() { Behaviour = p }).ToArray();
 
-        var item = elementDesignerData.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
+        var item = nodes.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
         if (item != null)
         {
             yield return new ViewLink()
@@ -186,38 +187,8 @@ public class ViewData : DiagramItem, ISubSystemType
         set { _componentIdentifiers = value; }
     }
 
-    [DiagramContextMenu("Add To/Scene",0)]
-    public void AddViewToScene()
-    {
-        if (this.CurrentViewType == null)
-        {
-            EditorUtility.DisplayDialog("Can't add to scene", "The diagram must be saved and have no compiler errors.",
-                "OK");
-            return;
-        }
 
-        GameObject obj = new GameObject(this.Name);
-        obj.AddComponent(CurrentViewType);
-
-    }
-    [DiagramContextMenu("Add To/Selection", 1)]
-    public void AddToSelection()
-    {
-        var selection = Selection.activeObject as GameObject;
-
-        if (selection != null)
-        {
-            if (this.CurrentViewType == null)
-            {
-                EditorUtility.DisplayDialog("Can't add to selection", "The diagram must be saved and have no compiler errors.",
-                    "OK");
-                return;
-            }
-            selection.AddComponent(CurrentViewType);
-        }
-
-    }
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         var viewData = target as ViewData;
         if (viewData != null)

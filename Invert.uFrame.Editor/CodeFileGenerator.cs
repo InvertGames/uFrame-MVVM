@@ -72,7 +72,7 @@ namespace Invert.uFrame.Editor
 
             if (doesTypeExist || fileInfo.Exists)
             {
-                UnityEngine.Debug.Log("Skipping file: " + fileInfo.FullName);
+                
                 return false;
             }
 

@@ -40,7 +40,7 @@ namespace Invert.uFrame.Editor
 
         public void Go()
         {
-            foreach (var editorCommand in LeftCommands)
+            foreach (var editorCommand in LeftCommands.OrderBy(p=>p.Order))
             {
                 DoCommand(editorCommand);
             }
@@ -52,7 +52,7 @@ namespace Invert.uFrame.Editor
                 Handler.Execute(new ScaleCommand() {Scale = scale});
                 
             }
-            foreach (var editorCommand in RightCommands)
+            foreach (var editorCommand in RightCommands.OrderBy(p => p.Order))
             {
                 DoCommand(editorCommand);
             }
@@ -83,6 +83,7 @@ namespace Invert.uFrame.Editor
                 if (command is IParentCommand)
                 {
                     var contextUI = uFrameEditor.CreateCommandUI<ContextMenuUI>(Handler, command.GetType());
+                    contextUI.Flatten = true;
                     contextUI.Go();
                 }
                 else

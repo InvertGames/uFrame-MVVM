@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SceneManagerDrawer : DiagramItemDrawer<SceneManagerData>
+public class SceneManagerDrawer : DiagramNodeDrawer<SceneManagerData>
 {
-    private DiagramItemHeader _transitionsHeader;
+    private NodeItemHeader _transitionsHeader;
 
     //public override float Padding
     //{
@@ -19,7 +19,7 @@ public class SceneManagerDrawer : DiagramItemDrawer<SceneManagerData>
         get
         {
 
-            return UFStyles.DiagramBox8;
+            return UFStyles.DiagramBox7;
         }
     }
 
@@ -35,9 +35,9 @@ public class SceneManagerDrawer : DiagramItemDrawer<SceneManagerData>
         get { return true; }
     }
 
-    public DiagramItemHeader TransitionsHeader
+    public NodeItemHeader TransitionsHeader
     {
-        get { return _transitionsHeader ?? (_transitionsHeader = new DiagramItemHeader() { Label = "Transitions", HeaderType = typeof(SceneManagerData) }); }
+        get { return _transitionsHeader ?? (_transitionsHeader = new NodeItemHeader() { Label = "Transitions", HeaderType = typeof(SceneManagerData) }); }
         set { _transitionsHeader = value; }
     }
 

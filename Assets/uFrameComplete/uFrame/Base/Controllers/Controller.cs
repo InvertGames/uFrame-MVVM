@@ -210,7 +210,7 @@ public abstract class Controller : IViewModelObserver
 
     public virtual ViewModel CreateEmpty()
     {
-        throw new NotImplementedException("You propably need to resave you're diagram.");
+        throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
     }
     
     public abstract void Initialize(ViewModel viewModel);

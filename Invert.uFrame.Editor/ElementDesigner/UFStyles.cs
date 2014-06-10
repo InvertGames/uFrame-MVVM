@@ -285,7 +285,7 @@ public static class UFStyles
             if (_diagramBox4 == null)
                 _diagramBox4 = new GUIStyle
                 {
-                    normal = { background = GetSkinTexture("Box4"), textColor = Color.white },
+                    normal = { background = GetSkinTexture("Box4"), textColor = new Color(0.88f, 0.88f, 0.88f) },
                     stretchHeight = true,
                     stretchWidth = true,
                     border = new RectOffset(171, 180, 120, 135),
@@ -426,7 +426,7 @@ public static class UFStyles
                     normal = { background = GetSkinTexture("Item3"), textColor = Color.white },
                     stretchHeight = true,
                     stretchWidth = true,
-                    fixedHeight = 18f * Scale,
+                    //fixedHeight = 18f * Scale,
                     fontSize = Mathf.RoundToInt(9f * Scale),
                     alignment = TextAnchor.MiddleCenter
                 };
@@ -650,7 +650,7 @@ public static class UFStyles
             {
                 _selectedItemStyle = new GUIStyle()
                 {
-                    normal = { background = GetSkinTexture("Selected"), textColor = Color.white },
+                    normal = { background = GetSkinTexture("SelectedNodeItem"), textColor = Color.white },
                     stretchHeight = true,
                     fixedHeight = Mathf.RoundToInt(18 * Scale),
                     fontSize = Mathf.RoundToInt(9 * Scale),

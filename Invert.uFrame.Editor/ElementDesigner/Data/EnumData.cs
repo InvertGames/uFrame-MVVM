@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class EnumData : DiagramItem
+public class EnumData : DiagramNode
 {
     [SerializeField]
     private List<EnumItem> _enumItems = new List<EnumItem>();
@@ -35,6 +35,7 @@ public class EnumData : DiagramItem
   
     public override void RemoveFromDiagram()
     {
+        base.RemoveFromDiagram();
         Data.Enums.Remove(this);
     }
 
@@ -46,12 +47,12 @@ public class EnumData : DiagramItem
 
     public override string Label { get { return Name; }}
 
-    public override IEnumerable<IDiagramSubItem> Items
+    public override IEnumerable<IDiagramNodeItem> Items
     {
-        get { return EnumItems.Cast<IDiagramSubItem>(); }
+        get { return EnumItems.Cast<IDiagramNodeItem>(); }
     }
 
-    public override void CreateLink(IDiagramItem container, IDrawable target)
+    public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         
     }
@@ -61,13 +62,13 @@ public class EnumData : DiagramItem
         return false;
     }
 
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         yield break;
     }
 
 
-    public override void RemoveLink(IDiagramItem target)
+    public override void RemoveLink(IDiagramNode target)
     {
         
     }

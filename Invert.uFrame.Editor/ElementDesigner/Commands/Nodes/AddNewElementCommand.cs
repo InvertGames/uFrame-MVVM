@@ -7,18 +7,18 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             get { return "Add New Element"; }
         }
 
-        public override void Perform(ElementsDiagram item)
+        public override void Perform(ElementsDiagram node)
         {
             var data = new ElementData
             {
-                Data = item.Data,
-                Name = item.Data.GetUniqueName("NewElement"),
+                Data = node.Data,
+                Name = node.Data.GetUniqueName("NewElement"),
                 //BaseTypeName = typeof(ViewModel).FullName,
                 Dirty = true
             };
-            data.Location = item.LastMouseDownPosition;
+            data.Location = node.LastMouseDownPosition;
             data.Filter.Locations[data] = data.Location;
-            item.Data.ViewModels.Add(data);
+            node.Data.ViewModels.Add(data);
         }
     }
 }

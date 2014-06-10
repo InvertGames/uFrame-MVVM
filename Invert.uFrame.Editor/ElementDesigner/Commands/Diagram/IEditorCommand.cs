@@ -12,6 +12,8 @@ namespace Invert.uFrame.Editor.ElementDesigner
         string Name { get; }
         string Title { get; set; }
         decimal Order { get; }
+        bool ShowAsDiabled { get; }
+        string Group { get;  }
         string CanPerform(object arg);
     }
 
@@ -27,14 +29,25 @@ namespace Invert.uFrame.Editor.ElementDesigner
             Perform((TFor)item);
         }
 
-        public abstract void Perform(TFor item);
+        public abstract void Perform(TFor node);
 
         public override string CanPerform(object arg)
         {
             return CanPerform((TFor) arg);
         }
 
-        public abstract string CanPerform(TFor item);
+        public sealed override bool IsChecked(object arg)
+        {
+            if (arg == null) return false;
+            return IsChecked((TFor)arg);
+        }
+
+        public virtual bool IsChecked(TFor arg)
+        {
+            return false;
+        }
+
+        public abstract string CanPerform(TFor node);
 
     }
 }

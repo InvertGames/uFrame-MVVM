@@ -48,8 +48,14 @@ namespace Invert.uFrame.Editor.ElementDesigner
         }
 
         public virtual decimal Order { get { return 0; } }
+        public bool ShowAsDiabled { get { return false; } }
+        public virtual string Group { get { return "Default"; }}
         public abstract string CanPerform(object arg);
         public virtual string Path { get { return Name; } }
-        public bool Checked { get; set; }
+
+        public virtual bool IsChecked(object arg)
+        {
+            return false;
+        }
     }
 }

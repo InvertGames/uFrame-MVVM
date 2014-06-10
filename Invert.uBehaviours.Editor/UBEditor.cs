@@ -299,7 +299,10 @@ public abstract class UBEditor : Editor
     {
         var rect = GetRect(UBStyles.ToolbarStyle);
         GUI.Box(rect, "", UBStyles.ToolbarStyle);
-        var labelStyle = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 10 };
+        var labelStyle = new GUIStyle(EditorStyles.label)
+        {
+            alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 10
+        };
         var labelRect = new Rect(rect.x + 2, rect.y + (rect.height / 2) - 8, rect.width - 50, 16);
         var result = open;
         if (leftButton == null)

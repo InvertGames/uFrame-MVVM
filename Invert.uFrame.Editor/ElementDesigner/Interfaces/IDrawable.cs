@@ -7,7 +7,7 @@ public interface IDrawable
     string Label { get; }
 
 
-    void CreateLink(IDiagramItem container, IDrawable target);
+    void CreateLink(IDiagramNode container, IDrawable target);
     bool CanCreateLink(IDrawable target);
-    IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData);
+    IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes);
 }

@@ -7,17 +7,17 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class AddElementCommandCommand : EditorCommand<ElementData>
     {
-        public override void Perform(ElementData item)
+        public override void Perform(ElementData node)
         {
-            item.Commands.Add(new ViewModelCommandData()
+            node.Commands.Add(new ViewModelCommandData()
             {
-                Name = item.Data.GetUniqueName("NewCommand")
+                Name = node.Data.GetUniqueName("NewCommand")
             });
         }
 
-        public override string CanPerform(ElementData item)
+        public override string CanPerform(ElementData node)
         {
-            if (item == null) return "Arg can't be null";
+            if (node == null) return "Arg can't be null";
             return null;
         }
     }

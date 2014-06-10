@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class AdditiveSceneData : IDiagramSubItem
+public class AdditiveSceneData : IDiagramNodeItem
 {
     [SerializeField]
     private string _name;
     public Rect Position { get; set; }
     public string Label { get; private set; }
 
-    public void CreateLink(IDiagramItem container, IDrawable target)
+    public void CreateLink(IDiagramNode container, IDrawable target)
     {
         
     }
@@ -20,13 +20,13 @@ public class AdditiveSceneData : IDiagramSubItem
         return false;
     }
 
-    public IEnumerable<IDiagramLink> GetLinks(IDiagramItem[] elementDesignerData)
+    public IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         yield break;
     }
 
     public bool IsSelected { get; set; }
-    public void RemoveLink(IDiagramItem target)
+    public void RemoveLink(IDiagramNode target)
     {
         
     }
@@ -48,12 +48,12 @@ public class AdditiveSceneData : IDiagramSubItem
     public bool IsSelectable { get { return true; } }
 
 
-    public void Remove(IDiagramItem data)
+    public void Remove(IDiagramNode diagramNode)
     {
         
     }
 
-    public void Rename( IDiagramItem data, string name)
+    public void Rename( IDiagramNode data, string name)
     {
         Name = name;
     }

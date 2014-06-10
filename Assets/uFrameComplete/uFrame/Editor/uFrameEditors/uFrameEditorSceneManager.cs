@@ -137,7 +137,7 @@ public class uFrameEditorSceneManager
     public static void NavigateBack(ViewBase view)
     {
         var designerWindow = EditorWindow.GetWindow<ElementsDesigner>();
-        designerWindow.OpenDiagramByAttribute(view.ViewModelType);
+        //designerWindow.OpenDiagramByAttribute(view.ViewModelType);
 
         //designerWindow.Diagram.Data.PushFilter();
     }

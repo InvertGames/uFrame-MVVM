@@ -4,9 +4,9 @@ using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
 using UnityEngine;
 
-public class DiagramEnumDrawer : DiagramItemDrawer<EnumData>
+public class DiagramEnumDrawer : DiagramNodeDrawer<EnumData>
 {
-    private DiagramItemHeader _itemsHeader;
+    private NodeItemHeader _itemsHeader;
 
     public override GUIStyle BackgroundStyle
     {
@@ -31,14 +31,14 @@ public class DiagramEnumDrawer : DiagramItemDrawer<EnumData>
 
     }
 
-    public DiagramItemHeader ItemsHeader
+    public NodeItemHeader ItemsHeader
     {
         get
         {
 
             if (_itemsHeader == null)
             {
-                _itemsHeader = Container.Resolve<DiagramItemHeader>();
+                _itemsHeader = Container.Resolve<NodeItemHeader>();
                 _itemsHeader.Label = "Items";
                 _itemsHeader.HeaderType = typeof(EnumData);
                 _itemsHeader.AddCommand = Container.Resolve<AddEnumItemCommand>();
@@ -54,13 +54,13 @@ public class DiagramEnumDrawer : DiagramItemDrawer<EnumData>
         yield return new DiagramSubItemGroup()
         {
             Header = ItemsHeader,
-            Items = Data.EnumItems.Cast<IDiagramSubItem>().ToArray()
+            Items = Data.EnumItems.Cast<IDiagramNodeItem>().ToArray()
         };
     }
 
-    protected override void DrawSelectedItem(IDiagramSubItem item, ElementsDiagram diagram)
+    protected override void DrawSelectedItem(IDiagramNodeItem nodeItem, ElementsDiagram diagram)
     {
-        base.DrawSelectedItem(item, diagram);
+        base.DrawSelectedItem(nodeItem, diagram);
 
     }
 }

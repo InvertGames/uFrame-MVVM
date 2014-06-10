@@ -1,4 +1,4 @@
-public interface ISubSystemType : IDiagramSubItem
+public interface ISubSystemType : IDiagramNodeItem
 {
     
 }
