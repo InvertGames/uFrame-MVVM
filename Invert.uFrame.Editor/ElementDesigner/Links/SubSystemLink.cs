@@ -11,6 +11,6 @@ public class SubSystemLink : BeizureLink
     public override ISelectable Target { get { return Finish; } }
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.SubSystemLinkColor;
+        return diagram.Data.Settings.SubSystemLinkColor;
     }
 }

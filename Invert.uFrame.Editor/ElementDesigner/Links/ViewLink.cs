@@ -11,7 +11,7 @@ public class ViewLink : BeizureLink
     public override ISelectable Target { get { return Data; } }
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.ViewLinkColor;
+        return diagram.Data.Settings.ViewLinkColor;
     }
 
     public override NodeCurvePointStyle EndStyle

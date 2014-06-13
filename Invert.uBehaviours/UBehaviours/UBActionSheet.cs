@@ -11,7 +11,9 @@ using UnityEngine;
 [Serializable]
 public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, IContextItem
 {
+    [NonSerialized]
     private static IUBExecutionHandler _executionHandler;
+    [NonSerialized]
     private TriggerInfo _forwardTo;
 
     [SerializeField, HideInInspector]
@@ -23,12 +25,16 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
     [SerializeField]
     private string _Name;
 
-    [SerializeField]
+    [NonSerialized]
     [HideInInspector]
     private IUBehaviours _rootContainer;
 
     [SerializeField]
     private string _TriggerType;
+    [NonSerialized]
+    private UBActionSheet _parent;
+    [NonSerialized]
+    private TriggerInfo _triggerInfo;
 
     /// <summary>
     /// This is the ExecutionHandler that will execute any actionsheet.
@@ -38,7 +44,6 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
         get { return _executionHandler ?? (new DefaultExecutionHandler()); }
         set { _executionHandler = value; }
     }
-
 
     /// <summary>
     /// The actions that belong to this actionsheet
@@ -109,6 +114,17 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
     }
 
     /// <summary>
+    /// Is this visible when collapsed.
+    /// </summary>
+    public bool IsActive
+    {
+        get
+        {
+            return this.Actions.Count > 0 || IsForward;
+        }
+    }
+
+    /// <summary>
     /// Are we currently forwarding to another Trigger?
     /// </summary>
     public bool IsForward
@@ -128,17 +144,6 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
     }
 
     /// <summary>
-    /// Is this visible when collapsed.
-    /// </summary>
-    public bool IsActive
-    {
-        get
-        {
-            return this.Actions.Count > 0 || IsForward;
-        }
-    }
-
-    /// <summary>
     /// The name of this actionsheet.
     /// </summary>
     public string Name
@@ -150,7 +155,11 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
     /// <summary>
     /// The actionsheet that parents this actionsheet or the action's parent of this actionsheet.
     /// </summary>
-    public UBActionSheet Parent { get; set; }
+    public UBActionSheet Parent
+    {
+        get { return _parent; }
+        set { _parent = value; }
+    }
 
     /// <summary>
     /// The path to this actionsheet
@@ -178,6 +187,7 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
         get { return _rootContainer; }
         set { _rootContainer = value; }
     }
+
     /// <summary>
     /// Gets each actionsheet leading up to this sheet in the flow.
     /// </summary>
@@ -201,7 +211,11 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
     /// <summary>
     /// The trigger info that this actionsheet belongs to
     /// </summary>
-    public TriggerInfo TriggerInfo { get; set; }
+    public TriggerInfo TriggerInfo
+    {
+        get { return _triggerInfo; }
+        set { _triggerInfo = value; }
+    }
 
     public string TriggerType
     {
@@ -310,6 +324,7 @@ public sealed class UBActionSheet : ByteObject<UBAction>, IBehaviourVisitable, I
         TriggerInfo = trigger;
         base.Load(behaviour);
     }
+
     /// <summary>
     /// Loads all of the byte data stored on this object and correctly assigns runtime variables needed for execution.
     /// This is used internally and shouldn't be invoked or it might undesired results.

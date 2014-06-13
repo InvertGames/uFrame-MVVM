@@ -11,6 +11,6 @@ public class AssociationLink : BeizureLink
     public override ISelectable Target { get { return Element; } }
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.AssociationLinkColor;
+        return diagram.Data.Settings.AssociationLinkColor;
     }
 }

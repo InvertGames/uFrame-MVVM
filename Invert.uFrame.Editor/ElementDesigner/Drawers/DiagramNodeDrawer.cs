@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
+using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,7 +36,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         }
     }
 
-    public virtual float HeaderSize { get { return 35 ; } }
+    public virtual float HeaderSize { get { return 35; } }
 
     public float Scale
     {
@@ -78,7 +80,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         }
     }
 
-    public float ItemHeight { get { return 20 ; } }
+    public float ItemHeight { get { return 20; } }
 
     public virtual float Padding
     {
@@ -120,7 +122,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
         if (AllowCollapsing)
         {
-            var rect = new Rect(Data.HeaderPosition.x + 5 , Data.HeaderPosition.y + (HeaderSize / 2f) - 3, 16f, 16f);
+            var rect = new Rect(Data.HeaderPosition.x + 5, Data.HeaderPosition.y + (HeaderSize / 2f) - 3, 16f, 16f);
             if (!Data.IsCollapsed)
             {
                 rect.y -= 3;
@@ -130,12 +132,13 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             if (GUI.Button(rect.Scale(Scale), string.Empty,
                 Data.IsCollapsed ? UFStyles.CollapseRight : UFStyles.CollapseDown))
             {
-                Data.IsCollapsed = !Data.IsCollapsed;
-                Data.Dirty = true;
-                diagram.Dirty = true;
-                CalculateBounds();
-                EditorUtility.SetDirty(diagram.Data);
-                diagram.Refresh();
+                Diagram.ExecuteCommand((item) =>
+                {
+                    Data.IsCollapsed = !Data.IsCollapsed;
+                    Data.Dirty = true;
+                    diagram.Dirty = true;
+                    //CalculateBounds();
+                });
             }
 
         }
@@ -150,7 +153,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             position.x += 5;
         }
 
-        position.y += 10 ;
+        position.y += 10;
 
         if (Data.IsEditing && !importOnly)
         {
@@ -163,10 +166,11 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(diagram.Data, "Set Element Name");
+
+                //Undo.RecordObject(diagram.Data, "Set Element Name");
                 Data.Rename(newText);
                 CalculateBounds();
-                EditorUtility.SetDirty(diagram.Data);
+                //EditorUtility.SetDirty(diagram.Data);
             }
 
         }
@@ -193,7 +197,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     public virtual Type CommandsType
     {
-        get { return typeof (IDiagramNode); }
+        get { return typeof(IDiagramNode); }
     }
 
     protected abstract IEnumerable<DiagramSubItemGroup> GetItemGroups();
@@ -268,7 +272,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         {
             var style = new GUIStyle(EditorStyles.miniLabel);
             style.normal.textColor = new Color(0.1f, 0.1f, 0.1f);
-            style.fontSize = Mathf.RoundToInt(10*Scale);
+            style.fontSize = Mathf.RoundToInt(10 * Scale);
             style.alignment = TextAnchor.MiddleCenter;
             style.fontStyle = FontStyle.Italic;
             GUI.Label(offsetPosition.Scale(Scale), label, style);
@@ -324,7 +328,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             GUILayout.BeginArea(rect);
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.BeginHorizontal();
-          
+
             DrawSelectedItem(item, diagram);
             EditorGUILayout.EndHorizontal();
             GUILayout.EndArea();
@@ -366,10 +370,10 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         {
             if (Data.Items.All(p => p.Name != newName))
             {
-                Undo.RecordObject(diagram.Data, "Rename");
-
-                nodeItem.Rename(Data, newName);
-                EditorUtility.SetDirty(diagram.Data);
+                //Undo.RecordObject(diagram.Data, "Rename");
+                //Diagram.ExecuteCommand(RemoveItemCommand);
+                Diagram.ExecuteCommand(p => nodeItem.Rename(Data, newName));
+                //EditorUtility.SetDirty(diagram.Data);
 
             }
         }
@@ -377,15 +381,16 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
         if (GUILayout.Button(string.Empty, UBStyles.RemoveButtonStyle.Scale(Scale)))
         {
-            Undo.RecordObject(diagram.Data, "RemoveFromDiagram " + nodeItem.Name);
-            nodeItem.Remove(diagram.SelectedData);
-            CalculateBounds();
-            diagram.Refresh(true);
-            EditorUtility.SetDirty(diagram.Data);
+            //this.ExecuteCommand(new SimpleEditorCommand<DiagramNodeItem>(p => nodeItem.Rename(Data, newName)));
+            Diagram.ExecuteCommand(RemoveItemCommand);
         }
 
     }
 
+    public virtual IEditorCommand RemoveItemCommand
+    {
+        get { return uFrameEditor.Container.Resolve<IEditorCommand>("RemoveNodeItem"); }
+    }
     public virtual void CalculateBounds()
     {
 
@@ -397,7 +402,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         startY = CalculateContentBounds(startY, width);
         _cachedLabel = Data.Label;
         startY += Padding;
-        Data.Position = new Rect(location.x, location.y , width, startY + Padding);
+        Data.Position = new Rect(location.x, location.y, width, startY + Padding);
         Data.HeaderPosition = new Rect(location.x, location.y, width, HeaderSize - 2);
     }
 
@@ -424,7 +429,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     public virtual void DoubleClicked()
     {
-            
+
     }
 
     private float CalculateGroupBounds(DiagramSubItemGroup group, float width, float startY)
@@ -441,24 +446,25 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
                 sy += ItemExpandedHeight;
             }
         }
-        if (Data.IsCollapsed) 
+        if (Data.IsCollapsed)
             return startY;
         return sy;
     }
 
-    public void Execute(IEditorCommand command)
+    //public void Execute(IEditorCommand command)
+    //{
+    //    UnityEngine.Debug.Log("Exeucting: " + command.Name);
+    //    Diagram.ExecuteCommand(command);
+    //}
+
+
+    public void CommandExecuted(IEditorCommand command)
     {
-        UnityEngine.Debug.Log("Exeucting: " + command.Name);
-        Diagram.Execute(command);
+        Diagram.CommandExecuting(command);
     }
 
-    public IEnumerable<object> ContextObjects
+    public void CommandExecuting(IEditorCommand command)
     {
-        get
-        {
-            yield return this;
-            yield return Data;
-            yield return Diagram;
-        }
+        Diagram.CommandExecuting(command);
     }
 }

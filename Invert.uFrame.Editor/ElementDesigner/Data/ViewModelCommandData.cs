@@ -15,13 +15,19 @@ public class ViewModelCommandData : DiagramNodeItem, IViewModelItem
 
     [SerializeField]
     private string _transitionName;
+    [NonSerialized]
+    private ElementData _element;
 
     public bool AllowEmptyRelatedType
     {
         get { return true; }
     }
 
-    public ElementData Element { get; set; }
+    public ElementData Element
+    {
+        get { return _element; }
+        set { _element = value; }
+    }
 
     public string FieldName
     {

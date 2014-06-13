@@ -2,6 +2,8 @@ namespace Invert.uFrame.Editor.Refactoring
 {
     public class RenameElementRefactorer : RenameRefactorer
     {
+        public RenameFileRefactorer ControllerRenamer { get; set; }
+        public RenameFileRefactorer ViewModelRenamer { get; set; }
         public RenameIdentifierRefactorer ViewBase { get; set; }
         public RenameIdentifierRefactorer ControllerBase { get; set; }
         public RenameIdentifierRefactorer Controller { get; set; }
@@ -11,13 +13,20 @@ namespace Invert.uFrame.Editor.Refactoring
 
         public RenameElementRefactorer(ElementData data)
         {
-   
+            ControllerRenamer = new RenameFileRefactorer();
+            ViewModelRenamer = new RenameFileRefactorer();
             ViewBase = new RenameIdentifierRefactorer();
             ControllerBase = new RenameIdentifierRefactorer();
             Controller = new RenameIdentifierRefactorer();
             ViewModel = new RenameIdentifierRefactorer();
             Initialize = new RenameIdentifierRefactorer();
             Variable = new RenameIdentifierRefactorer();
+            ViewModelRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
+            ControllerRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
+            ViewModelRenamer.From =
+                data.Data.Settings.CodePathStrategy.GetEditableViewModelFilename(data.NameAsViewModel);
+            ControllerRenamer.From =
+                data.Data.Settings.CodePathStrategy.GetEditableControllerFilename(data.NameAsController);
             ViewBase.From = data.NameAsViewBase;
             ControllerBase.From = data.NameAsControllerBase;
             Controller.From = data.NameAsController;
@@ -31,6 +40,12 @@ namespace Invert.uFrame.Editor.Refactoring
         }
         public void Set(ElementData data)
         {
+
+            ViewModelRenamer.To =
+              data.Data.Settings.CodePathStrategy.GetEditableViewModelFilename(data.NameAsViewModel);
+            ControllerRenamer.To =
+                data.Data.Settings.CodePathStrategy.GetEditableControllerFilename(data.NameAsController);
+
             ViewBase.To = data.NameAsViewBase;
             ControllerBase.To = data.NameAsControllerBase;
             Controller.To = data.NameAsController;
@@ -40,6 +55,8 @@ namespace Invert.uFrame.Editor.Refactoring
         }
         public override void Process(RefactorContext context)
         {
+            ViewModelRenamer.Process(context);
+            ControllerRenamer.Process(context);
             ViewBase.Process(context);
             ControllerBase.Process(context);
             Controller.Process(context);

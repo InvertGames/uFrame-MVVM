@@ -22,7 +22,7 @@ public class ElementsDiagram : ICommandHandler
 
     private static DiagramPlugin[] _plugins;
 
-    private ElementDesignerData _data;
+    private IElementDesignerData _data;
 
     private List<INodeDrawer> _nodeDrawers = new List<INodeDrawer>();
 
@@ -58,15 +58,17 @@ public class ElementsDiagram : ICommandHandler
         }
     }
 
-    public ElementDesignerData Data
+    public IElementDesignerData Data
     {
         get { return _data; }
         set
         {
             _data = value;
+          
             if (_data != null)
             {
-                _data.ReloadFilterStack();
+                _data.Prepare();
+                //_data.ReloadFilterStack();
             }
             Refresh(true);
         }
@@ -229,13 +231,20 @@ public class ElementsDiagram : ICommandHandler
 
     private SerializedObject SerializedObject
     {
-        get { return _o ?? (_o = new SerializedObject(Data)); }
+        get
+        {
+            if (Data is UnityEngine.Object)
+            {
+                return _o ?? (_o = new SerializedObject(Data as UnityEngine.Object));    
+            }
+            return null;
+        }
         set { _o = value; }
     }
 
     public ElementsDiagram(string assetPath)
     {
-        Debug.Log(assetPath);
+        
         var fileExtension = Path.GetExtension(assetPath);
         if (string.IsNullOrEmpty(fileExtension)) fileExtension = ".asset";
         Repository = uFrameEditor.Container.Resolve<IElementsDataRepository>(fileExtension);
@@ -252,24 +261,16 @@ public class ElementsDiagram : ICommandHandler
         }
 
         Data = Repository.LoadDiagram(assetPath);
+
+
+        Data.Settings.CodePathStrategy = 
+            uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.Settings.CodePathStrategyName ?? "Default");
+        Data.Settings.CodePathStrategy.AssetPath = 
+            assetPath.Replace(string.Format("{0}{1}", Path.GetFileNameWithoutExtension(assetPath), fileExtension), "").Replace("/",Path.DirectorySeparatorChar.ToString()); 
         
-
-        CodePathStrategy = uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.CodePathStrategyName ?? "Default");
-        CodePathStrategy.AssetPath = assetPath.Replace(string.Format("{0}{1}", Path.GetFileNameWithoutExtension(assetPath), fileExtension), ""); 
     }
 
-    
-
-    public ICodePathStrategy CodePathStrategy { get; set; }
-
-    public void ExecuteCommand(IEditorCommand command,object arg)
-    {
-        Undo.RecordObject(Data, command.Title);
-        command.Execute(arg);
-        Refresh(true);
-        EditorUtility.SetDirty(Data);
-    }
-
+   
     public INodeDrawer CreateDrawerFor(IDiagramNode node)
     {
         return uFrameEditor.CreateDrawer(node, this);
@@ -350,12 +351,16 @@ public class ElementsDiagram : ICommandHandler
 
     public Vector2 CurrentMousePosition
     {
-        get { return CurrentEvent.mousePosition; }
+        get
+        {
+        
+            return CurrentEvent.mousePosition;
+        }
     }
 
     public float SnapSize
     {
-        get { return Data.SnapSize * Scale; }
+        get { return Data.Settings.SnapSize * Scale; }
     }
 
     public void Save()
@@ -376,12 +381,18 @@ public class ElementsDiagram : ICommandHandler
 
         foreach (var drawer in NodeDrawers.OrderBy(p => p.IsSelected).ToArray())
         {
+            if (drawer.Model.Dirty)
+            {
+                drawer.CalculateBounds();
+                drawer.Model.Dirty = false;
+            }
             //drawer.CalculateBounds();
             var shouldFocus = drawer.ShouldFocus;
             if (shouldFocus != null)
                 focusItem = shouldFocus;
             drawer.Draw(this);
         }
+
         foreach (var link in Data.Links.ToArray())
         {
             link.Draw(this);
@@ -403,10 +414,10 @@ public class ElementsDiagram : ICommandHandler
 
         if (IsMouseDown && SelectedData != null && SelectedItem == null && !CurrentEvent.control)
         {
-            if (!DidDrag)
-            {
-                Undo.RecordObject(Data, "Move " + SelectedData.Name);
-            }
+            //if (!DidDrag)
+            //{
+            //    Undo.RecordObject(Data, "Move " + SelectedData.Name);
+            //}
 
             var newPosition = DragDelta;//CurrentMousePosition - SelectionOffset;
             var allSelected = AllSelected.ToArray();
@@ -573,7 +584,7 @@ public class ElementsDiagram : ICommandHandler
     {
         if (refreshDrawers)
             NodeDrawers.Clear();
-
+      
         foreach (var diagramItem in Data.DiagramItems)
         {
             diagramItem.Data = Data;
@@ -663,7 +674,7 @@ public class ElementsDiagram : ICommandHandler
     public void ShowContextMenu()
     {
 
-        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(Selected, typeof (IDiagramNodeCommand), Selected.CommandsType);
+        var menu = uFrameEditor.CreateCommandUI<ContextMenuUI>(this, typeof (IDiagramNodeCommand), Selected.CommandsType);
         menu.Go();
 
         //var menu = new GenericMenu();
@@ -825,42 +836,7 @@ public class ElementsDiagram : ICommandHandler
         if (handler != null) handler(olddata, newdata);
     }
 
-    private void DoViewModelInspector(ElementDataBase selected)
-    {
-        // UBEditor.IsGlobals = true;
-        // UBEditor.DoToolbar(Selected.Name + " Properties");
-        EditorGUI.BeginChangeCheck();
-        var text = EditorGUILayout.TextField("Name", selected.Name);
-        if (EditorGUI.EndChangeCheck())
-        {
-            selected.Name = text;
-            EditorUtility.SetDirty(Data);
-        }
-
-        //if (SelectedItem != null)
-        //{
-        //    UBEditor.DoToolbar(SelectedItem.Name + " Properties");
-        //    var typesList = Repository.GetAvailableTypes();
-        //    EditorGUI.BeginChangeCheck();
-        //    var newName = EditorGUILayout.TextField(SelectedItem.Name);
-        //    if (EditorGUI.EndChangeCheck())
-        //    {
-        //        SelectedItem.Name = newName;
-        //        EditorUtility.SetDirty(Data);
-        //    }
-        //    if (GUILayout.Button(SelectedItem.RelatedType))
-        //    {
-        //        UBListWindow.Init("Choose Type", Data.name, typesList, (n, v) =>
-        //        {
-        //            SelectedItem.RelatedType = v;
-        //            Data.UpdateLinks();
-        //            EditorUtility.SetDirty(Data);
-        //        });
-        //    }
-
-        //}
-    }
-
+ 
     private void OnDoubleClick()
     {
 
@@ -872,13 +848,14 @@ public class ElementsDiagram : ICommandHandler
                 {
                     if (SelectedData == Data.CurrentFilter)
                     {
-                        Data.PopFilter();
+                        Data.PopFilter(null);
                     }
                     else
                     {
                         Data.PushFilter(SelectedData as IDiagramFilter);
                     }
 
+                    Refresh(true);
                     Refresh(true);
                 }
                 else
@@ -936,7 +913,7 @@ public class ElementsDiagram : ICommandHandler
 
     public Event CurrentEvent
     {
-        get { return Event.current; }
+        get { return Event.current ?? _currentEvent; }
         set { _currentEvent = value; }
     }
 
@@ -965,20 +942,14 @@ public class ElementsDiagram : ICommandHandler
             {
                 if (SelectedItem.CanCreateLink(CurrentMouseOverNode))
                 {
-                    Undo.RecordObject(Data, "Create Link");
-                    SelectedItem.CreateLink(SelectedData, CurrentMouseOverNode);
-                    Refresh();
-                    EditorUtility.SetDirty(Data);
+                    ExecuteCommand(e=>SelectedItem.CreateLink(SelectedData,CurrentMouseOverNode));
                 }
             }
             else
             {
                 if (SelectedData.CanCreateLink(CurrentMouseOverNode))
                 {
-                    Undo.RecordObject(Data, "Create Link");
-                    SelectedData.CreateLink(SelectedData, CurrentMouseOverNode);
-                    Refresh();
-                    EditorUtility.SetDirty(Data);
+                    ExecuteCommand(e => SelectedItem.CreateLink(SelectedData, CurrentMouseOverNode));
                 }
             }
         }
@@ -986,35 +957,25 @@ public class ElementsDiagram : ICommandHandler
         {
             if (SelectedItem != null)
             {
-                Undo.RecordObject(Data, "RemoveFromDiagram Link");
-                SelectedItem.RemoveLink(SelectedData);
-                Refresh();
-                EditorUtility.SetDirty(Data);
+                ExecuteCommand(e => SelectedItem.RemoveLink(SelectedData)); 
             }
             else if (SelectedData != null)
             {
-                Undo.RecordObject(Data, "RemoveFromDiagram Link");
-                SelectedData.RemoveLink(null);
-                //
-                //Selected.BaseTypeName = UFrameAssetManager.DesignerVMAssemblyName;
-                Refresh();
-                EditorUtility.SetDirty(Data);
+                ExecuteCommand(e => SelectedItem.RemoveLink(null));    
             }
         }
         if (DidDrag)
         {
-            EditorUtility.SetDirty(Data);
+            Repository.MarkDirty(Data);
         }
         DidDrag = false;
     }
 
-    public void Execute(IEditorCommand command)
+    public void ExecuteCommand(Action<ElementsDiagram> action)
     {
-        EditorUtility.SetDirty(Data);
-        Undo.RecordObject(Data, command.Title);
-        this.ExecuteCommand(command);
-        Refresh();
+        this.ExecuteCommand(new SimpleEditorCommand<ElementsDiagram>(action));
     }
+
 
     public IEnumerable<object> ContextObjects
     {
@@ -1022,11 +983,23 @@ public class ElementsDiagram : ICommandHandler
         {
             yield return this;
             yield return SelectedItem;
+            var selectedItem = SelectedItem;
+            if (selectedItem != null)
+            {
+                yield return selectedItem;
+            }
+            else
+            {
+                //if (CurrentMousePosition == null)
+               
+            }
             if (Data != null)
             {
                 yield return Data;
             }
-            foreach (var diagramItem in AllSelected)
+            var allSelected = AllSelected.ToArray();
+
+            foreach (var diagramItem in allSelected)
             {
                 yield return diagramItem;
                 if (diagramItem.Data != null)
@@ -1034,6 +1007,36 @@ public class ElementsDiagram : ICommandHandler
                     yield return diagramItem.Data;
                 }
             }
+            if (allSelected.Length < 1)
+            {
+                var mouseOverViewData = MouseOverViewData;
+                if (mouseOverViewData != null)
+                {
+                    var mouseOverDataModel = MouseOverViewData.Model;
+
+                    if (mouseOverDataModel != null)
+                    {
+                        Debug.Log("Returned" + mouseOverDataModel.Data.Name);
+                        yield return mouseOverDataModel;
+                    }
+                }
+                
+            }
         }
+    }
+
+    public void CommandExecuted(IEditorCommand command)
+    {
+        Repository.MarkDirty(Data);
+#if DEBUG
+        Debug.Log(command.Title + " Executed");
+#endif
+        this.Refresh();
+        Dirty = true;
+    }
+
+    public void CommandExecuting(IEditorCommand command)
+    {
+        Repository.RecordUndo(Data,command.Title);
     }
 }

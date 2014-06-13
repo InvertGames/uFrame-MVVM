@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
@@ -21,15 +22,15 @@ public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
         }
         ElementItemTypesWindow.InitTypeListWindow("Choose Type", typesList.ToArray(), (selected) =>
         {
-            Undo.RecordObject(node.Data, "Set Type");
-            viewModelItem.RelatedType = selected.AssemblyQualifiedName;
-            node.Refresh();
-            EditorUtility.SetDirty(node.Data);
+            node.ExecuteCommand((diagram) =>
+            {
+                viewModelItem.RelatedType = selected.AssemblyQualifiedName;
+            });
             EditorWindow.GetWindow<ElementItemTypesWindow>().Close();
         });
     }
 
-    public virtual IEnumerable<ElementItemType> GetRelatedTypes(ElementDesignerData diagramData)
+    public virtual IEnumerable<ElementItemType> GetRelatedTypes(IElementDesignerData diagramData)
     {
         if (AllowNone)
         {
@@ -44,7 +45,7 @@ public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
                 {
                     AssemblyQualifiedName = viewModel.AssemblyQualifiedName,
                     Label = viewModel.Name,
-                    Group = diagramData.name
+                    Group = diagramData.Name
                 };
             }
         }

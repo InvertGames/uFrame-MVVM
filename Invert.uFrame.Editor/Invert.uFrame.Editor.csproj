@@ -58,6 +58,12 @@
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\InjectAttribute.cs">
       <Link>InjectAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\IJsonSerializable.cs">
+      <Link>IJsonSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\SimpleJSON.cs">
+      <Link>SimpleJSON.cs</Link>
+    </Compile>
     <Compile Include="CodeFileGenerator.cs" />
     <Compile Include="CodeGenerator.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsYieldCommand.cs" />

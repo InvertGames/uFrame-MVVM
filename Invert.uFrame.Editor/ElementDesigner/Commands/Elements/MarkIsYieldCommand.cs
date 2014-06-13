@@ -11,7 +11,6 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             if (arg == null)
             {
-                UnityEngine.Debug.Log("arg not found");
                 return "Must be an element to perform this operation.";
             }
 
@@ -39,7 +38,6 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             if (arg == null)
             {
-                UnityEngine.Debug.Log("arg not found");
                 return "Must be a command to perform this operation.";
             }
                 
@@ -54,6 +52,32 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         public override void Perform(ViewModelCommandData arg)
         {
             arg.IsYield = !arg.IsYield;
+        }
+    }
+    public class RemoveNodeItemCommand : EditorCommand<ElementsDiagram>, IDiagramNodeItemCommand
+    {
+        public override string Name
+        {
+            get { return "Remove Item"; }
+        }
+
+
+        public override bool IsChecked(ElementsDiagram arg)
+        {
+            return false;
+        }
+
+        public override void Perform(ElementsDiagram arg)
+        {
+ 
+            var diagramNodeItem = arg.SelectedItem as IDiagramNodeItem;
+            if (diagramNodeItem != null)
+                diagramNodeItem.Remove(arg.SelectedData);
+        }
+
+        public override string CanPerform(ElementsDiagram node)
+        {
+            return null;
         }
     }
 }

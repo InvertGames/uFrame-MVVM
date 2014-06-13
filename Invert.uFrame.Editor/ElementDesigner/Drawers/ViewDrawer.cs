@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
 using UnityEngine;
@@ -55,7 +56,7 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
         base.DoubleClicked();
         if (DoubleClickCommand != null)
         {
-            Execute(DoubleClickCommand);
+            Diagram.ExecuteCommand(DoubleClickCommand);
         }
     }
 

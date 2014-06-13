@@ -98,13 +98,17 @@ namespace Invert.uFrame.Editor
 
                 if (command.For.IsAssignableFrom(o.GetType()))
                 {
+                    handler.CommandExecuting(command);
                     command.Execute(o);
+                    if (command.Hooks != null)
+                    command.Hooks.ForEach(p=>ExecuteCommand(handler,p));
+                    handler.CommandExecuted(command);
                 }
             }
         }
 
 
-        public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ElementDesignerData diagramData)
+        public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData)
         {
             // Grab all the code generators
             var diagramItemGenerators = Container.ResolveAll<NodeItemGenerator>().ToArray();
@@ -116,7 +120,7 @@ namespace Invert.uFrame.Editor
 
                 foreach (var item in items)
                 {
-                    var codeGenerators = generator.GetGenerators(diagramData, item);
+                    var codeGenerators = generator.GetGenerators(pathStrategy,diagramData, item);
                     foreach (var codeGenerator in codeGenerators)
                     {
                         codeGenerator.ObjectData = item;
@@ -127,9 +131,9 @@ namespace Invert.uFrame.Editor
             }
         }
 
-        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(ElementDesignerData diagramData)
+        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(IElementDesignerData diagramData)
         {
-            var codeGenerators = GetAllCodeGenerators(diagramData).ToArray();
+            var codeGenerators = GetAllCodeGenerators(diagramData.Settings.CodePathStrategy, diagramData).ToArray();
             var groups = codeGenerators.GroupBy(p => p.Filename);
             foreach (var @group in groups)
             {
@@ -178,11 +182,6 @@ namespace Invert.uFrame.Editor
             }
         }
 
-        public static void ShowCommandContextMenu()
-        {
-            GenericMenu menu = new GenericMenu();
-        }
-
         private static void InitializeContainer(uFrameContainer container)
         {
             container.Register<NodeItemHeader, NodeItemHeader>();
@@ -205,6 +204,8 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance(new AddElementCollectionCommand());
             container.RegisterInstance(new AddElementPropertyCommand());
             container.RegisterInstance(new AddEnumItemCommand());
+
+            container.RegisterInstance<IEditorCommand>(new RemoveNodeItemCommand(),"RemoveNodeItem");
 
             // Toolbar commands
             container.RegisterInstance<IToolbarCommand>(new PopToFilterCommand(), "PopToFilterCommand");
@@ -266,124 +267,14 @@ namespace Invert.uFrame.Editor
             }
         }
 
-        //public static TCommandUI DoCommands<TCommandUI>(params object[] contextObjects) where TCommandUI : class, ICommandUI
-        //{
-        //    return DoCommands<TCommandUI>(null, contextObjects);
-        //}
 
-        //public static TCommandUI DoCommands<TCommandUI>(Predicate<IEditorCommand> filter, params object[] contextObjects) where TCommandUI : class, ICommandUI
-        //{
-        //    var commandUI = Container.Resolve<TCommandUI>();
-        //    commandUI.Initialize();
+        public static void HookCommand<TFor>(string name, IEditorCommand hook) where TFor : class, IEditorCommand
+        {
+            var command = Container.Resolve<TFor>(name);
+            command.Hooks.Add(hook);
+        }
 
-        //    var commands = new List<IEditorCommand>();
-        //    foreach (var contextObject in contextObjects)
-        //    {
-        //        if (contextObject == null) continue;
 
-        //        var objCommands = Commands.Where(p => p.For.IsAssignableFrom(contextObject.GetType()) && !(p is IChildCommand));
-        //        if (filter != null)
-        //        {
-        //            objCommands = objCommands.Where(p => filter(p));
-        //        }
-        //        foreach (var command in objCommands)
-        //        {
-        //            if (!commands.Contains(command))
-        //            {
-        //                //if (command.CanPerform(contextObject) == null)
-        //                //{
-        //                commands.Add(command);
-        //                //}
-        //            }
-        //        }
-        //    }
-
-        //    // Loop through each command
-        //    foreach (var editorCommand in commands)
-        //    {
-        //        if (editorCommand is IParentCommand)
-        //        {
-        //            var parentCommandType = editorCommand.GetType();
-
-        //            var childs = Container.ResolveAll(parentCommandType).Cast<IEditorCommand>().ToArray();
-        //            commandUI.DoMultiCommand(editorCommand, childs, contextObjects);
-        //        }
-        //        else if (editorCommand is IChildCommand)
-        //        {
-        //        }
-        //        else if (editorCommand is IDynamicOptionsCommand)
-        //        {
-        //            var cmd = editorCommand as IDynamicOptionsCommand;
-        //            var options = cmd.GetOptions(contextObjects.FirstOrDefault(p => cmd.For.IsAssignableFrom(p.GetType())));
-        //            if (cmd.OptionsType == MultiOptionType.Buttons)
-        //            {
-        //                foreach (var contextMenuItem in options)
-        //                {
-        //                    commandUI.DoSingleCommand(editorCommand, contextObjects, contextMenuItem);
-        //                }
-        //            }
-
-        //        }
-        //        else
-        //        {
-        //            commandUI.DoSingleCommand(editorCommand, contextObjects);
-        //        }
-        //    }
-        //    return commandUI;
-        //}
-
-        //public static void DoToolbar(IEnumerable<IToolbarCommand> commands, params object[] contextObjects)
-        //{
-        //    foreach (var command in commands.OrderBy(p => p.Order))
-        //    {
-        //        var dynamicOptionsCommand = command as IDynamicOptionsCommand;
-        //        var parentCommand = command as IParentCommand;
-        //        if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.Buttons)
-        //        {
-        //            foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Container.Resolve(command.For)))
-        //            {
-        //                if (GUILayout.Button(multiCommandOption.Name, EditorStyles.toolbarButton))
-        //                {
-        //                    dynamicOptionsCommand.SelectedOption = multiCommandOption;
-
-        //                    ExecuteCommand(command, contextObjects);
-        //                }
-        //            }
-        //        }
-        //        else if (dynamicOptionsCommand != null && dynamicOptionsCommand.OptionsType == MultiOptionType.DropDown)
-        //        {
-        //            if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-        //            {
-        //                foreach (var multiCommandOption in dynamicOptionsCommand.GetOptions(Container.Resolve(command.For)))
-        //                {
-        //                    var genericMenu = new GenericMenu();
-        //                    Invert.uFrame.Editor.ElementDesigner.UFContextMenuItem option = multiCommandOption;
-        //                    var closureSafeCommand = command;
-        //                    genericMenu.AddItem(new GUIContent(multiCommandOption.Name), multiCommandOption.Checked,
-        //                        () =>
-        //                        {
-        //                            dynamicOptionsCommand.SelectedOption = option;
-        //                            ExecuteCommand(closureSafeCommand, contextObjects);
-        //                            closureSafeCommand.Execute(Container.Resolve(closureSafeCommand.For));
-        //                        });
-        //                    genericMenu.ShowAsContext();
-        //                }
-        //            }
-        //        }
-        //        else if (parentCommand != null)
-        //        {
-        //            var contextCommands = Commands.OfType<IChildCommand>().Where(p => p.ChildCommandFor == parentCommand.GetType()).Cast<IContextMenuItemCommand>();
-        //            //DoContextOptions(contextCommands);
-
-        //        }
-        //        else
-        //        {
-        //            if (GUILayout.Button(command.Name, EditorStyles.toolbarButton))
-        //            {
-        //                ExecuteCommand(command, contextObjects);
-        //            }
-        //        }
-        //    }
-        //}
+      
     }
 }

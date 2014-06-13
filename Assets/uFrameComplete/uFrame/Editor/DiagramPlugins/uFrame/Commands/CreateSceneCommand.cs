@@ -24,7 +24,7 @@ public class CreateSceneCommand : EditorCommand<IDiagramNode>, IDiagramNodeComma
 
     public override void Perform(IDiagramNode node)
     {
-        var paths = EditorWindow.GetWindow<ElementsDesigner>().Diagram.CodePathStrategy;
+        var paths = EditorWindow.GetWindow<ElementsDesigner>().Diagram.Data.Settings.CodePathStrategy;
         var sceneManagerData = node as SceneManagerData;
 
         if (!Directory.Exists(paths.ScenesPath))

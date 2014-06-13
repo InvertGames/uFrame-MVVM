@@ -10,7 +10,7 @@ public class ViewModelGenerator : CodeGenerator
         Data = data;
     }
 
-    public ElementDesignerData DiagramData
+    public IElementDesignerData DiagramData
     {
         get; set;
     }
@@ -147,7 +147,7 @@ public class ViewModelGenerator : CodeGenerator
             tDecleration.BaseTypes.Add(string.Format("{0}ViewModel", data.BaseTypeShortName.Replace("ViewModel", "")));
             tDecleration.CustomAttributes.Add(
                 new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
-                    new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.name))));
+                    new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
         }
 
         tDecleration.IsPartial = true;

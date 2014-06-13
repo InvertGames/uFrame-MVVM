@@ -35,9 +35,9 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
     private ICommandUI _toolbar;
 
 
-    public static ElementDesignerData SelectedElementDiagram
+    public static IElementDesignerData SelectedElementDiagram
     {
-        get { return Selection.activeObject as ElementDesignerData; }
+        get { return Selection.activeObject as IElementDesignerData; }
     }
 
     public ElementsDiagram Diagram
@@ -187,7 +187,7 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
                         every10 = 0;
                     }
                     Handles.DrawLine(new Vector2(x, 0f), new Vector2(x, Screen.height + _scrollPosition.y));
-                    x += Diagram.Data.SnapSize * UFStyles.Scale;
+                    x += Diagram.Data.Settings.SnapSize * UFStyles.Scale;
                     every10++;
                 }
                 var y = 3f;
@@ -201,7 +201,7 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
                         every10 = 0;
                     }
                     Handles.DrawLine(new Vector2(0, y), new Vector2(Screen.width + _scrollPosition.x, y));
-                    y += Diagram.Data.SnapSize * UFStyles.Scale;
+                    y += Diagram.Data.Settings.SnapSize * UFStyles.Scale;
                     every10++;
                 }
             }
@@ -290,7 +290,7 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
 
     private void DoToolbar()
     {
-        if (GUILayout.Button(new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.name),EditorStyles.toolbarPopup))
+        if (GUILayout.Button(new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.Name),EditorStyles.toolbarPopup))
         {
             SelectDiagram();
         }
@@ -397,6 +397,19 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
             if (Diagram != null && Diagram.Data != null)
                 yield return Diagram.Data;
         }
+    }
+
+    public void CommandExecuted(IEditorCommand command)
+    {
+        if (Diagram != null)
+        {
+            Diagram.Refresh();
+        }
+    }
+
+    public void CommandExecuting(IEditorCommand command)
+    {
+        
     }
 }
 

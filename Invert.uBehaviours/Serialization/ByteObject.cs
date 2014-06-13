@@ -12,7 +12,7 @@ public class ByteObject<TItemType> : IReferenceHolder where TItemType : class, I
 
     [SerializeField]
     private List<int> _ActionIndexes = new List<int>();
-
+    [NonSerialized]
     private int _currentFieldIndex = 0;
 
     [SerializeField]
@@ -30,6 +30,7 @@ public class ByteObject<TItemType> : IReferenceHolder where TItemType : class, I
     [SerializeField]
     private List<UnityEngine.Object> _ObjectReferences = new List<Object>();
 
+    [NonSerialized]
     private IUBehaviours _uBehaviours;
 
     List<UnityEngine.Object> IReferenceHolder.ObjectReferences

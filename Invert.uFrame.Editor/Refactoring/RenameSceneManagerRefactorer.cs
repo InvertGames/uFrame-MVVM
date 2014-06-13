@@ -2,6 +2,8 @@ namespace Invert.uFrame.Editor.Refactoring
 {
     public class RenameSceneManagerRefactorer : RenameRefactorer
     {
+        public RenameFileRefactorer SceneManagerFileRenamer { get; set; }
+        public RenameFileRefactorer SceneManagerSettingsFileRenamer { get; set; }
         public RenameIdentifierRefactorer SceneManager { get; set; }
         public RenameIdentifierRefactorer SceneManagerBase { get; set; }
         public RenameIdentifierRefactorer Settings { get; set; }
@@ -9,12 +11,18 @@ namespace Invert.uFrame.Editor.Refactoring
 
         public RenameSceneManagerRefactorer(SceneManagerData data)
         {
-         
+            SceneManagerFileRenamer = new RenameFileRefactorer();
+            SceneManagerSettingsFileRenamer = new RenameFileRefactorer();
             SceneManager = new RenameIdentifierRefactorer() {From = data.NameAsSceneManager};
             SceneManagerBase = new RenameIdentifierRefactorer() { From = data.NameAsSceneManagerBase };
             Settings = new RenameIdentifierRefactorer() { From = data.NameAsSettings };
             SettingsField = new RenameIdentifierRefactorer() { From = data.NameAsSettingsField };
-            
+            SceneManagerSettingsFileRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
+            SceneManagerFileRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
+            SceneManagerSettingsFileRenamer.From =
+                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerSettingsFilename(data.NameAsSettings);
+            SceneManagerFileRenamer.From =
+                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerFilename(data.NameAsSceneManager);
            
         }
         public override void Set(ISelectable data)
@@ -27,10 +35,17 @@ namespace Invert.uFrame.Editor.Refactoring
             SceneManagerBase.To = data.NameAsSceneManagerBase;
             Settings.To = data.NameAsSettings;
             SettingsField.To = data.NameAsSettingsField;
+            SceneManagerSettingsFileRenamer.To =
+               data.Data.Settings.CodePathStrategy.GetEditableSceneManagerSettingsFilename(data.NameAsSettings);
+            SceneManagerFileRenamer.To =
+                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerFilename(data.NameAsSceneManager);
+           
          
         }
         public override void Process(RefactorContext context)
         {
+            SceneManagerFileRenamer.Process(context);
+            SceneManagerSettingsFileRenamer.Process(context);
             SceneManager.Process(context);
             SceneManagerBase.Process(context);
             Settings.Process(context);

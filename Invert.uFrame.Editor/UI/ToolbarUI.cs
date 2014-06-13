@@ -49,7 +49,7 @@ namespace Invert.uFrame.Editor
             if (scale != UFStyles.Scale)
             {
                 UFStyles.Scale = scale;
-                Handler.Execute(new ScaleCommand() {Scale = scale});
+                Handler.ExecuteCommand(new ScaleCommand() {Scale = scale});
                 
             }
             foreach (var editorCommand in RightCommands.OrderBy(p => p.Order))
@@ -73,7 +73,7 @@ namespace Invert.uFrame.Editor
                     if (GUILayout.Button(new GUIContent(ufContextMenuItem.Name), EditorStyles.toolbarButton))
                     {
                         cmd.SelectedOption = ufContextMenuItem;
-                        Handler.Execute(command);
+                        Handler.ExecuteCommand(command);
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace Invert.uFrame.Editor
                 }
                 else
                 {
-                    Handler.Execute(command);
+                    Handler.ExecuteCommand(command);
                 }
             }
         }

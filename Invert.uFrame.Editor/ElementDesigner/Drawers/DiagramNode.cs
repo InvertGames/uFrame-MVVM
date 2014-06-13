@@ -29,8 +29,8 @@ public abstract class DiagramNode :  IDiagramNode, IRefactorable
     private Rect _position;
     private Vector2 _location;
 
-    [SerializeField]
-    private ElementDesignerData _data;
+    [NonSerialized]
+    private IElementDesignerData _data;
 
     public virtual string InfoLabel
     {
@@ -205,7 +205,7 @@ public abstract class DiagramNode :  IDiagramNode, IRefactorable
     }
 
     [DiagramContextMenu("Hide",1)]
-    public void RemoveFromFilter(ElementDesignerData data)
+    public void RemoveFromFilter(IElementDesignerData data)
     {
         Filter.Locations.Remove(this.Identifier);
     }
@@ -229,7 +229,7 @@ public abstract class DiagramNode :  IDiagramNode, IRefactorable
         get { return Data.CurrentFilter; }
     }    
 
-    public ElementDesignerData Data
+    public IElementDesignerData Data
     {
         get
         {

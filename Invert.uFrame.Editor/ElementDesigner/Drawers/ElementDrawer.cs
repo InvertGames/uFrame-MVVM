@@ -193,7 +193,7 @@ public class ElementDrawer : DiagramNodeDrawer<ElementDataBase>
             }
             else
             {
-                Execute(command);
+                Diagram.ExecuteCommand(command);
             }
          
 

@@ -13,7 +13,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
     {
         get; set;
     }
-    public ElementDesignerData DiagramData
+    public IElementDesignerData DiagramData
     {
         get; set;
     }

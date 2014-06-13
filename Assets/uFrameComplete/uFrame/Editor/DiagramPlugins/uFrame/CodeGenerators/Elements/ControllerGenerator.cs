@@ -18,7 +18,7 @@ public class ControllerGenerator : CodeGenerator
         get;
         set;
     }
-    public ElementDesignerData DiagramData
+    public IElementDesignerData DiagramData
     {
         get;
         set;

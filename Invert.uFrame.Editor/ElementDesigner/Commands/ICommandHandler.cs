@@ -5,7 +5,9 @@ namespace Invert.uFrame.Editor
 {
     public interface ICommandHandler
     {
-        void Execute(IEditorCommand command);
         IEnumerable<object> ContextObjects { get; }
+        void CommandExecuted(IEditorCommand command);
+        void CommandExecuting(IEditorCommand command);
+
     }
 }

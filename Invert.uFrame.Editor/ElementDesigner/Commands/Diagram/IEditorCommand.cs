@@ -8,15 +8,65 @@ namespace Invert.uFrame.Editor.ElementDesigner
     {
         Type For { get; }
         void Execute(object item);
-        List<CommandHook> Hooks { get; }
+        List<IEditorCommand> Hooks { get; }
         string Name { get; }
         string Title { get; set; }
         decimal Order { get; }
         bool ShowAsDiabled { get; }
         string Group { get;  }
         string CanPerform(object arg);
+
+        
     }
 
+    public class HookCommand : EditorCommand
+    {
+        public HookCommand(Action action)
+        {
+            Action = action;
+        }
+
+        public override Type For
+        {
+            get { return typeof (ElementsDiagram); }
+        }
+
+        public Action Action { get; set; }
+
+        public HookCommand()
+        {
+        }
+
+        public override string CanPerform(object arg)
+        {
+            return null;
+        }
+
+        public override void Perform(object arg)
+        {
+            Action();
+        }
+    }
+    public class SimpleEditorCommand<TFor> : EditorCommand<TFor>
+    {
+
+        public SimpleEditorCommand(Action<TFor> performAction)
+        {
+            PerformAction = performAction;
+        }
+
+        public Action<TFor> PerformAction { get; set; }
+
+        public override string CanPerform(TFor arg)
+        {
+            return null;
+        }
+
+        public override void Perform(TFor arg)
+        {
+            this.PerformAction(arg);
+        }
+    }
     public abstract class EditorCommand<TFor> : EditorCommand
     {
         public override Type For

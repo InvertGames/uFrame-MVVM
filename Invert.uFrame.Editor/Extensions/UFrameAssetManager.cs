@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Invert.uFrame.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -13,10 +14,11 @@ public class UFrameAssetManager : AssetPostprocessor
     [MenuItem("Assets/[u]Frame/New Element Diagram", false, 40)]
     public static void NewViewModelDiagram()
     {
-        CreateAsset<ElementDesignerData>();
+        uFrameEditor.Container.Resolve<IElementsDataRepository>().CreateNewDiagram();
+        
     }
 
-    private static List<ElementDesignerData> _diagrams;
+    private static List<IElementDesignerData> _diagrams;
 
     public static IAssemblyNameProvider AssemblyNameProvider { get; set; }
     private static string _designerVMAssemblyName = null;
@@ -48,7 +50,7 @@ public class UFrameAssetManager : AssetPostprocessor
         set { _diagramNames = value; }
     }
 
-    public static List<ElementDesignerData> Diagrams
+    public static List<IElementDesignerData> Diagrams
     {
         get
         {
@@ -191,8 +193,8 @@ public class UFrameAssetManager : AssetPostprocessor
     private static void Refresh()
     {
 
-        Diagrams = GetAssetsOfType(typeof(ElementDesignerData), ".asset").Cast<ElementDesignerData>().ToList();
-        DiagramNames = Diagrams.Select(p => p.name).ToArray();
+        Diagrams = GetAssetsOfType(typeof(ElementDesignerData), ".asset").Cast<IElementDesignerData>().ToList();
+        DiagramNames = Diagrams.Select(p => p.Name).ToArray();
 
 
     }

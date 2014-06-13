@@ -18,18 +18,30 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         {"UnityEngine.Vector3","Vector3"},
     };
 
-    public static string TypeAlias(string typeName)
+    [SerializeField]
+    private bool _isMultiInstance;
+
+    [SerializeField]
+    private bool _isTemplate;
+
+    //[DiagramContextMenu("Print Items")]
+    //public void Print()
+    //{
+    //    Debug.Log(BaseTypeName + ": " +string.Join(Environment.NewLine, AllBaseTypes.Select(p => p.Name).ToArray()));
+    //}
+    public IEnumerable<ElementDataBase> AllBaseTypes
     {
-        if (typeName == null)
+        get
         {
-            return "[None]";
+            var baseType = BaseElement;
+            while (baseType != null)
+            {
+                yield return baseType;
+                baseType = baseType.BaseElement;
+            }
         }
-        if (TypeNameAliases.ContainsKey(typeName))
-        {
-            return TypeNameAliases[typeName];
-        }
-        return typeName;
     }
+
     public ElementDataBase BaseElement { get { return Data.AllElements.FirstOrDefault(p => p.Name == BaseTypeShortName); } }
 
     public abstract string BaseTypeName { get; set; }
@@ -67,18 +79,6 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         get { return string.Format("{0}Controller", Name.Replace("ViewModel", "")); }
     }
 
-    public string NameAsControllerBase
-    {
-        get
-        {
-            //if (IsControllerDerived)
-            //{
-            //    return string.Format("{0}Controller", BaseTypeShortName.Replace("ViewModel", ""));
-            //}
-            return string.Format("{0}ControllerBase", Name.Replace("ViewModel", ""));
-        }
-    }
-
     public Type ControllerType
     {
         get { return Type.GetType(UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", Name.Replace("ViewModel", "") + "Controller")); }
@@ -93,18 +93,39 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
+    public IEnumerable<ElementDataBase> DerivedElements
+    {
+        get
+        {
+            var derived = Data.AllElements.Where(p => p.BaseTypeShortName == Name);
+            foreach (var derivedItem in derived)
+            {
+                yield return derivedItem;
+                foreach (var another in derivedItem.DerivedElements)
+                {
+                    yield return another;
+                }
+            }
+        }
+    }
+
     public bool IsControllerDerived
     {
         get { return !string.IsNullOrEmpty(BaseTypeName) && BaseTypeShortName != "ViewModel"; }
     }
 
-    [SerializeField]
-    private bool _isMultiInstance;
+    public bool IsForcedMultiInstance
+    {
+        get
+        {
+            return
+                Data.AllDiagramItems.OfType<ElementDataBase>()
+                    .SelectMany(p => p.Collections)
+                    .Any(p => p.RelatedTypeName == Name) || AllBaseTypes.Any(p => p.IsMultiInstance);
+        }
+    }
 
-    [SerializeField]
-    private bool _isTemplate;
-
-    [DiagramContextMenu("Has Multiple Instances",2)]
+    [DiagramContextMenu("Has Multiple Instances", 2)]
     public bool IsMultiInstance
     {
         get
@@ -121,33 +142,10 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public bool IsForcedMultiInstance
+    public bool IsTemplate
     {
-        get
-        {
-            return
-                Data.AllDiagramItems.OfType<ElementDataBase>()
-                    .SelectMany(p => p.Collections)
-                    .Any(p => p.RelatedTypeName == Name) || AllBaseTypes.Any(p => p.IsMultiInstance);
-        }
-    }
-    
-    //[DiagramContextMenu("Print Items")]
-    //public void Print()
-    //{
-    //    Debug.Log(BaseTypeName + ": " +string.Join(Environment.NewLine, AllBaseTypes.Select(p => p.Name).ToArray()));
-    //}
-    public IEnumerable<ElementDataBase> AllBaseTypes
-    {
-        get
-        {
-            var baseType = BaseElement;
-            while (baseType != null)
-            {
-                yield return baseType;
-                baseType = baseType.BaseElement;
-            }
-        }
+        get { return _isTemplate; }
+        set { _isTemplate = value; }
     }
 
     public override IEnumerable<IDiagramNodeItem> Items
@@ -171,6 +169,23 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
     public string NameAsController
     {
         get { return string.Format("{0}Controller", Name); }
+    }
+
+    public string NameAsControllerBase
+    {
+        get
+        {
+            //if (IsControllerDerived)
+            //{
+            //    return string.Format("{0}Controller", BaseTypeShortName.Replace("ViewModel", ""));
+            //}
+            return string.Format("{0}ControllerBase", Name.Replace("ViewModel", ""));
+        }
+    }
+
+    public string NameAsTypeEnum
+    {
+        get { return string.Format("{0}Types", Name); }
     }
 
     public string NameAsVariable
@@ -199,7 +214,22 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         get { return string.Format("{0}ViewModel", Name.Replace("ViewModel", "")); }
     }
 
+    public string OldAssemblyName { get; set; }
+
     public abstract ICollection<ViewModelPropertyData> Properties { get; set; }
+
+    public ElementDataBase RootElement
+    {
+        get { return AllBaseTypes.LastOrDefault(); }
+    }
+
+    public virtual string ViewModelAssemblyQualifiedName
+    {
+        get
+        {
+            return UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsViewModel);
+        }
+    }
 
     public IEnumerable<IViewModelItem> ViewModelItems
     {
@@ -211,36 +241,29 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public IEnumerable<ElementDataBase> DerivedElements
+    public static string TypeAlias(string typeName)
     {
-        get
+        if (typeName == null)
         {
-            var derived = Data.AllElements.Where(p => p.BaseTypeShortName == Name);
-            foreach (var derivedItem in derived)
-            {
-                yield return derivedItem;
-                foreach (var another in derivedItem.DerivedElements)
-                {
-                    yield return another;
-                }
-            }
+            return "[None]";
         }
+        if (TypeNameAliases.ContainsKey(typeName))
+        {
+            return TypeNameAliases[typeName];
+        }
+        return typeName;
     }
 
-    public string NameAsTypeEnum
+    public override void BeginEditing()
     {
-        get { return string.Format("{0}Types", Name); }
-    }
-
-    public ElementDataBase RootElement
-    {
-        get { return AllBaseTypes.LastOrDefault(); }
+        base.BeginEditing();
+        OldAssemblyName = AssemblyQualifiedName;
     }
 
     public override bool CanCreateLink(IDrawable target)
     {
         if (target is ViewData) return true;
-        
+
         var elementData = target as ElementDataBase;
         return elementData != null && Name != elementData.Name && BaseTypeShortName != elementData.Name;
     }
@@ -258,30 +281,6 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
             view.ForAssemblyQualifiedName = AssemblyQualifiedName;
         }
     }
-
-    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
-    {
-        foreach (var modelData in nodes.OfType<ElementDataBase>())
-        {
-            if (BaseTypeShortName == modelData.Name)
-            {
-                yield return new InheritanceLink()
-                {
-                    Base = this,
-                    Derived = modelData
-                };
-            }
-        }
-    }
-
-    public override void BeginEditing()
-    {
-
-        base.BeginEditing();
-        OldAssemblyName = AssemblyQualifiedName;
-    }
-
-    public string OldAssemblyName { get; set; }
 
     public override void EndEditing()
     {
@@ -314,23 +313,23 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public virtual string ViewModelAssemblyQualifiedName
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
-        get
+        foreach (var modelData in nodes.OfType<ElementDataBase>())
         {
-            return UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsViewModel);
+            if (BaseTypeShortName == modelData.Name)
+            {
+                yield return new InheritanceLink()
+                {
+                    Base = this,
+                    Derived = modelData
+                };
+            }
         }
-    }
-
-    public bool IsTemplate
-    {
-        get { return _isTemplate; }
-        set { _isTemplate = value; }
     }
 
     //[DiagramContextMenu("")]
     //public void CreateNewBehaviour()
     //{
-        
     //}
 }

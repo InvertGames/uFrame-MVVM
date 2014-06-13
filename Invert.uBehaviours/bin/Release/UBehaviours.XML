@@ -542,14 +542,14 @@
             An identifier for the ActionSheet
             </summary>
         </member>
-        <member name="P:UBActionSheet.IsForward">
-            <summary>
-            Are we currently forwarding to another Trigger?
-            </summary>
-        </member>
         <member name="P:UBActionSheet.IsActive">
             <summary>
             Is this visible when collapsed.
+            </summary>
+        </member>
+        <member name="P:UBActionSheet.IsForward">
+            <summary>
+            Are we currently forwarding to another Trigger?
             </summary>
         </member>
         <member name="P:UBActionSheet.Name">

@@ -12,6 +12,6 @@ public class InheritanceLink : BeizureLink
 
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.InheritanceLinkColor;
+        return diagram.Data.Settings.InheritanceLinkColor;
     }
 }

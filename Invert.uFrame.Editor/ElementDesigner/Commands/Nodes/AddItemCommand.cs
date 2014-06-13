@@ -65,9 +65,9 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
 
             if (node == null) return;
-            var pathStrategy = EditorWindow.GetWindow<ElementsDesigner>().Diagram.CodePathStrategy;
+            var pathStrategy = EditorWindow.GetWindow<ElementsDesigner>().Diagram.Data.Settings.CodePathStrategy;
    
-            var generators = uFrameEditor.GetAllCodeGenerators(node.Data)
+            var generators = uFrameEditor.GetAllCodeGenerators(pathStrategy, node.Data)
                 .Where(p => !p.IsDesignerFile && p.ObjectData == node).ToArray();
 
             var customFiles = generators.Select(p=>p.Filename).ToArray();
@@ -129,7 +129,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             var generator = SelectedOption.Value as CodeGenerator;
             if (generator == null) return;
-            var pathStrategy = EditorWindow.GetWindow<ElementsDesigner>().Diagram.CodePathStrategy;
+            var pathStrategy = EditorWindow.GetWindow<ElementsDesigner>().Diagram.Data.Settings.CodePathStrategy;
             var filePath = System.IO.Path.Combine(pathStrategy.AssetPath, generator.Filename);
             //var filename = repository.GetControllerCustomFilename(this.Name);
             var scriptAsset = AssetDatabase.LoadAssetAtPath(filePath, typeof(TextAsset));
@@ -145,7 +145,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             var diagramItem = item as IDiagramNode;
             if (diagramItem == null) yield break;
-            var generators = uFrameEditor.GetAllCodeGenerators(diagramItem.Data)
+            var generators = uFrameEditor.GetAllCodeGenerators(diagramItem.Data.Settings.CodePathStrategy, diagramItem.Data)
                 .Where(p =>!p.IsDesignerFile && p.ObjectData == item);
 
             foreach (var codeGenerator in generators)

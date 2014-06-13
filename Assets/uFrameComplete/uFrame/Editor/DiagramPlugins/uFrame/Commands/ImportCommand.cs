@@ -35,7 +35,7 @@ public class ImportCommand : ElementsDiagramToolbarCommand
         });
     }
 
-    public DiagramNode ImportType(Type type, ElementDesignerData diagramData)
+    public DiagramNode ImportType(Type type, IElementDesignerData diagramData)
     {
         if (type.IsEnum)
         {
@@ -89,7 +89,7 @@ public class ImportCommand : ElementsDiagramToolbarCommand
         return null;
     }
 
-    public ElementDataBase GetViewModelFromType(Type type, ElementDesignerData diagramData)
+    public ElementDataBase GetViewModelFromType(Type type, IElementDesignerData diagramData)
     {
         ElementDataBase vmData = IsImportOnly(type) ? (ElementDataBase)new ImportedElementData()
         {

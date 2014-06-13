@@ -24,11 +24,12 @@ namespace Invert.uFrame.Editor
         public void CreateMenuItems(GenericMenu genericMenu)
         {
             var groups = Commands.GroupBy(p => p.Group).OrderBy(p => p.Key == "Default").ToArray();
+
             foreach (var group in groups)
             {
                 
                 //genericMenu.AddDisabledItem(new GUIContent(group.Key));
-
+                var groupCount = 0;
                 foreach (var editorCommand in group.OrderBy(p => p.Order))
                 {
                     
@@ -41,11 +42,12 @@ namespace Invert.uFrame.Editor
                     {
                         foreach (var option in dynamicCommand.GetOptions(argument).OrderBy(p=>p.Name))
                         {
+                            groupCount++;
                             UFContextMenuItem option1 = option;
                             genericMenu.AddItem(new GUIContent(Flatten ? editorCommand.Title : option.Name), option.Checked, () =>
                             {
                                 dynamicCommand.SelectedOption = option1;
-                                Handler.Execute(command);
+                                Handler.ExecuteCommand(command);
                             });
                         }
                     }
@@ -58,17 +60,17 @@ namespace Invert.uFrame.Editor
                         }
                         else
                         {
+                            groupCount ++;
                             genericMenu.AddItem(new GUIContent(Flatten ? editorCommand.Title : editorCommand.Path), editorCommand.IsChecked(argument), () =>
                             {
-
-                                Handler.Execute(command);
+                                Handler.ExecuteCommand(command);
                             });
                         }
                     }
 
 
                 }
-                if (group != groups.Last() && @group.Any())
+                if (group != groups.Last() && groupCount > 0)
                 genericMenu.AddSeparator("");
             }
         }

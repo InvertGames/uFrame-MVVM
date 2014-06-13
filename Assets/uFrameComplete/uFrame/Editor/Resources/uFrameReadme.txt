@@ -1,8 +1,28 @@
 [u]Frame Release Notes
-IMPORTANT!!!: REGENERATE ANY DIAGRAMS!
-1.1
-- Modified: Dependency injection RegisterInstance has some reordered parameters to illeminate confusion and odd overloads
-
+IMPORTANT!!!: MAKE A BACKUP TO BE SAFE! THEN REGENERATE ANY DIAGRAMS!
+IMPORTANT!!!: You may need to remove the old installation and reinstall as there has been many changes.
+1.2 6/12/2014
+- Added/Fixed: Unity 4.5 Support
+- Added: Diagram plugin support. Extend just about anything.  Look at (uFrameComplete/uFrame/Editor/DiagramPlugins) for details.
+- Added: UnitVS plugin to auto sync project files on save.
+- Added: "Template Elements" which makes them abstract. Right click an element and choose "Is Template";
+- Added: View base class selection.  Just right-click a view and choose "View Base/{Name Of Base View}".
+- Added: Command object model for plugins and easy feature additions.
+- Added: Dependency injection class relationships.
+- Modified: Theme for a more polished look and feel.
+- Modified: Dependency injection RegisterInstance has some reordered parameters to illeminate confusion and odd overloads.
+- Modified: Dependency injection mappings. 
+- Modified: File repositories to support future file formats such as json.
+- Modified: View Inspector's play mode to show better results for element properties.  Still needs some polishing.
+- Modified: Refactored code generation pieces to easily create plug-ins for third-party assets.
+- Added: Command hooks.  Now any command (Toolbar,ContextMenu) can be hooked to execute additional actions.
+- Fixed: Major Performance enhancements.
+- Fixed: Link colors being random colors. (Note diagram colors will reset)
+- Fixed: Mac path problems causing annoying error messages.
+- Fixed: Collapsing not refreshing the link positions.
+- Fixed: A small bug in the controller where sometimes a Resolved ViewModel would return a new instance.
+- Fixed: Recompiling makes the current diagram the current Unity selection.
+- Fixed: Some small sizing issues.
 
 1.06 5/10/2014
 - Fixed: Heirarchy Icons going missing

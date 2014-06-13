@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEngine;
 
@@ -36,7 +37,8 @@ public class NodeItemHeader : IDrawable
         {
             if (GUI.Button(btnRect.Scale(scale), string.Empty, UFStyles.AddButtonStyle))
             {
-                diagram.ExecuteCommand(AddCommand,diagram.MouseOverViewData.Model);
+                Debug.Log("YUP");
+                diagram.ExecuteCommand(AddCommand);
             }    
         }
         

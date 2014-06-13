@@ -106,7 +106,7 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins
     {
         public override void Perform(ViewData node)
         {
-            var paths = EditorWindow.GetWindow<ElementsDesigner>().Diagram.CodePathStrategy;
+            var paths = EditorWindow.GetWindow<ElementsDesigner>().Diagram.Data.Settings.CodePathStrategy;
 
             if (!Directory.Exists(paths.BehavioursPath))
             {

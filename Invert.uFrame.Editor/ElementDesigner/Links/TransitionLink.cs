@@ -9,7 +9,7 @@ public class TransitionLink : BeizureLink
     public override ISelectable Target { get { return To; } }
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.TransitionLinkColor;
+        return diagram.Data.Settings.TransitionLinkColor;
     }
 
     public SceneManagerData To { get; set; }

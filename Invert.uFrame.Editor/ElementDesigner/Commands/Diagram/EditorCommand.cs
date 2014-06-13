@@ -5,7 +5,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
 {
     public abstract class EditorCommand : IEditorCommand
     {
-        private List<CommandHook> _hooks;
+        private List<IEditorCommand> _hooks;
         private string _title;
 
 
@@ -18,9 +18,9 @@ namespace Invert.uFrame.Editor.ElementDesigner
 
         public abstract void Perform(object arg);
 
-        public List<CommandHook> Hooks
+        public List<IEditorCommand> Hooks
         {
-            get { return _hooks ?? (_hooks = new List<CommandHook>()); }
+            get { return _hooks ?? (_hooks = new List<IEditorCommand>()); }
             set { _hooks = value; }
         }
 
@@ -58,4 +58,5 @@ namespace Invert.uFrame.Editor.ElementDesigner
             return false;
         }
     }
+    
 }

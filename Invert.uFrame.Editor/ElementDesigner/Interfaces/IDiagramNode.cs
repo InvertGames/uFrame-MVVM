@@ -15,11 +15,10 @@ public interface IDiagramNode : ISelectable,IDiagramNodeItem
     void Rename(string newName);
     void RemoveFromDiagram();
     Rect HeaderPosition { get; set; } 
-    ElementDesignerData Data { get; set; }
+    IElementDesignerData Data { get; set; }
     IDiagramFilter Filter { get; }
     string OldName { get; set; }
     
-
     void BeginEditing();
     void EndEditing();
 }

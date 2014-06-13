@@ -17,6 +17,6 @@ public class GenericLink : BeizureLink
 
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.AssociationLinkColor;
+        return diagram.Data.Settings.AssociationLinkColor;
     }
 }

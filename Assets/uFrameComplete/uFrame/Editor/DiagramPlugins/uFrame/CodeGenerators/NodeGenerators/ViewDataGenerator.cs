@@ -4,14 +4,14 @@ using Invert.uFrame.Editor;
 
 public class ViewDataGenerator : NodeItemGenerator<ViewData>
 {
-    public override IEnumerable<CodeGenerator> CreateGenerators(ElementDesignerData diagramData, ViewData item)
+    public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewData item)
     {
         yield return new ViewGenerator()
         {
             IsDesignerFile = false,
             DiagramData = diagramData,
             View = item,
-            Filename = Path.Combine("Views",item.NameAsView + ".cs"),
+            Filename = pathStrategy.GetEditableViewFilename(item.NameAsView),
             RelatedType = item.CurrentViewType
         };
         yield return new ViewGenerator()
@@ -19,20 +19,20 @@ public class ViewDataGenerator : NodeItemGenerator<ViewData>
             IsDesignerFile = true,
             DiagramData = diagramData,
             View = item,
-            Filename = diagramData.ViewsFileName,
+            Filename = pathStrategy.GetViewsFileName(diagramData.Name),
         };
     }
 }
 public class ViewComponentDataGenerator : NodeItemGenerator<ViewComponentData>
 {
-    public override IEnumerable<CodeGenerator> CreateGenerators(ElementDesignerData diagramData, ViewComponentData item)
+    public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewComponentData item)
     {
         yield return new ViewComponentGenerator()
         {
             IsDesignerFile = false,
             DiagramData = diagramData,
             ViewComponentData = item,
-            Filename = Path.Combine("ViewComponents", item.Name + ".cs"),
+            Filename = pathStrategy.GetEditableViewComponentFilename(item.Name),
             RelatedType = item.CurrentType
         };
         yield return new ViewComponentGenerator()
@@ -40,7 +40,7 @@ public class ViewComponentDataGenerator : NodeItemGenerator<ViewComponentData>
             IsDesignerFile = true,
             DiagramData = diagramData,
             ViewComponentData = item,
-            Filename = diagramData.ViewsFileName,
+            Filename = pathStrategy.GetViewsFileName(diagramData.Name)
           
         };
     }

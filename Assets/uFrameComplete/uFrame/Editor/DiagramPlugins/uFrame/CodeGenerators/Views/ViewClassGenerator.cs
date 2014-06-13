@@ -9,7 +9,7 @@ using UnityEngine;
 public abstract class ViewClassGenerator : CodeGenerator
 {
 
-    public ElementDesignerData DiagramData
+    public IElementDesignerData DiagramData
     {
         get;
         set;

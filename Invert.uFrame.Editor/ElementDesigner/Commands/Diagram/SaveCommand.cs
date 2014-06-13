@@ -21,7 +21,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
             foreach (var codeFileGenerator in fileGenerators)
             {
                 // Grab the information for the file
-                var fileInfo = new FileInfo(System.IO.Path.Combine(node.CodePathStrategy.AssetPath, codeFileGenerator.Filename));
+                var fileInfo = new FileInfo(System.IO.Path.Combine(node.Data.Settings.CodePathStrategy.AssetPath, codeFileGenerator.Filename));
                 // Make sure we are allowed to generate the file
                 if (!codeFileGenerator.CanGenerate(fileInfo)) continue;
                 // Get the path to the directory
@@ -36,6 +36,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
                 //Debug.Log("Created file: " + fileInfo.FullName);
 
             }
+            RefactorApplied(node.Data);
             AssetDatabase.Refresh();
 
             node.Save();
@@ -49,16 +50,27 @@ namespace Invert.uFrame.Editor.ElementDesigner
         public void ProcessRefactorings(ElementsDiagram diagram)
         {
             var refactorer = new RefactorContext(diagram.Data.Refactorings);
-            Debug.Log(diagram.CodePathStrategy.AssetPath);
-            var files = uFrameEditor.GetAllFileGenerators(diagram.Data).Where(p=>!p.Filename.EndsWith(".designer.cs")).Select(p => System.IO.Path.Combine(diagram.CodePathStrategy.AssetPath, p.Filename)).ToArray();
+            
+            var files = uFrameEditor.GetAllFileGenerators(diagram.Data).Where(p=>!p.Filename.EndsWith(".designer.cs")).Select(p => System.IO.Path.Combine(diagram.Data.Settings.CodePathStrategy.AssetPath, p.Filename)).ToArray();
 
-
+            
             if (refactorer.Refactors.Count > 0)
             {
                 refactorer.Refactor(files);
             }
+            
             UnityEngine.Debug.Log(string.Format("Applied {0} refactors.", refactorer.Refactors.Count));
-            diagram.Data.RefactorApplied();
+            
+        }
+        public void RefactorApplied(IElementDesignerData data)
+        {
+            data.RefactorCount = 0;
+            var refactorables = data.AllDiagramItems.OfType<IRefactorable>()
+                .Concat(data.AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>());
+            foreach (var refactorable in refactorables)
+            {
+                refactorable.RefactorApplied();
+            }
         }
     }
 
@@ -71,7 +83,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
 
         public override void Perform(ElementsDiagram node)
         {
-            foreach (var diagramPlugin in uFrameEditor.GetAllCodeGenerators(node.Data))
+            foreach (var diagramPlugin in uFrameEditor.GetAllCodeGenerators(node.Data.Settings.CodePathStrategy, node.Data))
             {
                 UnityEngine.Debug.Log((diagramPlugin.IsDesignerFile ? "Designer File" : "Editable File" ) + 
                     diagramPlugin.GetType().Name + diagramPlugin.Filename );

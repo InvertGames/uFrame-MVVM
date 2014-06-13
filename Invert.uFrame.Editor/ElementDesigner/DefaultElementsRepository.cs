@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
@@ -180,36 +181,47 @@ public class DefaultElementsRepository : IElementsDataRepository
     public IUFrameContainer Container { get; set; }
 
     private Dictionary<string, string> _derivedTypes;
-    //private SerializedObject _serializedObject;    
-    //public ElementDesignerData Diagram { get; set; }
+
+    public void MarkDirty(IElementDesignerData data)
+    {
+        EditorUtility.SetDirty(data as UnityEngine.Object);
+    }
 
     public Dictionary<string, string> GetProjectDiagrams()
     {
         var items = new Dictionary<string, string>();
         foreach (var elementDesignerData in UFrameAssetManager.Diagrams)
         {
-            items.Add(elementDesignerData.name, AssetDatabase.GetAssetPath(elementDesignerData));
+            items.Add(elementDesignerData.Name, AssetDatabase.GetAssetPath(elementDesignerData as UnityEngine.Object));
         }
         return items;
     }
 
-    public ElementDesignerData LoadDiagram(string path)
+    public void CreateNewDiagram()
     {
-        var data = AssetDatabase.LoadAssetAtPath(path, typeof(ElementDesignerData)) as ElementDesignerData;
+        UFrameAssetManager.CreateAsset<ElementDesignerData>();
+    }
+
+    public IElementDesignerData LoadDiagram(string path)
+    {
+        var data = AssetDatabase.LoadAssetAtPath(path, typeof(IElementDesignerData)) as IElementDesignerData;
         if (data == null)
         {
             throw new Exception(
                 "Invalid data format for this diagram.  Make sure the correct diagram repository is available.");
         }
 
-        data.AssetPath = path.Replace(string.Format("{0}.asset", data.name), "");
-        data.CodePathStrategy = Container.Resolve<ICodePathStrategy>(data.CodePathStrategyName ?? "Default");
         return data;
     }
 
-    public void SaveDiagram(ElementDesignerData data)
+    public void SaveDiagram(IElementDesignerData data)
     {
-        EditorUtility.SetDirty(data);
+        EditorUtility.SetDirty(data as UnityEngine.Object);
+    }
+
+    public void RecordUndo(IElementDesignerData data, string title)
+    {
+        Undo.RecordObject(data as UnityEngine.Object, title);
     }
 
     public void FastUpdate()
@@ -225,9 +237,43 @@ public class DefaultElementsRepository : IElementsDataRepository
 
 public interface ICodePathStrategy
 {
+    /// <summary>
+    /// The root path to the diagram file
+    /// </summary>
     string AssetPath { get; set; }
-    string BehavioursPath { get;  }
-    string ScenesPath { get;  }
+
+    /// <summary>
+    /// Where behaviours are stored
+    /// </summary>
+    string BehavioursPath { get; }
+
+    /// <summary>
+    /// Where scenes are stored
+    /// </summary>
+    string ScenesPath { get; }
+
+    /// <summary>
+    /// The relative path to the controller designer file
+    /// </summary>
+    string GetControllersFileName(string name);
+
+    /// <summary>
+    /// The relative path to the views designer file
+    /// </summary>
+    string GetViewsFileName(string name);
+
+    /// <summary>
+    /// The relative path to the view-models designer file
+    /// </summary>
+    string GetViewModelsFileName(string name);
+
+    string GetEditableViewFilename(string nameAsView);
+    string GetEditableViewComponentFilename(string name);
+    string GetEditableSceneManagerFilename(string nameAsSceneManager);
+    string GetEditableSceneManagerSettingsFilename(string nameAsSettings);
+    string GetEditableControllerFilename(string controllerName);
+    string GetEditableViewModelFilename(string nameAsViewModel);
+    string GetEnumsFilename(string name);
 }
 
 public class DefaultCodePathStrategy : ICodePathStrategy
@@ -241,5 +287,55 @@ public class DefaultCodePathStrategy : ICodePathStrategy
     public string ScenesPath
     {
         get { return Path.Combine(AssetPath, "Scenes"); }
+    }
+
+    public string GetControllersFileName(string name)
+    {
+        return name + "Controllers.designer.cs";
+    }
+
+    public string GetViewsFileName(string name)
+    {
+        return name + "Views.designer.cs";
+    }
+
+    public string GetViewModelsFileName(string name)
+    {
+        return name + ".designer.cs";
+    }
+
+    public string GetEditableViewFilename(string nameAsView)
+    {
+        return Path.Combine("Views", nameAsView + ".cs");
+    }
+
+    public string GetEditableViewComponentFilename(string name)
+    {
+        return Path.Combine("ViewComponents", name + ".cs");
+    }
+
+    public string GetEditableSceneManagerFilename(string nameAsSceneManager)
+    {
+        return Path.Combine("SceneManagers", nameAsSceneManager + ".cs");
+    }
+
+    public string GetEditableSceneManagerSettingsFilename(string nameAsSettings)
+    {
+        return Path.Combine("SceneManagers", nameAsSettings + ".cs");
+    }
+
+    public string GetEditableControllerFilename(string controllerName)
+    {
+        return Path.Combine("Controllers", controllerName + ".cs");
+    }
+
+    public string GetEditableViewModelFilename(string nameAsViewModel)
+    {
+        return Path.Combine("ViewModels", nameAsViewModel + ".cs");
+    }
+
+    public string GetEnumsFilename(string name)
+    {
+        return GetViewModelsFileName(name);
     }
 }

@@ -4,18 +4,18 @@ using Invert.uFrame.Editor;
 
 public class SceneManagerDataGenerator : NodeItemGenerator<SceneManagerData>
 {
-    public override IEnumerable<CodeGenerator> CreateGenerators(ElementDesignerData diagramData, SceneManagerData item)
+    public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, SceneManagerData item)
     {
         yield return new SceneManagerGenerator()
         {
-            Filename = diagramData.ControllersFileName,
+            Filename = pathStrategy.GetControllersFileName(diagramData.Name),
             Data = item,
             DiagramData = diagramData,
             IsDesignerFile = true,
         };
         yield return new SceneManagerGenerator()
         {
-            Filename = Path.Combine("SceneManagers", item.NameAsSceneManager + ".cs"),
+            Filename = pathStrategy.GetEditableSceneManagerFilename(item.NameAsSceneManager),
             Data = item,
             DiagramData = diagramData,
             IsDesignerFile = false,
@@ -26,7 +26,7 @@ public class SceneManagerDataGenerator : NodeItemGenerator<SceneManagerData>
             Data = item,
             DiagramData = diagramData,
             RelatedType = item.CurrentSettingsType,
-            Filename = Path.Combine("SceneManagers",item.NameAsSettings + ".cs")
+            Filename = pathStrategy.GetEditableSceneManagerSettingsFilename(item.NameAsSettings)
         };
     }
 }

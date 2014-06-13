@@ -24,7 +24,7 @@
     <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_4_5_0;UNITY_4_5;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_PRO_LICENSE;CROSS_PLATFORM_INPUT</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;CROSS_PLATFORM_INPUT</DefineConstants>
+    <DefineConstants>TRACE;UNITY_4_5_0;UNITY_4_5;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_PRO_LICENSE;CROSS_PLATFORM_INPUT</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -312,32 +312,33 @@
     <Compile Include="Assets\PrivateStuff\PlayMaker\Editor\ReportWindow.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\Editor\TriggerListDrawer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\BehaviourNodeItem.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\UBehavioursPlugin.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\UBehavioursViewDrawer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ControllerGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ElementDataGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\EnumCodeGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ViewModelGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ElementDataGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\EnumDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ViewDataGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerClassGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerDataGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerSettingsGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ViewDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewBaseGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewClassGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewComponentGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddManagerToSceneCommand.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddManagerToSceneSelectionCommand.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddViewToSceneCommand.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\AddViewToSceneSelectionCommand.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\CreateSceneCommand.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\ExtensionAttribute.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\FindInSceneCommand.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\ImportCommand.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\Commands\SelectItemTypeCommand.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\ExtensionAttribute.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\UFrameEditorPlugin.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewBaseGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewClassGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewComponentGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\ViewGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ViewModelGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\UBehavioursPlugin.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uBehaviours\UBehavioursViewDrawer.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\UnityVS\UnityVSPlugin.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\AssemblyNameProvider.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ComponentBindingInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ComponentCollectionBindingInspector.cs" />
@@ -474,6 +475,5 @@
     <None Include="Assets\UnityVS\Editor\SyntaxTree.VisualStudio.Unity.Messaging.dll" />
     <None Include="Assets\UnityVS\Editor\UnityVS.VersionSpecific.dll" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

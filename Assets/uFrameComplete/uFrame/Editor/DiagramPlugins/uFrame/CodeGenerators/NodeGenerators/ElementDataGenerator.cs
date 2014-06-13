@@ -4,50 +4,51 @@ using Invert.uFrame.Editor;
 
 public class ElementDataGenerator : NodeItemGenerator<ElementData>
 {
-    public override IEnumerable<CodeGenerator> CreateGenerators(ElementDesignerData diagramData, ElementData item)
+    public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy codePathStrategy, IElementDesignerData diagramData, ElementData item)
     {
-        yield return CreateDesignerControllerGenerator(diagramData,item);
-        yield return CreateEditableControllerGenerator(diagramData, item);
-        yield return CreateDesignerViewModelGenerator(diagramData, item);
-        yield return CreateEditableViewModelGenerator(diagramData, item);
-        yield return CreateViewBaseGenerator(diagramData, item);
+        
+        yield return CreateDesignerControllerGenerator(codePathStrategy,diagramData,item);
+        yield return CreateEditableControllerGenerator(codePathStrategy, diagramData, item);
+        yield return CreateDesignerViewModelGenerator(codePathStrategy, diagramData, item);
+        yield return CreateEditableViewModelGenerator(codePathStrategy, diagramData, item);
+        yield return CreateViewBaseGenerator(codePathStrategy, diagramData, item);
     }
 
-    public virtual CodeGenerator CreateDesignerControllerGenerator(ElementDesignerData diagramData,ElementData item)
+    public virtual CodeGenerator CreateDesignerControllerGenerator(ICodePathStrategy codePathStrategy, IElementDesignerData diagramData,ElementData item)
     {
         return new ControllerGenerator()
         {
             ElementData = item,
             DiagramData = diagramData,
-            Filename = diagramData.ControllersFileName,
+            Filename = codePathStrategy.GetControllersFileName(diagramData.Name),
             IsDesignerFile = true
         };
     }
 
-    public virtual CodeGenerator CreateEditableControllerGenerator(ElementDesignerData diagramData, ElementData item)
+    public virtual CodeGenerator CreateEditableControllerGenerator(ICodePathStrategy codePathStrategy, IElementDesignerData diagramData, ElementData item)
     {
         return new ControllerGenerator()
         {
             ElementData = item,
             RelatedType = item.ControllerType,
             DiagramData = diagramData,
-            Filename = Path.Combine("Controllers", item.ControllerName + ".cs"),
+            Filename = codePathStrategy.GetEditableControllerFilename(item.NameAsController),
             IsDesignerFile = false
         };
     }
 
-    public virtual CodeGenerator CreateDesignerViewModelGenerator(ElementDesignerData diagramData, ElementData item)
+    public virtual CodeGenerator CreateDesignerViewModelGenerator(ICodePathStrategy codePathStrategy, IElementDesignerData diagramData, ElementData item)
     {
         return new ViewModelGenerator(true, item)
         {
             Data = item,
             IsDesignerFile = true,
             DiagramData = diagramData,
-            Filename = diagramData.ViewModelsFileName
+            Filename = codePathStrategy.GetViewModelsFileName(diagramData.Name)
         };
     }
 
-    public virtual CodeGenerator CreateEditableViewModelGenerator(ElementDesignerData diagramData, ElementData item)
+    public virtual CodeGenerator CreateEditableViewModelGenerator(ICodePathStrategy codePathStrategy, IElementDesignerData diagramData, ElementData item)
     {
         return new ViewModelGenerator(false, item)
         {
@@ -55,19 +56,19 @@ public class ElementDataGenerator : NodeItemGenerator<ElementData>
             Data = item,
             RelatedType = item.CurrentViewModelType,
             DiagramData = diagramData,
-            Filename = Path.Combine("ViewModels", item.NameAsViewModel + ".cs")
+            Filename = codePathStrategy.GetEditableViewModelFilename(item.NameAsViewModel)
         };
     }
 
-    public virtual CodeGenerator CreateViewBaseGenerator(ElementDesignerData diagramData, ElementData item)
+    public virtual CodeGenerator CreateViewBaseGenerator(ICodePathStrategy codePathStrategy, IElementDesignerData diagramData, ElementData item)
     {
         return new ViewBaseGenerator()
         {
             ElementData = item,
             DiagramData = diagramData,
             IsDesignerFile = true,
-            
-            Filename = diagramData.ViewsFileName
+
+            Filename = codePathStrategy.GetViewsFileName(diagramData.Name)
         };
     }
 }

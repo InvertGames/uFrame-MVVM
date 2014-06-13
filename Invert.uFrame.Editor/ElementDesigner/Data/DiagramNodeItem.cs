@@ -1,30 +1,36 @@
+using Invert.uFrame.Editor.Refactoring;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 public abstract class DiagramNodeItem : IDiagramNodeItem
 {
     [SerializeField]
-    private string _name;
-
-    [SerializeField]
     private string _identifier;
 
-    private List<Refactorer> _refactorings;
+    [NonSerialized]
     private bool _isSelected;
 
-    public string OldName { get; set; }
+    [SerializeField]
+    private string _name;
 
-    public string Name
-    {
-        get { return _name; }
-        set { _name = Regex.Replace(value, "[^a-zA-Z0-9_.]+", ""); }
-    }
+    [NonSerialized]
+    private List<Refactorer> _refactorings;
+    [NonSerialized]
+    private RenameRefactorer _renameRefactorer;
+    [NonSerialized]
+    private string _oldName;
+    [NonSerialized]
+    private Rect _position;
 
-    public abstract string Label { get; }
-    public Rect Position { get; set; }
+    public abstract string FullLabel { get; }
+
+    public virtual string Highlighter { get { return null; } }
+
+    public string Identifier { get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier; } }
+
+    public virtual bool IsSelectable { get { return true; } }
 
     public bool IsSelected
     {
@@ -43,6 +49,38 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
         }
     }
 
+    public abstract string Label { get; }
+
+    public string Name
+    {
+        get { return _name; }
+        set { _name = Regex.Replace(value, "[^a-zA-Z0-9_.]+", ""); }
+    }
+
+    public string OldName
+    {
+        get { return _oldName; }
+        set { _oldName = value; }
+    }
+
+    public Rect Position
+    {
+        get { return _position; }
+        set { _position = value; }
+    }
+
+    public List<Refactorer> Refactorings
+    {
+        get { return _refactorings ?? (_refactorings = new List<Refactorer>()); }
+        set { _refactorings = value; }
+    }
+
+    public RenameRefactorer RenameRefactorer
+    {
+        get { return _renameRefactorer; }
+        set { _renameRefactorer = value; }
+    }
+
     public virtual void BeginEditing()
     {
         if (RenameRefactorer == null)
@@ -50,10 +88,11 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
             RenameRefactorer = CreateRenameRefactorer();
         }
         OldName = Name;
-        
     }
 
-    public RenameRefactorer RenameRefactorer { get; set; }
+    public abstract bool CanCreateLink(IDrawable target);
+
+    public abstract void CreateLink(IDiagramNode container, IDrawable target);
 
     public virtual RenameRefactorer CreateRenameRefactorer()
     {
@@ -73,36 +112,23 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
             if (!Refactorings.Contains(RenameRefactorer))
             {
                 Refactorings.Add(RenameRefactorer);
-                
             }
         }
     }
 
-    public virtual string Highlighter { get { return null; } }
-    public abstract string FullLabel { get; }
-    public string Identifier{ get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier;}}
-    public virtual bool IsSelectable { get { return true; } }
-    public Vector2[] ConnectionPoints { get; set; }
-
-    public List<Refactorer> Refactorings
-    {
-        get { return _refactorings ?? (_refactorings = new List<Refactorer>()); }
-        set { _refactorings = value; }
-    }
-
-    public abstract void CreateLink(IDiagramNode container, IDrawable target);
-    public abstract bool CanCreateLink(IDrawable target);
-    public abstract void RemoveLink(IDiagramNode target);
     public abstract IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] diagramNode);
-    public abstract void Remove(IDiagramNode diagramNode);
-
-    public virtual void Rename(IDiagramNode data, string name)
-    {
-        Name = name;
-    }
 
     public void RefactorApplied()
     {
         Refactorings.Clear();
+    }
+
+    public abstract void Remove(IDiagramNode diagramNode);
+
+    public abstract void RemoveLink(IDiagramNode target);
+
+    public virtual void Rename(IDiagramNode data, string name)
+    {
+        Name = name;
     }
 }

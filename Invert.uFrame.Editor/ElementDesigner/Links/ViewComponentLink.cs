@@ -25,6 +25,6 @@ public class ViewComponentLink : BeizureLink
 
     public override Color GetColor(ElementsDiagram diagram)
     {
-        return diagram.Data.SceneManagerLinkColor;
+        return diagram.Data.Settings.SceneManagerLinkColor;
     }
 }

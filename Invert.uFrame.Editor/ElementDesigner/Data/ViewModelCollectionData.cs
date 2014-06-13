@@ -1,21 +1,29 @@
+using Invert.uFrame.Editor.Refactoring;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
-
 
 [Serializable]
 public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
 {
+    [SerializeField]
+    private string _itemType;
+
     public bool AllowEmptyRelatedType
     {
         get { return false; }
     }
 
-    [SerializeField]
-    private string _itemType;
+    public string FieldName
+    {
+        get
+        {
+            return string.Format("_{0}Property", Name);
+        }
+    }
+
+    public override string FullLabel { get { return RelatedTypeName + Name; } }
 
     public Type ItemType
     {
@@ -27,27 +35,40 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
     {
         get { return RelatedTypeName + "[]: " + Name; }
     }
-    public override RenameRefactorer CreateRenameRefactorer()
+
+    public string NameAsAddHandler
     {
-        return new RenameCollectionRefactorer(this);
-    }
-    public override void CreateLink(IDiagramNode container, IDrawable target)
-    {
-        var element = target as IDiagramNode;
-        if (element != null)
-        {
-            RelatedType = element.AssemblyQualifiedName;
-        }
+        get { return string.Format("{0}Added", Name); }
     }
 
-    public override bool CanCreateLink(IDrawable target)
+    public string NameAsBindingOption
     {
-        return target is ElementDataBase || target is EnumData;
+        get { return string.Format("_Bind{0}", Name); }
     }
 
-    public override void RemoveLink(IDiagramNode target)
+    public string NameAsContainerBindingOption
     {
-        RelatedType = typeof(string).AssemblyQualifiedName;
+        get { return string.Format("_{0}Prefab", Name); }
+    }
+
+    public string NameAsCreateHandler
+    {
+        get { return string.Format("Create{0}View", Name); }
+    }
+
+    public string NameAsListBindingOption
+    {
+        get { return string.Format("_{0}List", Name); }
+    }
+
+    public string NameAsSceneFirstBindingOption
+    {
+        get { return string.Format("_{0}SceneFirst", Name); }
+    }
+
+    public string NameAsUseArrayBindingOption
+    {
+        get { return string.Format("_{0}UseArray", Name); }
     }
 
     public string RelatedType
@@ -62,6 +83,25 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
         {
             return RelatedType.Split(',').FirstOrDefault() ?? "No Type";
         }
+    }
+
+    public override bool CanCreateLink(IDrawable target)
+    {
+        return target is ElementDataBase || target is EnumData;
+    }
+
+    public override void CreateLink(IDiagramNode container, IDrawable target)
+    {
+        var element = target as IDiagramNode;
+        if (element != null)
+        {
+            RelatedType = element.AssemblyQualifiedName;
+        }
+    }
+
+    public override RenameRefactorer CreateRenameRefactorer()
+    {
+        return new RenameCollectionRefactorer(this);
     }
 
     public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] diagramNode)
@@ -80,8 +120,6 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
         }
     }
 
-    public override string FullLabel { get { return RelatedTypeName + Name; } }
-
     public override void Remove(IDiagramNode diagramNode)
     {
         var data = diagramNode as ElementDataBase;
@@ -89,42 +127,8 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
         data.Dirty = true;
     }
 
-
-    public string FieldName
+    public override void RemoveLink(IDiagramNode target)
     {
-        get
-        {
-            return string.Format("_{0}Property", Name);
-        }
-    }
-
-    public string NameAsCreateHandler
-    {
-        get { return string.Format("Create{0}View", Name); }
-    }
-    public string NameAsAddHandler
-    {
-        get { return string.Format("{0}Added", Name); }
-    }
-
-    public string NameAsContainerBindingOption
-    {
-        get { return string.Format("_{0}Prefab", Name); }
-    }
-    public string NameAsSceneFirstBindingOption
-    {
-        get { return string.Format("_{0}SceneFirst", Name); }
-    }
-    public string NameAsUseArrayBindingOption
-    {
-        get { return string.Format("_{0}UseArray", Name); }
-    }
-    public string NameAsListBindingOption
-    {
-        get { return string.Format("_{0}List", Name); }
-    }
-    public string NameAsBindingOption
-    {
-        get { return string.Format("_Bind{0}", Name); }
+        RelatedType = typeof(string).AssemblyQualifiedName;
     }
 }
