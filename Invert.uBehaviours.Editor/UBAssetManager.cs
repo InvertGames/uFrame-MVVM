@@ -48,7 +48,7 @@ public class UBAssetManager : AssetPostprocessor
         T asset = ScriptableObject.CreateInstance<T>();
 
         string path = assetPath ?? AssetDatabase.GetAssetPath(Selection.activeObject);
-        path = path.Replace("//", "/").Replace("\\\\","\\");
+        
         if (path == "")
         {
             path = "Assets";
@@ -58,7 +58,7 @@ public class UBAssetManager : AssetPostprocessor
             path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
         }
 
-        string assetPathAndName = assetName == null ? AssetDatabase.GenerateUniqueAssetPath(path + "/New " + typeof(T).ToString() + ".asset") : AssetDatabase.GenerateUniqueAssetPath(path + "/" + assetName + ".asset");
+        string assetPathAndName = assetName == null ? AssetDatabase.GenerateUniqueAssetPath(path + Path.DirectorySeparatorChar + "New " + typeof(T).ToString() + ".asset") : AssetDatabase.GenerateUniqueAssetPath(path + Path.DirectorySeparatorChar + assetName + ".asset");
 
         AssetDatabase.CreateAsset(asset, assetPathAndName);
         AssetDatabase.SaveAssets();
@@ -87,9 +87,11 @@ public class UBAssetManager : AssetPostprocessor
             tempGoFileInfo = goFileInfo[i];
             if (tempGoFileInfo == null)
                 continue;
-
-            tempFilePath = tempGoFileInfo.FullName;
-            tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
+            var dataPath = Application.dataPath.Replace("/", Path.DirectorySeparatorChar.ToString());
+            
+            tempFilePath = tempGoFileInfo.FullName.Replace(dataPath, "Assets");
+            
+            //tempFilePath = tempFilePath.Replace(Application.dataPath, "Assets");
 
             try
             {
@@ -122,6 +124,7 @@ public class UBAssetManager : AssetPostprocessor
 
         return tempObjects.ToArray();
     }
+
     [MenuItem("Assets/uBehaviours/Shared Behaviour", false, 40)]
     public static void NewUBehaviour()
     {

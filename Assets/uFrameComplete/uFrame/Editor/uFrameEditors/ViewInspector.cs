@@ -54,7 +54,7 @@ public class ViewInspector : uFrameInspector
         var titleSize = UFStyles.ViewBarTitleStyle.CalcSize(titleContent);
         var subTitleSize = UFStyles.ViewBarSubTitleStyle.CalcSize(subTitleContent);
         var maxTextWidth = Mathf.Max(titleSize.x, subTitleSize.x);
-        var barWidth = (padding*4f) + maxTextWidth + (36 * 3);
+        var barWidth = (padding*4f) + maxTextWidth + (36 * 1);
         var rect = new Rect(15f, 15f, barWidth, 48f);
         UFStyles.DrawExpandableBox(rect, UFStyles.SceneViewBar, "");
         GUILayout.BeginArea(rect);
@@ -72,16 +72,17 @@ public class ViewInspector : uFrameInspector
         GUILayout.Label(subTitleContent, UFStyles.ViewBarSubTitleStyle, GUILayout.Width(maxTextWidth));
 
         GUILayout.EndVertical();
-        GUILayout.Space(padding);
-        if (GUILayout.Button(new GUIContent("", "Move to the previous " + subTitleContent.text), UFStyles.NavigatePreviousStyle))
-        {
-            uFrameEditorSceneManager.NavigatePrevious();
-        }
-        if (GUILayout.Button(new GUIContent("","Move to the next " + subTitleContent.text), UFStyles.NavigateNextStyle))
-        {
-            uFrameEditorSceneManager.NavigateNext();
-        }
-        GUILayout.Space(padding);
+        //GUILayout.Space(padding);
+        //if (GUILayout.Button(new GUIContent("", "Move to the previous " + subTitleContent.text), UFStyles.NavigatePreviousStyle))
+        //{
+            
+        //    uFrameEditorSceneManager.NavigatePrevious();
+        //}
+        //if (GUILayout.Button(new GUIContent("","Move to the next " + subTitleContent.text), UFStyles.NavigateNextStyle))
+        //{
+        //    uFrameEditorSceneManager.NavigateNext();
+        //}
+        //GUILayout.Space(padding);
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
         Handles.EndGUI();
@@ -99,14 +100,15 @@ public class ViewInspector : uFrameInspector
                 if (t != null && t.ViewModelObject != null)
                     foreach (var p in t.ViewModelObject.Properties)
                     {
-                        if (p.Value.ValueType.IsPrimitive)
-                        {
-                            EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
-                        }
-                        else
-                        {
-                            EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
-                        }
+                        EditorGUILayout.LabelField(p.Key.Replace("_","").Replace("Property",""), p.Value.Serialize().ToString());
+                        //if (p.Value.ValueType.IsPrimitive)
+                        //{
+                        //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
+                        //}
+                        //else
+                        //{
+                        //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
+                        //}
                     }
             }
             Repaint();

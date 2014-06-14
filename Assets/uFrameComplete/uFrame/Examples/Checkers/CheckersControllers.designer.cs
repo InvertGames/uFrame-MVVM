@@ -11,93 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UnityEngine;
 
-
-[System.SerializableAttribute()]
-public sealed partial class CheckersMenuSceneManagerSettings {
-    
-    public string[] _Scenes;
-}
-
-public class CheckersMenuSceneManagerBase : SceneManager {
-    
-    public CheckersSceneManagerSettings _PlayTransition = new CheckersSceneManagerSettings();
-    
-    public CheckersMenuSceneManagerSettings _CheckersMenuSceneManagerSettings = new CheckersMenuSceneManagerSettings();
-    
-    public MainMenuController MainMenuController { get; set; }
-    public override void Setup() {
-        base.Setup();
-        this.MainMenuController = new MainMenuController();
-        this.Container.RegisterInstance(this.MainMenuController, false);
-        this.Container.InjectAll();
-        Container.RegisterInstance<MainMenuViewModel>(MainMenuController.CreateMainMenu(), false);
-    }
-    
-    public virtual void Play() {
-        GameManager.SwitchGameAndLevel<CheckersSceneManager>((container) =>{container._CheckersSceneManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
-    }
-}
-
-public enum CheckersSceneManagerCheckersGameTypes {
-    
-    CheckersGame,
-    
-    AICheckersGame,
-}
-
-[System.SerializableAttribute()]
-public sealed partial class CheckersSceneManagerSettings {
-    
-    public string[] _Scenes;
-    
-    public CheckersSceneManagerCheckersGameTypes CheckersGameTypes;
-}
-
-public class CheckersSceneManagerBase : SceneManager {
-    
-    public CheckersMenuSceneManagerSettings _GameOverTransition = new CheckersMenuSceneManagerSettings();
-    
-    public CheckersSceneManagerSettings _CheckersSceneManagerSettings = new CheckersSceneManagerSettings();
-    
-    public AICheckersGameController AICheckersGameController { get; set; }
-    public CheckerBoardController CheckerBoardController { get; set; }
-    public CheckerMoveController CheckerMoveController { get; set; }
-    public CheckerPlateController CheckerPlateController { get; set; }
-    public CheckersGameController CheckersGameController { get; set; }
-    public CheckerController CheckerController { get; set; }
-    public override void Setup() {
-        base.Setup();
-        this.AICheckersGameController = new AICheckersGameController();
-        this.Container.RegisterInstance(this.AICheckersGameController, false);
-        this.CheckerBoardController = new CheckerBoardController();
-        this.Container.RegisterInstance(this.CheckerBoardController, false);
-        this.CheckerMoveController = new CheckerMoveController();
-        this.Container.RegisterInstance(this.CheckerMoveController, false);
-        this.CheckerPlateController = new CheckerPlateController();
-        this.Container.RegisterInstance(this.CheckerPlateController, false);
-        this.CheckersGameController = new CheckersGameController();
-        this.Container.RegisterInstance(this.CheckersGameController, false);
-        this.CheckerController = new CheckerController();
-        this.Container.RegisterInstance(this.CheckerController, false);
-        this.Container.InjectAll();
-        Container.RegisterInstance<CheckerBoardViewModel>(CheckerBoardController.CreateCheckerBoard(), false);
-        if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.AICheckersGame)) {
-            AICheckersGameViewModel aICheckersGame = AICheckersGameController.CreateAICheckersGame();
-            Container.RegisterInstance<AICheckersGameViewModel>(aICheckersGame, false);
-            Container.RegisterInstance<CheckersGameViewModel>(aICheckersGame, false);
-        }
-        if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.CheckersGame)) {
-            CheckersGameViewModel checkersGame = CheckersGameController.CreateCheckersGame();
-            Container.RegisterInstance<CheckersGameViewModel>(checkersGame, false);
-        }
-    }
-    
-    public virtual void GameOver() {
-        GameManager.SwitchGameAndLevel<CheckersMenuSceneManager>((container) =>{container._CheckersMenuSceneManagerSettings = _GameOverTransition; }, this._GameOverTransition._Scenes);
-    }
-}
 
 public abstract class CheckerBoardControllerBase : Controller {
     
@@ -260,6 +174,7 @@ public abstract class AICheckersGameControllerBase : CheckersGameController {
     }
     
     public override void Initialize(ViewModel viewModel) {
+        base.Initialize(viewModel);
         this.InitializeAICheckersGame(((AICheckersGameViewModel)(viewModel)));
     }
 }
@@ -293,5 +208,91 @@ public abstract class MainMenuControllerBase : Controller {
     
     public virtual void Play() {
         this.GameEvent("Play");
+    }
+}
+
+[System.SerializableAttribute()]
+public sealed partial class CheckersMenuSceneManagerSettings {
+    
+    public string[] _Scenes;
+}
+
+public class CheckersMenuSceneManagerBase : SceneManager {
+    
+    public CheckersSceneManagerSettings _PlayTransition = new CheckersSceneManagerSettings();
+    
+    public CheckersMenuSceneManagerSettings _CheckersMenuSceneManagerSettings = new CheckersMenuSceneManagerSettings();
+    
+    public MainMenuController MainMenuController { get; set; }
+    public override void Setup() {
+        base.Setup();
+        this.MainMenuController = new MainMenuController();
+        this.Container.RegisterInstance(this.MainMenuController, false);
+        this.Container.InjectAll();
+        Container.RegisterInstance<MainMenuViewModel>(MainMenuController.CreateMainMenu(), false);
+    }
+    
+    public virtual void Play() {
+        GameManager.SwitchGameAndLevel<CheckersSceneManager>((container) =>{container._CheckersSceneManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
+    }
+}
+
+public enum CheckersSceneManagerCheckersGameTypes {
+    
+    CheckersGame,
+    
+    AICheckersGame,
+}
+
+[System.SerializableAttribute()]
+public sealed partial class CheckersSceneManagerSettings {
+    
+    public string[] _Scenes;
+    
+    public CheckersSceneManagerCheckersGameTypes CheckersGameTypes;
+}
+
+public class CheckersSceneManagerBase : SceneManager {
+    
+    public CheckersMenuSceneManagerSettings _GameOverTransition = new CheckersMenuSceneManagerSettings();
+    
+    public CheckersSceneManagerSettings _CheckersSceneManagerSettings = new CheckersSceneManagerSettings();
+    
+    public AICheckersGameController AICheckersGameController { get; set; }
+    public CheckerBoardController CheckerBoardController { get; set; }
+    public CheckerMoveController CheckerMoveController { get; set; }
+    public CheckerPlateController CheckerPlateController { get; set; }
+    public CheckersGameController CheckersGameController { get; set; }
+    public CheckerController CheckerController { get; set; }
+    public override void Setup() {
+        base.Setup();
+        this.AICheckersGameController = new AICheckersGameController();
+        this.Container.RegisterInstance(this.AICheckersGameController, false);
+        this.CheckerBoardController = new CheckerBoardController();
+        this.Container.RegisterInstance(this.CheckerBoardController, false);
+        this.CheckerMoveController = new CheckerMoveController();
+        this.Container.RegisterInstance(this.CheckerMoveController, false);
+        this.CheckerPlateController = new CheckerPlateController();
+        this.Container.RegisterInstance(this.CheckerPlateController, false);
+        this.CheckersGameController = new CheckersGameController();
+        this.Container.RegisterInstance(this.CheckersGameController, false);
+        this.CheckerController = new CheckerController();
+        this.Container.RegisterInstance(this.CheckerController, false);
+        this.Container.InjectAll();
+        Container.RegisterInstance<CheckerBoardViewModel>(CheckerBoardController.CreateCheckerBoard(), false);
+        if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.AICheckersGame)) {
+            AICheckersGameViewModel aICheckersGame = AICheckersGameController.CreateEmpty() as AICheckersGameViewModel;
+            Container.RegisterInstance<AICheckersGameViewModel>(aICheckersGame, false);
+            Container.RegisterInstance<CheckersGameViewModel>(aICheckersGame, false);
+            Container.RegisterInstance<CheckersGameController>(AICheckersGameController, false);
+        }
+        if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.CheckersGame)) {
+            CheckersGameViewModel checkersGame = CheckersGameController.CreateEmpty() as CheckersGameViewModel;
+            Container.RegisterInstance<CheckersGameViewModel>(checkersGame, false);
+        }
+    }
+    
+    public virtual void GameOver() {
+        GameManager.SwitchGameAndLevel<CheckersMenuSceneManager>((container) =>{container._CheckersMenuSceneManagerSettings = _GameOverTransition; }, this._GameOverTransition._Scenes);
     }
 }

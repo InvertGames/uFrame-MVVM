@@ -57,7 +57,7 @@ public interface IElementDesignerData
     void Initialize();
 
     void FilterPushed(IDiagramFilter filter);
-    void FilterPoped();
+    void FilterPoped(IDiagramFilter pop);
 }
 
 [Serializable]
@@ -65,7 +65,7 @@ public class ElementDiagramSettings
 {
     [SerializeField]
     private Color _associationLinkColor = Color.white;
-    [SerializeField]
+    [SerializeField,HideInInspector]
     private Color _definitionLinkColor = Color.cyan; 
     [SerializeField]
     private Color _inheritanceLinkColor = Color.green;
@@ -431,9 +431,10 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
             _persistedFilterStack.Add(filter.Name);
     }
 
-    public void FilterPoped()
+
+    public void FilterPoped(IDiagramFilter pop)
     {
-        _persistedFilterStack.Remove(_persistedFilterStack.Last());
+        _persistedFilterStack.Remove(pop.Name);
     }
 }
 
@@ -518,7 +519,8 @@ public static class ElementDesignerDataExtensions
     {
         designerData.FilterLeave();
         //filterStack.Remove(designerData.FilterStack.Peek().Name);
-        designerData.FilterStack.Pop();
+        
+        designerData.FilterPoped(designerData.FilterStack.Pop());
         designerData.ApplyFilter();
     }
 

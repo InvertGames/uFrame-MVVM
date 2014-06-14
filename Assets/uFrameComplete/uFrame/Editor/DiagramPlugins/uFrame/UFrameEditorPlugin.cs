@@ -19,6 +19,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         Debug.Log("Registering " + "UFrameEditorPlugin");
 #endif
 
+        container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = true, PrimitiveOnly = false }, "ViewModelCommandTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() {AllowNone = false,PrimitiveOnly = false}, "ViewModelCollectionTypeSelection");

@@ -62,11 +62,12 @@ namespace Invert.uFrame.Editor
 
         public void DoCommand(IEditorCommand command)
         {
-
+            var obj = Handler.ContextObjects.FirstOrDefault(p => command.For.IsAssignableFrom(p.GetType()));
+            GUI.enabled = command.CanPerform(obj) == null;
             if (command is IDynamicOptionsCommand)
             {
                 var cmd = command as IDynamicOptionsCommand;
-                var obj = Handler.ContextObjects.FirstOrDefault(p => cmd.For.IsAssignableFrom(p.GetType()));
+                
 
                 foreach (var ufContextMenuItem in cmd.GetOptions(obj))
                 {
@@ -91,6 +92,7 @@ namespace Invert.uFrame.Editor
                     Handler.ExecuteCommand(command);
                 }
             }
+            GUI.enabled = true;
         }
     }
 }

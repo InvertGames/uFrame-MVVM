@@ -74,11 +74,12 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins
                 _behavioursHeader =
                     new NodeItemHeader() { HeaderType = typeof(UBSharedBehaviour), Label = "Behaviours" };
                 _behavioursHeader.AddCommand = Container.Resolve<AddNewBehaviourCommand>();
+                
                 return _behavioursHeader;
             }
             set { _behavioursHeader = value; }
         }
-
+        
         protected override IEnumerable<DiagramSubItemGroup> GetItemGroups()
         {
 

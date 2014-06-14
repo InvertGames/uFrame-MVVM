@@ -75,15 +75,6 @@ public interface IGameContainer
         /// <returns>The/An instance of 'instanceType'</returns>
         T Resolve<T>(string name = null, bool requireInstance = false) where T : class;
 
-        /// <summary>
-        /// If an instance of instanceType exist then it will return that instance otherwise it will create a new one based off mappings.
-        /// </summary>
-        /// <param name="baseType">The type of instance to resolve</param>
-        /// <param name="name">The type of instance to resolve</param>
-        /// <param name="requireInstance">If true will return null if an instance isn't registered.</param>
-        /// <returns>The/An instance of 'instanceType'</returns>
-        object Resolve(Type baseType, string name = null, bool requireInstance = false);
-
         TBase ResolveRelation<TBase>(Type tfor);
 
         TBase ResolveRelation<TFor, TBase>();
@@ -104,6 +95,21 @@ public interface IGameContainer
         /// <typeparam name="TType">The Type to resolve</typeparam>
         /// <returns>List of objects.</returns>
         IEnumerable<object> ResolveAll(Type type);
+
+        TypeMappingCollection Mappings { get; set; }
+        TypeInstanceCollection Instances { get; set; }
+        TypeRelationCollection RelationshipMappings { get; set; }
+
+        /// <summary>
+        /// If an instance of instanceType exist then it will return that instance otherwise it will create a new one based off mappings.
+        /// </summary>
+        /// <param name="baseType">The type of instance to resolve</param>
+        /// <param name="name">The type of instance to resolve</param>
+        /// <param name="requireInstance">If true will return null if an instance isn't registered.</param>
+        /// <returns>The/An instance of 'instanceType'</returns>
+        object Resolve(Type baseType, string name = null, bool requireInstance = false);
+
+        object ResolveRelation(Type tfor, Type tbase);
     }
 
 #if DLL

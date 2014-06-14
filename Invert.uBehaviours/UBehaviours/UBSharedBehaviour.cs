@@ -16,18 +16,18 @@ public class UBSharedBehaviour : ScriptableObject, IBehaviourVisitable, IUBehavi
     private UBGlobals _globals;
 
     [SerializeField, HideInInspector]
-    private List<UBInclude> _includes;
+    private List<UBInclude> _includes = new List<UBInclude>();
 
     [SerializeField]
     [HideInInspector]
-    private List<UBActionSheet> _sheets;
+    private List<UBActionSheet> _sheets = new List<UBActionSheet>();
 
     [SerializeField]
-    private List<TriggerInfo> _triggers;
+    private List<TriggerInfo> _triggers = new List<TriggerInfo>();
 
     [SerializeField]
     [HideInInspector]
-    private string[] _triggerTemplates;
+    private string[] _triggerTemplates = new string[]{};
     [SerializeField]
     private List<BehaviourSetting> _settings = new List<BehaviourSetting>();
 

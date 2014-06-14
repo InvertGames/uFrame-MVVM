@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class AICheckersGameController : AICheckersGameControllerBase {
     
     public override void InitializeAICheckersGame(AICheckersGameViewModel aICheckersGame) {
-        InitializeCheckersGame(aICheckersGame);
+        
     }
     public IEnumerator DecideAndMove()
     {
@@ -36,6 +36,7 @@ public class AICheckersGameController : AICheckersGameControllerBase {
     protected override void CurrentPlayerChanged(CheckersGameViewModel checkersGameViewModel, CheckerType type)
     {
         base.CurrentPlayerChanged(checkersGameViewModel, type);
+        Debug.Log("Current player changed.");
         if (type!= Me)
         {
             StartCoroutine(DecideAndMove());

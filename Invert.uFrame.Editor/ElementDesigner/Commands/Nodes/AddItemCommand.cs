@@ -98,7 +98,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
                         }
                         var saveCommand = uFrameEditor.Container.Resolve<IToolbarCommand>("SaveCommand");
                         //Execute the save command
-                        EditorWindow.GetWindow<ElementsDesigner>().Execute(saveCommand);
+                        EditorWindow.GetWindow<ElementsDesigner>().ExecuteCommand(saveCommand);
                     }
                 }
             }

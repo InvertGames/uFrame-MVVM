@@ -49,12 +49,17 @@ public class uFrameEditorSceneManager
     {
         if (view == null) return;
         CurrentFocusType = view.GetType();
-        var sceneView= EditorWindow.GetWindow<SceneView>();
-        sceneView.Show(true);
+        var scenViewWindow = EditorWindow.GetWindow<SceneView>();
+        var sceneView= SceneView.lastActiveSceneView ?? scenViewWindow;
+        scenViewWindow.Show(true);
         Selection.activeGameObject = view.gameObject;
-        sceneView.LookAt(view.transform.position);
-        sceneView.MoveToView(view.transform);
+        
+        //var localScale = (view.transform.localScale*2f);
+        sceneView.pivot = view.transform.position;// - new Vector3(localScale.x,2f,localScale.z);
+        sceneView.LookAt(view.transform.position,Quaternion.Euler(0f,90f,0f));
+        //sceneView.AlignViewToObject(view.transform);
         CurrentView = view;
+       
 
     }
 
@@ -137,17 +142,19 @@ public class uFrameEditorSceneManager
     public static void NavigateBack(ViewBase view)
     {
         var designerWindow = EditorWindow.GetWindow<ElementsDesigner>();
-        //designerWindow.OpenDiagramByAttribute(view.ViewModelType);
+        var attribute = view.GetType().GetCustomAttributes(typeof(DiagramInfoAttribute), true).FirstOrDefault() as DiagramInfoAttribute;
 
+        if (attribute == null) return;
+        designerWindow.LoadDiagramByName(attribute.DiagramName);
         //designerWindow.Diagram.Data.PushFilter();
     }
 
-    public static void NavigatePrevious()
+    public static void NavigatePrevious(ViewBase view)
     {
         
     }
 
-    public static void NavigateNext()
+    public static void NavigateNext(ViewBase view)
     {
         
     }

@@ -14,6 +14,7 @@ using System.Linq;
 using UnityEngine;
 
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class CheckerBoardViewBase : ViewBase {
     
     [UnityEngine.SerializeField()]
@@ -139,11 +140,12 @@ public abstract class CheckerBoardViewBase : ViewBase {
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<CheckerBoardController>());
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
     }
 }
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class CheckerMoveViewBase : ViewBase {
     
     public override System.Type ViewModelType {
@@ -173,11 +175,12 @@ public abstract class CheckerMoveViewBase : ViewBase {
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<CheckerMoveController>());
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
     }
 }
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class CheckerPlateViewBase : ViewBase {
     
     [UFToggleGroup("CanMoveTo")]
@@ -298,8 +301,8 @@ public abstract class CheckerPlateViewBase : ViewBase {
     public virtual void ExecuteSelectCommand() {
         this.ExecuteCommand(CheckerPlate.SelectCommand);
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
         CheckerPlateViewModel checkerPlate = ((CheckerPlateViewModel)(viewModel));
         checkerPlate.CanMoveTo = this._CanMoveTo;
         checkerPlate.Position = this._Position;
@@ -307,6 +310,7 @@ public abstract class CheckerPlateViewBase : ViewBase {
     }
 }
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class CheckersGameViewBase : ViewBase {
     
     [UFToggleGroup("BlackScore")]
@@ -557,8 +561,8 @@ public abstract class CheckersGameViewBase : ViewBase {
     public virtual void ExecuteGameOver() {
         this.ExecuteCommand(CheckersGame.GameOver);
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
         CheckersGameViewModel checkersGame = ((CheckersGameViewModel)(viewModel));
         checkersGame.BlackScore = this._BlackScore;
         checkersGame.Board = this._Board == null ? null : this._Board.ViewModelObject as CheckerBoardViewModel;
@@ -568,7 +572,14 @@ public abstract class CheckersGameViewBase : ViewBase {
     }
 }
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class CheckerViewBase : ViewBase {
+    
+    [UnityEngine.SerializeField()]
+    private KingMeStrategy _KingMeStrategy;
+    
+    [UnityEngine.SerializeField()]
+    private ContiniousRotation _ContiniousRotation;
     
     [UFToggleGroup("IsKingMe")]
     [UnityEngine.HideInInspector()]
@@ -629,6 +640,24 @@ public abstract class CheckerViewBase : ViewBase {
     public override System.Type ViewModelType {
         get {
             return typeof(CheckerViewModel);
+        }
+    }
+    
+    public virtual KingMeStrategy KingMeStrategy {
+        get {
+            return _KingMeStrategy ?? (_KingMeStrategy = GetComponent<KingMeStrategy>());
+        }
+        set {
+            this._KingMeStrategy = value;
+        }
+    }
+    
+    public virtual ContiniousRotation ContiniousRotation {
+        get {
+            return _ContiniousRotation ?? (_ContiniousRotation = GetComponent<ContiniousRotation>());
+        }
+        set {
+            this._ContiniousRotation = value;
         }
     }
     
@@ -717,8 +746,8 @@ public abstract class CheckerViewBase : ViewBase {
     public virtual void ExecuteSelectCommand() {
         this.ExecuteCommand(Checker.SelectCommand);
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
         CheckerViewModel checker = ((CheckerViewModel)(viewModel));
         checker.IsKingMe = this._IsKingMe;
         checker.Position = this._Position;
@@ -727,6 +756,7 @@ public abstract class CheckerViewBase : ViewBase {
     }
 }
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class AICheckersGameViewBase : CheckersGameViewBase {
     
     public override System.Type ViewModelType {
@@ -757,12 +787,13 @@ public abstract class AICheckersGameViewBase : CheckersGameViewBase {
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<AICheckersGameController>());
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
     }
 }
 
+[DiagramInfoAttribute("Checkers")]
 public abstract class MainMenuViewBase : ViewBase {
     
     public override System.Type ViewModelType {
@@ -796,8 +827,8 @@ public abstract class MainMenuViewBase : ViewBase {
     public virtual void ExecutePlay() {
         this.ExecuteCommand(MainMenu.Play);
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
     }
 }
 
@@ -829,4 +860,42 @@ public partial class NewViewComponent : ViewComponent {
 }
 
 public partial class NewViewComponent1 : NewViewComponent {
+}
+
+public partial class KingMeStrategy : ViewComponent {
+    
+    public virtual CheckerViewModel Checker {
+        get {
+            return ((CheckerViewModel)(this.View.ViewModelObject));
+        }
+    }
+    
+    public virtual void ExecuteSelectCommand() {
+        this.View.ExecuteCommand(Checker.SelectCommand);
+    }
+}
+
+public partial class DoubleUpKingMeStrategy : KingMeStrategy {
+}
+
+public partial class FlipOverKingMeStrategy : KingMeStrategy {
+}
+
+public partial class ContiniousRotation : ViewComponent {
+    
+    public virtual CheckerViewModel Checker {
+        get {
+            return ((CheckerViewModel)(this.View.ViewModelObject));
+        }
+    }
+    
+    public virtual void ExecuteSelectCommand() {
+        this.View.ExecuteCommand(Checker.SelectCommand);
+    }
+}
+
+public partial class MapView : ContiniousRotation {
+}
+
+public partial class PlayerScreenView : ContiniousRotation {
 }

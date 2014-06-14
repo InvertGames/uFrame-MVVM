@@ -30,16 +30,16 @@ public class GameContainer : IGameContainer
             set { _mappings = value; }
         }
 
-        protected TypeInstanceCollection Instances
+        public TypeInstanceCollection Instances
         {
             get { return _instances ?? (_instances = new TypeInstanceCollection()); }
             set { _instances = value; }
         }
 
-        public Dictionary<Type, Dictionary<Type, Type>> AdapterMappings
+        public TypeRelationCollection RelationshipMappings
         {
-            get { return _adapterMappings; }
-            set { _adapterMappings = value; }
+            get { return _relationshipMappings; }
+            set { _relationshipMappings = value; }
         }
 
 
@@ -84,7 +84,7 @@ public class GameContainer : IGameContainer
         {
             Instances.Clear();
             Mappings.Clear();
-            AdapterMappings.Clear();
+            RelationshipMappings.Clear();
         }
 
         /// <summary>
@@ -151,8 +151,6 @@ public class GameContainer : IGameContainer
         /// <param name="injectNow">Perform the injection immediately</param>
         public void RegisterInstance(Type baseType, object instance = null, string name = null, bool injectNow = true)
         {
-
-
             Instances[baseType, name] = instance;
             if (injectNow)
             {
@@ -213,6 +211,11 @@ public class GameContainer : IGameContainer
             return null;
         }
 
+        public TBase ResolveRelation<TBase>(Type tfor)
+        {
+            return (TBase)ResolveRelation(tfor, typeof (TBase));
+        }
+
         public void InjectAll()
         {
             foreach (var instance in Instances)
@@ -225,67 +228,49 @@ public class GameContainer : IGameContainer
             }
         }
 
-        private Dictionary<Type, Dictionary<Type, Type>> _adapterMappings = new Dictionary<Type, Dictionary<Type, Type>>();
+        private TypeRelationCollection _relationshipMappings = new TypeRelationCollection();
         public void RegisterRelation<TFor, TBase, TConcrete>()
         {
-            if (AdapterMappings.ContainsKey(typeof(TFor)))
-            {
-                var dictionary = AdapterMappings[typeof(TFor)] ?? (AdapterMappings[typeof(TFor)] = new Dictionary<Type, Type>());
-                if (dictionary.ContainsKey(typeof(TBase)))
-                {
-                    dictionary[typeof(TBase)] = typeof(TConcrete);
-                }
-                else
-                {
-                    dictionary.Add(typeof(TBase), typeof(TConcrete));
-                }
-            }
-            else
-            {
-                AdapterMappings.Add(typeof(TFor), new Dictionary<Type, Type>());
-                AdapterMappings[typeof(TFor)].Add(typeof(TBase), typeof(TConcrete));
-            }
+            RelationshipMappings[typeof (TFor), typeof (TBase)] = typeof (TConcrete);
+
+            //if (RelationshipMappings.ContainsKey(typeof(TFor)))
+            //{
+            //    var dictionary = RelationshipMappings[typeof(TFor)] ?? (RelationshipMappings[typeof(TFor)] = new Dictionary<Type, Type>());
+            //    if (dictionary.ContainsKey(typeof(TBase)))
+            //    {
+            //        dictionary[typeof(TBase)] = typeof(TConcrete);
+            //    }
+            //    else
+            //    {
+            //        dictionary.Add(typeof(TBase), typeof(TConcrete));
+            //    }
+            //}
+            //else
+            //{
+            //    RelationshipMappings.Add(typeof(TFor), new Dictionary<Type, Type>());
+            //    RelationshipMappings[typeof(TFor)].Add(typeof(TBase), typeof(TConcrete));
+            //}
         }
 
-        public TBase ResolveRelation<TBase>(Type tfor)
+        public object ResolveRelation(Type tfor, Type tbase)
         {
+            var concreteType = RelationshipMappings[tfor, tbase];
 
-            if (!AdapterMappings.ContainsKey(tfor)) return default(TBase);
-            var dictionary = AdapterMappings[tfor];
-            if (dictionary == null || !dictionary.ContainsKey(typeof(TBase))) return default(TBase);
-
-            var result = (TBase)Activator.CreateInstance(dictionary[typeof(TBase)]);
+            if (concreteType == null)
+            {
+                return null;
+            }
+            var result = Activator.CreateInstance(concreteType);
             Inject(result);
             return result;
         }
+        
         public TBase ResolveRelation<TFor, TBase>()
         {
-
-            if (!AdapterMappings.ContainsKey(typeof(TFor)))
-                return default(TBase);
-            var dictionary = AdapterMappings[typeof(TFor)];
-            if (dictionary == null || !dictionary.ContainsKey(typeof(TBase))) return default(TBase);
-
-            var result = (TBase)Activator.CreateInstance(dictionary[typeof(TBase)]);
-            Inject(result);
-            return result;
+            return (TBase)ResolveRelation(typeof (TFor), typeof (TBase));
         }
     }
-    public class TypeMapping
-    {
-        public Type From
-        {
-            get;
-            set;
-        }
-
-        public Type To
-        {
-            get;
-            set;
-        }
-        public string Name { get; set; }
-    }
+  
     public class TypeMappingCollection : List<TypeMapping>
     {
         public Type this[Type from, string name = null]
@@ -343,7 +328,48 @@ public class GameContainer : IGameContainer
             }
         }
     }
+    public class TypeRelationCollection : List<TypeRelation>
+    {
+        public Type this[Type from, Type to]
+        {
+            get
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && p.To == to);
+                if (mapping != null)
+                {
+                    return mapping.Concrete;
+                }
+                return null;
+            }
+            set
+            {
+                var mapping = this.FirstOrDefault(p => p.From == from && p.To == to);
+                if (mapping == null)
+                {
+                    Add(new TypeRelation() { From = from, To = to, Concrete = value });
+                }
+                else
+                {
+                    mapping.Concrete = value;
+                    
+                }
+            }
+        }
+    }
+    public class TypeRelation
+    {
+        public Type From
+        {
+            get;
+            set;
+        }
 
+        public Type To { get; set; }
+
+        public Type Concrete { get; set; }
+
+        //public string Name { get; set; }
+    }
     public class RegisteredInstance
     {
         public Type Base
@@ -358,6 +384,21 @@ public class GameContainer : IGameContainer
             set;
         }
 
+        public string Name { get; set; }
+    }
+    public class TypeMapping
+    {
+        public Type From
+        {
+            get;
+            set;
+        }
+
+        public Type To
+        {
+            get;
+            set;
+        }
         public string Name { get; set; }
     }
 #if DLL

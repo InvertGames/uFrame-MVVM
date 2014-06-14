@@ -2,7 +2,7 @@ using UnityEditor;
 
 public class uFrameVersionProcessor : AssetPostprocessor
 {
-    private const string CURRENT_VERSION = "1.06";
+    private const string CURRENT_VERSION = "1.2";
     private const string VERSION_KEY = "uFrame.InstalledVersion";
 
     private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)

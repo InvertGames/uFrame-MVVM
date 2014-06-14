@@ -14,7 +14,7 @@ public class UFrameAssetManager : AssetPostprocessor
     [MenuItem("Assets/[u]Frame/New Element Diagram", false, 40)]
     public static void NewViewModelDiagram()
     {
-        uFrameEditor.Container.Resolve<IElementsDataRepository>().CreateNewDiagram();
+        uFrameEditor.Container.Resolve<IElementsDataRepository>(".asset").CreateNewDiagram();
         
     }
 

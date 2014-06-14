@@ -132,7 +132,10 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         if ((Diagram == null || Diagram.Data == null) && !string.IsNullOrEmpty(LastLoadedDiagram))
         {
             Diagram = null;
-            LoadDiagram(LastLoadedDiagram);
+            if (!LoadDiagram(LastLoadedDiagram))
+            {
+                
+            }
             //var index = Array.IndexOf(UFrameAssetManager.DiagramNames, LastLoadedDiagram);
             //if (index > -1 && index < UFrameAssetManager.Diagrams.Count)
             //{
@@ -143,7 +146,7 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
             //    }
             //}
         }
-        var diagramRect = new Rect(0f, EditorStyles.toolbar.fixedHeight - 1, Screen.width - InspectorWidth, Screen.height - EditorStyles.toolbar.fixedHeight - EditorStyles.toolbar.fixedHeight - 1);
+        var diagramRect = new Rect(0f, EditorStyles.toolbar.fixedHeight - 1, Screen.width - 3, Screen.height - EditorStyles.toolbar.fixedHeight - EditorStyles.toolbar.fixedHeight - 1);
 
         var style = UFStyles.Background;
         style.border = new RectOffset(
@@ -290,9 +293,23 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
 
     private void DoToolbar()
     {
-        if (GUILayout.Button(new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.Name),EditorStyles.toolbarPopup))
+        try
         {
-            SelectDiagram();
+            if (
+                GUILayout.Button(
+                    new GUIContent(Diagram == null || Diagram.Data == null ? "--Select Diagram--" : Diagram.Data.Name),
+                    EditorStyles.toolbarPopup))
+            {
+                SelectDiagram();
+            }
+        }
+        catch (Exception ex)
+        {
+            Diagram = null;
+            
+            Repaint();
+            return;
+
         }
         Toolbar.Go();
     }
@@ -326,10 +343,10 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
             }
             Repaint();
         }
-        
+
     }
 
-    private void LoadDiagram(string path)
+    private bool LoadDiagram(string path)
     {
         try
         {
@@ -343,15 +360,22 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         }
         catch (Exception ex)
         {
-            Debug.LogException(ex);
+            Debug.Log("Either a plugin isn't installed or the file could no longer be found.");
             LastLoadedDiagram = null;
+            return false;
         }
+        return true;
         // var newScrollPosition = new Vector2(Diagram.DiagramSize.width, Diagram.DiagramSize.height).normalized / 2;
         //_scrollPosition = new Vector2(250,250);
     }
 
-    private void LoadDiagramByName(string diagramName)
+    public void LoadDiagramByName(string diagramName)
     {
+        var repos = uFrameEditor.Container.ResolveAll<IElementsDataRepository>();
+        var diagrams = repos.SelectMany(p => p.GetProjectDiagrams()).ToDictionary(p => p.Key, p => p.Value);
+        if (diagrams.ContainsKey(diagramName))
+            LoadDiagram(diagrams[diagramName]);
+
         //var diagram = UFrameAssetManager.Diagrams.FirstOrDefault(p => p.Name == diagramName);
         //if (diagram == null) return;
         //LoadDiagram(diagram);
@@ -362,8 +386,8 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         var repositories = uFrameEditor.Container.ResolveAll<IElementsDataRepository>();
         var diagramNames = repositories.SelectMany(p => p.GetProjectDiagrams().Keys).ToArray();
         var diagramPaths = repositories.SelectMany(p => p.GetProjectDiagrams().Values).ToArray();
-        
-       
+
+
         var menu = new GenericMenu();
         for (int index = 0; index < diagramNames.Length; index++)
         {
@@ -374,18 +398,13 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
             {
                 LastLoadedDiagram = diagramName;
                 LoadDiagram(diagram);
-                
+
             });
         }
         menu.ShowAsContext();
     }
 
-    public void Execute(IEditorCommand command)
-    {
-        this.ExecuteCommand(command);
-        Diagram.Refresh();
-        Repaint();
-    }
+ 
 
     public IEnumerable<object> ContextObjects
     {
@@ -405,11 +424,12 @@ public class ElementsDesigner : EditorWindow, ICommandHandler
         {
             Diagram.Refresh();
         }
+        Repaint();
     }
 
     public void CommandExecuting(IEditorCommand command)
     {
-        
+
     }
 }
 

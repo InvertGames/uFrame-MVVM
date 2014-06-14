@@ -949,7 +949,7 @@ public class ElementsDiagram : ICommandHandler
             {
                 if (SelectedData.CanCreateLink(CurrentMouseOverNode))
                 {
-                    ExecuteCommand(e => SelectedItem.CreateLink(SelectedData, CurrentMouseOverNode));
+                    ExecuteCommand(e => SelectedData.CreateLink(SelectedData, CurrentMouseOverNode));
                 }
             }
         }
@@ -1016,7 +1016,6 @@ public class ElementsDiagram : ICommandHandler
 
                     if (mouseOverDataModel != null)
                     {
-                        Debug.Log("Returned" + mouseOverDataModel.Data.Name);
                         yield return mouseOverDataModel;
                     }
                 }

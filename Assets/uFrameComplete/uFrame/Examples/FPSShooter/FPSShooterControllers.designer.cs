@@ -11,110 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UnityEngine;
 
-
-[System.SerializableAttribute()]
-public sealed partial class FPSMainMenuManagerSettings {
-    
-    public string[] _Scenes;
-}
-
-public class FPSMainMenuManagerBase : SceneManager {
-    
-    public WavesFPSGameManagerSettings _PlayTransition = new WavesFPSGameManagerSettings();
-    
-    public FPSMainMenuManagerSettings _FPSMainMenuManagerSettings = new FPSMainMenuManagerSettings();
-    
-    public FPSMenuController FPSMenuController { get; set; }
-    public override void Setup() {
-        base.Setup();
-        this.FPSMenuController = new FPSMenuController();
-        this.Container.RegisterInstance(this.FPSMenuController, false);
-        this.Container.InjectAll();
-        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateFPSMenu(), false);
-    }
-    
-    public virtual void Play() {
-        GameManager.SwitchGameAndLevel<WavesFPSGameManager>((container) =>{container._WavesFPSGameManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
-    }
-}
-
-public enum WavesFPSGameManagerFPSGameTypes {
-    
-    FPSGame,
-    
-    WavesFPSGame,
-    
-    DeathMatchGame,
-}
-
-[System.SerializableAttribute()]
-public sealed partial class WavesFPSGameManagerSettings {
-    
-    public string[] _Scenes;
-    
-    public WavesFPSGameManagerFPSGameTypes FPSGameTypes;
-}
-
-public class WavesFPSGameManagerBase : SceneManager {
-    
-    public FPSMainMenuManagerSettings _MainMenuTransition = new FPSMainMenuManagerSettings();
-    
-    public FPSMainMenuManagerSettings _QuitGameTransition = new FPSMainMenuManagerSettings();
-    
-    public WavesFPSGameManagerSettings _WavesFPSGameManagerSettings = new WavesFPSGameManagerSettings();
-    
-    public WavesFPSGameController WavesFPSGameController { get; set; }
-    public DeathMatchGameController DeathMatchGameController { get; set; }
-    public FPSDamageableController FPSDamageableController { get; set; }
-    public FPSEnemyController FPSEnemyController { get; set; }
-    public FPSGameController FPSGameController { get; set; }
-    public FPSPlayerController FPSPlayerController { get; set; }
-    public FPSWeaponController FPSWeaponController { get; set; }
-    public override void Setup() {
-        base.Setup();
-        this.WavesFPSGameController = new WavesFPSGameController();
-        this.Container.RegisterInstance(this.WavesFPSGameController, false);
-        this.DeathMatchGameController = new DeathMatchGameController();
-        this.Container.RegisterInstance(this.DeathMatchGameController, false);
-        this.FPSDamageableController = new FPSDamageableController();
-        this.Container.RegisterInstance(this.FPSDamageableController, false);
-        this.FPSEnemyController = new FPSEnemyController();
-        this.Container.RegisterInstance(this.FPSEnemyController, false);
-        this.FPSGameController = new FPSGameController();
-        this.Container.RegisterInstance(this.FPSGameController, false);
-        this.FPSPlayerController = new FPSPlayerController();
-        this.Container.RegisterInstance(this.FPSPlayerController, false);
-        this.FPSWeaponController = new FPSWeaponController();
-        this.Container.RegisterInstance(this.FPSWeaponController, false);
-        this.Container.InjectAll();
-        if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.WavesFPSGame)) {
-            WavesFPSGameViewModel wavesFPSGame = WavesFPSGameController.CreateEmpty() as WavesFPSGameViewModel;
-            Container.RegisterInstance<WavesFPSGameViewModel>(wavesFPSGame, false);
-            Container.RegisterInstance<FPSGameViewModel>(wavesFPSGame, false);
-            Container.RegisterInstance<FPSGameController>(WavesFPSGameController, false);
-        }
-        if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.DeathMatchGame)) {
-            DeathMatchGameViewModel deathMatchGame = DeathMatchGameController.CreateEmpty() as DeathMatchGameViewModel;
-            Container.RegisterInstance<DeathMatchGameViewModel>(deathMatchGame, false);
-            Container.RegisterInstance<FPSGameViewModel>(deathMatchGame, false);
-            Container.RegisterInstance<FPSGameController>(DeathMatchGameController, false);
-        }
-        if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.FPSGame)) {
-            FPSGameViewModel fPSGame = FPSGameController.CreateEmpty() as FPSGameViewModel;
-            Container.RegisterInstance<FPSGameViewModel>(fPSGame, false);
-        }
-    }
-    
-    public virtual void MainMenu() {
-        GameManager.SwitchGameAndLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _MainMenuTransition; }, this._MainMenuTransition._Scenes);
-    }
-    
-    public virtual void QuitGame() {
-        GameManager.SwitchGameAndLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _QuitGameTransition; }, this._QuitGameTransition._Scenes);
-    }
-}
 
 public abstract class FPSDamageableControllerBase : Controller {
     
@@ -123,7 +20,6 @@ public abstract class FPSDamageableControllerBase : Controller {
     public override void WireCommands(ViewModel viewModel) {
         var fPSDamageable = viewModel as FPSDamageableViewModel;
         fPSDamageable.ApplyDamage = new CommandWithSenderAndArgument<FPSDamageableViewModel, int>(fPSDamageable, ApplyDamage);
-        
     }
     
     public override ViewModel CreateEmpty() {
@@ -373,5 +269,107 @@ public abstract class DeathMatchGameControllerBase : FPSGameController {
     public override void Initialize(ViewModel viewModel) {
         base.Initialize(viewModel);
         this.InitializeDeathMatchGame(((DeathMatchGameViewModel)(viewModel)));
+    }
+}
+
+[System.SerializableAttribute()]
+public sealed partial class FPSMainMenuManagerSettings {
+    
+    public string[] _Scenes;
+}
+
+public class FPSMainMenuManagerBase : SceneManager {
+    
+    public WavesFPSGameManagerSettings _PlayTransition = new WavesFPSGameManagerSettings();
+    
+    public FPSMainMenuManagerSettings _FPSMainMenuManagerSettings = new FPSMainMenuManagerSettings();
+    
+    public FPSMenuController FPSMenuController { get; set; }
+    public override void Setup() {
+        base.Setup();
+        this.FPSMenuController = new FPSMenuController();
+        this.Container.RegisterInstance(this.FPSMenuController, false);
+        this.Container.InjectAll();
+        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateFPSMenu(), false);
+    }
+    
+    public virtual void Play() {
+        GameManager.SwitchGameAndLevel<WavesFPSGameManager>((container) =>{container._WavesFPSGameManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
+    }
+}
+
+public enum WavesFPSGameManagerFPSGameTypes {
+    
+    FPSGame,
+    
+    WavesFPSGame,
+    
+    DeathMatchGame,
+}
+
+[System.SerializableAttribute()]
+public sealed partial class WavesFPSGameManagerSettings {
+    
+    public string[] _Scenes;
+    
+    public WavesFPSGameManagerFPSGameTypes FPSGameTypes;
+}
+
+public class WavesFPSGameManagerBase : SceneManager {
+    
+    public FPSMainMenuManagerSettings _MainMenuTransition = new FPSMainMenuManagerSettings();
+    
+    public FPSMainMenuManagerSettings _QuitGameTransition = new FPSMainMenuManagerSettings();
+    
+    public WavesFPSGameManagerSettings _WavesFPSGameManagerSettings = new WavesFPSGameManagerSettings();
+    
+    public WavesFPSGameController WavesFPSGameController { get; set; }
+    public DeathMatchGameController DeathMatchGameController { get; set; }
+    public FPSDamageableController FPSDamageableController { get; set; }
+    public FPSEnemyController FPSEnemyController { get; set; }
+    public FPSGameController FPSGameController { get; set; }
+    public FPSPlayerController FPSPlayerController { get; set; }
+    public FPSWeaponController FPSWeaponController { get; set; }
+    public override void Setup() {
+        base.Setup();
+        this.WavesFPSGameController = new WavesFPSGameController();
+        this.Container.RegisterInstance(this.WavesFPSGameController, false);
+        this.DeathMatchGameController = new DeathMatchGameController();
+        this.Container.RegisterInstance(this.DeathMatchGameController, false);
+        this.FPSDamageableController = new FPSDamageableController();
+        this.Container.RegisterInstance(this.FPSDamageableController, false);
+        this.FPSEnemyController = new FPSEnemyController();
+        this.Container.RegisterInstance(this.FPSEnemyController, false);
+        this.FPSGameController = new FPSGameController();
+        this.Container.RegisterInstance(this.FPSGameController, false);
+        this.FPSPlayerController = new FPSPlayerController();
+        this.Container.RegisterInstance(this.FPSPlayerController, false);
+        this.FPSWeaponController = new FPSWeaponController();
+        this.Container.RegisterInstance(this.FPSWeaponController, false);
+        this.Container.InjectAll();
+        if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.WavesFPSGame)) {
+            WavesFPSGameViewModel wavesFPSGame = WavesFPSGameController.CreateEmpty() as WavesFPSGameViewModel;
+            Container.RegisterInstance<WavesFPSGameViewModel>(wavesFPSGame, false);
+            Container.RegisterInstance<FPSGameViewModel>(wavesFPSGame, false);
+            Container.RegisterInstance<FPSGameController>(WavesFPSGameController, false);
+        }
+        if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.DeathMatchGame)) {
+            DeathMatchGameViewModel deathMatchGame = DeathMatchGameController.CreateEmpty() as DeathMatchGameViewModel;
+            Container.RegisterInstance<DeathMatchGameViewModel>(deathMatchGame, false);
+            Container.RegisterInstance<FPSGameViewModel>(deathMatchGame, false);
+            Container.RegisterInstance<FPSGameController>(DeathMatchGameController, false);
+        }
+        if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.FPSGame)) {
+            FPSGameViewModel fPSGame = FPSGameController.CreateEmpty() as FPSGameViewModel;
+            Container.RegisterInstance<FPSGameViewModel>(fPSGame, false);
+        }
+    }
+    
+    public virtual void MainMenu() {
+        GameManager.SwitchGameAndLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _MainMenuTransition; }, this._MainMenuTransition._Scenes);
+    }
+    
+    public virtual void QuitGame() {
+        GameManager.SwitchGameAndLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _QuitGameTransition; }, this._QuitGameTransition._Scenes);
     }
 }

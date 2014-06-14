@@ -9,3 +9,4 @@ D:\Invert\Git\uFrame\Invert.uBehaviours\bin\Release\UBehaviours.XML
 D:\Invert\Git\uFrame\Invert.uBehaviours\bin\Release\UnityEngine.dll
 D:\Invert\Git\uFrame\Invert.uBehaviours\obj\Release\Invert.uBehaviours.csprojResolveAssemblyReference.cache
 D:\Invert\Git\uFrame\Invert.uBehaviours\obj\Release\Invert.uBehaviours.dll
+D:\Invert\Git\uFrame\Invert.uBehaviours\bin\Release\UnityEngine.xml

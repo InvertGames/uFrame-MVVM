@@ -76,6 +76,14 @@ public abstract class ViewClassGenerator : CodeGenerator
         {
             decl.BaseTypes.Add(new CodeTypeReference(typeof(ViewBase)));
         }
+        if (IsDesignerFile)
+        {
+            decl.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
+                new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));    
+        }
+        
+
+        
 
         var viewModelTypeProperty = new CodeMemberProperty
         {
@@ -119,7 +127,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         var initializeViewModelMethod = new CodeMemberMethod
         {
             Name = "InitializeViewModel",
-            Attributes = MemberAttributes.Override | MemberAttributes.Public
+            Attributes = MemberAttributes.Override | MemberAttributes.Family
         };
 
         initializeViewModelMethod.Parameters.Add(

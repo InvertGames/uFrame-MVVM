@@ -106,7 +106,7 @@ public abstract class FPSDamageableViewBase : ViewBase {
         this.ExecuteCommand(FPSDamageable.ApplyDamage, arg);
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
         FPSDamageableViewModel fPSDamageable = ((FPSDamageableViewModel)(viewModel));
         fPSDamageable.Health = this._Health;
         fPSDamageable.State = this._State;
@@ -173,7 +173,7 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSEnemyController>());
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
         FPSEnemyViewModel fPSEnemy = ((FPSEnemyViewModel)(viewModel));
         fPSEnemy.Speed = this._Speed;
@@ -391,7 +391,7 @@ public abstract class FPSGameViewBase : ViewBase {
         this.ExecuteCommand(FPSGame.QuitGame);
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
         FPSGameViewModel fPSGame = ((FPSGameViewModel)(viewModel));
         fPSGame.CurrentPlayer = this._CurrentPlayer == null ? null : this._CurrentPlayer.ViewModelObject as FPSPlayerViewModel;
         fPSGame.State = this._State;
@@ -517,8 +517,8 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     public virtual void ExecuteSelectWeapon(int arg) {
         this.ExecuteCommand(FPSPlayer.SelectWeapon, arg);
     }
-
-    public override void InitializeViewModel(ViewModel viewModel) {
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
         FPSPlayerViewModel fPSPlayer = ((FPSPlayerViewModel)(viewModel));
         fPSPlayer.CurrentWeaponIndex = this._CurrentWeaponIndex;
@@ -976,7 +976,7 @@ public abstract class FPSWeaponViewBase : ViewBase {
         this.ExecuteCommand(FPSWeapon.BulletFired);
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
         FPSWeaponViewModel fPSWeapon = ((FPSWeaponViewModel)(viewModel));
         fPSWeapon.Ammo = this._Ammo;
         fPSWeapon.State = this._State;
@@ -1112,7 +1112,7 @@ public abstract class WavesFPSGameViewBase : FPSGameViewBase {
         return this.RequestViewModel(GameManager.Container.Resolve<WavesFPSGameController>());
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
         WavesFPSGameViewModel wavesFPSGame = ((WavesFPSGameViewModel)(viewModel));
         wavesFPSGame.KillsToNextWave = this._KillsToNextWave;
@@ -1155,7 +1155,7 @@ public abstract class FPSMenuViewBase : ViewBase {
         this.ExecuteCommand(FPSMenu.Play);
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
     }
 }
 
@@ -1190,7 +1190,7 @@ public abstract class DeathMatchGameViewBase : FPSGameViewBase {
         return this.RequestViewModel(GameManager.Container.Resolve<DeathMatchGameController>());
     }
 
-    public override void InitializeViewModel(ViewModel viewModel) {
+    protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
     }
 }

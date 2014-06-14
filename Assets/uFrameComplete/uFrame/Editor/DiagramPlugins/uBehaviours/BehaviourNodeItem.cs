@@ -43,6 +43,11 @@ public class BehaviourNodeItem : IDiagramNodeItem
                     _renameTo = null;
                 }
             }
+            else
+            {
+
+                Selection.activeObject = Behaviour;
+            }
 
         }
     }

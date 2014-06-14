@@ -81,6 +81,13 @@
     <Compile Include="Assets\CarExample\Views\NewView.cs" />
     <Compile Include="Assets\CarExample\Views\NewView1.cs" />
     <Compile Include="Assets\CarExample\Views\NewView2.cs" />
+    <Compile Include="Assets\Demo\Controllers\CubeGameController.cs" />
+    <Compile Include="Assets\Demo\MikeDemo.designer.cs" />
+    <Compile Include="Assets\Demo\MikeDemoControllers.designer.cs" />
+    <Compile Include="Assets\Demo\MikeDemoViews.designer.cs" />
+    <Compile Include="Assets\Demo\SceneManagers\NewSceneManager.cs" />
+    <Compile Include="Assets\Demo\ViewModels\CubeGameViewModel.cs" />
+    <Compile Include="Assets\Demo\Views\CubeGameView.cs" />
     <Compile Include="Assets\PrivateStuff\AssetStoreStuff\WebTutorials\Views.cs" />
     <Compile Include="Assets\PrivateStuff\BallonGame\BalloonElementDesignerData.designer.cs" />
     <Compile Include="Assets\PrivateStuff\BallonGame\BalloonElementDesignerDataControllers.designer.cs" />
@@ -2465,6 +2472,12 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Controllers\MainMenuController.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\SceneManagers\CheckersMenuSceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\SceneManagers\CheckersSceneManager.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewComponents\ContiniousRotation.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewComponents\DoubleUpKingMeStrategy.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewComponents\FlipOverKingMeStrategy.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewComponents\KingMeStrategy.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewComponents\MapView.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewComponents\PlayerScreenView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\AICheckersGameViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\CheckerBoardViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\CheckerMoveViewModel.cs" />
