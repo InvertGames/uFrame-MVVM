@@ -18,9 +18,12 @@ namespace Invert.uFrame.Editor.UnitTests
         public void TestResolveMapping()
         {
             Container = new uFrameContainer();
-            Container.Register<ITestInterface, ConcreteTestClassA>();
-            var resolve = Container.Resolve<ITestInterface>();
 
+            Container.Register<ITestInterface, ConcreteTestClassA>();
+            Container.Register<ITestInterface,ConcreteTestClassB>("NamedInstance");
+            // Returns a new instance of ConcreateTestClassA
+            var resolve = Container.Resolve<ITestInterface>();
+            
             Assert.IsInstanceOfType(resolve,typeof(ConcreteTestClassA));
         }
 
