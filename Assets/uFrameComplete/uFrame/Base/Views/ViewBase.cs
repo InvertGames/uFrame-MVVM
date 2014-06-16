@@ -159,13 +159,13 @@ public abstract class ViewBase : ViewContainer
             {
                 if (OverrideViewModel)
                     return controller.GetByType(ViewModelType, true, InitializeViewModel);
-                
+
                 return controller.GetByType(ViewModelType, false);
             }
 
             if (OverrideViewModel)
                 return controller.GetByName(_resolveName, true, InitializeViewModel);
-                
+
             return controller.GetByName(_resolveName, false);
         }
 
@@ -251,13 +251,14 @@ public abstract class ViewBase : ViewContainer
 
     public virtual void OnDisable()
     {
-        var pv = ParentView;
-        if (pv != null)
-        {
-            pv.ChildViews.Remove(this);
-        }
-        Unbind();
-        _shouldRebindOnEnable = true;
+
+        //var pv = ParentView;
+        //if (pv != null)
+        //{
+        //    pv.ChildViews.Remove(this);
+        //}
+        //Unbind();
+        //_shouldRebindOnEnable = true;
     }
 
     [NonSerialized]

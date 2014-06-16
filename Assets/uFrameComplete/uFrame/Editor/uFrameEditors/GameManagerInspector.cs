@@ -19,6 +19,10 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
         serializedObject.Update();
         EditorGUILayout.HelpBox("The View to load when the scene starts.", MessageType.None);
         var p = serializedObject.FindProperty("_Start");
+        if (p.objectReferenceValue == null)
+        {
+            EditorGUILayout.HelpBox("Error start scene manager is not set.",MessageType.Error);
+        }
         EditorGUILayout.PropertyField(p);
         EditorGUILayout.HelpBox("The loading scene that will be used when switching scenes via GameManager.SwitchSceneAndLevel<View>().", MessageType.None);
         p = serializedObject.FindProperty("_LoadingLevel");

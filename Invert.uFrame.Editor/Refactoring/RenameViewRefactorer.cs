@@ -25,9 +25,13 @@ namespace Invert.uFrame.Editor.Refactoring
             ViewFileRenamer.To =
                 data.Data.Settings.CodePathStrategy.GetEditableViewFilename(data.NameAsView);
         }
+        public override void PreProcess(RefactorContext refactorContext)
+        {
+            ViewFileRenamer.Process(refactorContext);
+        }
         public override void Process(RefactorContext context)
         {
-            ViewFileRenamer.Process(context);
+           
             View.Process(context);
             ViewBase.Process(context);
         }

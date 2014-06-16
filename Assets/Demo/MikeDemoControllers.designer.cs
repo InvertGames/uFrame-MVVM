@@ -24,6 +24,8 @@ public abstract class CubeGameControllerBase : Controller {
     public abstract void InitializeCubeGame(CubeGameViewModel cubeGame);
     
     public override void WireCommands(ViewModel viewModel) {
+        var cubeGame = viewModel as CubeGameViewModel;
+        cubeGame.EndGame = new Command(EndGame);
     }
     
     public override ViewModel CreateEmpty() {
@@ -36,5 +38,41 @@ public abstract class CubeGameControllerBase : Controller {
     
     public override void Initialize(ViewModel viewModel) {
         this.InitializeCubeGame(((CubeGameViewModel)(viewModel)));
+    }
+    
+    public virtual void EndGame() {
+    }
+}
+
+public abstract class CoolCubeGameControllerBase : CubeGameController {
+    
+    public virtual CoolCubeGameViewModel CoolCubeGame {
+        get {
+            return Container.Resolve<CoolCubeGameViewModel>();
+        }
+    }
+    
+    public abstract void InitializeCoolCubeGame(CoolCubeGameViewModel coolCubeGame);
+    
+    public override void WireCommands(ViewModel viewModel) {
+        base.WireCommands(viewModel);
+        var coolCubeGame = viewModel as CoolCubeGameViewModel;
+        coolCubeGame.Play = new Command(Play);
+    }
+    
+    public override ViewModel CreateEmpty() {
+        return new CoolCubeGameViewModel();
+    }
+    
+    public virtual CoolCubeGameViewModel CreateCoolCubeGame() {
+        return ((CoolCubeGameViewModel)(this.Create()));
+    }
+    
+    public override void Initialize(ViewModel viewModel) {
+        base.Initialize(viewModel);
+        this.InitializeCoolCubeGame(((CoolCubeGameViewModel)(viewModel)));
+    }
+    
+    public virtual void Play() {
     }
 }

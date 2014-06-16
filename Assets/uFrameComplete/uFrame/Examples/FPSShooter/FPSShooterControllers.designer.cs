@@ -290,7 +290,7 @@ public class FPSMainMenuManagerBase : SceneManager {
         this.FPSMenuController = new FPSMenuController();
         this.Container.RegisterInstance(this.FPSMenuController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateFPSMenu(), false);
+        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateEmpty() as FPSMenuViewModel, false);
     }
     
     public virtual void Play() {

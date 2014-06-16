@@ -4,7 +4,7 @@ namespace Invert.uFrame.Editor.Refactoring
     {
         public abstract void Set(ISelectable item);
 
-         
 
+       
     }
 }

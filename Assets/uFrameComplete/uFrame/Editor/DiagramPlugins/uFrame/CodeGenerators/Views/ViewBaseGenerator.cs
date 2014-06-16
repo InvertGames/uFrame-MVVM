@@ -4,7 +4,8 @@ public class ViewBaseGenerator : ViewClassGenerator
 {
     public ElementData ElementData
     {
-        get; set;
+        get;
+        set;
     }
     public override void Initialize(CodeFileGenerator fileGenerator)
     {

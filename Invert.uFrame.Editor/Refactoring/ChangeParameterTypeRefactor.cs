@@ -28,6 +28,11 @@ namespace Invert.uFrame.Editor.Refactoring
             
         }
 
+        public override void PreProcess(RefactorContext refactorContext)
+        {
+            
+        }
+
         public string OldType { get; set; }
         public string NewType { get; set; }
 

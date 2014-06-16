@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         {
             if (_container == null)
             {
-                _container =new GameContainer();
+                _container = new GameContainer();
                 _container.RegisterInstance(Progress);
             }
             return _container;
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
 
     public static Coroutine SwitchGame<T>(Action<T> setup, UpdateProgressDelegate progress = null) where T : SceneManager
     {
-var currentSceneManager = GameManager.ActiveSceneManager;
+
         return SwitchGame(Instance.Games.OfType<T>().First());
     }
 
@@ -260,7 +260,7 @@ var currentSceneManager = GameManager.ActiveSceneManager;
             // If the instace already exist destroy this
             Instance._Start = _Start;
             Instance.Startup();
-           
+
         }
         else
         {
@@ -275,7 +275,7 @@ var currentSceneManager = GameManager.ActiveSceneManager;
 
     public void Start()
     {
-       
+
 
         if (Instance != null && Instance != this)
         {
@@ -298,13 +298,9 @@ var currentSceneManager = GameManager.ActiveSceneManager;
         }
         if (_Start == null)
         {
-            if (games.Length > 0)
-            {
-                _Start = games.First();
-            }
-            else
-                Debug.LogWarning(
-                    "There is not a start game assigned to GameManager. Set the start game in the GameManager inspector.");
+
+            Debug.LogError(
+                "You need to set the scene manager option on the game manager for this scene. Double-Click to navigate there.",this.gameObject);
         }
         ActiveSceneManager = _Start;
     }
@@ -356,7 +352,7 @@ var currentSceneManager = GameManager.ActiveSceneManager;
 
     private static IEnumerator InitializeController(UpdateProgressDelegate progress)
     {
-       // yield return new WaitForEndOfFrame();
+        // yield return new WaitForEndOfFrame();
         yield return Instance.StartCoroutine(ActiveSceneManager.Load(progress));
         ActiveSceneManager.OnLoaded();
     }
@@ -365,7 +361,7 @@ var currentSceneManager = GameManager.ActiveSceneManager;
     {
         get
         {
-            
+
             return Application.HasProLicense();
         }
     }
@@ -374,7 +370,7 @@ var currentSceneManager = GameManager.ActiveSceneManager;
 
     public static IEnumerator Load()
     {
-        
+
         // Wait till all other things have processed in the scene before loading.
         yield return new WaitForEndOfFrame();
         // Grab the game manager instance transform so we can ignore it
@@ -416,7 +412,7 @@ var currentSceneManager = GameManager.ActiveSceneManager;
                     ProgressUpdated(String.Format("Loading '{0}'", level), numberOfLevelsToLoad);
                     Application.LoadLevelAdditive(level);
                 }
-                
+
                 progressBase += 1f;
             }
         }

@@ -16,6 +16,7 @@ public class CheckerBoardController : CheckerBoardControllerBase
     };
     public override void InitializeCheckerBoard(CheckerBoardViewModel checkerBoard)
     {
+        
         var total = 0;
         for (var y = 0; y < 8; y++)
         {

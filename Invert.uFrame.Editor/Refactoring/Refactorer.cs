@@ -7,5 +7,7 @@ namespace Invert.uFrame.Editor.Refactoring
         public abstract void Process(RefactorContext context);
 
         public abstract void PostProcess(RefactorContext context);
+
+        public abstract void PreProcess(RefactorContext refactorContext);
     }
 }

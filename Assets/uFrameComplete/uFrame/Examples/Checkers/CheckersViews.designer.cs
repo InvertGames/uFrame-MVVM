@@ -390,11 +390,11 @@ public abstract class CheckersGameViewBase : ViewBase {
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
-    public CheckerBoardViewBase _Board;
+    public ViewBase _Board;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
-    public CheckerViewBase _CurrentChecker;
+    public ViewBase _CurrentChecker;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]

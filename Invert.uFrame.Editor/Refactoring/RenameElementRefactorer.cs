@@ -53,10 +53,14 @@ namespace Invert.uFrame.Editor.Refactoring
             Initialize.To = "Initialize" + data.Name;
             Variable.To = data.NameAsVariable;
         }
-        public override void Process(RefactorContext context)
-        {
+        public override void PreProcess(RefactorContext context)
+        {  
             ViewModelRenamer.Process(context);
             ControllerRenamer.Process(context);
+        }
+        public override void Process(RefactorContext context)
+        {
+          
             ViewBase.Process(context);
             ControllerBase.Process(context);
             Controller.Process(context);

@@ -84,6 +84,10 @@ namespace Invert.uFrame.Editor.Refactoring
 
         public void Refactor(params string[] filenames)
         {
+            foreach (var refactorer in Refactors.OrderBy(p => p.Priority))
+            {
+                refactorer.PreProcess(this);
+            }
             foreach (var filename in filenames)
             {
                 RefactorFile(filename);

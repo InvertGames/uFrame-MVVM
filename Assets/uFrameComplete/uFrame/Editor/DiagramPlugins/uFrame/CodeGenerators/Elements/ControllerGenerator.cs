@@ -11,6 +11,7 @@ public class ControllerGenerator : CodeGenerator
     {
         base.Initialize(fileGenerator);
         AddController(ElementData);
+        
     }
 
     public ElementData ElementData

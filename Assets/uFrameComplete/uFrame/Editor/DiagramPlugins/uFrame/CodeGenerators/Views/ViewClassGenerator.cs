@@ -60,9 +60,9 @@ public abstract class ViewClassGenerator : CodeGenerator
         return conditionStatement;
     }
 
-    public void AddViewBase(ElementData data)
+    public void AddViewBase(ElementData data, string className = null, string baseClassName = null)
     {
-        var decl = new CodeTypeDeclaration(data.NameAsViewBase)
+        var decl = new CodeTypeDeclaration(className ?? data.NameAsViewBase)
         {
             TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public
         };
@@ -70,7 +70,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         if (data.IsControllerDerived)
         {
             var baseType = DiagramData.AllElements.First(p => p.Name == data.BaseTypeShortName);
-            decl.BaseTypes.Add(new CodeTypeReference(baseType.NameAsViewBase));
+            decl.BaseTypes.Add(new CodeTypeReference(baseClassName ?? baseType.NameAsViewBase));
         }
         else
         {
@@ -79,11 +79,11 @@ public abstract class ViewClassGenerator : CodeGenerator
         if (IsDesignerFile)
         {
             decl.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
-                new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));    
+                new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
         }
-        
 
-        
+
+
 
         var viewModelTypeProperty = new CodeMemberProperty
         {
@@ -111,7 +111,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         multiInstanceProperty.GetStatements.Add(
             new CodeSnippetExpression(string.Format("return {0}", data.IsMultiInstance ? "true" : "false")));
         decl.Members.Add(multiInstanceProperty);
-        
+
         GenerateBindMethod(decl, data);
         var viewModelProperty = new CodeMemberProperty { Name = data.Name, Attributes = MemberAttributes.Public | MemberAttributes.Final, Type = new CodeTypeReference(data.NameAsViewModel) };
         viewModelProperty.GetStatements.Add(
@@ -193,7 +193,7 @@ public abstract class ViewClassGenerator : CodeGenerator
             }
             else // ViewModel Properties
             {
-                var field = new CodeMemberField(new CodeTypeReference(relatedViewModel.NameAsViewBase),
+                var field = new CodeMemberField(new CodeTypeReference(typeof(ViewBase)),
                     property.ViewFieldName) { Attributes = MemberAttributes.Public };
 
                 field.CustomAttributes.Add(

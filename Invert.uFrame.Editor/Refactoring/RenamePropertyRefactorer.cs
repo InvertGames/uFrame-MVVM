@@ -57,5 +57,10 @@ namespace Invert.uFrame.Editor.Refactoring
             //NameAsPrefabBindingOption.PostProcess(context);
             //NameAsTwoWayBindingOption.PostProcess(context);
         }
+
+        public override void PreProcess(RefactorContext refactorContext)
+        {
+            
+        }
     }
 }

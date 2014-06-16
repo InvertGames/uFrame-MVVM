@@ -50,7 +50,7 @@ public partial class FPSGameView
     public override void EnemiesAdded(FPSEnemyViewBase enemy)
     {
         base.EnemiesAdded(enemy);
-        ((FPSEnemyView) enemy)._TargetPlayer = _CurrentPlayer;
+        ((FPSEnemyView) enemy)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
         enemy.transform.position = GetRandomSpawnPoint().position;
 
     }

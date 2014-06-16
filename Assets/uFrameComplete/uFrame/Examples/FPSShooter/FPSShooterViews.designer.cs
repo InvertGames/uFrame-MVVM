@@ -14,6 +14,7 @@ using System.Linq;
 using UnityEngine;
 
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSDamageableViewBase : ViewBase {
     
     [UFToggleGroup("Health")]
@@ -105,7 +106,7 @@ public abstract class FPSDamageableViewBase : ViewBase {
     public virtual void ExecuteApplyDamage(int arg) {
         this.ExecuteCommand(FPSDamageable.ApplyDamage, arg);
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
         FPSDamageableViewModel fPSDamageable = ((FPSDamageableViewModel)(viewModel));
         fPSDamageable.Health = this._Health;
@@ -113,6 +114,7 @@ public abstract class FPSDamageableViewBase : ViewBase {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
     
     [UFToggleGroup("Speed")]
@@ -172,7 +174,7 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSEnemyController>());
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
         FPSEnemyViewModel fPSEnemy = ((FPSEnemyViewModel)(viewModel));
@@ -180,6 +182,7 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSGameViewBase : ViewBase {
     
     [UFToggleGroup("CurrentPlayer")]
@@ -242,7 +245,7 @@ public abstract class FPSGameViewBase : ViewBase {
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
-    public FPSPlayerViewBase _CurrentPlayer;
+    public ViewBase _CurrentPlayer;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -390,7 +393,7 @@ public abstract class FPSGameViewBase : ViewBase {
     public virtual void ExecuteQuitGame() {
         this.ExecuteCommand(FPSGame.QuitGame);
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
         FPSGameViewModel fPSGame = ((FPSGameViewModel)(viewModel));
         fPSGame.CurrentPlayer = this._CurrentPlayer == null ? null : this._CurrentPlayer.ViewModelObject as FPSPlayerViewModel;
@@ -400,6 +403,7 @@ public abstract class FPSGameViewBase : ViewBase {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     
     [UFToggleGroup("CurrentWeaponIndex")]
@@ -525,6 +529,7 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSWeaponViewBase : ViewBase {
     
     [UnityEngine.SerializeField()]
@@ -975,7 +980,7 @@ public abstract class FPSWeaponViewBase : ViewBase {
     public virtual void ExecuteBulletFired() {
         this.ExecuteCommand(FPSWeapon.BulletFired);
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
         FPSWeaponViewModel fPSWeapon = ((FPSWeaponViewModel)(viewModel));
         fPSWeapon.Ammo = this._Ammo;
@@ -994,6 +999,7 @@ public abstract class FPSWeaponViewBase : ViewBase {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class WavesFPSGameViewBase : FPSGameViewBase {
     
     [UFToggleGroup("KillsToNextWave")]
@@ -1111,7 +1117,7 @@ public abstract class WavesFPSGameViewBase : FPSGameViewBase {
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<WavesFPSGameController>());
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
         WavesFPSGameViewModel wavesFPSGame = ((WavesFPSGameViewModel)(viewModel));
@@ -1121,6 +1127,7 @@ public abstract class WavesFPSGameViewBase : FPSGameViewBase {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSMenuViewBase : ViewBase {
     
     public override System.Type ViewModelType {
@@ -1154,11 +1161,12 @@ public abstract class FPSMenuViewBase : ViewBase {
     public virtual void ExecutePlay() {
         this.ExecuteCommand(FPSMenu.Play);
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
     }
 }
 
+[DiagramInfoAttribute("FPSShooter")]
 public abstract class DeathMatchGameViewBase : FPSGameViewBase {
     
     public override System.Type ViewModelType {
@@ -1189,7 +1197,7 @@ public abstract class DeathMatchGameViewBase : FPSGameViewBase {
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<DeathMatchGameController>());
     }
-
+    
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
     }

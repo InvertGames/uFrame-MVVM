@@ -44,6 +44,11 @@ namespace Invert.uFrame.Editor.Refactoring
           
         }
 
+        public override void PreProcess(RefactorContext refactorContext)
+        {
+            
+        }
+
         public override void Process(RefactorContext context)
         {
             Name.Process(context);

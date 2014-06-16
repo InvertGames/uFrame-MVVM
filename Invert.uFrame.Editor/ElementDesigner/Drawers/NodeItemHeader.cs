@@ -37,7 +37,6 @@ public class NodeItemHeader : IDrawable
         {
             if (GUI.Button(btnRect.Scale(scale), string.Empty, UFStyles.AddButtonStyle))
             {
-                Debug.Log("YUP");
                 diagram.ExecuteCommand(AddCommand);
             }    
         }

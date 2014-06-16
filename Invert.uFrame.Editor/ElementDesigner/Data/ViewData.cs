@@ -121,6 +121,13 @@ public class ViewData : DiagramNode, ISubSystemType
             return string.Format("{0}Base", Name);
         }
     }
+    public string NameAsViewViewBase
+    {
+        get
+        {
+            return string.Format("{0}ViewBase", Name);
+        }
+    }
     public string ViewAssemblyQualifiedName
     {
         get

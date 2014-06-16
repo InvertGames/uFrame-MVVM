@@ -42,10 +42,15 @@ namespace Invert.uFrame.Editor.Refactoring
            
          
         }
-        public override void Process(RefactorContext context)
+
+        public override void PreProcess(RefactorContext context)
         {
             SceneManagerFileRenamer.Process(context);
             SceneManagerSettingsFileRenamer.Process(context);
+        }
+
+        public override void Process(RefactorContext context)
+        {
             SceneManager.Process(context);
             SceneManagerBase.Process(context);
             Settings.Process(context);

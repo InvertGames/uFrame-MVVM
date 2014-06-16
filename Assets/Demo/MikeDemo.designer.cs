@@ -16,7 +16,20 @@ using System.Linq;
 [DiagramInfoAttribute("MikeDemo")]
 public partial class CubeGameViewModel : ViewModel {
     
+    public readonly P<System.String> _BasePropertyProperty = new P<string>();
+    
     public readonly ModelCollection<System.String> _CubesProperty = new ModelCollection<string>();
+    
+    private ICommand _EndGame;
+    
+    public virtual string BaseProperty {
+        get {
+            return _BasePropertyProperty.Value;
+        }
+        set {
+            _BasePropertyProperty.Value = value;
+        }
+    }
     
     public virtual System.Collections.Generic.ICollection<string> Cubes {
         get {
@@ -24,6 +37,41 @@ public partial class CubeGameViewModel : ViewModel {
         }
         set {
             _CubesProperty.Value = value.ToList();
+        }
+    }
+    
+    public virtual ICommand EndGame {
+        get {
+            return _EndGame;
+        }
+        set {
+            _EndGame = value;
+        }
+    }
+}
+
+[DiagramInfoAttribute("MikeDemo")]
+public partial class CoolCubeGameViewModel : CubeGameViewModel {
+    
+    public readonly P<System.String> _DerivedPropertyProperty = new P<string>();
+    
+    private ICommand _Play;
+    
+    public virtual string DerivedProperty {
+        get {
+            return _DerivedPropertyProperty.Value;
+        }
+        set {
+            _DerivedPropertyProperty.Value = value;
+        }
+    }
+    
+    public virtual ICommand Play {
+        get {
+            return _Play;
+        }
+        set {
+            _Play = value;
         }
     }
 }

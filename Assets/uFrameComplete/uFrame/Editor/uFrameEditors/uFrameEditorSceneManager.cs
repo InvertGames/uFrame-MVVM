@@ -56,7 +56,7 @@ public class uFrameEditorSceneManager
         
         //var localScale = (view.transform.localScale*2f);
         sceneView.pivot = view.transform.position;// - new Vector3(localScale.x,2f,localScale.z);
-        sceneView.LookAt(view.transform.position,Quaternion.Euler(0f,90f,0f));
+        sceneView.LookAt(view.transform.position,Quaternion.Euler(0f,0f,0f));
         //sceneView.AlignViewToObject(view.transform);
         CurrentView = view;
        

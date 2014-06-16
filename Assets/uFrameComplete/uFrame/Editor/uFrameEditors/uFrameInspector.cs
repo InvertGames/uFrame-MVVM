@@ -25,8 +25,9 @@ public class uFrameInspector : Editor
     public static void DrawTitleBar(string subTitle)
     {
         //GUI.Label();
+      
         UFStyles.DoTilebar(subTitle);
-
+        EditorGUILayout.Space();
 
     }
 

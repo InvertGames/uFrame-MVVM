@@ -136,7 +136,7 @@ public static class UFStyles
             if (_titleBarStyle == null)
                 _titleBarStyle = new GUIStyle
                 {
-                    normal = { background = GetSkinTexture("Box3"), textColor = EditorGUIUtility.isProSkin ? new Color(0.6f, 0.6f, 0.6f) : new Color(0.2f, 0.2f, 0.2f) },
+                    normal = { background = GetSkinTexture("Background"), textColor = new Color(0.7f, 0.7f, 0.7f) },
                     padding = new RectOffset(2, 2, 2, 2),
                     margin = new RectOffset(0, 0, 0, 0),
                     fixedHeight = 45f ,

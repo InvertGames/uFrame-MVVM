@@ -229,7 +229,7 @@ public class CheckersMenuSceneManagerBase : SceneManager {
         this.MainMenuController = new MainMenuController();
         this.Container.RegisterInstance(this.MainMenuController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<MainMenuViewModel>(MainMenuController.CreateMainMenu(), false);
+        Container.RegisterInstance<MainMenuViewModel>(MainMenuController.CreateEmpty() as MainMenuViewModel, false);
     }
     
     public virtual void Play() {
@@ -279,7 +279,7 @@ public class CheckersSceneManagerBase : SceneManager {
         this.CheckerController = new CheckerController();
         this.Container.RegisterInstance(this.CheckerController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<CheckerBoardViewModel>(CheckerBoardController.CreateCheckerBoard(), false);
+        Container.RegisterInstance<CheckerBoardViewModel>(CheckerBoardController.CreateEmpty() as CheckerBoardViewModel, false);
         if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.AICheckersGame)) {
             AICheckersGameViewModel aICheckersGame = AICheckersGameController.CreateEmpty() as AICheckersGameViewModel;
             Container.RegisterInstance<AICheckersGameViewModel>(aICheckersGame, false);

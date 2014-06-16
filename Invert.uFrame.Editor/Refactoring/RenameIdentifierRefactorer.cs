@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Invert.uFrame.Editor.Refactoring
 {
@@ -48,6 +49,11 @@ namespace Invert.uFrame.Editor.Refactoring
             //    RenameFilename = null;
             //}
         }
+
+        public override void PreProcess(RefactorContext refactorContext)
+        {
+            
+        }
     }
 
     public class RenameFileRefactorer : Refactorer
@@ -71,13 +77,24 @@ namespace Invert.uFrame.Editor.Refactoring
             if (Applied) return;
             var absoluteRootPath = Path.Combine(Application.dataPath.Substring(0,Application.dataPath.Length - "/Assets".Length).Replace("/",Path.DirectorySeparatorChar.ToString()),RootPath);
             var fromName = Path.Combine(absoluteRootPath, From);
+            var toName = Path.Combine(absoluteRootPath, To);
             var from = new FileInfo(fromName);
+
+          
+
             if (from.Exists)
-                from.MoveTo(Path.Combine(absoluteRootPath, To));
+                from.MoveTo(toName);
+
+
             this.Applied = true;
         }
 
         public override void PostProcess(RefactorContext context)
+        {
+            
+        }
+
+        public override void PreProcess(RefactorContext refactorContext)
         {
             
         }
