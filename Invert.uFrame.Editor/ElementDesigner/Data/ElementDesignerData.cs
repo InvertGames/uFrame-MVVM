@@ -657,18 +657,18 @@ public static class ElementDesignerDataExtensions
 }
 
 
-//public class JsonElementDesignerData : IElementDesignerData
-//{
-//    private List<DiagramNode> _items = new List<DiagramNode>();
+public class JsonElementDesignerData : IElementDesignerData
+{
+    private List<DiagramNode> _items = new List<DiagramNode>();
 
-//    public List<DiagramNode> Items
-//    {
-//        get { return _items; }
-//        set { _items = value; }
-//    }
+    public List<DiagramNode> Items
+    {
+        get { return _items; }
+        set { _items = value; }
+    }
 
 
-//}
+}
 
 public class JsonRepository : IElementsDataRepository
 {
@@ -682,7 +682,7 @@ public class JsonRepository : IElementsDataRepository
         }
         var json = asset.text;
         
-        //var data = new JsonElementDesignerData();
+        var data = new JsonElementDesignerData();
 
         return null;
     }
