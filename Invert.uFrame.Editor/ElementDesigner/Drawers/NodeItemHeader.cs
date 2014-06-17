@@ -37,6 +37,9 @@ public class NodeItemHeader : IDrawable
         {
             if (GUI.Button(btnRect.Scale(scale), string.Empty, UFStyles.AddButtonStyle))
             {
+                // This is a ugly hack but it'll get r dun
+                diagram.DeselectAll();
+                diagram.Selected = diagram.MouseOverViewData;
                 diagram.ExecuteCommand(AddCommand);
             }    
         }

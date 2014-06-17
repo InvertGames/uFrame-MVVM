@@ -137,7 +137,7 @@ public abstract class DiagramNode :  IDiagramNode, IRefactorable
     public virtual void EndEditing()
     {
         IsEditing = false;
-        if (Data.DiagramItems.Count(p => p.Name == Name) > 1)
+        if (Data.GetDiagramItems().Count(p => p.Name == Name) > 1)
         {
             Name = OldName;
             return;

@@ -38,7 +38,7 @@ public class ElementsDiagram : ICommandHandler
     {
         get
         {
-            return Data.DiagramItems.Where(p => p.IsSelected);
+            return Data.GetDiagramItems().Where(p => p.IsSelected);
         }
     }
 
@@ -79,7 +79,7 @@ public class ElementsDiagram : ICommandHandler
         get
         {
             Rect size = new Rect();
-            foreach (var diagramItem in this.Data.DiagramItems)
+            foreach (var diagramItem in this.Data.GetDiagramItems())
             {
                 var rect = diagramItem.Position.Scale(Scale);
 
@@ -524,7 +524,7 @@ public class ElementsDiagram : ICommandHandler
         }
         if (SelectionRect.width > 20 && SelectionRect.height > 20)
         {
-            foreach (var item in Data.DiagramItems)
+            foreach (var item in Data.GetDiagramItems())
             {
                 item.IsSelected = SelectionRect.Overlaps(item.Position.Scale(Scale));
             }
@@ -585,7 +585,7 @@ public class ElementsDiagram : ICommandHandler
         if (refreshDrawers)
             NodeDrawers.Clear();
       
-        foreach (var diagramItem in Data.DiagramItems)
+        foreach (var diagramItem in Data.GetDiagramItems())
         {
             diagramItem.Data = Data;
             diagramItem.Dirty = true;
@@ -745,91 +745,6 @@ public class ElementsDiagram : ICommandHandler
         menu.Go();
     }
 
-    protected virtual void DecorateContextMenu(object context, GenericMenu menu)
-    {
-        //var methods = context.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
-        //var properties = context.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-        //foreach (var propertyInfo in properties)
-        //{
-        //    var attribute = propertyInfo.GetCustomAttributes(typeof(DiagramContextMenuAttribute), true).FirstOrDefault() as DiagramContextMenuAttribute;
-        //    if (attribute == null) continue;
-        //    var value = (bool)propertyInfo.GetValue(context, null);
-        //    PropertyInfo info = propertyInfo;
-        //    menu.AddItem(new GUIContent(attribute.MenuPath), value, () =>
-        //    {
-        //        try
-        //        {
-        //            info.SetValue(context, !value, null);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            EditorUtility.DisplayDialog("Can't do that", ex.InnerException.Message, "OK");
-        //        }
-        //    });
-        //}
-        //if (menu.GetItemCount() > 0)
-        //{
-        //    menu.AddSeparator("");
-        //}
-
-        //var items = new List<ContextMenuItem>();
-        //foreach (var methodInfo in methods)
-        //{
-        //    var attribute = methodInfo.GetCustomAttributes(typeof(DiagramContextMenuAttribute), true).FirstOrDefault() as DiagramContextMenuAttribute;
-        //    if (attribute == null) continue;
-        //    var item = new ContextMenuItem()
-        //    {
-        //        Attribute = attribute,
-        //        ActionMethod = methodInfo,
-        //    };
-        //    items.Add(item);
-        //}
-
-        //foreach (var contextMenuItem in items.OrderBy(p => p.Attribute.Index))
-        //{
-        //    var checkedMethod = methods.FirstOrDefault(p => p.Name == contextMenuItem.ActionMethod.Name + "IsChecked");
-        //    var check = false;
-        //    if (checkedMethod != null)
-        //    {
-        //        check = (bool)checkedMethod.Invoke(context, null);
-        //    }
-        //    ContextMenuItem item = contextMenuItem;
-        //    menu.AddItem(new GUIContent(contextMenuItem.Attribute.MenuPath), check, () =>
-        //    {
-        //        Undo.RecordObject(this.Data, item.ActionMethod.Name);
-        //        var parameters = item.ActionMethod.GetParameters();
-        //        if (parameters.Length > 0)
-        //        {
-        //            if (typeof(IDiagramItem).IsAssignableFrom(parameters[0].ParameterType))
-        //            {
-        //                item.ActionMethod.Invoke(context, new object[] { SelectedData });
-        //            }
-        //            else if (parameters[0].ParameterType == typeof(IElementsDataRepository))
-        //            {
-        //                item.ActionMethod.Invoke(context, new object[] { Repository });
-        //            }
-        //            else
-        //            {
-        //                item.ActionMethod.Invoke(context, new object[] { Data });
-        //            }
-        //        }
-        //        else
-        //        {
-        //            item.ActionMethod.Invoke(context, null);
-        //        }
-        //        Refresh(true);
-        //        EditorUtility.SetDirty(this.Data);
-        //    });
-        //}
-
-        //foreach (var diagramPlugin in Plugins)
-        //{
-        //    if (diagramPlugin == null) continue;
-        //    diagramPlugin.OnAddContextItems(this, menu);
-        //}
-    }
-
     protected virtual void OnSelectionChanged(IDiagramNode olddata, IDiagramNode newdata)
     {
         SelectionChangedEventArgs handler = SelectionChanged;
@@ -982,7 +897,7 @@ public class ElementsDiagram : ICommandHandler
         get
         {
             yield return this;
-            yield return SelectedItem;
+            //yield return SelectedItem;
             var selectedItem = SelectedItem;
             if (selectedItem != null)
             {

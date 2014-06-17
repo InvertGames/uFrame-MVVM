@@ -69,7 +69,7 @@ public abstract class ViewClassGenerator : CodeGenerator
 
         if (data.IsControllerDerived)
         {
-            var baseType = DiagramData.AllElements.First(p => p.Name == data.BaseTypeShortName);
+            var baseType = DiagramData.GetAllElements().First(p => p.Name == data.BaseTypeShortName);
             decl.BaseTypes.Add(new CodeTypeReference(baseClassName ?? baseType.NameAsViewBase));
         }
         else
@@ -551,7 +551,7 @@ public abstract class ViewClassGenerator : CodeGenerator
 
         foreach (var property in data.Properties)
         {
-            var relatedElement = DiagramData.AllElements.FirstOrDefault(p => p.Name == property.RelatedTypeName);
+            var relatedElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Name == property.RelatedTypeName);
             var bindingCondition = AddBindingCondition(decl, bindMethod.Statements, property, relatedElement);
 
             var twoWayField = AddPropertyBindingField(decl, typeof(bool).FullName, property.Name, "IsTwoWay");
@@ -570,7 +570,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         }
         foreach (var collectionProperty in data.Collections)
         {
-            var relatedElement = DiagramData.AllElements.FirstOrDefault(p => p.Name == collectionProperty.RelatedTypeName);
+            var relatedElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Name == collectionProperty.RelatedTypeName);
             var bindingCondition = AddBindingCondition(decl, bindMethod.Statements, collectionProperty, relatedElement);
 
             if (relatedElement == null)

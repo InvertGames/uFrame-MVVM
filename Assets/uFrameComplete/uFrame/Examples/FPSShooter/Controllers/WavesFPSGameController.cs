@@ -58,8 +58,8 @@ public class WavesFPSGameController : WavesFPSGameControllerBase
 
     public override void InitializeWavesFPSGame(WavesFPSGameViewModel wavesFPSGame)
     {
+        
         // Additionaly call the base initialize
-        InitializeFPSGame(wavesFPSGame);
         wavesFPSGame.CurrentPlayer = FPSPlayerController.CreateFPSPlayer();
         wavesFPSGame.CurrentWave = 1;
         wavesFPSGame.KillsToNextWave = _NumberOfEnemiesAtStart;

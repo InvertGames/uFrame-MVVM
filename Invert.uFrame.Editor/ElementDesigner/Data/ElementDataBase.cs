@@ -42,7 +42,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public ElementDataBase BaseElement { get { return Data.AllElements.FirstOrDefault(p => p.Name == BaseTypeShortName); } }
+    public ElementDataBase BaseElement { get { return Data.GetAllElements().FirstOrDefault(p => p.Name == BaseTypeShortName); } }
 
     public abstract string BaseTypeName { get; set; }
 
@@ -97,7 +97,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
     {
         get
         {
-            var derived = Data.AllElements.Where(p => p.BaseTypeShortName == Name);
+            var derived = Data.GetAllElements().Where(p => p.BaseTypeShortName == Name);
             foreach (var derivedItem in derived)
             {
                 yield return derivedItem;

@@ -20,11 +20,13 @@ namespace Invert.uFrame.Editor.UnitTests
             Container = new uFrameContainer();
 
             Container.Register<ITestInterface, ConcreteTestClassA>();
-            Container.Register<ITestInterface,ConcreteTestClassB>("NamedInstance");
+            Container.Register<ITestInterface, ConcreteTestClassB>("NamedInstance");
             // Returns a new instance of ConcreateTestClassA
-            var resolve = Container.Resolve<ITestInterface>();
-            
-            Assert.IsInstanceOfType(resolve,typeof(ConcreteTestClassA));
+            var resolveA = Container.Resolve<ITestInterface>();
+            // Returns a new instance of ConcreteTestClassB
+            var resolveB = Container.Resolve<ITestInterface>("NamedInstance");
+            Assert.IsInstanceOfType(resolveA,typeof(ConcreteTestClassA));
+            Assert.IsInstanceOfType(resolveB,typeof(ConcreteTestClassB));
         }
 
         [TestMethod]
@@ -35,6 +37,17 @@ namespace Invert.uFrame.Editor.UnitTests
             var resolve = Container.Resolve<ITestInterface>();
             Assert.IsInstanceOfType(resolve, typeof(ConcreteTestClassA));
             Assert.AreEqual(resolve.Name, "Test");
+        }
+        [TestMethod]
+        public void TestResolveInstance2()
+        {
+            Container = new uFrameContainer();
+            var obj = new ConcreteTestClassA();
+            Container.RegisterInstance(obj,"MyName");
+            var resolve = Container.Resolve(typeof(ConcreteTestClassA), "MyName");
+            var resolveB = Container.Resolve<ConcreteTestClassA>("MyName");
+            Assert.AreEqual(resolve,obj);
+            Assert.AreEqual(resolveB,obj);
         }
 
         [TestMethod]

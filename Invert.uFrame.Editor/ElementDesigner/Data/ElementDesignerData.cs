@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 public interface IElementDesignerData
@@ -27,16 +28,16 @@ public interface IElementDesignerData
 
     // Queries
     IEnumerable<IDiagramNode> AllDiagramItems { get; }
-    IEnumerable<ElementDataBase> AllElements { get; }
-    IEnumerable<IDiagramNode> AllowedDiagramItems { get; }
-    IEnumerable<IDiagramNode> DiagramItems { get; }
-    IEnumerable<ElementDataBase> Elements { get; }
-    IEnumerable<IDiagramFilter> FilterPath { get; }
-    IEnumerable<IDiagramFilter> Filters { get; }
+    //IEnumerable<ElementDataBase> GetAllElements();
+    //IEnumerable<IDiagramNode> GetAllowedDiagramItems();
+    //IEnumerable<IDiagramNode> GetDiagramItems();
+    //IEnumerable<ElementDataBase> GetElements();
+    //IEnumerable<IDiagramFilter> GetFilterPath();
+    //IEnumerable<IDiagramFilter> GetFilters();
     IEnumerable<IDiagramNode> ImportableItems { get; }
 
     // Filter Stuff
-    List<Refactorer> Refactorings { get; }
+    List<Refactorer> GetRefactorings();
     SceneFlowFilter SceneFlowFilter { get;  }
 
     // Node Data
@@ -58,6 +59,8 @@ public interface IElementDesignerData
 
     void FilterPushed(IDiagramFilter filter);
     void FilterPoped(IDiagramFilter pop);
+
+
 }
 
 [Serializable]
@@ -210,46 +213,7 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
     [SerializeField]
     private ElementDiagramSettings _settings;
 
-    public IEnumerable<IDiagramNode> AllDiagramItems
-    {
-        get
-        {
-            return
-                ViewModels.Cast<IDiagramNode>()
-                    .Concat(ImportedElements.Cast<IDiagramNode>())
-                    .Concat(Enums.Cast<IDiagramNode>())
-                    .Concat(Views.Cast<IDiagramNode>())
-                    .Concat(SceneManagers.Cast<IDiagramNode>())
-                    .Concat(SubSystems.Cast<IDiagramNode>())
-                    .Concat(ViewComponents.Cast<IDiagramNode>()
-                );
-        }
-    }
 
-    public IEnumerable<ElementDataBase> AllElements
-    {
-        get { return AllDiagramItems.OfType<ElementDataBase>(); }
-    }
-
-    public IEnumerable<IDiagramNode> AllowedDiagramItems
-    {
-        get { return AllDiagramItems.Where(p => CurrentFilter.IsAllowed(p, p.GetType())); }
-    }
-
-    public string AssetPath { get; set; }
-
-
-    public ICodePathStrategy CodePathStrategy { get; set; }
-
-
-
-    public string ControllersFileName
-    {
-        get
-        {
-            return name + "Controllers.designer.cs";
-        }
-    }
 
     public IDiagramFilter CurrentFilter
     {
@@ -269,14 +233,20 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         set { _defaultFilter = value; }
     }
 
-    public IEnumerable<IDiagramNode> DiagramItems
+    public IEnumerable<IDiagramNode> AllDiagramItems
     {
-        get { return this.FilterItems(AllDiagramItems); }
-    }
-
-    public IEnumerable<ElementDataBase> Elements
-    {
-        get { return DiagramItems.OfType<ElementDataBase>(); }
+        get
+        {
+            return
+                ViewModels.Cast<IDiagramNode>()
+                    .Concat(ImportedElements.Cast<IDiagramNode>())
+                    .Concat(Enums.Cast<IDiagramNode>())
+                    .Concat(Views.Cast<IDiagramNode>())
+                    .Concat(SceneManagers.Cast<IDiagramNode>())
+                    .Concat(SubSystems.Cast<IDiagramNode>())
+                    .Concat(ViewComponents.Cast<IDiagramNode>()
+                );
+        }
     }
 
     public List<EnumData> Enums
@@ -285,27 +255,13 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         set { _enums = value; }
     }
 
-    public IEnumerable<IDiagramFilter> FilterPath
-    {
-        get { return FilterStack.Reverse(); }
-    }
 
-    public IEnumerable<IDiagramFilter> Filters
-    {
-        get { return AllDiagramItems.OfType<IDiagramFilter>(); }
-    }
-
-    //public bool GenerateSceneManager
-    //{
-    //    get { return _generateSceneManager; }
-    //    set { _generateSceneManager = value; }
-    //}
     public IEnumerable<IDiagramNode> ImportableItems
     {
         get
         {
             //return AllowedDiagramItems;
-            return AllowedDiagramItems.Where(p => !CurrentFilter.Locations.Keys.Contains(p.Identifier)).ToArray();
+            return this.GetAllowedDiagramItems().Where(p => !CurrentFilter.Locations.Keys.Contains(p.Identifier)).ToArray();
             //return items.Where(p => !Filters.Any(x => x.Locations.Keys.Contains(p.Identifier)));
         }
     }
@@ -315,8 +271,6 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         get { return _importedElements; }
         set { _importedElements = value; }
     }
-
-
 
     public List<IDiagramLink> Links
     {
@@ -332,24 +286,15 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         }
     }
 
-    public List<PluginData> PluginItems
-    {
-        get { return _pluginItems; }
-        set { _pluginItems = value; }
-    }
-
     public int RefactorCount { get; set; }
 
-    public List<Refactorer> Refactorings
+    public List<Refactorer> GetRefactorings()
     {
-        get
-        {
-            return
-                AllDiagramItems.OfType<IRefactorable>()
-                    .SelectMany(p => p.Refactorings)
-                    .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>().SelectMany(p => p.Refactorings))
-                    .ToList();
-        }
+        return
+            AllDiagramItems.OfType<IRefactorable>()
+                .SelectMany(p => p.Refactorings)
+                .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>().SelectMany(p => p.Refactorings))
+                .ToList();
     }
 
     public SceneFlowFilter SceneFlowFilter
@@ -366,8 +311,6 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         get { return _SceneManagers; }
         set { _SceneManagers = value; }
     }
-
-    
 
     public List<SubSystemData> SubSystems
     {
@@ -398,6 +341,7 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         get { return _views; }
         set { _views = value; }
     }
+
     public Stack<IDiagramFilter> FilterStack
     {
         get
@@ -413,7 +357,7 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         {
             foreach (var filterName in _persistedFilterStack)
             {
-                var filter = Filters.FirstOrDefault(p => p.Name == filterName);
+                var filter = this.GetFilters().FirstOrDefault(p => p.Name == filterName);
                 if (filter == null)
                 {
                     _persistedFilterStack.Clear();
@@ -431,7 +375,6 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
             _persistedFilterStack.Add(filter.Name);
     }
 
-
     public void FilterPoped(IDiagramFilter pop)
     {
         _persistedFilterStack.Remove(pop.Name);
@@ -440,6 +383,34 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
 
 public static class ElementDesignerDataExtensions
 {
+    public static IEnumerable<ElementDataBase> GetAllElements(this IElementDesignerData t)
+    {
+        return t.AllDiagramItems.OfType<ElementDataBase>();
+    }
+
+    public static IEnumerable<IDiagramNode> GetAllowedDiagramItems(this IElementDesignerData t)
+    {
+        return t.AllDiagramItems.Where(p => t.CurrentFilter.IsAllowed(p, p.GetType()));
+    }
+    public static IEnumerable<IDiagramNode> GetDiagramItems(this IElementDesignerData t)
+    {
+        return t.FilterItems(t.AllDiagramItems);
+    }
+
+    public static IEnumerable<ElementDataBase> GetElements(this IElementDesignerData t)
+    {
+        return t.GetDiagramItems().OfType<ElementDataBase>();
+    }
+
+    public static IEnumerable<IDiagramFilter> GetFilterPath(this IElementDesignerData t)
+    {
+        return t.FilterStack.Reverse();
+    }
+
+    public static IEnumerable<IDiagramFilter> GetFilters(this IElementDesignerData t)
+    {
+        return t.AllDiagramItems.OfType<IDiagramFilter>();
+    }
     public static void Prepare(this IElementDesignerData designerData)
     {
         designerData.RefactorCount = 0;
@@ -471,7 +442,7 @@ public static class ElementDesignerDataExtensions
     {
         var diagramItems = designerData.AllDiagramItems.Select(p => p.Identifier);
 
-        foreach (var diagramFilter in designerData.Filters)
+        foreach (var diagramFilter in designerData.GetFilters())
         {
             var removeKeys = diagramFilter.Locations.Keys.Where(p => !diagramItems.Contains(p)).ToArray();
             foreach (var removeKey in removeKeys)
@@ -556,7 +527,7 @@ public static class ElementDesignerDataExtensions
         {
             foreach (var filterName in filterStack)
             {
-                var filter = designerData.Filters.FirstOrDefault(p => p.Name == filterName);
+                var filter = designerData.GetFilters().FirstOrDefault(p => p.Name == filterName);
                 if (filter == null)
                 {
                     filterStack.Clear();
@@ -573,8 +544,8 @@ public static class ElementDesignerDataExtensions
         designerData.CleanUpFilters();
         designerData.Links.Clear();
 
-        var items = designerData.DiagramItems.SelectMany(p => p.Items).Where(p => designerData.CurrentFilter.IsItemAllowed(p, p.GetType())).ToArray();
-        var diagramItems = designerData.DiagramItems.ToArray();
+        var items = designerData.GetDiagramItems().SelectMany(p => p.Items).Where(p => designerData.CurrentFilter.IsItemAllowed(p, p.GetType())).ToArray();
+        var diagramItems = designerData.GetDiagramItems().ToArray();
         foreach (var item in items)
         {
             designerData.Links.AddRange(item.GetLinks(diagramItems));
@@ -594,7 +565,7 @@ public static class ElementDesignerDataExtensions
             //}
         }
 
-        var models = designerData.DiagramItems.ToArray();
+        var models = designerData.GetDiagramItems().ToArray();
 
         foreach (var viewModelData in models)
         {
@@ -637,7 +608,7 @@ public static class ElementDesignerDataExtensions
                 }
             }
 
-            current = designerData.AllElements.FirstOrDefault(p => p.AssemblyQualifiedName == current.BaseTypeName);
+            current = designerData.GetAllElements().FirstOrDefault(p => p.AssemblyQualifiedName == current.BaseTypeName);
         }
     }
 
@@ -652,7 +623,7 @@ public static class ElementDesignerDataExtensions
         {
             return null;
         }
-        return designerData.AllElements.FirstOrDefault(p => p.Name == item.RelatedTypeName);
+        return designerData.GetAllElements().FirstOrDefault(p => p.Name == item.RelatedTypeName);
     }
 
     public static IEnumerable<IDiagramFilter> GetFilters(this IElementDesignerData designerData, IDiagramFilter filter)
@@ -683,4 +654,61 @@ public static class ElementDesignerDataExtensions
         return designerData.ViewModels.FirstOrDefault(p => p.Name == elementName);
     }
 
+}
+
+
+//public class JsonElementDesignerData : IElementDesignerData
+//{
+//    private List<DiagramNode> _items = new List<DiagramNode>();
+
+//    public List<DiagramNode> Items
+//    {
+//        get { return _items; }
+//        set { _items = value; }
+//    }
+
+
+//}
+
+public class JsonRepository : IElementsDataRepository
+{
+    public IElementDesignerData LoadDiagram(string path)
+    {
+        if (string.IsNullOrEmpty(path)) throw new NullReferenceException("Path can't be null.");
+        var asset = AssetDatabase.LoadAssetAtPath(path, typeof (TextAsset)) as TextAsset;
+        if (asset == null)
+        {
+            throw new Exception("File could not be loaded.  It must be a TextAsset.");
+        }
+        var json = asset.text;
+        
+        //var data = new JsonElementDesignerData();
+
+        return null;
+    }
+
+    public void SaveDiagram(IElementDesignerData data)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RecordUndo(IElementDesignerData data, string title)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void MarkDirty(IElementDesignerData data)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Dictionary<string, string> GetProjectDiagrams()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CreateNewDiagram()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -409,7 +409,7 @@ public class ControllerGenerator : CodeGenerator
 
         var controllers = new List<string>();
         var diagramItems = DiagramData.AllDiagramItems.ToArray();
-        foreach (var elementDataBase in DiagramData.AllElements.ToArray())
+        foreach (var elementDataBase in DiagramData.GetAllElements().ToArray())
         {
             var links = elementDataBase.Items.SelectMany(p => p.GetLinks(diagramItems));
             foreach (var diagramLink in links)
@@ -419,13 +419,13 @@ public class ControllerGenerator : CodeGenerator
 
                 if (link.Element == data)
                 {
-                    var controllerElement = DiagramData.AllElements.FirstOrDefault(p => p.Items.Contains(link.Item));
+                    var controllerElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Items.Contains(link.Item));
                     if (controllerElement == null) continue;
                     controllers.Add(controllerElement.NameAsController);
                 }
                 else if (data.Items.Contains(link.Item))
                 {
-                    var controllerElement = DiagramData.AllElements.FirstOrDefault(p => p.Name == link.Item.RelatedTypeName);
+                    var controllerElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Name == link.Item.RelatedTypeName);
                     if (controllerElement == null) continue;
                     controllers.Add(controllerElement.NameAsController);
                 }
