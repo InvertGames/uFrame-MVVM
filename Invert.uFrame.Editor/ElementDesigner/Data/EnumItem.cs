@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -35,6 +36,11 @@ public class EnumItem : IDiagramNodeItem
     public void Rename(IDiagramNode data, string name)
     {
         Name = name;
+    }
+
+    public void Serialize(JSONClass cls)
+    {
+        
     }
 
     public Vector2[] ConnectionPoints { get; set; }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -92,6 +93,11 @@ public class SceneManagerTransition : IDiagramNodeItem
     public void Rename(IDiagramNode data, string name)
     {
         Name = name;
+    }
+
+    public virtual void Serialize(JSONClass cls)
+    {
+        
     }
 
     public Vector2[] ConnectionPoints { get; set; }

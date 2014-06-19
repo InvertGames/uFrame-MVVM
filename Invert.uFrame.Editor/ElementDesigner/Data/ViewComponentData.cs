@@ -46,7 +46,7 @@ public class ViewComponentData : DiagramNode
             {
                 return Base.Element;
             }
-            return Data.ViewModels.FirstOrDefault(p => p.Identifier == ElementIdentifier);
+            return Data.Elements.FirstOrDefault(p => p.Identifier == ElementIdentifier);
         }
     }
     public override RenameRefactorer CreateRenameRefactorer()
@@ -155,6 +155,11 @@ public class ViewComponentData : DiagramNode
         get { return Type.GetType(AssemblyQualifiedName); }
     }
 
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get { yield break; }
+    }
+
     public override void EndEditing()
     {
         base.EndEditing();
@@ -163,7 +168,7 @@ public class ViewComponentData : DiagramNode
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
-        Data.ViewComponents.Remove(this);
+        Data.RemoveNode(this);
         foreach (var viewComponentData in Data.ViewComponents)
         {
             if (viewComponentData.BaseIdentifier == this.Identifier)

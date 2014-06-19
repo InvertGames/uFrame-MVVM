@@ -42,6 +42,12 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         return new RenameViewRefactorer(this);
     }
+
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get { yield break; }
+    }
+
     public override void EndEditing()
     {
         var oldAssemblyName = AssemblyQualifiedName;
@@ -56,7 +62,7 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get
         {
-            return Data.ViewModels.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
+            return Data.Elements.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
         }
     }
 
@@ -146,7 +152,7 @@ public class ViewData : DiagramNode, ISubSystemType
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
-        Data.Views.Remove(this);
+        Data.RemoveNode(this);
         foreach (var source in Data.Views.Where(p=>p.ForAssemblyQualifiedName == this.AssemblyQualifiedName))
         {
             source.ForAssemblyQualifiedName = null;

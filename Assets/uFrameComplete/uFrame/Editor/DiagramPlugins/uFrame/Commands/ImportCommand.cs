@@ -49,20 +49,20 @@ public class ImportCommand : ElementsDiagramToolbarCommand
                     Name = enumNames[i]
                 });
             }
-            diagramData.Enums.Add(enumData);
+            diagramData.AddNode(enumData);
             return enumData;
         }
         if (typeof(ViewModel).IsAssignableFrom(type))
         {
             var vm = GetViewModelFromType(type, diagramData);
-            if (vm is ImportedElementData)
-            {
-                diagramData.ImportedElements.Add(vm as ImportedElementData);
-            }
-            else
-            {
-                diagramData.ViewModels.Add(vm as ElementData);
-            }
+            //if (vm is ImportedElementData)
+            //{
+            //    diagramData.ImportedElements.Add(vm as ImportedElementData);
+            //}
+            //else
+            //{
+                diagramData.AddNode(vm as ElementData);
+            //}
             return vm;
         }
         if (typeof(ViewBase).IsAssignableFrom(type))
@@ -74,7 +74,7 @@ public class ImportCommand : ElementsDiagramToolbarCommand
                 if (type.BaseType.AssemblyQualifiedName != null)
                     view.ForAssemblyQualifiedName = type.BaseType.AssemblyQualifiedName.Replace("ViewModel", "");
 
-            diagramData.Views.Add(view);
+            diagramData.AddNode(view);
             return view;
         }
         if (typeof(SceneManager).IsAssignableFrom(type))
@@ -82,7 +82,7 @@ public class ImportCommand : ElementsDiagramToolbarCommand
             var sceneManager = new SceneManagerData();
             sceneManager.Name = type.Name;
             sceneManager.Data = diagramData;
-            diagramData.SceneManagers.Add(sceneManager);
+            diagramData.AddNode(sceneManager);
 
             return sceneManager;
         }
@@ -91,12 +91,7 @@ public class ImportCommand : ElementsDiagramToolbarCommand
 
     public ElementDataBase GetViewModelFromType(Type type, IElementDesignerData diagramData)
     {
-        ElementDataBase vmData = IsImportOnly(type) ? (ElementDataBase)new ImportedElementData()
-        {
-            TypeAssemblyName = type.AssemblyQualifiedName,
-            Data = diagramData,
-            Location = new Vector2(15f, 15f)
-        } : new ElementData()
+        ElementDataBase vmData = new ElementData()
         {
             Data = diagramData,
             Location = new Vector2(15f, 15f)

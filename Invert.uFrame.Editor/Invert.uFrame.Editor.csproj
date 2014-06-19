@@ -58,15 +58,13 @@
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\InjectAttribute.cs">
       <Link>InjectAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\IJsonSerializable.cs">
-      <Link>IJsonSerializable.cs</Link>
-    </Compile>
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\SimpleJSON.cs">
       <Link>SimpleJSON.cs</Link>
     </Compile>
     <Compile Include="CodeFileGenerator.cs" />
     <Compile Include="CodeGenerator.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsYieldCommand.cs" />
+    <Compile Include="ElementDesigner\Data\IDiagramPlugin.cs" />
     <Compile Include="ElementsDesigner.cs" />
     <Compile Include="UI\ContextMenuUI.cs" />
     <Compile Include="NodeItemGenerator.cs" />
@@ -102,7 +100,7 @@
     <Compile Include="ElementDesigner\Commands\Toolbar\ToolbarPosition.cs" />
     <Compile Include="ElementDesigner\Data\AdditiveSceneData.cs" />
     <Compile Include="ElementDesigner\Data\DiagramNodeItem.cs" />
-    <Compile Include="ElementDesigner\Data\PluginData.cs" />
+    <Compile Include="ElementDesigner\Data\DiagramPlugin.cs" />
     <Compile Include="ElementDesigner\DefaultElementsRepository.cs" />
     <Compile Include="ElementDesigner\Links\AssociationLink.cs" />
     <Compile Include="ElementDesigner\Links\BeizureLink.cs" />
@@ -199,7 +197,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
-IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y</PostBuildEvent>
+IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
+copy $(TargetPath) C:\Users\micah\Documents\uFrame1GettingStarted\Assets\uFrameComplete\uFrame /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

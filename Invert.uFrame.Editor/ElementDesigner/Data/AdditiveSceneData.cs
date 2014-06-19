@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -56,5 +57,10 @@ public class AdditiveSceneData : IDiagramNodeItem
     public void Rename( IDiagramNode data, string name)
     {
         Name = name;
+    }
+
+    public void Serialize(JSONClass cls)
+    {
+        throw new NotImplementedException();
     }
 }

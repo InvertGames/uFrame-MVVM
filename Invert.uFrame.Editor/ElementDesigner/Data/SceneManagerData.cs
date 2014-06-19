@@ -115,6 +115,11 @@ public class SceneManagerData : DiagramNode
         }
     }
 
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get { return Transitions.Cast<IDiagramNodeItem>(); }
+    }
+
     public override void BeginEditing()
     {
         base.BeginEditing();
@@ -138,7 +143,7 @@ public class SceneManagerData : DiagramNode
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
-        Data.SceneManagers.Remove(this);
+        Data.AddNode(this);
     }
 
     [SerializeField]

@@ -2,7 +2,6 @@ using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
-using Invert.uFrame.Editor.ElementDesigner.Data;
 using UnityEngine;
 
 public class UFrameEditorPlugin : DiagramPlugin

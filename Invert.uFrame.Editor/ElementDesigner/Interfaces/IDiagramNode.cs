@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
@@ -18,9 +19,15 @@ public interface IDiagramNode : ISelectable,IDiagramNodeItem
     IElementDesignerData Data { get; set; }
     IDiagramFilter Filter { get; }
     string OldName { get; set; }
-    
+
+    /// <summary>
+    /// The items that should be persisted with this diagram node.
+    /// </summary>
+    IEnumerable<IDiagramNodeItem> ContainedItems { get; }
+
     void BeginEditing();
     void EndEditing();
+    //void Serialize(JSONClass nodeClass);
 }
 
 public interface IRefactorable

@@ -15,18 +15,23 @@ public class EnumData : DiagramNode
         set { _enumItems = value; }
     }
 
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get { return EnumItems.Cast<IDiagramNodeItem>(); }
+    }
+
     public override void EndEditing()
     {
         base.EndEditing();
-        foreach (var item in Data.ViewModels.SelectMany(p => p.Properties).Where(p => p.RelatedTypeName == OldName))
+        foreach (var item in Data.Elements.SelectMany(p => p.Properties).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
         }
-        foreach (var item in Data.ViewModels.SelectMany(p => p.Commands).Where(p => p.RelatedTypeName == OldName))
+        foreach (var item in Data.Elements.SelectMany(p => p.Commands).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
         }
-        foreach (var item in Data.ViewModels.SelectMany(p => p.Collections).Where(p => p.RelatedTypeName == OldName))
+        foreach (var item in Data.Elements.SelectMany(p => p.Collections).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
         }
@@ -36,7 +41,7 @@ public class EnumData : DiagramNode
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
-        Data.Enums.Remove(this);
+        Data.RemoveNode(this);
     }
 
 

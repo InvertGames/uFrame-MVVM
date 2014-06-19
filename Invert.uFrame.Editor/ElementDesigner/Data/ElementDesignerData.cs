@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
-using Invert.uFrame.Editor.ElementDesigner.Data;
+using Invert.uFrame.Editor;
+using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.Refactoring;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,84 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
+[Serializable]
+public class FilterState
+{
+    [NonSerialized]
+    private Stack<IDiagramFilter> _filterStack;
+
+ 
+    //// Filters
+    //public IDiagramFilter CurrentFilter
+    //{
+    //    get
+    //    {
+            
+    //        return FilterStack.Peek();
+    //    }
+    //}
+
+
+    [SerializeField, HideInInspector]
+    private DefaultFilter _defaultFilter = new DefaultFilter();
+
+    public DefaultFilter DefaultFilter
+    {
+        get { return _defaultFilter; }
+        set { _defaultFilter = value; }
+    }
+    public Stack<IDiagramFilter> FilterStack
+    {
+        get
+        {
+            return _filterStack ?? (_filterStack = new Stack<IDiagramFilter>());
+        }
+        set { _filterStack = value; }
+    }
+
+    public List<string> _persistedFilterStack;
+
+    public void FilterPushed(IDiagramFilter filter)
+    {
+        if (!_persistedFilterStack.Contains(filter.Name))
+            _persistedFilterStack.Add(filter.Name);
+    }
+
+    public void FilterPoped(IDiagramFilter pop)
+    {
+        _persistedFilterStack.Remove(pop.Name);
+    }
+
+
+    public JSONNode Serialize()
+    {
+        var cls = new JSONClass();
+        return cls;
+    }
+
+    public void Deserialize(JSONNode node)
+    {
+        
+    }
+
+    public void Reload(IElementDesignerData elementDesignerData)
+    {
+        if (_persistedFilterStack.Count != (FilterStack.Count))
+        {
+            foreach (var filterName in _persistedFilterStack)
+            {
+                var filter = elementDesignerData.GetFilters().FirstOrDefault(p => p.Name == filterName);
+                if (filter == null)
+                {
+                    _persistedFilterStack.Clear();
+                    FilterStack.Clear();
+                    break;
+                }
+                elementDesignerData.PushFilter(filter);
+            }
+        }
+    }
+}
 public interface IElementDesignerData
 {
     // Settings
@@ -18,36 +97,29 @@ public interface IElementDesignerData
 
     // Not Persisted
     int RefactorCount { get; set; }
-    
-   
-  
+
+    FilterState FilterState { get; set; }
     // Filters
     IDiagramFilter CurrentFilter { get; }
-    DefaultFilter DefaultFilter { get;  }
-    Stack<IDiagramFilter> FilterStack { get; }
+   
+   
 
     // Queries
     IEnumerable<IDiagramNode> AllDiagramItems { get; }
-    //IEnumerable<ElementDataBase> GetAllElements();
-    //IEnumerable<IDiagramNode> GetAllowedDiagramItems();
-    //IEnumerable<IDiagramNode> GetDiagramItems();
-    //IEnumerable<ElementDataBase> GetElements();
-    //IEnumerable<IDiagramFilter> GetFilterPath();
-    //IEnumerable<IDiagramFilter> GetFilters();
-    IEnumerable<IDiagramNode> ImportableItems { get; }
+    //IEnumerable<IDiagramNode> GetImportableItems();
 
     // Filter Stuff
-    List<Refactorer> GetRefactorings();
+    List<Refactorer> Refactorings { get; }
     SceneFlowFilter SceneFlowFilter { get;  }
 
     // Node Data
-    List<SceneManagerData> SceneManagers { get; }
-    List<SubSystemData> SubSystems { get; set; }
-    List<ViewComponentData> ViewComponents { get; }
-    List<ElementData> ViewModels { get; }
-    List<ViewData> Views { get; }
-    List<ImportedElementData> ImportedElements { get; }
-    List<EnumData> Enums { get; }
+    IEnumerable<SceneManagerData> SceneManagers { get; }
+    IEnumerable<SubSystemData> SubSystems { get; }
+    IEnumerable<ViewComponentData> ViewComponents { get; }
+    IEnumerable<ElementData> Elements { get; }
+    IEnumerable<ViewData> Views { get; }
+    //IEnumerable<ImportedElementData> ImportedElements { get; }
+    IEnumerable<EnumData> Enums { get; }
 
     // Dynamically loaded
     List<IDiagramLink> Links { get; }
@@ -57,10 +129,10 @@ public interface IElementDesignerData
     /// </summary>
     void Initialize();
 
-    void FilterPushed(IDiagramFilter filter);
-    void FilterPoped(IDiagramFilter pop);
 
 
+    void AddNode(IDiagramNode data);
+    void RemoveNode(IDiagramNode enumData);
 }
 
 [Serializable]
@@ -148,43 +220,66 @@ public class ElementDiagramSettings
         get { return _codePathStrategy; }
         set { _codePathStrategy = value; }
     }
+
+    public JSONNode Serialize()
+    {
+        return new JSONClass();
+    }
 }
 
 [SerializeField]
 public class ElementDesignerData : ScriptableObject,  IElementDesignerData
 {
+    public IDiagramFilter CurrentFilter
+    {
+        get
+        {
+            if (FilterState.FilterStack.Count < 1)
+            {
+                return SceneFlowFilter;
+            }
+            return FilterState.FilterStack.Peek();
+        }
+    }
     public ElementDiagramSettings Settings
     {
         get { return _settings ?? (_settings = new ElementDiagramSettings()); }
         set { _settings = value; }
     }
 
-    [SerializeField, HideInInspector]
-    private DefaultFilter _defaultFilter = new DefaultFilter();
 
- 
+    [SerializeField, HideInInspector]
+    private SceneFlowFilter _sceneFlowFilter = new SceneFlowFilter();
+    public SceneFlowFilter SceneFlowFilter
+    {
+        get
+        {
+            return _sceneFlowFilter;
+        }
+        set { _sceneFlowFilter = value; }
+    }
+
 
     [SerializeField, HideInInspector]
     private List<EnumData> _enums = new List<EnumData>();
 
-    [NonSerialized]
-    private Stack<IDiagramFilter> _filterStack;
+    //[NonSerialized]
+    //private Stack<IDiagramFilter> _filterStack;
 
-    [SerializeField, HideInInspector]
-    private List<ImportedElementData> _importedElements = new List<ImportedElementData>();
+    //[SerializeField, HideInInspector]
+    //private List<ImportedElementData> _importedElements = new List<ImportedElementData>();
 
    
     [NonSerialized]
     private List<IDiagramLink> _links = new List<IDiagramLink>();
 
-    [SerializeField, HideInInspector]
-    private List<string> _persistedFilterStack = new List<string>();
+    //[SerializeField, HideInInspector]
+    //private List<string> _persistedFilterStack = new List<string>();
 
-    [SerializeField, HideInInspector]
-    private List<PluginData> _pluginItems = new List<PluginData>();
+    //[SerializeField, HideInInspector]
+    //private List<PluginData> _pluginItems = new List<PluginData>();
 
-    [SerializeField, HideInInspector]
-    private SceneFlowFilter _sceneFlowFilter = new SceneFlowFilter();
+
 
     
 
@@ -212,26 +307,9 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
 
     [SerializeField]
     private ElementDiagramSettings _settings;
+    [SerializeField]
+    private FilterState _filterState = new FilterState();
 
-
-
-    public IDiagramFilter CurrentFilter
-    {
-        get
-        {
-            if (FilterStack.Count < 1)
-            {
-                return SceneFlowFilter;
-            }
-            return FilterStack.Peek();
-        }
-    }
-
-    public DefaultFilter DefaultFilter
-    {
-        get { return _defaultFilter; }
-        set { _defaultFilter = value; }
-    }
 
     public IEnumerable<IDiagramNode> AllDiagramItems
     {
@@ -239,7 +317,7 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         {
             return
                 ViewModels.Cast<IDiagramNode>()
-                    .Concat(ImportedElements.Cast<IDiagramNode>())
+                    //.Concat(ImportedElements.Cast<IDiagramNode>())
                     .Concat(Enums.Cast<IDiagramNode>())
                     .Concat(Views.Cast<IDiagramNode>())
                     .Concat(SceneManagers.Cast<IDiagramNode>())
@@ -248,7 +326,10 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
                 );
         }
     }
-
+    IEnumerable<EnumData> IElementDesignerData.Enums
+    {
+        get { return Enums; }
+    }
     public List<EnumData> Enums
     {
         get { return _enums; }
@@ -256,21 +337,7 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
     }
 
 
-    public IEnumerable<IDiagramNode> ImportableItems
-    {
-        get
-        {
-            //return AllowedDiagramItems;
-            return this.GetAllowedDiagramItems().Where(p => !CurrentFilter.Locations.Keys.Contains(p.Identifier)).ToArray();
-            //return items.Where(p => !Filters.Any(x => x.Locations.Keys.Contains(p.Identifier)));
-        }
-    }
 
-    public List<ImportedElementData> ImportedElements
-    {
-        get { return _importedElements; }
-        set { _importedElements = value; }
-    }
 
     public List<IDiagramLink> Links
     {
@@ -288,30 +355,33 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
 
     public int RefactorCount { get; set; }
 
-    public List<Refactorer> GetRefactorings()
-    {
-        return
-            AllDiagramItems.OfType<IRefactorable>()
-                .SelectMany(p => p.Refactorings)
-                .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>().SelectMany(p => p.Refactorings))
-                .ToList();
-    }
-
-    public SceneFlowFilter SceneFlowFilter
+    public List<Refactorer> Refactorings
     {
         get
         {
-            return _sceneFlowFilter;
+            return
+                AllDiagramItems.OfType<IRefactorable>()
+                    .SelectMany(p => p.Refactorings)
+                    .Concat(AllDiagramItems.SelectMany(p => p.Items).OfType<IRefactorable>().SelectMany(p => p.Refactorings))
+                    .ToList();
         }
-        set { _sceneFlowFilter = value; }
     }
 
+
+    IEnumerable<SceneManagerData> IElementDesignerData.SceneManagers
+    {
+        get { return SceneManagers; }
+    }
     public List<SceneManagerData> SceneManagers
     {
         get { return _SceneManagers; }
         set { _SceneManagers = value; }
     }
 
+    IEnumerable<SubSystemData> IElementDesignerData.SubSystems
+    {
+        get { return SubSystems; }
+    }
     public List<SubSystemData> SubSystems
     {
         get { return _subSystems; }
@@ -324,65 +394,92 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         set { _version = value; }
     }
 
+    IEnumerable<ViewComponentData> IElementDesignerData.ViewComponents
+    {
+        get { return ViewComponents; }
+    }
     public List<ViewComponentData> ViewComponents
     {
         get { return _viewComponents; }
         set { _viewComponents = value; }
     }
 
+    IEnumerable<ElementData> IElementDesignerData.Elements
+    {
+        get { return ViewModels; }
+    }
     public List<ElementData> ViewModels
     {
         get { return _viewModels; }
         set { _viewModels = value; }
     }
 
+    IEnumerable<ViewData> IElementDesignerData.Views
+    {
+        get { return Views; }
+    }
     public List<ViewData> Views
     {
         get { return _views; }
         set { _views = value; }
     }
 
-    public Stack<IDiagramFilter> FilterStack
+    public FilterState FilterState
     {
-        get
-        {
-            return _filterStack ?? (_filterStack = new Stack<IDiagramFilter>());
-        }
-        set { _filterStack = value; }
+        get { return _filterState; }
+        set { _filterState = value; }
     }
 
     public void Initialize()
     {
-        if (_persistedFilterStack.Count != (FilterStack.Count))
+        //if (FilterState.FilterStack.Count < 1)
+        //{
+        //    FilterState.FilterStack.Push(SceneFlowFilter);
+        //}
+        FilterState.Reload(this);
+    }
+
+    public void AddNode(IDiagramNode data)
+    {
+        TryNode<ElementData>(data,n=>ViewModels.Add(n));
+        TryNode<EnumData>(data,n=>Enums.Add(n));
+        TryNode<SubSystemData>(data,n=>SubSystems.Add(n));
+        TryNode<ViewData>(data,n=>Views.Add(n));
+        TryNode<ViewComponentData>(data,n=>ViewComponents.Add(n));
+        TryNode<SceneManagerData>(data,n=>SceneManagers.Add(n));
+    }
+
+    public void TryNode<TNodeData>(IDiagramNode node, Action<TNodeData> action) where TNodeData : class, IDiagramNode
+    {
+        var element = node as TNodeData;
+        if (element != null)
         {
-            foreach (var filterName in _persistedFilterStack)
-            {
-                var filter = this.GetFilters().FirstOrDefault(p => p.Name == filterName);
-                if (filter == null)
-                {
-                    _persistedFilterStack.Clear();
-                    FilterStack.Clear();
-                    break;
-                }
-                this.PushFilter(filter);
-            }
+            action(element);
         }
+        
     }
-
-    public void FilterPushed(IDiagramFilter filter)
+    public void RemoveNode(IDiagramNode data)
     {
-        if (!_persistedFilterStack.Contains(filter.Name))
-            _persistedFilterStack.Add(filter.Name);
-    }
-
-    public void FilterPoped(IDiagramFilter pop)
-    {
-        _persistedFilterStack.Remove(pop.Name);
+        TryNode<ElementData>(data, n => ViewModels.Remove(n));
+        TryNode<EnumData>(data, n => Enums.Remove(n));
+        TryNode<SubSystemData>(data, n => SubSystems.Remove(n));
+        TryNode<ViewData>(data, n => Views.Remove(n));
+        TryNode<ViewComponentData>(data, n => ViewComponents.Remove(n));
+        TryNode<SceneManagerData>(data, n => SceneManagers.Remove(n));
     }
 }
 
 public static class ElementDesignerDataExtensions
 {
+    public static IEnumerable<IDiagramNode> GetImportableItems(this IElementDesignerData t)
+    {
+        //return AllowedDiagramItems;
+        return
+            t.GetAllowedDiagramItems()
+                .Where(p => !t.CurrentFilter.Locations.Keys.Contains(p.Identifier))
+                .ToArray();
+        //return items.Where(p => !Filters.Any(x => x.Locations.Keys.Contains(p.Identifier)));
+    }
     public static IEnumerable<ElementDataBase> GetAllElements(this IElementDesignerData t)
     {
         return t.AllDiagramItems.OfType<ElementDataBase>();
@@ -404,7 +501,7 @@ public static class ElementDesignerDataExtensions
 
     public static IEnumerable<IDiagramFilter> GetFilterPath(this IElementDesignerData t)
     {
-        return t.FilterStack.Reverse();
+        return t.FilterState.FilterStack.Reverse();
     }
 
     public static IEnumerable<IDiagramFilter> GetFilters(this IElementDesignerData t)
@@ -490,8 +587,8 @@ public static class ElementDesignerDataExtensions
     {
         designerData.FilterLeave();
         //filterStack.Remove(designerData.FilterStack.Peek().Name);
-        
-        designerData.FilterPoped(designerData.FilterStack.Pop());
+
+        designerData.FilterState.FilterPoped(designerData.FilterState.FilterStack.Pop());
         designerData.ApplyFilter();
     }
 
@@ -514,8 +611,8 @@ public static class ElementDesignerDataExtensions
     public static void PushFilter(this IElementDesignerData designerData, IDiagramFilter filter)
     {
         designerData.FilterLeave();
-        designerData.FilterStack.Push(filter);
-        designerData.FilterPushed(filter);
+        designerData.FilterState.FilterStack.Push(filter);
+        designerData.FilterState.FilterPushed(filter);
         designerData.ApplyFilter();
     }
 
@@ -523,7 +620,7 @@ public static class ElementDesignerDataExtensions
 
     public static void ReloadFilterStack(this IElementDesignerData designerData,List<string> filterStack )
     {
-        if (filterStack.Count != (designerData.FilterStack.Count))
+        if (filterStack.Count != (designerData.FilterState.FilterStack.Count))
         {
             foreach (var filterName in filterStack)
             {
@@ -531,7 +628,7 @@ public static class ElementDesignerDataExtensions
                 if (filter == null)
                 {
                     filterStack.Clear();
-                    designerData.FilterStack.Clear();
+                    designerData.FilterState.FilterStack.Clear();
                     break;
                 }
                 designerData.PushFilter(filter);
@@ -651,7 +748,7 @@ public static class ElementDesignerDataExtensions
 
     public static ElementData GetViewModel(this IElementDesignerData designerData, string elementName)
     {
-        return designerData.ViewModels.FirstOrDefault(p => p.Name == elementName);
+        return designerData.Elements.FirstOrDefault(p => p.Name == elementName);
     }
 
 }
@@ -659,17 +756,147 @@ public static class ElementDesignerDataExtensions
 
 public class JsonElementDesignerData : IElementDesignerData
 {
-    private List<DiagramNode> _items = new List<DiagramNode>();
-
-    public List<DiagramNode> Items
+    private List<IDiagramNode> _nodes = new List<IDiagramNode>();
+    private SceneFlowFilter _sceneFlowFilter = new SceneFlowFilter();
+    private List<IDiagramLink> _links = new List<IDiagramLink>();
+    public IDiagramFilter CurrentFilter
     {
-        get { return _items; }
-        set { _items = value; }
+        get
+        {
+            if (FilterState.FilterStack.Count < 1)
+            {
+                return SceneFlowFilter;
+            }
+            return FilterState.FilterStack.Peek();
+        }
+    }
+    public List<IDiagramNode> Nodes
+    {
+        get { return _nodes; }
+        set { _nodes = value; }
     }
 
+    public JSONNode Serialize()
+    {
+        return Serialize(this);
+    }
 
+    public static JSONNode Serialize(IElementDesignerData data)
+    {
+        // The root class for the diagram data
+        var root = new JSONClass();
+
+        // Serialize every node
+        var nodeArray = new JSONArray();
+        foreach (var diagramNode in data.AllDiagramItems)
+        {
+            // The diagram node class
+            var nodeClass = new JSONClass();
+            // Store the type information for reloading
+            nodeClass.Add("Type", diagramNode.GetType().AssemblyQualifiedName);
+            // Call the serialize method on the node
+            diagramNode.Serialize(nodeClass);
+            // Add it to the array
+            nodeArray.Add(nodeClass);
+        }
+        // Name of the diagram
+        root.Add("Name", new JSONData(data.Name));
+        // Version of the diagram
+        root.Add("Version", new JSONData(data.Version));
+        // Add The nodes array
+        root.Add("Nodes",nodeArray);
+        // Add the filter state
+        root.Add("FilterState",data.FilterState.Serialize());
+        // Add the settings
+        root.Add("Settings",data.Settings.Serialize());
+
+        return root;
+    }
+
+    public ElementDiagramSettings Settings { get; set; }
+    public string Name { get; set; }
+    public string Version { get; set; }
+    public int RefactorCount { get; set; }
+    public FilterState FilterState { get; set; }
+
+    public IEnumerable<IDiagramNode> AllDiagramItems
+    {
+        get { return this.Nodes; }
+    }
+
+    private List<Refactorer> _refactorings = new List<Refactorer>();
+    
+    public List<Refactorer> Refactorings
+    {
+        get { return _refactorings; }
+    }
+
+    public SceneFlowFilter SceneFlowFilter
+    {
+        get { return _sceneFlowFilter; }
+        set { _sceneFlowFilter = value; }
+    }
+    public IEnumerable<SceneManagerData> SceneManagers
+    {
+        get { return Nodes.OfType<SceneManagerData>(); }
+    }
+    public IEnumerable<SubSystemData> SubSystems { get { return Nodes.OfType<SubSystemData>(); } }
+    public IEnumerable<ViewComponentData> ViewComponents { get { return Nodes.OfType<ViewComponentData>(); } }
+    public IEnumerable<ElementData> Elements { get { return Nodes.OfType<ElementData>(); } }
+    public IEnumerable<ViewData> Views { get { return Nodes.OfType<ViewData>(); } }
+    public IEnumerable<EnumData> Enums { get { return Nodes.OfType<EnumData>(); } }
+
+    public List<IDiagramLink> Links
+    {
+        get { return _links; }
+        set { _links = value; }
+    }
+
+    public void Initialize()
+    {
+        //if (FilterState.FilterStack.Count < 1)
+        //{
+        //    FilterState.FilterStack.Push(SceneFlowFilter);
+        //}
+    }
+
+    public void AddNode(IDiagramNode data)
+    {
+        Nodes.Add(data);
+    }
+
+    public void RemoveNode(IDiagramNode enumData)
+    {
+        Nodes.Remove(enumData);
+    }
 }
 
+public class ConvertToJSON : EditorCommand<IElementDesignerData>, IToolbarCommand
+{
+    public override void Perform(IElementDesignerData node)
+    {
+        UnityEngine.Debug.Log(JsonElementDesignerData.Serialize(node));
+    }
+
+    public override string CanPerform(IElementDesignerData node)
+    {
+        if (node == null) return "Problem with node";
+        return null;
+    }
+
+    public override decimal Order
+    {
+        get { return -1; }
+    }
+
+    public ToolbarPosition Position
+    {
+        get
+        {
+            return ToolbarPosition.Left;
+        }
+    }
+}
 public class JsonRepository : IElementsDataRepository
 {
     public IElementDesignerData LoadDiagram(string path)

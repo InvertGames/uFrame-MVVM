@@ -16,7 +16,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
                 Name = node.Data.GetUniqueName("NewView"),
                 Location = new Vector2(15, 15)
             };
-            node.Data.Views.Add(data);
+            node.Data.AddNode(data);
             data.Location = node.LastMouseDownPosition;
         }
     }

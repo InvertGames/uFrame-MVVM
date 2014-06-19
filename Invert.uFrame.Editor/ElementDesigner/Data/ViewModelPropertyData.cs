@@ -3,14 +3,23 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [Serializable]
 public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
 {
+    public override void Serialize(JSONClass cls)
+    {
+        base.Serialize(cls);
+        cls.Add("ItemType",new JSONData(_type));
+        cls.Add("IsRealTime",new JSONData(_isRealTimeProperty));
+
+    }
+
     [SerializeField]
-    private string _type;
+    private string _type = string.Empty;
 
     [SerializeField]
     private bool _isRealTimeProperty;

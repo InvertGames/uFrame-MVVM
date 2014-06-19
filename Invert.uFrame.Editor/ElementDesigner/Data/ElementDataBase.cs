@@ -287,23 +287,23 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         base.EndEditing();
         var newText = Name;
 
-        if (Data.ViewModels.Count(p => p.Name == newText || p.Name == OldName) > 1)
+        if (Data.Elements.Count(p => p.Name == newText || p.Name == OldName) > 1)
         {
             return;
         }
-        foreach (var item in Data.ViewModels.Where(p => p.BaseTypeShortName == OldName))
+        foreach (var item in Data.Elements.Where(p => p.BaseTypeShortName == OldName))
         {
             item.BaseTypeName = AssemblyQualifiedName;
         }
-        foreach (var item in Data.ViewModels.SelectMany(p => p.Properties).Where(p => p.RelatedTypeName == OldName))
+        foreach (var item in Data.Elements.SelectMany(p => p.Properties).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
         }
-        foreach (var item in Data.ViewModels.SelectMany(p => p.Commands).Where(p => p.RelatedTypeName == OldName))
+        foreach (var item in Data.Elements.SelectMany(p => p.Commands).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
         }
-        foreach (var item in Data.ViewModels.SelectMany(p => p.Collections).Where(p => p.RelatedTypeName == OldName))
+        foreach (var item in Data.Elements.SelectMany(p => p.Collections).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
         }

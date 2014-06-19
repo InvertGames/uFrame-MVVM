@@ -1,3 +1,4 @@
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,12 @@ using UnityEngine;
 
 public abstract class DiagramNodeItem : IDiagramNodeItem
 {
+    public virtual void Serialize(JSONClass cls)
+    {
+        cls.Add("Name", new JSONData(_name));
+        cls.Add("Identifier", new JSONData(_identifier));
+
+    }
     [SerializeField]
     private string _identifier;
 
@@ -13,7 +20,7 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
     private bool _isSelected;
 
     [SerializeField]
-    private string _name;
+    private string _name = string.Empty;
 
     [NonSerialized]
     private List<Refactorer> _refactorings;
@@ -131,4 +138,6 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
     {
         Name = name;
     }
+
+   
 }

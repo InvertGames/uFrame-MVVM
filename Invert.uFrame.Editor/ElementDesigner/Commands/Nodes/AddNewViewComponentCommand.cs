@@ -17,7 +17,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
                 Name = node.Data.GetUniqueName("NewViewComponent"),
                 Location = new Vector2(15, 15)
             };
-            node.Data.ViewComponents.Add(data);
+            node.Data.AddNode(data);
             data.Location = node.LastMouseDownPosition;
         }
     }
@@ -48,7 +48,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         public IEnumerable<UFContextMenuItem> GetOptions(object item)
         {
             var designerData = item as IElementDesignerData;
-            foreach (var importable in designerData.ImportableItems)
+            foreach (var importable in designerData.GetImportableItems())
             {
                 yield return new UFContextMenuItem()
                 {

@@ -1,3 +1,4 @@
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 public interface IDiagramNodeItem : ISelectable
@@ -11,4 +12,5 @@ public interface IDiagramNodeItem : ISelectable
     void Rename(IDiagramNode data, string name);
 
 
+    void Serialize(JSONClass cls);
 }

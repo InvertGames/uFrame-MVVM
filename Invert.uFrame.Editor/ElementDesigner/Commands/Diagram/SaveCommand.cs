@@ -49,7 +49,7 @@ namespace Invert.uFrame.Editor.ElementDesigner
         /// </summary>
         public void ProcessRefactorings(ElementsDiagram diagram)
         {
-            var refactorer = new RefactorContext(diagram.Data.GetRefactorings());
+            var refactorer = new RefactorContext(diagram.Data.Refactorings);
             
             var files = uFrameEditor.GetAllFileGenerators(diagram.Data).Where(p=>!p.Filename.EndsWith(".designer.cs")).Select(p => System.IO.Path.Combine(diagram.Data.Settings.CodePathStrategy.AssetPath, p.Filename)).ToArray();
 

@@ -16,7 +16,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
                 Name = node.Data.GetUniqueName("NewSceneManager"),
                 Location = new Vector2(15, 15)
             };
-            node.Data.SceneManagers.Add(data);
+            node.Data.AddNode(data);
             data.Location = node.LastMouseDownPosition;
         }
     }

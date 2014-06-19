@@ -85,7 +85,7 @@ public class SubSystemData : DiagramNode, IDiagramFilter
     {
         get
         {
-            
+
 
             if (this == Data.CurrentFilter)
             {
@@ -204,7 +204,12 @@ public class SubSystemData : DiagramNode, IDiagramFilter
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
-        Data.SubSystems.Remove(this);
+        Data.RemoveNode(this);
+    }
+
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get { yield break; }
     }
 
     public bool ImportedOnly

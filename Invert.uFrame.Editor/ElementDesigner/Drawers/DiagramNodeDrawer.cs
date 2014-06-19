@@ -249,7 +249,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         //    CalculateBounds();
         //    ((IDiagramItem) Data).Dirty = false;
         //}
-        bool importOnly = Data is ImportedElementData;
+        //bool importOnly = Data is ImportedElementData;
 
         var isDiagramFilter = Data is IDiagramFilter && !Data.Equals(Data.Filter);
 
@@ -258,12 +258,12 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         offsetPosition.y += 6;
 
         if (isDiagramFilter)
-            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale), importOnly ? UFStyles.DiagramBox3 : BackgroundStyle, string.Empty);
+            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale),  BackgroundStyle, string.Empty);
         offsetPosition.x -= 3;
         offsetPosition.y -= 3;
 
         if (isDiagramFilter)
-            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale), importOnly ? UFStyles.DiagramBox3 : BackgroundStyle, string.Empty);
+            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale),  BackgroundStyle, string.Empty);
 
         offsetPosition.y -= 16;
         offsetPosition.height = 16;
@@ -281,7 +281,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
 
 
-        UFStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale), importOnly ? UFStyles.DiagramBox3 : BackgroundStyle, string.Empty);
+        UFStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale),  BackgroundStyle, string.Empty);
 
 
         if (Data.IsSelected)
@@ -305,10 +305,10 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         }
 
 
-        DrawHeader(diagram, importOnly);
+        DrawHeader(diagram,false);
 
         if (!Data.IsCollapsed)
-            DrawContent(diagram, importOnly);
+            DrawContent(diagram, false);
     }
 
     protected virtual GUIStyle GetHighlighter()

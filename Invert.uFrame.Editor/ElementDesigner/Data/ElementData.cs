@@ -190,9 +190,9 @@ public class ElementData : ElementDataBase, IDiagramFilter
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
-        Data.ViewModels.Remove(this);
+        Data.RemoveNode(this);
 
-        foreach (var vm in Data.ViewModels)
+        foreach (var vm in Data.Elements)
         {
             if (vm.BaseTypeShortName == Name)
             {
@@ -200,7 +200,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
             }
         }
 
-        foreach (var elementData in Data.ViewModels)
+        foreach (var elementData in Data.Elements)
         {
             foreach (var diagramSubItem in elementData.ViewModelItems)
             {
@@ -222,6 +222,25 @@ public class ElementData : ElementDataBase, IDiagramFilter
             if (viewComponentData.ElementIdentifier == this.Identifier)
             {
                 viewComponentData.ElementIdentifier = null;
+            }
+        }
+    }
+
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get
+        {
+            foreach (var property in Properties)
+            {
+                yield return property;
+            }
+            foreach (var command in Commands)
+            {
+                yield return command;
+            }
+            foreach (var collection in Collections)
+            {
+                yield return collection;
             }
         }
     }

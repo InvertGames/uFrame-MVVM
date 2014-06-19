@@ -1,6 +1,5 @@
 ﻿using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
-using Invert.uFrame.Editor.ElementDesigner.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -212,7 +211,9 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IToolbarCommand>(new SaveCommand(), "SaveCommand");
             container.RegisterInstance<IToolbarCommand>(new AutoLayoutCommand(), "AutoLayoutCommand");
             container.RegisterInstance<IToolbarCommand>(new AddNewCommand(), "AddNewCommand");
-
+#if DEBUG
+            container.RegisterInstance<IToolbarCommand>(new ConvertToJSON(), "SaveAsJson");
+#endif
             // For the add new menu
             container.RegisterInstance<AddNewCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewSubSystemCommand(), "AddNewSubSystemCommand");
@@ -247,7 +248,7 @@ namespace Invert.uFrame.Editor
             container.RegisterRelation<ViewComponentData, INodeDrawer, ViewComponentDrawer>();
             container.RegisterRelation<ElementData, INodeDrawer, ElementDrawer>();
             container.RegisterRelation<ElementDataBase, INodeDrawer, ElementDrawer>();
-            container.RegisterRelation<ImportedElementData, INodeDrawer, ElementDrawer>();
+            //container.RegisterRelation<ImportedElementData, INodeDrawer, ElementDrawer>();
             container.RegisterRelation<SubSystemData, INodeDrawer, SubSystemDrawer>();
             container.RegisterRelation<SceneManagerData, INodeDrawer, SceneManagerDrawer>();
             container.RegisterRelation<EnumData, INodeDrawer, DiagramEnumDrawer>();

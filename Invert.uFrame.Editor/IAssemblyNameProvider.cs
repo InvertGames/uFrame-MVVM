@@ -1,8 +1,11 @@
 ﻿
 
-public interface IAssemblyNameProvider
+namespace Invert.uFrame.Editor
 {
-    string AssemblyName { get; }
+    public interface IAssemblyNameProvider
+    {
+        string AssemblyName { get; }
+    }
 }
 
 //using System;
