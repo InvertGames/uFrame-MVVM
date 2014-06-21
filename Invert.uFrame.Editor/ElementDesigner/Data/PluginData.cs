@@ -83,11 +83,24 @@ namespace Invert.uFrame.Editor.ElementDesigner.Data
     public interface IDiagramPlugin
     {
         decimal LoadPriority { get; }
+        bool Enabled { get; set; }
+        string Title { get; }
         void Initialize(uFrameContainer container);
     }
 
     public abstract class DiagramPlugin :IDiagramPlugin
     {
+        public virtual bool Enabled
+        {
+            get { return EditorPrefs.GetBool("UFRAME_PLUGIN_" + this.GetType().FullName, true); }
+            set {  EditorPrefs.SetBool("UFRAME_PLUGIN_" + this.GetType().FullName, value); }
+        }
+
+        public virtual string Title
+        {
+            get { return this.GetType().Name; }
+        }
+
         public virtual decimal LoadPriority { get { return 1; } }
         public abstract void Initialize(uFrameContainer container);
     }

@@ -251,6 +251,7 @@ public abstract class Controller : IViewModelObserver
         {
             viewModel = CreateEmpty();
             Container.RegisterInstance(viewModel, resolveName);
+            Container.RegisterInstance(viewModel.GetType(), viewModel, resolveName);
         }
 
         if (initialize)

@@ -1,14 +1,21 @@
 [u]Frame Release Notes
 Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, notifications, and cool info.
-IMPORTANT!!!: MAKE A BACKUP TO BE SAFE! THEN REGENERATE ANY DIAGRAMS!
+IMPORTANT!!!: MAKE A BACKUP TO BE SAFE! THEN RE-SAVE ANY DIAGRAMS!
 IMPORTANT!!!: You may need to remove the old installation and reinstall as there has been many changes.
+1.26 6/20/2014
+- Fixed: Annoying error when clicking add on a node that is not selected adds to the wrong element.
+- Fixed: SceneManager Load method being invoked twice when switching scenes.
+- Updated: When registering named viewmodels via "Force Resolve" it registers for the type "ViewModel" and the actual instance type.
+- Added: Plugin Manager to turn plugins on and off via the Top Menu Tools->uFrame->Plugins.
+- Added: Default bindings for creating a custom loading screen.  Derive from LevelLoaderView and override StatusChanged, and ProgressChanged. (Tutorial coming soon.)
+- Updated: Other minor optimizations and performance enhancements.
 
-1.25 6/13/2014
+1.25 6/15/2014
 - Fixed: View Classes not working as expected
 - Fixed: A small bug in ViewBase class.
-- Updated: Inspector titlebar for inspectors
+- Updated: Inspector titlebar for inspectors.
 - Change: You now have to set the start scenemanager in the game manager.
-- Added: A new NGUI demo project showing of Templates, and Setting a View Base class. (Video Tutorials coming soon.)
+- Added: A new NGUI demo project showing of Templates, and Setting a View Base class.
 - Fixed: Other small bugs
 
 1.2 6/12/2014

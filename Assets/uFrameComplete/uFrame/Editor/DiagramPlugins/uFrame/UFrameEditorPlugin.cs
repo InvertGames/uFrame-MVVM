@@ -12,7 +12,14 @@ public class UFrameEditorPlugin : DiagramPlugin
         get { return -1; }
     }
 
-
+    public override bool Enabled
+    {
+        get { return true; }
+        set
+        {
+            
+        }
+    }
     public override void Initialize(uFrameContainer container)
     {
 #if DEBUG

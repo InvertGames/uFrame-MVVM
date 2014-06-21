@@ -263,6 +263,7 @@ namespace Invert.uFrame.Editor
 #if DEBUG
                 Debug.Log("Loaded Plugin: " + diagramPlugin);
 #endif
+                if (diagramPlugin.Enabled)
                 diagramPlugin.Initialize(Container);
             }
         }
