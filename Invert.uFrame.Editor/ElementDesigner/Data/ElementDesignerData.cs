@@ -13,7 +13,7 @@ using UnityEngine;
 public class FilterState
 {
     [NonSerialized]
-    private Stack<IDiagramFilter> _filterStack;
+    private Stack<IDiagramFilter> _filterStack = new Stack<IDiagramFilter>();
 
  
     //// Filters
@@ -44,7 +44,7 @@ public class FilterState
         set { _filterStack = value; }
     }
 
-    public List<string> _persistedFilterStack;
+    public List<string> _persistedFilterStack = new List<string>();
 
     public void FilterPushed(IDiagramFilter filter)
     {
@@ -564,6 +564,7 @@ public static class ElementDesignerDataExtensions
 
     public static IEnumerable<IDiagramNode> FilterItems(this IElementDesignerData designerData,IDiagramFilter filter, IEnumerable<IDiagramNode> allDiagramItems)
     {
+        
         foreach (var item in allDiagramItems)
         {
             if (filter.IsAllowed(item, item.GetType()))
@@ -573,6 +574,7 @@ public static class ElementDesignerDataExtensions
                     if (filter.Locations.Keys.Contains(item.Identifier))
                     {
                         yield return item;
+                       
                     }
                 }
                 else

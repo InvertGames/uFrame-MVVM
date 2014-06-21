@@ -69,6 +69,7 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\PlatformInputController.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\ThirdPersonCamera.js" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components\ThirdPersonController.js" />
+    <None Include="Assets\NodeCanvas\ReadMe!.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets" />
+    <Folder Include="Assets\NodeCanvas" />
     <Folder Include="Assets\PrivateStuff" />
     <Folder Include="Assets\PrivateStuff\AssetStoreStuff" />
     <Folder Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages" />

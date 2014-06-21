@@ -170,6 +170,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
 
     public bool IsAllowed(object item, Type t)
     {
+        
         if (item == this) return true;
         if (t == typeof(SubSystemData)) return false;
         if (t == typeof(SceneManagerData)) return false;
@@ -177,6 +178,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
         if (t == typeof(ViewData)) return true;
         if (t == typeof(ElementData)) return false;
         if (t == typeof(EnumData)) return false;
+        if (t == typeof (IDiagramNodeItem)) return false;
         return true;
     }
 
@@ -250,6 +252,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
         var elementData = target as ElementData;
         if (elementData != null)
             elementData.BaseTypeName = null;
+
         var viewData = target as ViewData;
         if (viewData != null)
         {

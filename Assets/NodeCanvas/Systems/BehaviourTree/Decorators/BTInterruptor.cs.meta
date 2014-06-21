@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 02d64e844d954b94d94268d941ad3768
+labels:
+- AI
+- behaviourtree
+- behaviour
+- visualscripting
+- node
+- graph
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

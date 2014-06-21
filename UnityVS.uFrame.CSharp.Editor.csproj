@@ -130,7 +130,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Editor\SamplePlugin\SamplePlugin.cs" />
+    <Compile Include="Assets\Editor\SamplePlugin\PlaymakerPlugin.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\ActionListInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\BlackboardInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\ConditionListInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\EventDebuggerInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\ExternalInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\GraphEditor.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\GraphInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\GraphOwnerInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\MenuCommands.cs" />
+    <Compile Include="Assets\NodeCanvas\Core\Editor\TaskInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\BehaviourTree\Editor\BehaviourTreeInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\BehaviourTree\Editor\BehaviourTreeOwnerInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\DialogueTree\Editor\DialogueActorInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\DialogueTree\Editor\DialogueTreeInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\FSM\Editor\FSMInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\FSM\Editor\FSMOwnerInspector.cs" />
+    <Compile Include="Assets\NodeCanvas\Systems\MySystem\Editor\MySystemInspector.cs" />
     <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfDataObjectProxyInspector.cs" />
     <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfEventDrivenPropertyBindingInspector.cs" />
     <Compile Include="Assets\PrivateStuff\Daikon Forge\DataBinding\Editor\dfExpressionBindingInspector.cs" />
@@ -356,6 +373,7 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\uFrameInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ViewInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Editor\ViewModelCommandsDrawer.cs" />
+    <None Include="Assets\NodeCanvas\ReadMe!.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />

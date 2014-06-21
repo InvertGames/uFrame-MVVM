@@ -132,6 +132,7 @@
   <ItemGroup>
     <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Editor\Image Effects\DepthOfFieldScatterEditor.js" />
     <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Editor\LightShaftsEditor.js" />
+    <None Include="Assets\NodeCanvas\ReadMe!.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
@@ -254,6 +255,7 @@
     <Folder Include="Assets" />
     <Folder Include="Assets\AssetStoreTools" />
     <Folder Include="Assets\AssetStoreTools\Editor" />
+    <Folder Include="Assets\NodeCanvas" />
     <Folder Include="Assets\PrivateStuff" />
     <Folder Include="Assets\PrivateStuff\AssetStoreStuff" />
     <Folder Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages" />

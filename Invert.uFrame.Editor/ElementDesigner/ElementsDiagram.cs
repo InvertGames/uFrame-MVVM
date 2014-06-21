@@ -592,6 +592,7 @@ public class ElementsDiagram : ICommandHandler
             diagramItem.Dirty = true;
             var drawer = CreateDrawerFor(diagramItem);
             if (drawer == null) continue;
+            
             NodeDrawers.Add(drawer);
 
             if (refreshDrawers)

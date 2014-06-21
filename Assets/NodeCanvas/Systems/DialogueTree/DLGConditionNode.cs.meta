@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: e97d53321c7386844a1b7b45c81d63a8
+labels:
+- dialogue
+- graph
+- node
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
