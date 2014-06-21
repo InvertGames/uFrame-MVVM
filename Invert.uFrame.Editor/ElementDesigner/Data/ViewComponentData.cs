@@ -155,9 +155,10 @@ public class ViewComponentData : DiagramNode
         get { return Type.GetType(AssemblyQualifiedName); }
     }
 
-    public override void EndEditing()
+    public override bool EndEditing()
     {
-        base.EndEditing();
+        return base.EndEditing();
+        
     }
 
     public override void RemoveFromDiagram()

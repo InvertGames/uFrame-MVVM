@@ -20,7 +20,7 @@ public interface IDiagramNode : ISelectable,IDiagramNodeItem
     string OldName { get; set; }
     
     void BeginEditing();
-    void EndEditing();
+    bool EndEditing();
 }
 
 public interface IRefactorable

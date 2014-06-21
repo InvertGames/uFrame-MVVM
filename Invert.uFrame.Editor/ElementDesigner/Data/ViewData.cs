@@ -42,14 +42,15 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         return new RenameViewRefactorer(this);
     }
-    public override void EndEditing()
+    public override bool EndEditing()
     {
         var oldAssemblyName = AssemblyQualifiedName;
-        base.EndEditing();
+        if (!base.EndEditing()) return false;
         foreach (var v in Data.Views.Where(p => p.ForAssemblyQualifiedName == oldAssemblyName))
         {
             v.ForAssemblyQualifiedName = AssemblyQualifiedName;
         }
+        return true;
     }
 
     public ElementDataBase ViewForElement

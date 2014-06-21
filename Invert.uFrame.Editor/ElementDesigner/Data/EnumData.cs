@@ -15,9 +15,9 @@ public class EnumData : DiagramNode
         set { _enumItems = value; }
     }
 
-    public override void EndEditing()
+    public override bool EndEditing()
     {
-        base.EndEditing();
+        if (!base.EndEditing()) return false;
         foreach (var item in Data.ViewModels.SelectMany(p => p.Properties).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
@@ -30,6 +30,7 @@ public class EnumData : DiagramNode
         {
             item.RelatedType = AssemblyQualifiedName;
         }
+        return true;
     }
 
   

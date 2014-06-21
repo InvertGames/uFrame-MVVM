@@ -817,6 +817,7 @@ public class ElementsDiagram : ICommandHandler
                 if (diagramItem.IsEditing)
                 {
                     diagramItem.EndEditing();
+
                 }
                 diagramItem.IsSelected = false;
             }

@@ -184,6 +184,7 @@
     <Compile Include="ElementDesigner\Data\ViewModelCommandData.cs" />
     <Compile Include="ElementDesigner\Data\ViewModelPropertyData.cs" />
     <Compile Include="Extensions\UFrameAssetManager.cs" />
+    <Compile Include="Windows\uFrameExtensionsWindow.cs" />
     <Compile Include="Windows\uFrameStartDialog.cs" />
     <Compile Include="Windows\uFrameToolsWindow.cs" />
     <Compile Include="IAssemblyNameProvider.cs" />
@@ -199,7 +200,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
-IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y</PostBuildEvent>
+IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
+copy $(TargetPath) C:\Users\micah\Documents\uFrame1GettingStarted\Assets\uFrameComplete\uFrame\Editor</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

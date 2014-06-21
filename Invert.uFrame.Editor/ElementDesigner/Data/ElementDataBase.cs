@@ -282,14 +282,15 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public override void EndEditing()
+    public override bool EndEditing()
     {
-        base.EndEditing();
+        if (!base.EndEditing()) return false;
+
         var newText = Name;
 
         if (Data.ViewModels.Count(p => p.Name == newText || p.Name == OldName) > 1)
         {
-            return;
+            return false;
         }
         foreach (var item in Data.ViewModels.Where(p => p.BaseTypeShortName == OldName))
         {
@@ -311,6 +312,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         {
             result.ForAssemblyQualifiedName = AssemblyQualifiedName;
         }
+        return true;
     }
 
     public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
