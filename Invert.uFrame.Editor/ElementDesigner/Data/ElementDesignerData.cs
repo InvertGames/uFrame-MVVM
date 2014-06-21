@@ -426,7 +426,7 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
 
     public FilterState FilterState
     {
-        get { return _filterState; }
+        get { return _filterState ?? (_filterState = new FilterState()); }
         set { _filterState = value; }
     }
 

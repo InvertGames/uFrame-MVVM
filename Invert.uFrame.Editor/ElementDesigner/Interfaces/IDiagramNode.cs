@@ -26,7 +26,8 @@ public interface IDiagramNode : ISelectable,IDiagramNodeItem
     IEnumerable<IDiagramNodeItem> ContainedItems { get; }
 
     void BeginEditing();
-    void EndEditing();
+
+    bool EndEditing();
     //void Serialize(JSONClass nodeClass);
 }
 

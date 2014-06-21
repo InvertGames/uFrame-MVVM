@@ -160,9 +160,10 @@ public class ViewComponentData : DiagramNode
         get { yield break; }
     }
 
-    public override void EndEditing()
+    public override bool EndEditing()
     {
-        base.EndEditing();
+        return base.EndEditing();
+        
     }
 
     public override void RemoveFromDiagram()

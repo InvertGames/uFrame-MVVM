@@ -132,10 +132,10 @@ public class SceneManagerData : DiagramNode
     {
         return new RenameSceneManagerRefactorer(this);
     }
-    public override void EndEditing()
+    public override bool EndEditing()
     {
     
-        base.EndEditing();
+        return base.EndEditing();
     }
 
     public RenameSceneManagerRefactorer RenameRefactor { get; set; }

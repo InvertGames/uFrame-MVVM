@@ -275,11 +275,10 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-
-
         if (Instance != null && Instance != this)
         {
-            SwitchGame(_Start);
+            Instance._Start = this._Start;
+            //SwitchGame(_Start);
             DestroyImmediate(gameObject);
         }
         else

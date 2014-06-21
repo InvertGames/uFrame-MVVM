@@ -220,20 +220,20 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
         return null;
     }
 
-    public virtual void EndEditing()
+    public virtual bool EndEditing()
     {
         IsEditing = false;
         if (Data.GetDiagramItems().Count(p => p.Name == Name) > 1)
         {
             Name = OldName;
-            return;
+            return false;
         }
 
         if (OldName != Name)
         {
             if (RenameRefactorer == null)
             {
-                return;
+                return false;
             }
 
             RenameRefactorer.Set(this);
@@ -243,6 +243,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
                 Data.RefactorCount++;
             }
         }
+        return true;
     }
 
     public abstract IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes);

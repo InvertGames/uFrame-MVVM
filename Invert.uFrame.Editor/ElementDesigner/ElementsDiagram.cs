@@ -243,7 +243,9 @@ public class ElementsDiagram : ICommandHandler
 
     public ElementsDiagram(string assetPath)
     {
-        
+#if DEBUG
+        UnityEngine.Debug.Log(assetPath);
+#endif
         var fileExtension = Path.GetExtension(assetPath);
         if (string.IsNullOrEmpty(fileExtension)) fileExtension = ".asset";
         Repository = uFrameEditor.Container.Resolve<IElementsDataRepository>(fileExtension);
@@ -816,6 +818,7 @@ public class ElementsDiagram : ICommandHandler
                 if (diagramItem.IsEditing)
                 {
                     diagramItem.EndEditing();
+
                 }
                 diagramItem.IsSelected = false;
             }

@@ -15,14 +15,15 @@ public class EnumData : DiagramNode
         set { _enumItems = value; }
     }
 
+
     public override IEnumerable<IDiagramNodeItem> ContainedItems
     {
         get { return EnumItems.Cast<IDiagramNodeItem>(); }
     }
 
-    public override void EndEditing()
+    public override bool EndEditing()
     {
-        base.EndEditing();
+        if (!base.EndEditing()) return false;
         foreach (var item in Data.Elements.SelectMany(p => p.Properties).Where(p => p.RelatedTypeName == OldName))
         {
             item.RelatedType = AssemblyQualifiedName;
@@ -35,12 +36,14 @@ public class EnumData : DiagramNode
         {
             item.RelatedType = AssemblyQualifiedName;
         }
+        return true;
     }
 
   
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();
+
         Data.RemoveNode(this);
     }
 
