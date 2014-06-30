@@ -12,4 +12,5 @@ public interface IElementsDataRepository
     void MarkDirty(IElementDesignerData data);
     Dictionary<string, string> GetProjectDiagrams();
     void CreateNewDiagram();
+    Type RepositoryFor { get; }
 }

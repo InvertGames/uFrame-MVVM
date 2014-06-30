@@ -187,28 +187,77 @@ public class DefaultElementsRepository : IElementsDataRepository
         EditorUtility.SetDirty(data as UnityEngine.Object);
     }
 
+    private UnityEngine.Object[] _Assets;
+
+    public void RecacheAssets()
+    {
+        
+    }
+    public UnityEngine.Object[] GetAssets()
+    {
+        var tempObjects = new List<UnityEngine.Object>();
+        var directory = new DirectoryInfo(Application.dataPath);
+        FileInfo[] goFileInfo = directory.GetFiles("*" + ".asset", SearchOption.AllDirectories);
+
+        int i = 0; int goFileInfoLength = goFileInfo.Length;
+        for (; i < goFileInfoLength; i++)
+        {
+            FileInfo tempGoFileInfo = goFileInfo[i];
+            if (tempGoFileInfo == null)
+                continue;
+
+            string tempFilePath = tempGoFileInfo.FullName;
+            tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
+            try
+            {
+                
+                var tempGo = AssetDatabase.LoadAssetAtPath(tempFilePath, RepositoryFor) as UnityEngine.Object;
+                if (tempGo == null)
+                {
+                    
+                }
+                else
+                {
+                    tempObjects.Add(tempGo);
+                    continue;
+                }
+            }
+            catch (Exception ex)
+            {
+                continue;
+            }
+
+        }
+
+        return tempObjects.ToArray();
+    }
+
     public Dictionary<string, string> GetProjectDiagrams()
     {
         var items = new Dictionary<string, string>();
-        foreach (var elementDesignerData in UFrameAssetManager.Diagrams)
+        foreach (var elementDesignerData in UFrameAssetManager.Diagrams.Where(p=>p.GetType() == RepositoryFor))
         {
             items.Add(elementDesignerData.Name, AssetDatabase.GetAssetPath(elementDesignerData as UnityEngine.Object));
         }
         return items;
     }
 
-    public void CreateNewDiagram()
+    public virtual void CreateNewDiagram()
     {
         UFrameAssetManager.CreateAsset<ElementDesignerData>();
     }
 
+    public virtual Type RepositoryFor
+    {
+        get { return typeof (ElementDesignerData); }
+    }
+
     public IElementDesignerData LoadDiagram(string path)
     {
-        var data = AssetDatabase.LoadAssetAtPath(path, typeof(IElementDesignerData)) as IElementDesignerData;
+        var data = AssetDatabase.LoadAssetAtPath(path, RepositoryFor) as IElementDesignerData;
         if (data == null)
         {
-            throw new Exception(
-                "Invalid data format for this diagram.  Make sure the correct diagram repository is available.");
+            return null;
         }
 
         return data;
@@ -217,6 +266,7 @@ public class DefaultElementsRepository : IElementsDataRepository
     public void SaveDiagram(IElementDesignerData data)
     {
         EditorUtility.SetDirty(data as UnityEngine.Object);
+        AssetDatabase.SaveAssets();
     }
 
     public void RecordUndo(IElementDesignerData data, string title)

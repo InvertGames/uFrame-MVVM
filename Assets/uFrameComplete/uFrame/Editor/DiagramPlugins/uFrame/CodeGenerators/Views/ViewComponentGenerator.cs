@@ -39,23 +39,10 @@ public class ViewComponentGenerator : ViewClassGenerator
 
             if (baseComponent == null)
             {
-                var viewModelProperty = new CodeMemberProperty
-                {
-                    Name = element.Name,
-                    Attributes = MemberAttributes.Public,
-                    Type = new CodeTypeReference(element.NameAsViewModel),
-                    HasGet = true,
-                    HasSet = false
-                };
-
-                viewModelProperty.GetStatements.Add(new CodeMethodReturnStatement(
-                    new CodeCastExpression(viewModelProperty.Type, new CodePropertyReferenceExpression(new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View"), "ViewModelObject"))
-                    ));
-                decl.Members.Add(viewModelProperty);
+                decl.CreateViewModelProperty(element);
                 AddExecuteMethods(element, decl, true);
             }
         }
         Namespace.Types.Add(decl);
     }
-
 }

@@ -9,6 +9,11 @@ namespace Invert.uFrame.Editor.ElementDesigner
 {
     public class SaveCommand : ElementsDiagramToolbarCommand
     {
+        public override string Title
+        {
+            get { return "Save & Compile"; }
+        }
+
         public override void Perform(ElementsDiagram node)
         {
             // Go ahead and process any code refactors
@@ -36,12 +41,17 @@ namespace Invert.uFrame.Editor.ElementDesigner
                 //Debug.Log("Created file: " + fileInfo.FullName);
 
             }
+            foreach (var allDiagramItem in node.Data.AllDiagramItems)
+            {
+                allDiagramItem.IsNewNode = false;
+            }
             RefactorApplied(node.Data);
             AssetDatabase.Refresh();
-
+            
             node.Save();
             node.DeselectAll();
             node.Refresh();
+
         }
 
         /// <summary>
@@ -49,13 +59,16 @@ namespace Invert.uFrame.Editor.ElementDesigner
         /// </summary>
         public void ProcessRefactorings(ElementsDiagram diagram)
         {
-            var refactorer = new RefactorContext(diagram.Data.GetRefactorings());
+            var refactorer = new RefactorContext(diagram.Data.Refactorings);
             
             var files = uFrameEditor.GetAllFileGenerators(diagram.Data).Where(p=>!p.Filename.EndsWith(".designer.cs")).Select(p => System.IO.Path.Combine(diagram.Data.Settings.CodePathStrategy.AssetPath, p.Filename)).ToArray();
 
             
             if (refactorer.Refactors.Count > 0)
             {
+#if DEBUG
+                Debug.Log(string.Format("{0} : {1}", refactorer.GetType().Name , refactorer.CurrentFilename));
+#endif
                 refactorer.Refactor(files);
             }
             

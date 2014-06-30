@@ -17,7 +17,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
                 Name = node.Data.GetUniqueName("NewEnum"),
                 Location = new Vector2(15, 15)
             };
-            node.Data.Enums.Add(data);
+            node.Data.AddNode(data);
             data.Location = node.LastMouseDownPosition;
         }
     }

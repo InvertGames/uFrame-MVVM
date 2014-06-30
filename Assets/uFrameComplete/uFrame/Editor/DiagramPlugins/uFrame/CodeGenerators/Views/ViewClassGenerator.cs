@@ -1,25 +1,21 @@
+using Invert.uFrame.Editor;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Invert.uFrame.Editor;
 using UnityEngine;
 
 public abstract class ViewClassGenerator : CodeGenerator
 {
+    public List<ViewBindingExtender> BindingExtenders { get; set; }
+
+    public CodeTypeDeclaration Decleration { get; set; }
 
     public IElementDesignerData DiagramData
     {
         get;
         set;
-    }
-
-    public override void Initialize(CodeFileGenerator fileGenerator)
-    {
-        base.Initialize(fileGenerator);
-
-        Namespace.Imports.Add(new CodeNamespaceImport("UnityEngine"));
     }
 
     public CodeConditionStatement AddBindingCondition(CodeTypeDeclaration decl, CodeStatementCollection statements, IViewModelItem item, ElementDataBase relatedElement)
@@ -45,7 +41,6 @@ public abstract class ViewClassGenerator : CodeGenerator
                     new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFRequireInstanceMethod)),
                         new CodeAttributeArgument(new CodePrimitiveExpression(prop.NameAsChangedMethod))));
             }
-
         }
         else if (coll != null)
         {
@@ -60,247 +55,12 @@ public abstract class ViewClassGenerator : CodeGenerator
         return conditionStatement;
     }
 
-    public void AddViewBase(ElementData data, string className = null, string baseClassName = null)
-    {
-        var decl = new CodeTypeDeclaration(className ?? data.NameAsViewBase)
-        {
-            TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public
-        };
-
-        if (data.IsControllerDerived)
-        {
-            var baseType = DiagramData.GetAllElements().First(p => p.Name == data.BaseTypeShortName);
-            decl.BaseTypes.Add(new CodeTypeReference(baseClassName ?? baseType.NameAsViewBase));
-        }
-        else
-        {
-            decl.BaseTypes.Add(new CodeTypeReference(typeof(ViewBase)));
-        }
-        if (IsDesignerFile)
-        {
-            decl.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
-                new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
-        }
-
-
-
-
-        var viewModelTypeProperty = new CodeMemberProperty
-        {
-            Attributes = MemberAttributes.Override | MemberAttributes.Public,
-            Type = new CodeTypeReference(typeof(Type)),
-            Name = "ViewModelType"
-        };
-        viewModelTypeProperty.HasSet = false;
-        viewModelTypeProperty.HasGet = true;
-        viewModelTypeProperty.GetStatements.Add(
-            new CodeSnippetExpression(string.Format("return typeof({0})", data.NameAsViewModel)));
-        decl.Members.Add(viewModelTypeProperty);
-
-        AddComponentReferences(decl, data);
-
-        var multiInstanceProperty = new CodeMemberProperty
-        {
-            Attributes = MemberAttributes.Override | MemberAttributes.Public,
-            Type = new CodeTypeReference(typeof(bool)),
-            Name = "IsMultiInstance",
-            HasSet = false,
-            HasGet = true
-        };
-
-        multiInstanceProperty.GetStatements.Add(
-            new CodeSnippetExpression(string.Format("return {0}", data.IsMultiInstance ? "true" : "false")));
-        decl.Members.Add(multiInstanceProperty);
-
-        GenerateBindMethod(decl, data);
-        var viewModelProperty = new CodeMemberProperty { Name = data.Name, Attributes = MemberAttributes.Public | MemberAttributes.Final, Type = new CodeTypeReference(data.NameAsViewModel) };
-        viewModelProperty.GetStatements.Add(
-            new CodeMethodReturnStatement(new CodeCastExpression(new CodeTypeReference(data.NameAsViewModel),
-                new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "ViewModelObject"))));
-        viewModelProperty.SetStatements.Add(
-            new CodeAssignStatement(
-                new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "ViewModelObject"),
-                new CodePropertySetValueReferenceExpression()));
-
-        decl.Members.Add(viewModelProperty);
-
-        var initializeViewModelMethod = new CodeMemberMethod
-        {
-            Name = "InitializeViewModel",
-            Attributes = MemberAttributes.Override | MemberAttributes.Family
-        };
-
-        initializeViewModelMethod.Parameters.Add(
-            new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)), "viewModel"));
-
-        if (data.IsControllerDerived)
-        {
-            var baseCall = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
-                initializeViewModelMethod.Name);
-            baseCall.Parameters.Add(new CodeVariableReferenceExpression("viewModel"));
-            initializeViewModelMethod.Statements.Add(baseCall);
-        }
-
-        if (data.Properties.Count > 0)
-            initializeViewModelMethod.Statements.Add(
-                new CodeVariableDeclarationStatement(
-                    new CodeTypeReference(data.NameAsViewModel), data.NameAsVariable, new CodeCastExpression(
-                        new CodeTypeReference(data.NameAsViewModel),
-                        new CodeVariableReferenceExpression("viewModel"))));
-
-        var createModelMethod = new CodeMemberMethod()
-        {
-            Name = "CreateModel",
-            Attributes = MemberAttributes.Public | MemberAttributes.Override,
-            ReturnType = new CodeTypeReference(typeof(ViewModel))
-        };
-
-        //if (data.IsMultiInstance)
-        //{
-        createModelMethod.Statements.Add(
-            new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(),
-                "RequestViewModel",
-                new CodeSnippetExpression(string.Format("GameManager.Container.Resolve<{0}>()",
-                    data.NameAsController)))));
-        //}
-        //else
-        //{
-        //    createModelMethod.Statements.Add(
-        //        new CodeMethodReturnStatement(
-        //            new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "ResolveViewModel",
-        //                new CodeSnippetExpression(string.Format("GameManager.Container.Resolve<{0}>()",
-        //                data.NameAsController)))));
-        //}
-
-        decl.Members.Add(createModelMethod);
-
-        foreach (var property in data.Properties)
-        {
-            var relatedViewModel = DiagramData.GetViewModel(property.RelatedTypeName);
-            if (relatedViewModel == null) // Non ViewModel Properties
-            {
-                var field = new CodeMemberField(new CodeTypeReference(property.RelatedTypeName),
-                    property.ViewFieldName) { Attributes = MemberAttributes.Public };
-                field.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)), new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
-                field.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
-                decl.Members.Add(field);
-
-                initializeViewModelMethod.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
-                    new CodeVariableReferenceExpression(data.NameAsVariable), property.Name),
-                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), property.ViewFieldName)));
-            }
-            else // ViewModel Properties
-            {
-                var field = new CodeMemberField(new CodeTypeReference(typeof(ViewBase)),
-                    property.ViewFieldName) { Attributes = MemberAttributes.Public };
-
-                field.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)), new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
-                field.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
-                decl.Members.Add(field);
-                initializeViewModelMethod.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
-                    new CodeVariableReferenceExpression(data.NameAsVariable), property.Name),
-                    new CodeSnippetExpression(string.Format("this.{0} == null ? null : this.{0}.ViewModelObject as {1}", property.ViewFieldName, relatedViewModel.NameAsViewModel))));
-            }
-        }
-        AddExecuteMethods(data, decl);
-        decl.Members.Add(initializeViewModelMethod);
-        Namespace.Types.Add(decl);
-    }
-
-    protected void AddExecuteMethods(ElementData data, CodeTypeDeclaration decl, bool useViewReference = false)
-    {
-        foreach (var viewModelCommandData in data.Commands)
-        {
-            var executeMethod = new CodeMemberMethod
-            {
-                Name = viewModelCommandData.NameAsExecuteMethod,
-                Attributes = MemberAttributes.Public
-            };
-
-            CodeExpression executeCommandReference = new CodeThisReferenceExpression();
-            if (useViewReference)
-                executeCommandReference = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View");
-
-            var relatedElement = DiagramData.GetElement(viewModelCommandData);
-            if (relatedElement == null)
-            {
-
-
-
-                if (viewModelCommandData.RelatedTypeName != null)
-                {
-                    executeMethod.Parameters.Add(new CodeParameterDeclarationExpression(
-                        viewModelCommandData.RelatedTypeName, "arg"));
-
-                    executeMethod.Statements.Add(new CodeMethodInvokeExpression(
-                        executeCommandReference, "ExecuteCommand",
-                        new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name)),
-                        new CodeVariableReferenceExpression("arg")
-                        ));
-                }
-                else
-                {
-                    executeMethod.Statements.Add(new CodeMethodInvokeExpression(
-                        executeCommandReference, "ExecuteCommand",
-                        new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name))
-                        ));
-                }
-            }
-            else
-            {
-                executeMethod.Parameters.Add(new CodeParameterDeclarationExpression(
-                    relatedElement.NameAsViewModel, relatedElement.NameAsVariable));
-
-                executeMethod.Statements.Add(new CodeMethodInvokeExpression(
-                    executeCommandReference, "ExecuteCommand",
-                    new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name)),
-                    new CodeVariableReferenceExpression(relatedElement.NameAsVariable)
-                    ));
-            }
-            decl.Members.Add(executeMethod);
-        }
-    }
-
-    private void AddComponentReferences(CodeTypeDeclaration decl, ElementData data)
-    {
-        if (data.IsControllerDerived) return;
-
-        foreach (var viewComponentData in data.ViewComponents)
-        {
-
-            var backingField = new CodeMemberField(viewComponentData.Name, "_" + viewComponentData.Name);
-            backingField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
-            var property = new CodeMemberProperty()
-            {
-                Type = new CodeTypeReference(viewComponentData.Name),
-                Name = viewComponentData.Name,
-                Attributes = MemberAttributes.Public,
-                HasGet = true,
-                HasSet = true
-            };
-
-            property.GetStatements.Add(new CodeMethodReturnStatement(new CodeSnippetExpression(
-                string.Format("{0} ?? ({0} = GetComponent<{1}>())", backingField.Name, viewComponentData.Name))));
-            property.SetStatements.Add(
-                new CodeAssignStatement(
-                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), backingField.Name),
-                    new CodePropertySetValueReferenceExpression()));
-            decl.Members.Add(backingField);
-            decl.Members.Add(property);
-        }
-    }
-
-
-    public void AddPropertyBinding(CodeTypeDeclaration decl, string modelName, CodeStatementCollection statements, ViewModelPropertyData propertyData, bool asTwoWay, ElementDataBase relatedElement)
+    public void AddPropertyBinding(ElementData data, CodeTypeDeclaration decl, CodeStatementCollection statements, ViewModelPropertyData propertyData, bool asTwoWay, ElementDataBase relatedElement)
     {
         var memberInvoke = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "BindProperty");
 
         memberInvoke.Parameters.Add(
-            new CodeSnippetExpression(string.Format("()=>{0}.{1}", modelName, propertyData.FieldName)));
+            new CodeSnippetExpression(string.Format("()=>{0}.{1}", data.Name, propertyData.FieldName)));
         memberInvoke.Parameters.Add(new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), propertyData.NameAsChangedMethod));
 
         if (!asTwoWay)
@@ -312,8 +72,10 @@ public abstract class ViewClassGenerator : CodeGenerator
 
             if (relatedElement == null)
             {
-                //setterMethod.Statements.Add(
-                //    new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof (NotImplementedException))));
+                foreach (var viewBindingExtender in BindingExtenders)
+                {
+                    viewBindingExtender.ExtendPropertyBinding(data, setterMethod.Statements, propertyData, null);
+                }
             }
             else
             {
@@ -413,6 +175,161 @@ public abstract class ViewClassGenerator : CodeGenerator
         return memberField;
     }
 
+    public void AddViewBase(ElementData data, string className = null, string baseClassName = null)
+    {
+        Decleration = new CodeTypeDeclaration(className ?? data.NameAsViewBase)
+        {
+            TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public
+        };
+
+        if (data.IsControllerDerived)
+        {
+            var baseType = DiagramData.GetAllElements().First(p => p.Name == data.BaseTypeShortName);
+            Decleration.BaseTypes.Add(new CodeTypeReference(baseClassName ?? baseType.NameAsViewBase));
+        }
+        else
+        {
+            Decleration.BaseTypes.Add(new CodeTypeReference(typeof(ViewBase)));
+        }
+        if (IsDesignerFile)
+        {
+            Decleration.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
+                new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
+        }
+
+        var viewModelTypeProperty = new CodeMemberProperty
+        {
+            Attributes = MemberAttributes.Override | MemberAttributes.Public,
+            Type = new CodeTypeReference(typeof(Type)),
+            Name = "ViewModelType"
+        };
+        viewModelTypeProperty.HasSet = false;
+        viewModelTypeProperty.HasGet = true;
+        viewModelTypeProperty.GetStatements.Add(
+            new CodeSnippetExpression(string.Format("return typeof({0})", data.NameAsViewModel)));
+        Decleration.Members.Add(viewModelTypeProperty);
+
+        AddComponentReferences(Decleration, data);
+
+        var multiInstanceProperty = new CodeMemberProperty
+        {
+            Attributes = MemberAttributes.Override | MemberAttributes.Public,
+            Type = new CodeTypeReference(typeof(bool)),
+            Name = "IsMultiInstance",
+            HasSet = false,
+            HasGet = true
+        };
+
+        multiInstanceProperty.GetStatements.Add(
+            new CodeSnippetExpression(string.Format("return {0}", data.IsMultiInstance ? "true" : "false")));
+        Decleration.Members.Add(multiInstanceProperty);
+
+        GenerateBindMethod(Decleration, data);
+        var viewModelProperty = new CodeMemberProperty { Name = data.Name, Attributes = MemberAttributes.Public | MemberAttributes.Final, Type = new CodeTypeReference(data.NameAsViewModel) };
+        viewModelProperty.GetStatements.Add(
+            new CodeMethodReturnStatement(new CodeCastExpression(new CodeTypeReference(data.NameAsViewModel),
+                new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "ViewModelObject"))));
+        viewModelProperty.SetStatements.Add(
+            new CodeAssignStatement(
+                new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "ViewModelObject"),
+                new CodePropertySetValueReferenceExpression()));
+
+        Decleration.Members.Add(viewModelProperty);
+
+        var initializeViewModelMethod = new CodeMemberMethod
+        {
+            Name = "InitializeViewModel",
+            Attributes = MemberAttributes.Override | MemberAttributes.Family
+        };
+
+        initializeViewModelMethod.Parameters.Add(
+            new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)), "viewModel"));
+
+        if (data.IsControllerDerived)
+        {
+            var baseCall = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
+                initializeViewModelMethod.Name);
+            baseCall.Parameters.Add(new CodeVariableReferenceExpression("viewModel"));
+            initializeViewModelMethod.Statements.Add(baseCall);
+        }
+
+        if (data.Properties.Count > 0)
+            initializeViewModelMethod.Statements.Add(
+                new CodeVariableDeclarationStatement(
+                    new CodeTypeReference(data.NameAsViewModel), data.NameAsVariable, new CodeCastExpression(
+                        new CodeTypeReference(data.NameAsViewModel),
+                        new CodeVariableReferenceExpression("viewModel"))));
+
+        var createModelMethod = new CodeMemberMethod()
+        {
+            Name = "CreateModel",
+            Attributes = MemberAttributes.Public | MemberAttributes.Override,
+            ReturnType = new CodeTypeReference(typeof(ViewModel))
+        };
+
+        //if (data.IsMultiInstance)
+        //{
+        createModelMethod.Statements.Add(
+            new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(),
+                "RequestViewModel",
+                new CodeSnippetExpression(string.Format("GameManager.Container.Resolve<{0}>()",
+                    data.NameAsController)))));
+        //}
+        //else
+        //{
+        //    createModelMethod.Statements.Add(
+        //        new CodeMethodReturnStatement(
+        //            new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "ResolveViewModel",
+        //                new CodeSnippetExpression(string.Format("GameManager.Container.Resolve<{0}>()",
+        //                data.NameAsController)))));
+        //}
+
+        Decleration.Members.Add(createModelMethod);
+
+        foreach (var property in data.Properties)
+        {
+            var relatedViewModel = DiagramData.GetViewModel(property.RelatedTypeName);
+            if (relatedViewModel == null) // Non ViewModel Properties
+            {
+                var field = new CodeMemberField(new CodeTypeReference(property.RelatedTypeName),
+                    property.ViewFieldName) { Attributes = MemberAttributes.Public };
+                field.CustomAttributes.Add(
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)), new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
+                field.CustomAttributes.Add(
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
+                Decleration.Members.Add(field);
+
+                initializeViewModelMethod.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
+                    new CodeVariableReferenceExpression(data.NameAsVariable), property.Name),
+                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), property.ViewFieldName)));
+            }
+            else // ViewModel Properties
+            {
+                var field = new CodeMemberField(new CodeTypeReference(typeof(ViewBase)),
+                    property.ViewFieldName) { Attributes = MemberAttributes.Public };
+
+                field.CustomAttributes.Add(
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)), new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
+                field.CustomAttributes.Add(
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
+                Decleration.Members.Add(field);
+                initializeViewModelMethod.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
+                    new CodeVariableReferenceExpression(data.NameAsVariable), property.Name),
+                    new CodeSnippetExpression(string.Format("this.{0} == null ? null : this.{0}.ViewModelObject as {1}", property.ViewFieldName, relatedViewModel.NameAsViewModel))));
+            }
+        }
+
+        AddExecuteMethods(data, Decleration);
+        Decleration.Members.Add(initializeViewModelMethod);
+
+        foreach (var viewBindingExtender in BindingExtenders)
+        {
+            viewBindingExtender.ExtendViewBase(Decleration, data);
+        }
+
+        Namespace.Types.Add(Decleration);
+    }
+
     public void CreateViewPropertyBinding(string modelName, CodeStatementCollection statements,
         ViewModelPropertyData propertyData)
     {
@@ -420,6 +337,79 @@ public abstract class ViewClassGenerator : CodeGenerator
             new CodeSnippetExpression(string.Format("this.BindToView(() => {0}.{1}, v => {2} = v, () => {2})",
                 modelName, propertyData.FieldName,
                 propertyData.ViewFieldName)));
+    }
+
+    public override void Initialize(CodeFileGenerator fileGenerator)
+    {
+        base.Initialize(fileGenerator);
+        BindingExtenders = uFrameEditor.Container.ResolveAll<ViewBindingExtender>().Where(p => p.Initialize(this)).ToList();
+        Namespace.Imports.Add(new CodeNamespaceImport("UnityEngine"));
+    }
+
+    protected void AddExecuteMethods(ElementData data, CodeTypeDeclaration decl, bool useViewReference = false)
+    {
+        foreach (var viewModelCommandData in data.Commands)
+        {
+            var executeMethod = CreateExecuteMethod(data, useViewReference, viewModelCommandData);
+            decl.Members.Add(executeMethod);
+        }
+    }
+
+    protected CodeMemberMethod CreateExecuteMethod(ElementData data, bool useViewReference,
+        ViewModelCommandData viewModelCommandData)
+    {
+        ElementDataBase relatedElement;
+        return CreateExecuteMethod(data, useViewReference, viewModelCommandData, out relatedElement);
+    }
+
+    protected CodeMemberMethod CreateExecuteMethod(ElementData data, bool useViewReference,
+        ViewModelCommandData viewModelCommandData, out ElementDataBase relatedElement)
+    {
+        var executeMethod = new CodeMemberMethod
+        {
+            Name = viewModelCommandData.NameAsExecuteMethod,
+            Attributes = MemberAttributes.Public
+        };
+
+        CodeExpression executeCommandReference = new CodeThisReferenceExpression();
+        if (useViewReference)
+            executeCommandReference = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "View");
+
+        relatedElement = DiagramData.GetElement(viewModelCommandData);
+
+        if (relatedElement == null)
+        {
+            if (viewModelCommandData.RelatedTypeName != null)
+            {
+                executeMethod.Parameters.Add(new CodeParameterDeclarationExpression(
+                    viewModelCommandData.RelatedTypeName, "arg"));
+
+                executeMethod.Statements.Add(new CodeMethodInvokeExpression(
+                    executeCommandReference, "ExecuteCommand",
+                    new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name)),
+                    new CodeVariableReferenceExpression("arg")
+                    ));
+            }
+            else
+            {
+                executeMethod.Statements.Add(new CodeMethodInvokeExpression(
+                    executeCommandReference, "ExecuteCommand",
+                    new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name))
+                    ));
+            }
+        }
+        else
+        {
+            executeMethod.Parameters.Add(new CodeParameterDeclarationExpression(
+                relatedElement.NameAsViewModel, relatedElement.NameAsVariable));
+
+            executeMethod.Statements.Add(new CodeMethodInvokeExpression(
+                executeCommandReference, "ExecuteCommand",
+                new CodeSnippetExpression(string.Format("{0}.{1}", data.Name, viewModelCommandData.Name)),
+                new CodeVariableReferenceExpression(relatedElement.NameAsVariable)
+                ));
+        }
+        return executeMethod;
     }
 
     private void AddCollectionBinding(CodeTypeDeclaration decl, string modelName, CodeStatementCollection statements, ViewModelCollectionData collectionProperty, ElementDataBase relatedElement)
@@ -499,7 +489,6 @@ public abstract class ViewClassGenerator : CodeGenerator
 
         if (relatedElement != null)
         {
-
             var sceneFirstField = AddPropertyBindingField(decl, typeof(bool).FullName, collectionProperty.Name, "SceneFirst");
             //sceneFirstField.CustomAttributes.Add(
             //new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFRequireInstanceMethod)),
@@ -536,6 +525,34 @@ public abstract class ViewClassGenerator : CodeGenerator
         //            .SetParent(_GunsTransform).ViewFirst();
     }
 
+    private void AddComponentReferences(CodeTypeDeclaration decl, ElementData data)
+    {
+        if (data.IsControllerDerived) return;
+
+        foreach (var viewComponentData in data.ViewComponents)
+        {
+            var backingField = new CodeMemberField(viewComponentData.Name, "_" + viewComponentData.Name);
+            backingField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
+            var property = new CodeMemberProperty()
+            {
+                Type = new CodeTypeReference(viewComponentData.Name),
+                Name = viewComponentData.Name,
+                Attributes = MemberAttributes.Public,
+                HasGet = true,
+                HasSet = true
+            };
+
+            property.GetStatements.Add(new CodeMethodReturnStatement(new CodeSnippetExpression(
+                string.Format("{0} ?? ({0} = GetComponent<{1}>())", backingField.Name, viewComponentData.Name))));
+            property.SetStatements.Add(
+                new CodeAssignStatement(
+                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), backingField.Name),
+                    new CodePropertySetValueReferenceExpression()));
+            decl.Members.Add(backingField);
+            decl.Members.Add(property);
+        }
+    }
+
     private void GenerateBindMethod(CodeTypeDeclaration decl, ElementData data)
     {
         var bindMethod = new CodeMemberMethod
@@ -554,19 +571,18 @@ public abstract class ViewClassGenerator : CodeGenerator
             var relatedElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Name == property.RelatedTypeName);
             var bindingCondition = AddBindingCondition(decl, bindMethod.Statements, property, relatedElement);
 
-            var twoWayField = AddPropertyBindingField(decl, typeof(bool).FullName, property.Name, "IsTwoWay");
-            twoWayField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFRequireInstanceMethod)),
-                new CodeAttributeArgument(new CodePrimitiveExpression(property.NameAsTwoWayMethod))));
+            //var twoWayField = AddPropertyBindingField(decl, typeof(bool).FullName, property.Name, "IsTwoWay");
+            //twoWayField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFRequireInstanceMethod)),
+            //    new CodeAttributeArgument(new CodePrimitiveExpression(property.NameAsTwoWayMethod))));
 
-            var twoWayCondition =
-                new CodeConditionStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
-                    twoWayField.Name));
+            //var twoWayCondition =
+            //    new CodeConditionStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+            //        twoWayField.Name));
 
-            bindingCondition.TrueStatements.Add(twoWayCondition);
+            //bindingCondition.TrueStatements.Add(twoWayCondition);
 
-
-            AddPropertyBinding(decl, data.Name, twoWayCondition.FalseStatements, property, false, relatedElement);
-            AddPropertyBinding(decl, data.Name, twoWayCondition.TrueStatements, property, true, relatedElement);
+            //AddPropertyBinding(decl, data.Name, bindingCondition.FalseStatements, property, false, relatedElement);
+            AddPropertyBinding(data, decl, bindingCondition.TrueStatements, property, false, relatedElement);
         }
         foreach (var collectionProperty in data.Collections)
         {
@@ -581,7 +597,6 @@ public abstract class ViewClassGenerator : CodeGenerator
             {
                 AddCollectionBinding(decl, data.Name, bindingCondition.TrueStatements, collectionProperty, relatedElement);
             }
-
         }
         decl.Members.Add(bindMethod);
     }

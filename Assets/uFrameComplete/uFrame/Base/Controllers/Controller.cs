@@ -206,8 +206,6 @@ public abstract class Controller : IViewModelObserver
 
     public abstract void WireCommands(ViewModel viewModel);
 
-
-
     public virtual ViewModel CreateEmpty()
     {
         throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");

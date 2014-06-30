@@ -3,14 +3,29 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [Serializable]
-public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
+public class ViewModelPropertyData : DiagramNodeItem, IViewModelItem
 {
+    public override void Serialize(JSONClass cls)
+    {
+        base.Serialize(cls);
+        cls.Add("ItemType", new JSONData(_type));
+        cls.Add("IsRealTime", new JSONData(_isRealTimeProperty));
+    }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _type = cls["ItemType"].Value;
+        _isRealTimeProperty = cls["IsRealTime"].AsBool;
+    }
+
     [SerializeField]
-    private string _type;
+    private string _type = string.Empty;
 
     [SerializeField]
     private bool _isRealTimeProperty;
@@ -64,7 +79,7 @@ public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
 
     public override void RemoveLink(IDiagramNode target)
     {
-        RelatedType = typeof (string).AssemblyQualifiedName;
+        RelatedType = typeof(string).AssemblyQualifiedName;
     }
 
     public string RelatedType
@@ -78,6 +93,7 @@ public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
         get { return _isRealTimeProperty; }
         set { _isRealTimeProperty = value; }
     }
+
 
     public string RelatedTypeName
     {
@@ -131,7 +147,7 @@ public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
     }
 
     public override string FullLabel { get { return RelatedTypeName + Name; } }
-    
+
     public override bool IsSelectable { get { return true; } }
 
     public override void Remove(IDiagramNode diagramNode)
@@ -155,4 +171,6 @@ public class ViewModelPropertyData : DiagramNodeItem,IViewModelItem
     {
         get { return string.Format("_Bind{0}", Name); }
     }
+
+   
 }

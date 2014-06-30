@@ -13,6 +13,8 @@ namespace Invert.uFrame.Editor
         {
             LeftCommands = new List<IEditorCommand>();
             RightCommands = new List<IEditorCommand>();
+            BottomLeftCommands = new List<IEditorCommand>();
+            BottomRightCommands = new List<IEditorCommand>();
             AllCommands = new List<IEditorCommand>();
         }
 
@@ -20,6 +22,8 @@ namespace Invert.uFrame.Editor
 
         public List<IEditorCommand> LeftCommands { get; set; }
         public List<IEditorCommand> RightCommands { get; set; }
+        public List<IEditorCommand> BottomLeftCommands { get; set; }
+        public List<IEditorCommand> BottomRightCommands { get; set; }
        
 
         public void AddCommand(IEditorCommand command)
@@ -29,6 +33,13 @@ namespace Invert.uFrame.Editor
             if (cmd == null || cmd.Position == ToolbarPosition.Right)
             {
                 RightCommands.Add(command);
+            }
+            else if (cmd.Position == ToolbarPosition.BottomLeft)
+            {
+                BottomLeftCommands.Add(command);
+            }else if (cmd.Position == ToolbarPosition.BottomRight)
+            {
+                BottomRightCommands.Add(command);
             }
             else
             {
@@ -45,19 +56,36 @@ namespace Invert.uFrame.Editor
                 DoCommand(editorCommand);
             }
             GUILayout.FlexibleSpace();
-            var scale = GUILayout.HorizontalSlider(UFStyles.Scale, 0.55f, 1f, GUILayout.Width(200f));
-            if (scale != UFStyles.Scale)
-            {
-                UFStyles.Scale = scale;
-                Handler.ExecuteCommand(new ScaleCommand() {Scale = scale});
-                
-            }
+          
+           
             foreach (var editorCommand in RightCommands.OrderBy(p => p.Order))
             {
                 DoCommand(editorCommand);
             }
+
+           
         }
 
+        public void GoBottom()
+        {
+            var scale = GUILayout.HorizontalSlider(UFStyles.Scale, 0.55f, 1f, GUILayout.Width(200f));
+            if (scale != UFStyles.Scale)
+            {
+                UFStyles.Scale = scale;
+                Handler.ExecuteCommand(new ScaleCommand() { Scale = scale });
+
+            }
+            foreach (var editorCommand in BottomLeftCommands.OrderBy(p => p.Order))
+            {
+                DoCommand(editorCommand);
+            }
+            GUILayout.FlexibleSpace();
+            foreach (var editorCommand in BottomRightCommands.OrderBy(p => p.Order))
+            {
+                DoCommand(editorCommand);
+            }
+            
+        }
         public ICommandHandler Handler { get; set; }
 
         public void DoCommand(IEditorCommand command)

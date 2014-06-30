@@ -1,3 +1,4 @@
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,21 @@ using UnityEngine;
 [Serializable]
 public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
 {
+    public override void Serialize(JSONClass cls)
+    {
+        base.Serialize(cls);
+        cls.Add("ItemType", new JSONData(_itemType));
+       // nodeItemClass.Add("ItemType", new JSONData(_itemType));
+        //nodeItemClass.Add("IsRealTime", new JSONData(_isRealTimeProperty));
+    }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _itemType = cls["ItemType"].Value;
+
+    }
+
     [SerializeField]
     private string _itemType;
 

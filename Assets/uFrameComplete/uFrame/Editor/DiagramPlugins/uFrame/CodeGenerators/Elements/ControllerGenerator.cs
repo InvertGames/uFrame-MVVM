@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
@@ -218,9 +219,10 @@ public class ControllerGenerator : CodeGenerator
         if (IsDesignerFile)
             AddCommandMethods(data, viewModelTypeReference, tDecleration);
 
+        ProcessModifiers(tDecleration);
+
         Namespace.Types.Add(tDecleration);
     }
-
 
     public virtual void AddControllerInitMethod(ElementData data)
     {
@@ -438,3 +440,4 @@ public class ControllerGenerator : CodeGenerator
         }
     }
 }
+

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1589119517, guid: 8909b3110239b804886e7150f2263a2a, type: 3}
+  m_Name: CheckersJSON
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"CheckersJSON", "Version":"", "Identifier":"f2d88687-bd2f-4a45-a7cb-a51f5d62e9ee",
+    "FilterState":{"_CLRType":"FilterState", "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings",
+    "SnapSize":"10", "CodePathStrategyName":"Default", "AssociationLinkColor":{"r":"1",
+    "g":"1", "b":"1", "a":"1"}, "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1",
+    "a":"1"}, "InheritanceLinkColor":{"r":"0", "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5",
+    "g":"0.5", "b":"0.5", "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "TransitionLinkColor":{"r":"1", "g":"0.9215686", "b":"0.01568628", "a":"1"},
+    "ViewLinkColor":{"r":"0", "g":"0", "b":"1", "a":"1"}}, "SceneFlow":{"_CLRType":"SceneFlowFilter",
+    "Locations":{"3ce04655-fa67-446b-9cf0-7187be14f60c":{"x":"492", "y":"138"}, "b40c2b5c-371f-439f-8bed-200eff73b51d":{"x":"239",
+    "y":"211"}}, "CollapsedValues":{}}, "Nodes":[ {"_CLRType":"SceneManagerData",
+    "Name":"NewSceneManager", "IsCollapsed":"false", "Identifier":"3ce04655-fa67-446b-9cf0-7187be14f60c",
+    "Items":[  ], "Flags":{"_CLRType":"true"}, "SubSystemIdentifier":"b40c2b5c-371f-439f-8bed-200eff73b51d"},
+    {"_CLRType":"SubSystemData", "Name":"NewSubSystem", "IsCollapsed":"false", "Identifier":"b40c2b5c-371f-439f-8bed-200eff73b51d",
+    "Items":[  ], "Locations":{}, "CollapsedValues":{}, "Flags":{"_CLRType":"true"},
+    "Imports":[  ]} ]}'

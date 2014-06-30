@@ -9,6 +9,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             node.EnumItems.Add(new EnumItem()
             {
+                Node = node,
                 Name = node.Data.GetUniqueName("Item")
             });
         }

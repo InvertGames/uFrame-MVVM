@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Invert.uFrame.Editor;
+using JSONData = Invert.uFrame.Editor.JSONData;
+using JSONNode = Invert.uFrame.Editor.JSONNode;
 
 public class BehaviourNodeItem : IDiagramNodeItem
 {
@@ -59,6 +62,16 @@ public class BehaviourNodeItem : IDiagramNodeItem
 
     public Vector2[] ConnectionPoints { get; set; }
 
+    public void Serialize(Invert.uFrame.Editor.JSONClass cls)
+    {
+       
+    }
+
+    public void Deserialize(Invert.uFrame.Editor.JSONClass cls)
+    {
+        
+    }
+
     public string Name
     {
         get
@@ -77,6 +90,7 @@ public class BehaviourNodeItem : IDiagramNodeItem
     public string FullLabel { get { return Name; } }
     public string Identifier { get; set; }
     public bool IsSelectable { get { return true; } }
+    public DiagramNode Node { get; set; }
 
     public UBSharedBehaviour Behaviour
     {
@@ -108,4 +122,6 @@ public class BehaviourNodeItem : IDiagramNodeItem
         _renameTo = name;
         Behaviour.name = name;
     }
+
+ 
 }

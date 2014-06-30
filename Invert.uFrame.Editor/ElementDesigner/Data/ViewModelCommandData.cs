@@ -1,12 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [Serializable]
 public class ViewModelCommandData : DiagramNodeItem, IViewModelItem
 {
+    public override void Serialize(JSONClass cls)
+    {
+        base.Serialize(cls);
+        cls.Add("ItemType", new JSONData(_parameterType));
+        cls.Add("IsYield", new JSONData(_isYield));
+
+    }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _parameterType = cls["ItemType"].Value;
+        _isYield = cls["IsYield"].AsBool;
+    }
+
     [SerializeField]
     private bool _isYield;
 

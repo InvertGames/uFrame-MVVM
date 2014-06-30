@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using HutongGames.PlayMaker;
 using UnityEngine;
 
 
@@ -188,30 +189,15 @@ public abstract class CheckerPlateViewBase : ViewBase {
     [UFRequireInstanceMethod("CanMoveToChanged")]
     public bool _BindCanMoveTo;
     
-    [UFGroup("CanMoveTo")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetCanMoveToTwoWayValue")]
-    public bool _CanMoveToIsTwoWay;
-    
     [UFToggleGroup("Position")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("PositionChanged")]
     public bool _BindPosition;
     
-    [UFGroup("Position")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetPositionTwoWayValue")]
-    public bool _PositionIsTwoWay;
-    
     [UFToggleGroup("IsEven")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("IsEvenChanged")]
     public bool _BindIsEven;
-    
-    [UFGroup("IsEven")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetIsEvenTwoWayValue")]
-    public bool _IsEvenIsTwoWay;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -249,48 +235,21 @@ public abstract class CheckerPlateViewBase : ViewBase {
     public virtual void CanMoveToChanged(bool value) {
     }
     
-    public virtual bool GetCanMoveToTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void PositionChanged(UnityEngine.Vector2 value) {
-    }
-    
-    public virtual UnityEngine.Vector2 GetPositionTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void IsEvenChanged(bool value) {
     }
     
-    public virtual bool GetIsEvenTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public override void Bind() {
         if (this._BindCanMoveTo) {
-            if (this._CanMoveToIsTwoWay) {
-                this.BindProperty(()=>CheckerPlate._CanMoveToProperty, this.CanMoveToChanged, this.GetCanMoveToTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckerPlate._CanMoveToProperty, this.CanMoveToChanged);
-            }
+            this.BindProperty(()=>CheckerPlate._CanMoveToProperty, this.CanMoveToChanged);
         }
         if (this._BindPosition) {
-            if (this._PositionIsTwoWay) {
-                this.BindProperty(()=>CheckerPlate._PositionProperty, this.PositionChanged, this.GetPositionTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckerPlate._PositionProperty, this.PositionChanged);
-            }
+            this.BindProperty(()=>CheckerPlate._PositionProperty, this.PositionChanged);
         }
         if (this._BindIsEven) {
-            if (this._IsEvenIsTwoWay) {
-                this.BindProperty(()=>CheckerPlate._IsEvenProperty, this.IsEvenChanged, this.GetIsEvenTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckerPlate._IsEvenProperty, this.IsEvenChanged);
-            }
+            this.BindProperty(()=>CheckerPlate._IsEvenProperty, this.IsEvenChanged);
         }
     }
     
@@ -318,19 +277,9 @@ public abstract class CheckersGameViewBase : ViewBase {
     [UFRequireInstanceMethod("BlackScoreChanged")]
     public bool _BindBlackScore;
     
-    [UFGroup("BlackScore")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetBlackScoreTwoWayValue")]
-    public bool _BlackScoreIsTwoWay;
-    
     [UFToggleGroup("Board")]
     [UnityEngine.HideInInspector()]
     public bool _BindBoard;
-    
-    [UFGroup("Board")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetBoardTwoWayValue")]
-    public bool _BoardIsTwoWay;
     
     [UFGroup("Board")]
     [UnityEngine.HideInInspector()]
@@ -342,11 +291,6 @@ public abstract class CheckersGameViewBase : ViewBase {
     
     [UFGroup("CurrentChecker")]
     [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetCurrentCheckerTwoWayValue")]
-    public bool _CurrentCheckerIsTwoWay;
-    
-    [UFGroup("CurrentChecker")]
-    [UnityEngine.HideInInspector()]
     public UnityEngine.GameObject _CurrentCheckerPrefab;
     
     [UFToggleGroup("CurrentPlayer")]
@@ -354,20 +298,10 @@ public abstract class CheckersGameViewBase : ViewBase {
     [UFRequireInstanceMethod("CurrentPlayerChanged")]
     public bool _BindCurrentPlayer;
     
-    [UFGroup("CurrentPlayer")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetCurrentPlayerTwoWayValue")]
-    public bool _CurrentPlayerIsTwoWay;
-    
     [UFToggleGroup("RedScore")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("RedScoreChanged")]
     public bool _BindRedScore;
-    
-    [UFGroup("RedScore")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetRedScoreTwoWayValue")]
-    public bool _RedScoreIsTwoWay;
     
     [UFToggleGroup("AllowedMoves")]
     [UnityEngine.HideInInspector()]
@@ -428,10 +362,6 @@ public abstract class CheckersGameViewBase : ViewBase {
     public virtual void BlackScoreChanged(int value) {
     }
     
-    public virtual int GetBlackScoreTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void BoardChanged(CheckerBoardViewModel value) {
         if (value == null) {
             Destroy(_Board.gameObject);
@@ -442,13 +372,6 @@ public abstract class CheckersGameViewBase : ViewBase {
         else {
             this._Board = ((CheckerBoardViewBase)(this.InstantiateView(this._BoardPrefab, value)));
         }
-    }
-    
-    public virtual CheckerBoardViewModel GetBoardTwoWayValue() {
-        if (this._Board == null || this._Board.ViewModelObject == null) {
-            return null;
-        }
-        return ((CheckerBoardViewModel)(this._Board.ViewModelObject));
     }
     
     public virtual void CurrentCheckerChanged(CheckerViewModel value) {
@@ -463,25 +386,10 @@ public abstract class CheckersGameViewBase : ViewBase {
         }
     }
     
-    public virtual CheckerViewModel GetCurrentCheckerTwoWayValue() {
-        if (this._CurrentChecker == null || this._CurrentChecker.ViewModelObject == null) {
-            return null;
-        }
-        return ((CheckerViewModel)(this._CurrentChecker.ViewModelObject));
-    }
-    
     public virtual void CurrentPlayerChanged(CheckerType value) {
     }
     
-    public virtual CheckerType GetCurrentPlayerTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void RedScoreChanged(int value) {
-    }
-    
-    public virtual int GetRedScoreTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void AllowedMovesAdded(CheckerMoveViewBase checkerMove) {
@@ -499,44 +407,19 @@ public abstract class CheckersGameViewBase : ViewBase {
     
     public override void Bind() {
         if (this._BindBlackScore) {
-            if (this._BlackScoreIsTwoWay) {
-                this.BindProperty(()=>CheckersGame._BlackScoreProperty, this.BlackScoreChanged, this.GetBlackScoreTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckersGame._BlackScoreProperty, this.BlackScoreChanged);
-            }
+            this.BindProperty(()=>CheckersGame._BlackScoreProperty, this.BlackScoreChanged);
         }
         if (this._BindBoard) {
-            if (this._BoardIsTwoWay) {
-                this.BindProperty(()=>CheckersGame._BoardProperty, this.BoardChanged, this.GetBoardTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckersGame._BoardProperty, this.BoardChanged);
-            }
+            this.BindProperty(()=>CheckersGame._BoardProperty, this.BoardChanged);
         }
         if (this._BindCurrentChecker) {
-            if (this._CurrentCheckerIsTwoWay) {
-                this.BindProperty(()=>CheckersGame._CurrentCheckerProperty, this.CurrentCheckerChanged, this.GetCurrentCheckerTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckersGame._CurrentCheckerProperty, this.CurrentCheckerChanged);
-            }
+            this.BindProperty(()=>CheckersGame._CurrentCheckerProperty, this.CurrentCheckerChanged);
         }
         if (this._BindCurrentPlayer) {
-            if (this._CurrentPlayerIsTwoWay) {
-                this.BindProperty(()=>CheckersGame._CurrentPlayerProperty, this.CurrentPlayerChanged, this.GetCurrentPlayerTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckersGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
-            }
+            this.BindProperty(()=>CheckersGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
         }
         if (this._BindRedScore) {
-            if (this._RedScoreIsTwoWay) {
-                this.BindProperty(()=>CheckersGame._RedScoreProperty, this.RedScoreChanged, this.GetRedScoreTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>CheckersGame._RedScoreProperty, this.RedScoreChanged);
-            }
+            this.BindProperty(()=>CheckersGame._RedScoreProperty, this.RedScoreChanged);
         }
         if (this._BindAllowedMoves) {
             var binding = this.BindToViewCollection(() => CheckersGame._AllowedMovesProperty);
@@ -586,40 +469,20 @@ public abstract class CheckerViewBase : ViewBase {
     [UFRequireInstanceMethod("IsKingMeChanged")]
     public bool _BindIsKingMe;
     
-    [UFGroup("IsKingMe")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetIsKingMeTwoWayValue")]
-    public bool _IsKingMeIsTwoWay;
-    
     [UFToggleGroup("Position")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("PositionChanged")]
     public bool _BindPosition;
-    
-    [UFGroup("Position")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetPositionTwoWayValue")]
-    public bool _PositionIsTwoWay;
     
     [UFToggleGroup("Selected")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("SelectedChanged")]
     public bool _BindSelected;
     
-    [UFGroup("Selected")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetSelectedTwoWayValue")]
-    public bool _SelectedIsTwoWay;
-    
     [UFToggleGroup("Type")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("TypeChanged")]
     public bool _BindType;
-    
-    [UFGroup("Type")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetTypeTwoWayValue")]
-    public bool _TypeIsTwoWay;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -679,63 +542,27 @@ public abstract class CheckerViewBase : ViewBase {
     public virtual void IsKingMeChanged(bool value) {
     }
     
-    public virtual bool GetIsKingMeTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void PositionChanged(UnityEngine.Vector2 value) {
-    }
-    
-    public virtual UnityEngine.Vector2 GetPositionTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void SelectedChanged(bool value) {
     }
     
-    public virtual bool GetSelectedTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void TypeChanged(CheckerType value) {
-    }
-    
-    public virtual CheckerType GetTypeTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public override void Bind() {
         if (this._BindIsKingMe) {
-            if (this._IsKingMeIsTwoWay) {
-                this.BindProperty(()=>Checker._IsKingMeProperty, this.IsKingMeChanged, this.GetIsKingMeTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>Checker._IsKingMeProperty, this.IsKingMeChanged);
-            }
+            this.BindProperty(()=>Checker._IsKingMeProperty, this.IsKingMeChanged);
         }
         if (this._BindPosition) {
-            if (this._PositionIsTwoWay) {
-                this.BindProperty(()=>Checker._PositionProperty, this.PositionChanged, this.GetPositionTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>Checker._PositionProperty, this.PositionChanged);
-            }
+            this.BindProperty(()=>Checker._PositionProperty, this.PositionChanged);
         }
         if (this._BindSelected) {
-            if (this._SelectedIsTwoWay) {
-                this.BindProperty(()=>Checker._SelectedProperty, this.SelectedChanged, this.GetSelectedTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>Checker._SelectedProperty, this.SelectedChanged);
-            }
+            this.BindProperty(()=>Checker._SelectedProperty, this.SelectedChanged);
         }
         if (this._BindType) {
-            if (this._TypeIsTwoWay) {
-                this.BindProperty(()=>Checker._TypeProperty, this.TypeChanged, this.GetTypeTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>Checker._TypeProperty, this.TypeChanged);
-            }
+            this.BindProperty(()=>Checker._TypeProperty, this.TypeChanged);
         }
     }
     

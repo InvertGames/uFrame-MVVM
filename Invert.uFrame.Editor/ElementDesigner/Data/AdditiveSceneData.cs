@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -46,6 +47,7 @@ public class AdditiveSceneData : IDiagramNodeItem
     private string _identifier;
     public string Identifier { get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier; } }
     public bool IsSelectable { get { return true; } }
+    public DiagramNode Node { get; set; }
 
 
     public void Remove(IDiagramNode diagramNode)
@@ -56,5 +58,15 @@ public class AdditiveSceneData : IDiagramNodeItem
     public void Rename( IDiagramNode data, string name)
     {
         Name = name;
+    }
+
+    public void Serialize(JSONClass cls)
+    {
+       
+    }
+
+    public void Deserialize(JSONClass cls)
+    {
+        
     }
 }

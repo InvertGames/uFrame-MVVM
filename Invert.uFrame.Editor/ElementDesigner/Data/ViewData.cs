@@ -1,63 +1,31 @@
+using Invert.uFrame.Editor;
+using Invert.uFrame.Editor.Refactoring;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Invert.uFrame.Editor.Refactoring;
-using UnityEditor;
 using UnityEngine;
 
 [Serializable]
 public class ViewData : DiagramNode, ISubSystemType
 {
     [SerializeField]
-    private string _forAssemblyQualifiedName;
-    public override string Label { get { return Name; } }
+    private string _baseViewIdentifier;
 
     [SerializeField]
     private List<string> _componentIdentifiers = new List<string>();
 
     [SerializeField]
-    private string _baseViewIdentifier;
+    private string _forAssemblyQualifiedName;
 
-    public IEnumerable<ViewComponentData> Components
-    {
-        get { return Data.ViewComponents.Where(p => ComponentIdentifiers.Contains(p.Identifier)); }
-    }
-
-    public override IEnumerable<IDiagramNodeItem> Items
+    /// <summary>
+    /// The baseview class if any
+    /// </summary>
+    public ViewData BaseView
     {
         get
         {
-            yield break;
-            //if (Behaviours == null)
-            //    yield break;
-
-            //foreach (var behaviourSubItem in Behaviours)
-            //{
-            //    yield return behaviourSubItem;
-            //}
-        }
-    }
-
-    public override RenameRefactorer CreateRenameRefactorer()
-    {
-        return new RenameViewRefactorer(this);
-    }
-    public override bool EndEditing()
-    {
-        var oldAssemblyName = AssemblyQualifiedName;
-        if (!base.EndEditing()) return false;
-        foreach (var v in Data.Views.Where(p => p.ForAssemblyQualifiedName == oldAssemblyName))
-        {
-            v.ForAssemblyQualifiedName = AssemblyQualifiedName;
-        }
-        return true;
-    }
-
-    public ElementDataBase ViewForElement
-    {
-        get
-        {
-            return Data.ViewModels.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
+            if (string.IsNullOrEmpty(BaseViewIdentifier)) return null;
+            return Data.Views.FirstOrDefault(p => p.Identifier == BaseViewIdentifier);
         }
     }
 
@@ -69,6 +37,7 @@ public class ViewData : DiagramNode, ISubSystemType
         get { return _baseViewIdentifier; }
         set { _baseViewIdentifier = value; }
     }
+
     /// <summary>
     /// The name of the view that this view will derive from
     /// </summary>
@@ -89,15 +58,29 @@ public class ViewData : DiagramNode, ISubSystemType
             return "[None]";
         }
     }
-    /// <summary>
-    /// The baseview class if any
-    /// </summary>
-    public ViewData BaseView
+
+    public List<string> ComponentIdentifiers
+    {
+        get { return _componentIdentifiers; }
+        set { _componentIdentifiers = value; }
+    }
+
+    public IEnumerable<ViewComponentData> Components
+    {
+        get { return Data.ViewComponents.Where(p => ComponentIdentifiers.Contains(p.Identifier)); }
+    }
+
+    public override IEnumerable<IDiagramNodeItem> ContainedItems
+    {
+        get { yield break; }
+        set { }
+    }
+
+    public Type CurrentViewType
     {
         get
         {
-            if (string.IsNullOrEmpty(BaseViewIdentifier)) return null;
-            return Data.Views.FirstOrDefault(p => p.Identifier == BaseViewIdentifier);
+            return Type.GetType(ViewAssemblyQualifiedName);
         }
     }
 
@@ -107,6 +90,22 @@ public class ViewData : DiagramNode, ISubSystemType
         set { _forAssemblyQualifiedName = value; }
     }
 
+    public override IEnumerable<IDiagramNodeItem> Items
+    {
+        get
+        {
+            yield break;
+            //if (Behaviours == null)
+            //    yield break;
+
+            //foreach (var behaviourSubItem in Behaviours)
+            //{
+            //    yield return behaviourSubItem;
+            //}
+        }
+    }
+
+    public override string Label { get { return Name; } }
 
     public string NameAsView
     {
@@ -115,6 +114,7 @@ public class ViewData : DiagramNode, ISubSystemType
             return string.Format("{0}", Name);
         }
     }
+
     public string NameAsViewBase
     {
         get
@@ -122,6 +122,7 @@ public class ViewData : DiagramNode, ISubSystemType
             return string.Format("{0}Base", Name);
         }
     }
+
     public string NameAsViewViewBase
     {
         get
@@ -129,6 +130,7 @@ public class ViewData : DiagramNode, ISubSystemType
             return string.Format("{0}ViewBase", Name);
         }
     }
+
     public string ViewAssemblyQualifiedName
     {
         get
@@ -136,34 +138,51 @@ public class ViewData : DiagramNode, ISubSystemType
             return UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsView);
         }
     }
-    public Type CurrentViewType
+
+    public ElementData ViewForElement
     {
         get
         {
-            return Type.GetType(ViewAssemblyQualifiedName);
+            return Data.Elements.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
         }
     }
 
-    public override void RemoveFromDiagram()
+    public override bool CanCreateLink(IDrawable target)
     {
-        base.RemoveFromDiagram();
-        Data.Views.Remove(this);
-        foreach (var source in Data.Views.Where(p=>p.ForAssemblyQualifiedName == this.AssemblyQualifiedName))
-        {
-            source.ForAssemblyQualifiedName = null;
-        }
+        return target is ViewData && target != this;
     }
+
     public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var i = target as ViewData;
 
         i.ForAssemblyQualifiedName = AssemblyQualifiedName;
-        
     }
-    public override bool CanCreateLink(IDrawable target)
+
+    public override RenameRefactorer CreateRenameRefactorer()
     {
-        return target is ViewData && target != this;
+        return new RenameViewRefactorer(this);
     }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _forAssemblyQualifiedName = cls["ForAssemblyQualifiedName"].Value;
+        _baseViewIdentifier = cls["BaseViewIdentifier"].Value;
+        _componentIdentifiers = cls["ComponentIdentifiers"].AsArray.DeserializePrimitiveArray(n => n.Value).ToList();
+    }
+
+    public override bool EndEditing()
+    {
+        var oldAssemblyName = AssemblyQualifiedName;
+        if (!base.EndEditing()) return false;
+        foreach (var v in Data.Views.Where(p => p.ForAssemblyQualifiedName == oldAssemblyName))
+        {
+            v.ForAssemblyQualifiedName = AssemblyQualifiedName;
+        }
+        return true;
+    }
+
     public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] nodes)
     {
         var vm = ViewForElement;
@@ -187,15 +206,17 @@ public class ViewData : DiagramNode, ISubSystemType
         }
     }
 
-    //public BehaviourSubItem[] Behaviours { get; set; }
-
-    public List<string> ComponentIdentifiers
+    public override void RemoveFromDiagram()
     {
-        get { return _componentIdentifiers; }
-        set { _componentIdentifiers = value; }
+        base.RemoveFromDiagram();
+        Data.RemoveNode(this);
+        foreach (var source in Data.Views.Where(p => p.ForAssemblyQualifiedName == this.AssemblyQualifiedName))
+        {
+            source.ForAssemblyQualifiedName = null;
+        }
     }
 
-
+    //public BehaviourSubItem[] Behaviours { get; set; }
     public override void RemoveLink(IDiagramNode target)
     {
         var viewData = target as ViewData;
@@ -210,6 +231,11 @@ public class ViewData : DiagramNode, ISubSystemType
         //if (target is )
     }
 
-
-   
+    public override void Serialize(JSONClass cls)
+    {
+        base.Serialize(cls);
+        cls.Add("ForAssemblyQualifiedName", new JSONData(_forAssemblyQualifiedName));
+        cls.Add("BaseViewIdentifier", new JSONData(_baseViewIdentifier));
+        cls.AddPrimitiveArray("ComponentIdentifiers", _componentIdentifiers, i => new JSONData(i));
+    }
 }

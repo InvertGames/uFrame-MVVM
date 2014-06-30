@@ -2,11 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
 public class SceneManagerTransition : IDiagramNodeItem
 {
+    public virtual void Serialize(JSONClass cls)
+    {
+        cls.Add("ToIdentifier",_toIdentifier);
+        cls.Add("Name",_name);
+        cls.Add("FromCommand",_fromCommand);
+    }
+
+    public void Deserialize(JSONClass cls)
+    {
+        _name = cls["Name"].Value;
+        _toIdentifier = cls["ToIdentifier"].Value;
+        _fromCommand = cls["FromCommand"].Value;
+
+    }
     [SerializeField]
     private string _toIdentifier;
     [SerializeField]
@@ -76,6 +91,7 @@ public class SceneManagerTransition : IDiagramNodeItem
     private string _identifier;
     public string Identifier{ get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier;}}
     public bool IsSelectable { get { return false; } }
+    public DiagramNode Node { get; set; }
 
     public string NameAsSettingsField
     {

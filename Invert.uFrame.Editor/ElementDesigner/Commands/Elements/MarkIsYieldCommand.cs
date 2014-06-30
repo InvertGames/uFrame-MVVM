@@ -2,6 +2,10 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class MarkIsTemplateCommand : EditorCommand<ElementData>, IDiagramNodeCommand
     {
+        public override string Group
+        {
+            get { return "Flags"; }
+        }
         public override string Name
         {
             get { return "Is Template"; }
@@ -27,6 +31,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             arg.IsTemplate = !arg.IsTemplate;
         }
     }
+
     public class MarkIsYieldCommand : EditorCommand<ViewModelCommandData>, IDiagramNodeItemCommand
     {
         public override string Name

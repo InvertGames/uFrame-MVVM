@@ -12,6 +12,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             node.Collections.Add(new ViewModelCollectionData()
             {
+                Node = node,
                 Name = node.Data.GetUniqueName("NewCollection"),
                 ItemType = typeof(string)
             });

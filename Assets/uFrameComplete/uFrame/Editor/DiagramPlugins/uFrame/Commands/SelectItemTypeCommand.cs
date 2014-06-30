@@ -39,7 +39,7 @@ public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
 
         if (!PrimitiveOnly)
         {
-            foreach (var viewModel in diagramData.ViewModels)
+            foreach (var viewModel in diagramData.Elements)
             {
                 yield return new ElementItemType()
                 {

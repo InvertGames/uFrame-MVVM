@@ -53,10 +53,11 @@ namespace Invert.uFrame.Editor
                     }
                     else
                     {
-                        if (command.CanPerform(argument) != null)
+                        var canPerform = command.CanPerform(argument);
+                        if (canPerform != null)
                         {
                             if (command.ShowAsDiabled)
-                                genericMenu.AddDisabledItem(new GUIContent(Flatten ? editorCommand.Title : editorCommand.Path));
+                                genericMenu.AddDisabledItem(new GUIContent((Flatten ? editorCommand.Title : editorCommand.Path) + " : " +canPerform));
                         }
                         else
                         {
@@ -82,5 +83,9 @@ namespace Invert.uFrame.Editor
         }
 
         public ICommandHandler Handler { get; set; }
+        public void GoBottom()
+        {
+                
+        }
     }
 }

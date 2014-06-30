@@ -1,7 +1,6 @@
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
-using Invert.uFrame.Editor.ElementDesigner.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,6 +72,8 @@ public class ElementsDiagram : ICommandHandler
             Refresh(true);
         }
     }
+
+    
 
     public Rect DiagramSize
     {
@@ -244,33 +245,40 @@ public class ElementsDiagram : ICommandHandler
 
     public ElementsDiagram(string assetPath)
     {
-        
         var fileExtension = Path.GetExtension(assetPath);
         if (string.IsNullOrEmpty(fileExtension)) fileExtension = ".asset";
-        Repository = uFrameEditor.Container.Resolve<IElementsDataRepository>(fileExtension);
-        if (Repository != null)
+        var repositories = uFrameEditor.Container.ResolveAll<IElementsDataRepository>();
+        foreach (var elementsDataRepository in repositories)
         {
-            Repository.LoadDiagram(assetPath);
+            var diagram = elementsDataRepository.LoadDiagram(assetPath);
+
+            if (diagram == null) continue;
+
+            Repository = elementsDataRepository;
+            Data = diagram;
+
+            break;
+        }
+
+        if (Repository == null || Data == null)
+        {
+            throw new Exception(
+                string.Format(
+                    "The asset with the extension {0} could not be loaded.  Do you have the plugin installed?",
+                    fileExtension
+                    ));
         }
         else
         {
-            throw new Exception(
-                string.Format("The asset with the extension {0} could not be loaded.  Do you have the plugin installed?",
-                fileExtension
-                ));
-        }
-
-        Data = Repository.LoadDiagram(assetPath);
-
-
-        Data.Settings.CodePathStrategy = 
-            uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.Settings.CodePathStrategyName ?? "Default");
-        Data.Settings.CodePathStrategy.AssetPath = 
-            assetPath.Replace(string.Format("{0}{1}", Path.GetFileNameWithoutExtension(assetPath), fileExtension), "").Replace("/",Path.DirectorySeparatorChar.ToString()); 
+            Data.Settings.CodePathStrategy =
+             uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.Settings.CodePathStrategyName ?? "Default");
+            Data.Settings.CodePathStrategy.AssetPath =
+                assetPath.Replace(string.Format("{0}{1}", Path.GetFileNameWithoutExtension(assetPath), fileExtension), "").Replace("/", Path.DirectorySeparatorChar.ToString()); 
         
+            
+        }
     }
 
-   
     public INodeDrawer CreateDrawerFor(IDiagramNode node)
     {
         return uFrameEditor.CreateDrawer(node, this);
@@ -370,13 +378,27 @@ public class ElementsDiagram : ICommandHandler
 
     public void Draw()
     {
-        //var beforeScale = GUI.matrix;
-        //var guiTranslation = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, Vector3.one);
-        //var guiScale = Matrix4x4.Scale(new Vector3(0.75f, 0.75f, 0.75f));
-        //GUI.matrix = guiTranslation * guiScale * guiTranslation.inverse;
 
-        //Repository.FastUpdate();
-        SerializedObject.Update();
+        if (Data is ElementDesignerData)
+        {
+            var rect = new Rect(50f, 50f, 200f, 75f);
+            GUI.Box(rect,string.Empty);
+            GUILayout.BeginArea(rect);
+            GUILayout.Label("You need to upgrade to the new "+Environment.NewLine+"file format for future compatability.");
+            if (GUILayout.Button("Upgrade Now"))
+            {
+                this.ExecuteCommand(new ConvertToJSON());
+                return;
+            }
+            GUILayout.EndArea();
+        }
+        
+        //var diagramSize = DiagramSize;
+        var content = new GUIContent(Data.Name);
+      //  var size = UFStyles.DiagramTitle.CalcSize(content);
+        GUI.Box(new Rect( 0,0f,Rect.width,30f),Data.Name,UFStyles.DiagramTitle);
+
+        //SerializedObject.Update();
         string focusItem = null;
 
         foreach (var drawer in NodeDrawers.OrderBy(p => p.IsSelected).ToArray())
@@ -405,7 +427,7 @@ public class ElementsDiagram : ICommandHandler
         {
             EditorGUI.FocusTextInControl(focusItem);
         }
-        SerializedObject.ApplyModifiedProperties();
+        //SerializedObject.ApplyModifiedProperties();
         //Repository.FastSave();
         if (!EditorApplication.isCompiling)
         {
@@ -425,7 +447,7 @@ public class ElementsDiagram : ICommandHandler
             {
                 diagramItem.Location += (newPosition * (1f / Scale));
                 
-                //diagramItem.Location = new Vector2(Mathf.Round((diagramItem.Location.x)/ SnapSize) * SnapSize, Mathf.Round(diagramItem.Location.y / SnapSize) * SnapSize);
+                diagramItem.Location = new Vector2(Mathf.Round((diagramItem.Location.x)/ SnapSize) * SnapSize, Mathf.Round(diagramItem.Location.y / SnapSize) * SnapSize);
 
                 //var newPositionRect = new Rect(newPosition.x, newPosition.y, diagramItem.Position.width,
                 //    diagramItem.Position.height);
@@ -530,6 +552,16 @@ public class ElementsDiagram : ICommandHandler
             }
             UFStyles.DrawExpandableBox(SelectionRect, UFStyles.BoxHighlighter4, string.Empty);
         }
+        if (Data is JsonElementDesignerData)
+        {
+            var dd = Data as JsonElementDesignerData;
+            if (dd.Errors)
+            {
+                GUI.Box(Rect, dd.Error.Message + Environment.NewLine + dd.Error.StackTrace);    
+            }
+            
+           
+        }
     }
 
     public DiagramNodeDrawer<TData> GetDrawer<TData>(TData data) where TData : IDiagramNode
@@ -591,6 +623,7 @@ public class ElementsDiagram : ICommandHandler
             diagramItem.Dirty = true;
             var drawer = CreateDrawerFor(diagramItem);
             if (drawer == null) continue;
+            
             NodeDrawers.Add(drawer);
 
             if (refreshDrawers)
@@ -877,7 +910,7 @@ public class ElementsDiagram : ICommandHandler
             }
             else if (SelectedData != null)
             {
-                ExecuteCommand(e => SelectedItem.RemoveLink(null));    
+                ExecuteCommand(e => SelectedData.RemoveLink(null));
             }
         }
         if (DidDrag)
@@ -891,7 +924,35 @@ public class ElementsDiagram : ICommandHandler
     {
         this.ExecuteCommand(new SimpleEditorCommand<ElementsDiagram>(action));
     }
+    public void HandleKeyEvent(Event evt)
+    {
+        var bindings = uFrameEditor.KeyBindings;
+        foreach (var keyBinding in bindings)
+        {
+            if (keyBinding.Key != evt.keyCode) continue;
+            if (keyBinding.RequireAlt && !evt.alt) continue;
+            if (keyBinding.RequireShift && !evt.shift) continue;
+            if (keyBinding.RequireControl && !evt.control) continue;
 
+            var command = uFrameEditor.Container.Resolve(keyBinding.CommandType, keyBinding.Name) as IEditorCommand;
+            if (command != null)
+            {
+                var acceptableArguments = ContextObjects.Where(p => command.For.IsAssignableFrom(p.GetType())).ToArray();
+                foreach (var argument in acceptableArguments)
+                {
+                    if (command.CanPerform(argument) == null)
+                    {
+#if DEBUG
+                        UnityEngine.Debug.Log("Key Command Executed: " + command.GetType().Name);
+#endif
+                        this.ExecuteCommand(command);
+                        return;
+                    }
+                }
+
+            }
+        }
+    }
 
     public IEnumerable<object> ContextObjects
     {
@@ -939,6 +1000,8 @@ public class ElementsDiagram : ICommandHandler
             }
         }
     }
+
+    public Rect Rect { get; set; }
 
     public void CommandExecuted(IEditorCommand command)
     {
