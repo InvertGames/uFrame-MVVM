@@ -128,18 +128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ed389338bd40e4199be13947bc8ca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _AmbientLight:
-    r: .200000003
-    g: .200000003
-    b: .200000003
-    a: 1
+  _AmbientLight: {r: .200000003, g: .200000003, b: .200000003, a: 1}
   _FlareStrength: 1
   _Fog: 0
-  _FogColor:
-    r: .5
-    g: .5
-    b: .5
-    a: 1
+  _FogColor: {r: .5, g: .5, b: .5, a: 1}
   _FogDensity: .00999999978
   _FogMode: 3
   _HaloStrength: .5

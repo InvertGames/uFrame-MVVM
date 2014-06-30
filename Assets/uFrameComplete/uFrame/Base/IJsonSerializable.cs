@@ -6,3 +6,4 @@ public interface IJsonSerializable
 
     JSONNode Serialize();
 }
+

@@ -6,7 +6,13 @@ public class ViewDataGenerator : NodeItemGenerator<ViewData>
 {
     public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewData item)
     {
-        yield return new ViewGenerator()
+        yield return CreateEditableGenerator(pathStrategy, diagramData, item);
+        yield return CreateDesignerGenerator(pathStrategy, diagramData, item);
+    }
+
+    protected virtual ViewGenerator CreateEditableGenerator(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewData item)
+    {
+        return new ViewGenerator()
         {
             IsDesignerFile = false,
             DiagramData = diagramData,
@@ -14,7 +20,11 @@ public class ViewDataGenerator : NodeItemGenerator<ViewData>
             Filename = pathStrategy.GetEditableViewFilename(item.NameAsView),
             RelatedType = item.CurrentViewType
         };
-        yield return new ViewGenerator()
+    }
+
+    protected virtual ViewGenerator CreateDesignerGenerator(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewData item)
+    {
+        return new ViewGenerator()
         {
             IsDesignerFile = true,
             DiagramData = diagramData,
@@ -27,7 +37,13 @@ public class ViewComponentDataGenerator : NodeItemGenerator<ViewComponentData>
 {
     public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewComponentData item)
     {
-        yield return new ViewComponentGenerator()
+        yield return CreateEditableGenerator(pathStrategy, diagramData, item);
+        yield return CreateDesignerGenerator(pathStrategy, diagramData, item);
+    }
+
+    protected virtual ViewComponentGenerator CreateEditableGenerator(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewComponentData item)
+    {
+        return new ViewComponentGenerator()
         {
             IsDesignerFile = false,
             DiagramData = diagramData,
@@ -35,7 +51,11 @@ public class ViewComponentDataGenerator : NodeItemGenerator<ViewComponentData>
             Filename = pathStrategy.GetEditableViewComponentFilename(item.Name),
             RelatedType = item.CurrentType
         };
-        yield return new ViewComponentGenerator()
+    }
+
+    protected virtual ViewComponentGenerator CreateDesignerGenerator(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewComponentData item)
+    {
+        return new ViewComponentGenerator()
         {
             IsDesignerFile = true,
             DiagramData = diagramData,

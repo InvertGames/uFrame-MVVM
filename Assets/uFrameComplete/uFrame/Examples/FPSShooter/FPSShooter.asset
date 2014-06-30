@@ -129,18 +129,22 @@ MonoBehaviour:
   - _identifier: ffc0670f-b669-43c4-8f62-cd33dd841cea
     _isCollapsed: 0
     _name: FPSMainMenuManager
+    _locations:
+      _keys: []
+      _values: []
+    _subSystemIdentifier: b85d78ed-7b8b-4cac-b571-663fb7e14d5c
     _transitions:
     - _toIdentifier: c20e5c22-554e-4a55-8e50-b8a8579ac291
       _name: Play
       _fromCommand: 7e6a9218-3244-415b-b068-517b5b8e4254
       _identifier: 
-    _subSystemIdentifier: b85d78ed-7b8b-4cac-b571-663fb7e14d5c
-    _locations:
-      _keys: []
-      _values: []
   - _identifier: c20e5c22-554e-4a55-8e50-b8a8579ac291
     _isCollapsed: 0
     _name: WavesFPSGameManager
+    _locations:
+      _keys: []
+      _values: []
+    _subSystemIdentifier: 31ed3012-bc6f-4845-a88e-ec862d3a41e9
     _transitions:
     - _toIdentifier: ffc0670f-b669-43c4-8f62-cd33dd841cea
       _name: MainMenu
@@ -150,14 +154,24 @@ MonoBehaviour:
       _name: QuitGame
       _fromCommand: 9112483a-43cc-426c-a75d-2394f1232b6c
       _identifier: 
-    _subSystemIdentifier: 31ed3012-bc6f-4845-a88e-ec862d3a41e9
-    _locations:
-      _keys: []
-      _values: []
   _subSystems:
   - _identifier: 20e28e0d-c3de-4040-bbc8-242067bd65eb
-    _isCollapsed: 1
+    _isCollapsed: 0
     _name: FPSCore
+    _collapsedValues:
+      _keys:
+      - e6ac9ea4-a1ed-46b2-9701-fa5bd4b9a0da
+      - a4be6b71-a798-483a-b041-e12b54261d8d
+      - ed8c593a-cc32-4b40-9119-e89799acbdbe
+      - 801e2297-7cdd-48b9-ad8e-910d139af78c
+      - 6c69d3dd-3acb-4653-9f83-0ef43f97a038
+      - b9601dbc-d880-4ebb-bed5-7c29931171ea
+      - 4208963e-0eff-4095-b37b-71ed3d7aaa4b
+      - d99ffa35-1948-411e-a35c-db0998c7b4bf
+      - 6c205962-10b5-4632-bcea-d2ae1207cd84
+      - 31fe2e46-9b81-49bb-8ffc-43f6de2cb380
+      - 20e28e0d-c3de-4040-bbc8-242067bd65eb
+      _values: 0101010100010000000101
     _imports: []
     _locations:
       _keys:
@@ -182,23 +196,12 @@ MonoBehaviour:
       - {x: 80, y: 470}
       - {x: 544.999146, y: 80}
       - {x: 784.999756, y: 259.999939}
-    _collapsedValues:
-      _keys:
-      - e6ac9ea4-a1ed-46b2-9701-fa5bd4b9a0da
-      - a4be6b71-a798-483a-b041-e12b54261d8d
-      - ed8c593a-cc32-4b40-9119-e89799acbdbe
-      - 801e2297-7cdd-48b9-ad8e-910d139af78c
-      - 6c69d3dd-3acb-4653-9f83-0ef43f97a038
-      - b9601dbc-d880-4ebb-bed5-7c29931171ea
-      - 4208963e-0eff-4095-b37b-71ed3d7aaa4b
-      - d99ffa35-1948-411e-a35c-db0998c7b4bf
-      - 6c205962-10b5-4632-bcea-d2ae1207cd84
-      - 31fe2e46-9b81-49bb-8ffc-43f6de2cb380
-      - 20e28e0d-c3de-4040-bbc8-242067bd65eb
-      _values: 0101010100010000000101
   - _identifier: 31ed3012-bc6f-4845-a88e-ec862d3a41e9
     _isCollapsed: 0
     _name: Waves
+    _collapsedValues:
+      _keys: []
+      _values: 
     _imports:
     - 20e28e0d-c3de-4040-bbc8-242067bd65eb
     - 64ead01d-e7d6-4ec4-a17c-b633995fd80e
@@ -212,12 +215,12 @@ MonoBehaviour:
       - {x: 110, y: 260}
       - {x: 410, y: 40}
       - {x: 580, y: 310}
-    _collapsedValues:
-      _keys: []
-      _values: 
   - _identifier: b85d78ed-7b8b-4cac-b571-663fb7e14d5c
     _isCollapsed: 0
     _name: MenuSystem
+    _collapsedValues:
+      _keys: []
+      _values: 
     _imports: []
     _locations:
       _keys:
@@ -226,32 +229,28 @@ MonoBehaviour:
       _values:
       - {x: 30, y: 20}
       - {x: 150, y: 100}
-    _collapsedValues:
-      _keys: []
-      _values: 
   _version: 
   _viewComponents:
   - _identifier: 7edc8925-6c76-4a63-800b-cab6f6921763
     _isCollapsed: 0
     _name: FPSWeaponFire
-    _elementIdentifier: 801e2297-7cdd-48b9-ad8e-910d139af78c
     _baseIdentifier: 
+    _elementIdentifier: 801e2297-7cdd-48b9-ad8e-910d139af78c
   - _identifier: b6ef35de-4e6a-4fb7-93b6-c687334bc2f2
     _isCollapsed: 0
     _name: FPSCrosshair
-    _elementIdentifier: 801e2297-7cdd-48b9-ad8e-910d139af78c
     _baseIdentifier: 
+    _elementIdentifier: 801e2297-7cdd-48b9-ad8e-910d139af78c
   - _identifier: bb6a42ba-7a4b-40ae-a9e6-14673882eceb
     _isCollapsed: 0
     _name: RocketLauncher
-    _elementIdentifier: 
     _baseIdentifier: 7edc8925-6c76-4a63-800b-cab6f6921763
+    _elementIdentifier: 
   _viewModels:
   - _identifier: 6c69d3dd-3acb-4653-9f83-0ef43f97a038
     _isCollapsed: 0
     _name: FPSDamageable
     _isMultiInstance: 1
-    _isTemplate: 1
     _baseType: ViewModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     _collapsedValues:
       _keys: []
@@ -277,11 +276,11 @@ MonoBehaviour:
       _name: State
       _type: FPSPlayerState, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _isRealTimeProperty: 0
+    _isTemplate: 1
   - _identifier: d99ffa35-1948-411e-a35c-db0998c7b4bf
     _isCollapsed: 0
     _name: FPSEnemy
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: FPSDamageable, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     _collapsedValues:
       _keys: []
@@ -300,11 +299,11 @@ MonoBehaviour:
       _name: Speed
       _type: System.Single, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
       _isRealTimeProperty: 0
+    _isTemplate: 0
   - _identifier: b9601dbc-d880-4ebb-bed5-7c29931171ea
     _isCollapsed: 1
     _name: FPSGame
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: 
     _collapsedValues:
       _keys:
@@ -353,11 +352,11 @@ MonoBehaviour:
       _name: Kills
       _type: System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
       _isRealTimeProperty: 0
+    _isTemplate: 0
   - _identifier: 4208963e-0eff-4095-b37b-71ed3d7aaa4b
     _isCollapsed: 0
     _name: FPSPlayer
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: FPSDamageable, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     _collapsedValues:
       _keys: []
@@ -402,11 +401,11 @@ MonoBehaviour:
       _name: CurrentWeaponIndex
       _type: System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
       _isRealTimeProperty: 0
+    _isTemplate: 0
   - _identifier: 801e2297-7cdd-48b9-ad8e-910d139af78c
     _isCollapsed: 1
     _name: FPSWeapon
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: ViewModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     _collapsedValues:
       _keys:
@@ -506,11 +505,11 @@ MonoBehaviour:
       _name: SpreadMultiplier
       _type: System.Single, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
       _isRealTimeProperty: 0
+    _isTemplate: 0
   - _identifier: c92f0547-4b54-45f3-9580-0d6c0e54cade
     _isCollapsed: 0
     _name: WavesFPSGame
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: FPSGame, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     _collapsedValues:
       _keys: []
@@ -541,11 +540,11 @@ MonoBehaviour:
       _name: CurrentWave
       _type: System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
       _isRealTimeProperty: 0
+    _isTemplate: 0
   - _identifier: 30d54e4d-77a0-4b04-9320-256c6cdc453b
     _isCollapsed: 0
     _name: FPSMenu
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: ViewModel
     _collapsedValues:
       _keys: []
@@ -565,11 +564,11 @@ MonoBehaviour:
       - {x: 170, y: 140}
       - {x: 349, y: 104}
     _properties: []
+    _isTemplate: 0
   - _identifier: 03aa1998-c4bb-4913-a9ad-940e0537e5cc
     _isCollapsed: 0
     _name: DeathMatchGame
     _isMultiInstance: 0
-    _isTemplate: 0
     _baseType: FPSGame, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     _collapsedValues:
       _keys: []
@@ -582,63 +581,64 @@ MonoBehaviour:
       _values:
       - {x: 410, y: 330}
     _properties: []
+    _isTemplate: 0
   _views:
   - _identifier: 5267caf8-1f3c-40ec-abc7-49eb67632870
     _isCollapsed: 0
     _name: FPSGameView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSGame, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: e6280b0b-8091-4d1a-83d2-bac7580a9694
     _isCollapsed: 0
     _name: FPSWeaponView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSWeapon, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: ef08f7fb-6ebe-4149-adbe-32d6a5abb2dc
     _isCollapsed: 0
     _name: FPSPlayerView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSPlayer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: 28b8a89b-bc19-4f4e-859a-c9e9a163698f
     _isCollapsed: 0
     _name: FPSPlayerHUDView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSPlayer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: fae4b0aa-48eb-4a53-9711-cfb2b7553d6f
     _isCollapsed: 0
     _name: WavesHUDView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: WavesFPSGame, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: 070b669d-97b0-4feb-9d34-323a2748a1be
     _isCollapsed: 0
     _name: FPSHUDView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSGame, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: 69fbd9a4-1b67-4540-be97-ba9a654fc340
     _isCollapsed: 0
     _name: FPSEnemyView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSEnemy, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   - _identifier: bde1a7e6-8c26-4e35-a635-c43e9e6d2fa0
     _isCollapsed: 0
     _name: FPSMainMenuView
+    _baseViewIdentifier: 
+    _componentIdentifiers: []
     _forAssemblyQualifiedName: FPSMenu, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    _componentIdentifiers: []
-    _baseViewIdentifier: 
   _settings:
     _associationLinkColor: {r: 1, g: 1, b: 1, a: 1}
     _definitionLinkColor: {r: 0, g: 1, b: 1, a: 1}
@@ -650,12 +650,4 @@ MonoBehaviour:
     _viewLinkColor: {r: 0, g: 0, b: 1, a: 1}
     _snapSize: 10
   _filterState:
-    _defaultFilter:
-      _locations:
-        _keys: []
-        _values: []
-      _collapsedValues:
-        _keys: []
-        _values: 
-    _persistedFilterStack:
-    - FPSCore
+    _persistedFilterStack: []

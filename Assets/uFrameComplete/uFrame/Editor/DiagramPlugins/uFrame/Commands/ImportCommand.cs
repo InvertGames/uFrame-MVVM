@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class ImportCommand : ElementsDiagramToolbarCommand
 {
+    public override ToolbarPosition Position
+    {
+        get { return ToolbarPosition.BottomRight; }
+    }
+
     public override void Perform(ElementsDiagram diagram)
     {
         var typesList = ActionSheetHelpers.GetDerivedTypes<ViewModel>(false, false).ToList();

@@ -30,18 +30,12 @@ public class ViewGenerator : ViewClassGenerator
 
     public void AddView(ViewData view)
     {
-
-
-
-        var decl = new CodeTypeDeclaration(view.NameAsView);
-        decl.IsPartial = true;
+        var decl = new CodeTypeDeclaration(view.NameAsView) {IsPartial = true};
         if (view.ViewForElement.IsTemplate)
         {
             decl.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
         }
-        // var baseView = new CodeTypeReference(_diagramData.NameAsViewBase);
-        //baseView.TypeArguments.Add(_diagramData.NameAsViewModel);
-
+      
         if (IsDesignerFile)
         {
             var viewViewBase = View.BaseView != null;

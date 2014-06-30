@@ -67,6 +67,11 @@ public class BehaviourNodeItem : IDiagramNodeItem
        
     }
 
+    public void Deserialize(Invert.uFrame.Editor.JSONClass cls)
+    {
+        
+    }
+
     public string Name
     {
         get
@@ -85,6 +90,7 @@ public class BehaviourNodeItem : IDiagramNodeItem
     public string FullLabel { get { return Name; } }
     public string Identifier { get; set; }
     public bool IsSelectable { get { return true; } }
+    public DiagramNode Node { get; set; }
 
     public UBSharedBehaviour Behaviour
     {

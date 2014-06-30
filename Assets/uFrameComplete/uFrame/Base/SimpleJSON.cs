@@ -653,7 +653,7 @@ namespace Invert.uFrame.Editor
         {
             get
             {
-                return this as JSONArray;
+                return this as JSONArray ?? new JSONArray();
             }
         }
 
@@ -1115,6 +1115,8 @@ namespace Invert.uFrame.Editor
         internal static string Escape(string aText)
         {
             string result = "";
+            if (aText == null)
+                return result;
             foreach (char c in aText)
             {
                 switch (c)

@@ -18,7 +18,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
         get; set;
     }
 
-    public CodeTypeDeclaration AddTypeEnum(ElementDataBase rootElement, SceneManagerData sceneManager, ElementDataBase[] elements)
+    public CodeTypeDeclaration AddTypeEnum(ElementDataBase rootElement, SceneManagerData sceneManager, ElementData[] elements)
     {
         var derivedElements = rootElement.DerivedElements.Where(p=>!p.IsTemplate && elements.Contains(p)).ToArray();
         if (derivedElements.Length < 1) return null;
@@ -29,6 +29,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             enumDecleration.Members.Add(new CodeMemberField(enumDecleration.Name, item.Name));
         }
         Namespace.Types.Add(enumDecleration);
+        
         return enumDecleration;
     }
 
@@ -42,7 +43,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             return;
         }
 
-        var elements = subSystem.IncludedElements.ToArray();
+        var elements = subSystem.GetIncludedElements().ToArray();
 
         var decl = new CodeTypeDeclaration(IsDesignerFile ? sceneManager.NameAsSceneManagerBase : sceneManager.NameAsSceneManager);
         if (IsDesignerFile)
@@ -64,10 +65,12 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
         {
             decl.BaseTypes.Add(new CodeTypeReference(sceneManager.NameAsSceneManagerBase));
 
-            var loadMethod = new CodeMemberMethod();
-            loadMethod.Name = "Load";
-            loadMethod.ReturnType = new CodeTypeReference(typeof(IEnumerator));
-            loadMethod.Attributes = MemberAttributes.Override | MemberAttributes.Public;
+            var loadMethod = new CodeMemberMethod
+            {
+                Name = "Load",
+                ReturnType = new CodeTypeReference(typeof (IEnumerator)),
+                Attributes = MemberAttributes.Override | MemberAttributes.Public
+            };
             loadMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(UpdateProgressDelegate), "progress"));
             loadMethod.Statements.Add(new CodeCommentStatement("Use the controllers to create the game."));
             loadMethod.Statements.Add(new CodeSnippetExpression("yield break"));
@@ -123,8 +126,8 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             }
 
 
-            List<ElementDataBase> rootElements = new List<ElementDataBase>();
-            List<ElementDataBase> baseElements = new List<ElementDataBase>();
+            List<ElementData> rootElements = new List<ElementData>();
+            List<ElementData> baseElements = new List<ElementData>();
             foreach (var element in elements)
             {
                 if (element.IsTemplate) continue;
@@ -222,10 +225,11 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             decl.Members.Add(settingsField2);
             AddSceneManagerSettings(sceneManager, rootElements);
         }
+        ProcessModifiers(decl);
         Namespace.Types.Add(decl);
     }
 
-    public virtual void AddSceneManagerSettings( SceneManagerData sceneManagerData, List<ElementDataBase> rootElements)
+    public virtual void AddSceneManagerSettings( SceneManagerData sceneManagerData, List<ElementData> rootElements)
     {
         var decl = new CodeTypeDeclaration
         {
@@ -247,7 +251,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
                 decl.Members.Add(field);
             }
         }
-       
+        ProcessModifiers(decl);
         Namespace.Types.Add(decl);
     }
 
