@@ -11,8 +11,14 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
     {
         cls.Add("Name", new JSONData(_name));
         cls.Add("Identifier", new JSONData(_identifier));
-
     }
+
+    public virtual void Deserialize(JSONClass cls)
+    {
+        _name = cls["Name"].Value;
+        _identifier = cls["Identifier"].Value;
+    }
+
     [SerializeField]
     private string _identifier;
 
@@ -38,6 +44,7 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
     public string Identifier { get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier; } }
 
     public virtual bool IsSelectable { get { return true; } }
+    public DiagramNode Node  { get; set; }
 
     public bool IsSelected
     {

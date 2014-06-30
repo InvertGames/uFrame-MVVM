@@ -58,6 +58,7 @@ public static class UFStyles
     }
 
     private static float _scale = 0.0f;
+    private static GUIStyle _diagramTitle;
 
     public static float Scale
     {
@@ -625,6 +626,27 @@ public static class UFStyles
             return _gridLines;
         }
     }
+    public static GUIStyle DiagramTitle
+    {
+        get
+        {
+            if (_diagramTitle == null)
+            {
+                _diagramTitle = new GUIStyle()
+                {
+                    normal = { background = GetSkinTexture("SelectedNodeItem"),textColor = new Color(0.45f, 0.45f, 0.45f) },
+                    padding = new RectOffset(4, 4, 4, 4),
+                    stretchWidth = true,
+                    stretchHeight = true,
+                    
+                    fontSize = 18,// Mathf.RoundToInt(10f * Scale),
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleLeft
+                };
+            }
+            return _diagramTitle;
+        }
+    }
     public static GUIStyle HeaderStyle
     {
         get
@@ -652,6 +674,7 @@ public static class UFStyles
                 {
                     normal = { background = GetSkinTexture("SelectedNodeItem"), textColor = Color.white },
                     stretchHeight = true,
+
                     fixedHeight = Mathf.RoundToInt(18 * Scale),
                     fontSize = Mathf.RoundToInt(9 * Scale),
                     alignment = TextAnchor.MiddleCenter

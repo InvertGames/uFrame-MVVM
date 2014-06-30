@@ -9,28 +9,114 @@ using UnityEngine;
 
 public abstract class DiagramNode : IDiagramNode, IRefactorable
 {
-    public void Serialize(JSONClass cls)
+    public bool this[string flag]
+    {
+        get
+        {
+            if (Flags.ContainsKey(flag))
+            {
+                return Flags[flag];
+            }
+            else
+            {
+                
+                return false;
+            }
+        }
+        set
+        {
+            if (Flags.ContainsKey(flag))
+            {
+                Flags[flag] = value;
+            }
+            else
+            {
+                Flags.Add(flag,value);
+            }
+        }
+    }
+
+    public bool IsNewNode { get; set; }
+
+    public virtual void Serialize(JSONClass cls)
     {
         cls.Add("Name", new JSONData(_name));
         cls.Add("IsCollapsed", new JSONData(_isCollapsed));
         cls.Add("Identifier", new JSONData(_identifier));
 
-        var itemsArray = new JSONArray();
-        foreach (var diagramNodeItem in ContainedItems)
+        cls.AddObjectArray("Items", ContainedItems);
+        var filter = this as IDiagramFilter;
+        if (filter != null)
         {
-            var nodeItemClass = new JSONClass { { "Type", diagramNodeItem.GetType().Name } };
-            diagramNodeItem.Serialize(nodeItemClass);
-
-            itemsArray.Add(nodeItemClass);
+            cls.Add("Locations", filter.Locations.Serialize());
+            cls.Add("CollapsedValues", filter.CollapsedValues.Serialize());
         }
-        cls.Add("Items", itemsArray);
+        cls.AddObject("Flags", Flags);
 
+        //var itemsArray = new JSONArray();
+        //foreach (var diagramNodeItem in ContainedItems)
+        //{
+        //    var nodeItemClass = new JSONClass { { "Type", diagramNodeItem.GetType().Name } };
+        //    diagramNodeItem.Serialize(nodeItemClass);
+
+        //    itemsArray.Add(nodeItemClass);
+        //}
+        //cls.Add("Items", itemsArray);
     }
+
+    public virtual void MoveItemDown(IDiagramNodeItem nodeItem)
+    {
+        
+    }
+    public virtual void MoveItemUp(IDiagramNodeItem nodeItem)
+    {
+        
+    }
+    public virtual void Deserialize(JSONClass cls)
+    {
+        _name = cls["Name"].Value;
+        _isCollapsed = cls["IsCollapsed"].AsBool;
+        _identifier = cls["Identifier"].Value;
+        IsNewNode = false;
+        ContainedItems = cls["Items"].AsArray.DeserializeObjectArray<IDiagramNodeItem>();
+
+        var filter = this as IDiagramFilter;
+        if (filter != null)
+        {
+            filter.Locations.Deserialize(cls["Locations"].AsObject);
+            filter.CollapsedValues.Deserialize(cls["CollapsedValues"].AsObject);
+
+            //cls.Add("Locations", filter.Locations.Serialize());
+            //cls.Add("CollapsedValues", filter.CollapsedValues.Serialize());
+        }
+        if (cls["Flags"] is JSONClass)
+        {
+            var flags = cls["Flags"].AsObject;
+            Flags = new FlagsDictionary();
+            Flags.Deserialize(flags);
+        }
+        if (ContainedItems != null)
+        {
+            foreach (var item in ContainedItems)
+            {
+                item.Node = this;
+            }
+        }
+        
+    }
+
+    public FlagsDictionary Flags
+    {
+        get { return _flags ?? (_flags = new FlagsDictionary()); }
+        set { _flags = value; }
+    }
+
 
     /// <summary>
     /// The items that should be persisted with this diagram node.
     /// </summary>
-    public abstract IEnumerable<IDiagramNodeItem> ContainedItems { get; }
+    public abstract IEnumerable<IDiagramNodeItem> ContainedItems { get; set; }
+
 
     [NonSerialized]
     private IElementDesignerData _data;
@@ -49,6 +135,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
     private Rect _position;
 
     private List<Refactorer> _refactorings;
+    private FlagsDictionary _flags = new FlagsDictionary();
 
     public IEnumerable<Refactorer> AllRefactorers
     {
@@ -65,7 +152,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
 
     public Vector2[] ConnectionPoints { get; set; }
 
-    public IElementDesignerData Data
+    public virtual IElementDesignerData Data
     {
         get
         {
@@ -85,6 +172,11 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
                 Dirty = true;
             }
         }
+    }
+
+    public virtual IElementDesignerData OwnerData
+    {
+        get { return Data; }
     }
 
     public bool Dirty { get; set; }
@@ -127,6 +219,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
     public bool IsEditing { get; set; }
 
     public bool IsSelectable { get { return true; } }
+    public DiagramNode Node { get; set; }
 
     public bool IsSelected { get; set; }
 
@@ -193,14 +286,19 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
 
     protected DiagramNode()
     {
+        IsNewNode = true;
     }
 
     public virtual void BeginEditing()
     {
-        if (RenameRefactorer == null)
+        if (!IsNewNode)
         {
-            RenameRefactorer = CreateRenameRefactorer();
+            if (RenameRefactorer == null)
+            {
+                RenameRefactorer = CreateRenameRefactorer();
+            }
         }
+        
         OldName = Name;
         IsEditing = true;
     }
@@ -223,6 +321,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
     public virtual bool EndEditing()
     {
         IsEditing = false;
+
         if (Data.GetDiagramItems().Count(p => p.Name == Name) > 1)
         {
             Name = OldName;
@@ -233,7 +332,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
         {
             if (RenameRefactorer == null)
             {
-                return false;
+                return true;
             }
 
             RenameRefactorer.Set(this);
@@ -282,6 +381,4 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
     {
         Name = newName;
     }
-
-
 }

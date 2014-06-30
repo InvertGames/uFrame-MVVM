@@ -11,5 +11,6 @@ namespace Invert.uFrame.Editor
         void AddCommand(IEditorCommand command);
         void Go();
         ICommandHandler Handler { get; set; }
+        void GoBottom();
     }
 }

@@ -41,11 +41,13 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEditor">
-      <HintPath>..\uFrame\Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    <Reference Include="UnityEditor, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\uFrame\Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -63,9 +65,36 @@
     </Compile>
     <Compile Include="CodeFileGenerator.cs" />
     <Compile Include="CodeGenerator.cs" />
+    <Compile Include="ElementDesigner\Commands\Elements\MarkIsMultiInstanceCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsYieldCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\DeleteCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\DeleteItemCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\HideCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\IChildCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\IDiagramContextCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\IDiagramNodeCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\IDiagramNodeItemCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\IKeyBindable.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\NodeFlagCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\OpenCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\RemoveLinkCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\RenameCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\ScaleCommand.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\SelectViewBaseElement.cs" />
+    <Compile Include="ElementDesigner\Data\ConvertToJSON.cs" />
+    <Compile Include="ElementDesigner\Data\ElementDesignerDataExtensions.cs" />
+    <Compile Include="ElementDesigner\Data\ElementDiagramSettings.cs" />
+    <Compile Include="ElementDesigner\Data\ExternalNode.cs" />
+    <Compile Include="ElementDesigner\Data\FilterState.cs" />
     <Compile Include="ElementDesigner\Data\IDiagramPlugin.cs" />
+    <Compile Include="ElementDesigner\Data\IElementDesignerData.cs" />
+    <Compile Include="ElementDesigner\Data\JsonElementDesignerData.cs" />
+    <Compile Include="ElementDesigner\Data\Json\JsonRepository.cs" />
+    <Compile Include="ElementDesigner\Drawers\ExternalNodeDrawer.cs" />
     <Compile Include="ElementsDesigner.cs" />
+    <Compile Include="IJsonSerializable.cs" />
+    <Compile Include="ITypeDeclerationModifier.cs" />
+    <Compile Include="TypeGeneratorPostProcessor.cs" />
     <Compile Include="UI\ContextMenuUI.cs" />
     <Compile Include="NodeItemGenerator.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\AddNewCommand.cs" />
@@ -194,7 +223,6 @@
       <Name>Invert.uBehaviours.Editor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y

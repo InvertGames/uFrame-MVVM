@@ -15,6 +15,14 @@ public class ViewModelCommandData : DiagramNodeItem, IViewModelItem
         cls.Add("IsYield", new JSONData(_isYield));
 
     }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _parameterType = cls["ItemType"].Value;
+        _isYield = cls["IsYield"].AsBool;
+    }
+
     [SerializeField]
     private bool _isYield;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame.Editor.ElementDesigner;
+using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
 using UnityEngine;
 
@@ -128,13 +129,21 @@ namespace Invert.uFrame.Editor
 
         public void OnGUI()
         {
+            
             if ((Diagram == null || Diagram.Data == null) && !string.IsNullOrEmpty(LastLoadedDiagram))
             {
                 Diagram = null;
                 if (!LoadDiagram(LastLoadedDiagram))
                 {
-                
+                    LastLoadedDiagram = null;
+                    return;
                 }
+                if (Diagram == null)
+                {
+                    LastLoadedDiagram = null;
+                    return;
+                }
+                    
                 //var index = Array.IndexOf(UFrameAssetManager.DiagramNames, LastLoadedDiagram);
                 //if (index > -1 && index < UFrameAssetManager.Diagrams.Count)
                 //{
@@ -145,8 +154,8 @@ namespace Invert.uFrame.Editor
                 //    }
                 //}
             }
-            var diagramRect = new Rect(0f, EditorStyles.toolbar.fixedHeight - 1, Screen.width - 3, Screen.height - EditorStyles.toolbar.fixedHeight - EditorStyles.toolbar.fixedHeight - 1);
-
+            
+          
             var style = UFStyles.Background;
             style.border = new RectOffset(
                 Mathf.RoundToInt(41),
@@ -157,7 +166,9 @@ namespace Invert.uFrame.Editor
             //DoToolbar(diagramRect);
             DoToolbar();
             GUILayout.EndHorizontal();
-
+            if (Diagram == null) return;
+            var diagramRect = new Rect(0f, (EditorStyles.toolbar.fixedHeight) - 1, Screen.width - 3, Screen.height - (EditorStyles.toolbar.fixedHeight * 2) - EditorStyles.toolbar.fixedHeight - 2);
+            Diagram.Rect = diagramRect;
             GUI.Box(diagramRect, string.Empty, style);
 
             if (Diagram == null)
@@ -212,6 +223,11 @@ namespace Invert.uFrame.Editor
 
                 //EndGUI();
                 GUI.EndScrollView();
+                GUILayout.Space(diagramRect.height);
+                GUILayout.BeginHorizontal(EditorStyles.toolbar);
+                //DoToolbar(diagramRect);
+                Toolbar.GoBottom();
+                GUILayout.EndHorizontal();
             }
 
             if (EditorApplication.isCompiling)
@@ -226,7 +242,17 @@ namespace Invert.uFrame.Editor
                     InfoBox(string.Format("You have {0} refactors. Save before recompiling occurs.", refactors), MessageType.Warning);
                 }
             }
-
+            var evt = Event.current;
+            if (evt != null && evt.isKey && evt.type == EventType.KeyUp && Diagram != null)
+            {
+              
+                if (Diagram.SelectedData == null || !Diagram.SelectedData.IsEditing)
+                {
+                    
+                    Diagram.HandleKeyEvent(evt);
+                    evt.Use();
+                }
+            }
             if (Diagram != null && Diagram.Dirty || EditorApplication.isCompiling)
             {
                 Repaint();
@@ -254,41 +280,17 @@ namespace Invert.uFrame.Editor
         //    if (attribute == null) return;
         //    LoadDiagramByName(attribute.DiagramName);
         //}
-
+       
         public void Update()
         {
             if (Diagram == null) return;
-
+           
             if (Diagram.IsMouseDown || Diagram.Dirty || EditorApplication.isCompiling)
             {
                 Repaint();
                 Diagram.Dirty = false;
             }
-
-            //if (SelectedElementDiagram != null)
-            //{
-            //    if (Diagram != null)
-            //    {
-            //        if (Diagram.Data != SelectedElementDiagram)
-            //        {
-            //            LoadDiagram(AssetDatabase.GetAssetPath(SelectedElementDiagram));
-            //        }
-            //    }
-            //    else if (Diagram == null || Diagram.Data == null)
-            //    {
-            //        LoadDiagram(AssetDatabase.GetAssetPath(SelectedElementDiagram));
-            //    }
-            //}
         }
-
-        //private void DiagramOnSelectionChanged(IDiagramNode diagramNode, IDiagramNode node)
-        //{
-        //    var behaviourItem = Diagram.SelectedItem as BehaviourNodeItem;
-        //    if (behaviourItem != null)
-        //    {
-        //        Selection.activeObject = behaviourItem.Behaviour;
-        //    }
-        //}
 
         private void DoToolbar()
         {
@@ -345,7 +347,7 @@ namespace Invert.uFrame.Editor
 
         }
 
-        private bool LoadDiagram(string path)
+        public bool LoadDiagram(string path)
         {
             try
             {

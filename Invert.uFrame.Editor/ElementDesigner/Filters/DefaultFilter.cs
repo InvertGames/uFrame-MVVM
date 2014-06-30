@@ -1,8 +1,10 @@
 using System;
+using System.Runtime.Serialization;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
-public class DefaultFilter : IDiagramFilter
+public class DefaultFilter : IDiagramFilter,IJsonObject
 {
     private Type[] _allowedTypes;
 
@@ -43,5 +45,18 @@ public class DefaultFilter : IDiagramFilter
     public virtual bool IsAllowed(object item, Type t)
     {
         return true;
+    }
+
+    public void Serialize(JSONClass cls)
+    {
+        cls.Add("Locations", _locations.Serialize());
+        cls.Add("CollapsedValues", _collapsedValues.Serialize());
+    }
+
+    public void Deserialize(JSONClass cls)
+    {
+        Locations.Deserialize(cls["Locations"].AsObject);
+        CollapsedValues.Deserialize(cls["CollapsedValues"].AsObject);
+
     }
 }

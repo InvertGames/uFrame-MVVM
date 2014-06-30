@@ -1,3 +1,4 @@
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,22 @@ using UnityEngine;
 [Serializable]
 public class ElementData : ElementDataBase, IDiagramFilter
 {
+    public override void Serialize(JSONClass cls)
+    {
+        base.Serialize(cls);
+        cls.Add("IsTemplate",new JSONData(IsTemplate));
+        cls.Add("BaseType", new JSONData(_baseType));
+        cls.Add("IsMultiInstance", new JSONData(_isMultiInstance));
+    }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _baseType = cls["BaseType"].Value;
+        IsTemplate = cls["IsTemplate"].AsBool;
+        _isMultiInstance = cls["IsMultiInstance"].AsBool;
+    }
+
     [SerializeField]
     private string _baseType;
 
@@ -24,6 +41,9 @@ public class ElementData : ElementDataBase, IDiagramFilter
 
     [SerializeField]
     private List<ViewModelPropertyData> _properties = new List<ViewModelPropertyData>();
+
+    [SerializeField]
+    private bool _isTemplate;
 
     //public bool IsImportOnly
     //{
@@ -173,18 +193,19 @@ public class ElementData : ElementDataBase, IDiagramFilter
         
         if (item == this) return true;
         if (t == typeof(SubSystemData)) return false;
+        if (t == typeof(ExternalSubsystem)) return false;
         if (t == typeof(SceneManagerData)) return false;
         if (t == typeof(ViewComponentData)) return true;
         if (t == typeof(ViewData)) return true;
         if (t == typeof(ElementData)) return false;
-        if (t == typeof(EnumData)) return false;
+        if (t == typeof(EnumData)) return true;
         if (t == typeof (IDiagramNodeItem)) return false;
         return true;
     }
 
     public bool IsItemAllowed(object item, Type t)
     {
-        if (typeof(IViewModelItem).IsAssignableFrom(t)) return false;
+        if (typeof(IViewModelItem).IsAssignableFrom(t)) return true;
 
         return true;
     }
@@ -245,6 +266,19 @@ public class ElementData : ElementDataBase, IDiagramFilter
                 yield return collection;
             }
         }
+        set
+        {
+            var stuff = value.ToArray();
+            Properties = stuff.OfType<ViewModelPropertyData>().ToList();
+            Commands = stuff.OfType<ViewModelCommandData>().ToList();
+            Collections = stuff.OfType<ViewModelCollectionData>().ToList();
+        }
+    }
+
+    public bool IsTemplate
+    {
+        get { return _isTemplate; }
+        set { _isTemplate = value; }
     }
 
     public override void RemoveLink(IDiagramNode target)

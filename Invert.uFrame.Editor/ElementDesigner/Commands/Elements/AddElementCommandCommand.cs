@@ -11,6 +11,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         {
             node.Commands.Add(new ViewModelCommandData()
             {
+                Node = node,
                 Name = node.Data.GetUniqueName("NewCommand")
             });
         }

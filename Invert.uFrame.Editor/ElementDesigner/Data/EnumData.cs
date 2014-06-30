@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class EnumData : DiagramNode
 {
+    
     [SerializeField]
     private List<EnumItem> _enumItems = new List<EnumItem>();
 
@@ -15,10 +16,10 @@ public class EnumData : DiagramNode
         set { _enumItems = value; }
     }
 
-
     public override IEnumerable<IDiagramNodeItem> ContainedItems
     {
         get { return EnumItems.Cast<IDiagramNodeItem>(); }
+        set { EnumItems = value.OfType<EnumItem>().ToList(); }
     }
 
     public override bool EndEditing()
@@ -47,6 +48,10 @@ public class EnumData : DiagramNode
         Data.RemoveNode(this);
     }
 
+    public Type CompiledType
+    {
+        get { return Type.GetType(AssemblyQualifiedName); }
+    }
 
     public override string InfoLabel
     {
@@ -74,7 +79,6 @@ public class EnumData : DiagramNode
     {
         yield break;
     }
-
 
     public override void RemoveLink(IDiagramNode target)
     {

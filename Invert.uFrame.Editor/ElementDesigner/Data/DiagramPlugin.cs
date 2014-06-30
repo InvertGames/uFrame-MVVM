@@ -1,5 +1,8 @@
 ﻿using Invert.uFrame;
+using Invert.uFrame.Editor.ElementDesigner;
+using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
+using UnityEngine;
 
 namespace Invert.uFrame.Editor
 {
@@ -18,5 +21,14 @@ namespace Invert.uFrame.Editor
 
         public virtual decimal LoadPriority { get { return 1; } }
         public abstract void Initialize(uFrameContainer container);
+    }
+
+    public class DefaultKeyBindings : DiagramPlugin
+    {
+        public override void Initialize(uFrameContainer container)
+        {
+            container.RegisterInstance<IKeyBinding>(new KeyBinding<IDiagramNodeItemCommand>("Delete",KeyCode.Delete),"DeleteItemCommand");
+            container.RegisterInstance<IKeyBinding>(new KeyBinding<IDiagramNodeCommand>("Delete",KeyCode.Delete),"DeleteCommand");
+        }
     }
 }

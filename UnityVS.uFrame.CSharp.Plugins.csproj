@@ -7,14 +7,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{41D84240-1BED-91D1-7E23-A7E1F2E06C3C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,26 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Pro Standard Assets\Image Based\BlurEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\ColorCorrectionEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\ColorCorrectionEffectPCMac_26.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\Contrast Stretch\ContrastStretchEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\EdgeDetectEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\GlowEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\GlowEffectThreshold_26.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\GrayscaleEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\ImageEffectBase.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\ImageEffects.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\MotionBlur.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\MotionBlurEdge.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\NoiseEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\SepiaToneEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\SSAOEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\TwirlEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Image Based\VortexEffect.cs" />
-    <Compile Include="Assets\Pro Standard Assets\Water\Sources\Water.cs" />
-    <None Include="Assets\~AlternatePhysicsModel\Source Assets\Cars\Car.shader" />
-    <None Include="Assets\~AlternatePhysicsModel\Source Assets\Skidmarks\Skidmarks.shader" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
@@ -171,43 +153,6 @@
     <None Include="Assets\PrivateStuff\PlayMaker\Readme.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Resources\PlayMakerAssemblies.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Versions\readme.txt" />
-    <None Include="Assets\Pro Standard Assets\Glass Refraction\Glass-Stained-BumpDistort.shader" />
-    <None Include="Assets\Pro Standard Assets\Glass Refraction\Glass-Stained-BumpSpecDistort.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\ColorCorrectionEffect.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\ColorCorrectionEffect_26.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\Contrast Stretch\Adaptation.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\Contrast Stretch\Apply.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\Contrast Stretch\Luminance.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\Contrast Stretch\MinMaxReduction.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\EdgeDetectX.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\GlowEffectDownsample.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\GlowEffectDownsample_26.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\GrayscaleEffect.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\MotionBlur.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\NoiseEffectShaderRGB.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\NoiseEffectShaderYUV.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\SepiaToneEffect.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\SSAOShader.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\TwirlEffect.shader" />
-    <None Include="Assets\Pro Standard Assets\Image Based\VortexEffect.shader" />
-    <None Include="Assets\Pro Standard Assets\Water\Sources\FX-Water.shader" />
-    <None Include="Assets\Shaders\Alpha-Diffuse-ZWrite.shader" />
-    <None Include="Assets\Shaders\AlphaTest-Diffuse-GEqual.shader" />
-    <None Include="Assets\Shaders\Alpha-VertexLitGlow02.shader" />
-    <None Include="Assets\Shaders\GlassBuilding.shader" />
-    <None Include="Assets\Shaders\GlassReflect.shader" />
-    <None Include="Assets\Shaders\Glassreflect2D.shader" />
-    <None Include="Assets\Shaders\LightMappedDiffusetDetail.shader" />
-    <None Include="Assets\Shaders\LightsEmmissive.shader" />
-    <None Include="Assets\Shaders\MirrorReflectionLit.shader" />
-    <None Include="Assets\Shaders\Normal-BumpSpec_EnvLightmapped.shader" />
-    <None Include="Assets\Shaders\PolyTerrain\FirstPassLightmap.shader" />
-    <None Include="Assets\Shaders\PolyTerrain\polysplatting.cginc" />
-    <None Include="Assets\Shaders\ReflectiveDiffuseSpecTransp.shader" />
-    <None Include="Assets\Shaders\ShadowProjection.shader" />
-    <None Include="Assets\Shaders\Skidmarks.shader" />
-    <None Include="Assets\Shaders\TransparentLightMappedVertexLiZWrite.shader" />
-    <None Include="Assets\Textures\VFX\ShadowProjection.shader" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />

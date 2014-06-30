@@ -9,6 +9,11 @@ namespace Invert.uFrame.Editor.ElementDesigner
             get { return "Auto Layout"; }
         }
 
+        public override ToolbarPosition Position
+        {
+            get { return ToolbarPosition.BottomRight; }
+        }
+
         public override void Perform(ElementsDiagram node)
         {
             var x = 0f;

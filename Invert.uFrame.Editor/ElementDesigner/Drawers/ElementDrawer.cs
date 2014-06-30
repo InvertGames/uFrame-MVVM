@@ -11,7 +11,7 @@ using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
 using UnityEngine;
 
-public class ElementDrawer : DiagramNodeDrawer<ElementDataBase>
+public class ElementDrawer : DiagramNodeDrawer<ElementData>
 {
     public ElementDrawer()
     {
@@ -34,7 +34,7 @@ public class ElementDrawer : DiagramNodeDrawer<ElementDataBase>
         get { return UFStyles.Item4; }
     }
 
-    public ElementDrawer(ElementDataBase data, ElementsDiagram diagram)
+    public ElementDrawer(ElementData data, ElementsDiagram diagram)
         : base(data, diagram)
     {
     }
@@ -132,11 +132,18 @@ public class ElementDrawer : DiagramNodeDrawer<ElementDataBase>
     public virtual float MaxTypeWidth(GUIStyle style)
     {
         var maxLengthItem = Vector2.zero;
+  
         if (AllowCollapsing && !Data.IsCollapsed)
         {
             foreach (var item in Data.ViewModelItems)
             {
-                var newSize = style.CalcSize(new GUIContent(ElementDataBase.TypeAlias(item.RelatedTypeName)));
+                var rtn = item.RelatedTypeName ?? "[None]";
+
+                if (ElementDataBase.TypeNameAliases.ContainsKey(rtn))
+                {
+                    rtn = ElementDataBase.TypeNameAliases[rtn];
+                }
+                var newSize = style.CalcSize(new GUIContent(ElementDataBase.TypeAlias(rtn)));
 
                 if (maxLengthItem.x < newSize.x)
                 {
@@ -215,11 +222,13 @@ public class ElementDrawer : DiagramNodeDrawer<ElementDataBase>
             GUILayout.BeginHorizontal();
             GUILayout.Space(7);
 
-            var style = new GUIStyle(UFStyles.ClearItemStyle);
+            var style = new GUIStyle(UFStyles.ClearItemStyle)
+            {
+                fontStyle = FontStyle.Normal,
+                alignment = TextAnchor.MiddleLeft,
+                normal = {textColor = BackgroundStyle.normal.textColor}
+            };
             // style.fontSize = Mathf.RoundToInt(style.fontSize * Scale);
-            style.fontStyle = FontStyle.Normal;
-            style.alignment = TextAnchor.MiddleLeft;
-            style.normal.textColor = BackgroundStyle.normal.textColor;
             var rtn = vmItem.RelatedTypeName ?? string.Empty;
             if (ElementDataBase.TypeNameAliases.ContainsKey(rtn))
             {

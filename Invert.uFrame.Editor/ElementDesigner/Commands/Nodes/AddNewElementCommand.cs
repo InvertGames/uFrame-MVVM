@@ -21,4 +21,5 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             node.Data.AddNode(data);
         }
     }
+
 }

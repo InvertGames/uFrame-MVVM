@@ -120,6 +120,8 @@ public class UBActionGeneratorWindow : EditorWindow
 
     public Type FindType(string name)
     {
+        if (string.IsNullOrEmpty(name)) return null;
+
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             var t = assembly.GetType(name);

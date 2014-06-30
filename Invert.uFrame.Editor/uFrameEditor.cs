@@ -9,8 +9,67 @@ using UnityEngine;
 
 namespace Invert.uFrame.Editor
 {
+    public interface IKeyBinding
+    {
+        bool RequireShift { get; set; }
+        bool RequireAlt { get; set; }
+        bool RequireControl { get; set; }
+        KeyCode Key { get; set; }
+        string Name { get; set; }
+        Type CommandType { get; }
+    }
+
+    public class KeyBinding<TCommandType> : IKeyBinding where TCommandType : class
+    {
+        public bool RequireShift { get; set; }
+        public bool RequireAlt { get; set; }
+        public bool RequireControl { get; set; }
+        public KeyCode Key { get; set; }
+
+        public string Name { get; set; }
+
+        public KeyBinding(KeyCode key,bool requireControl = false, bool requireAlt = false, bool requireShift = false) : this(null,key, requireControl, requireAlt, requireShift)
+        {
+            
+        }
+
+        public KeyBinding(string name,KeyCode key, bool requireControl = false, bool requireAlt = false, bool requireShift = false)
+        {
+            Name = name;
+            Key = key;
+            RequireControl = requireControl;
+            RequireAlt = requireAlt;
+            RequireShift = requireShift;
+        }
+
+        public Type CommandType
+        {
+            get { return typeof (TCommandType); }
+        }
+
+        public TCommandType Command
+        {
+            get
+            {
+                return uFrameEditor.Container.Resolve<TCommandType>(Name);
+            }
+        }
+    }
     public static class uFrameEditor
     {
+        public static Type FindType(string name)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var t = assembly.GetType(name);
+                if (t != null)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+        public static IKeyBinding[] KeyBindings { get; set; }
         private static IEditorCommand[] _commands;
         private static uFrameContainer _container;
 
@@ -194,6 +253,8 @@ namespace Invert.uFrame.Editor
             // Repositories
             container.RegisterInstance<IElementsDataRepository>(new DefaultElementsRepository(),".asset");
 
+            container.RegisterInstance<IElementsDataRepository>(new JsonRepository(),".json");
+
             // Command Drawers
             container.Register<ToolbarUI, ToolbarUI>();
             container.Register<ContextMenuUI, ContextMenuUI>();
@@ -221,6 +282,7 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<AddNewCommand>(new AddNewEnumCommand(), "AddNewEnumCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewViewCommand(), "AddNewViewCommand");
             container.RegisterInstance<AddNewCommand>(new AddNewViewComponentCommand(), "AddNewViewComponentCommand");
+            
 
             // For no selection diagram context menu
             container.RegisterInstance<IDiagramContextCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
@@ -239,9 +301,11 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IDiagramNodeCommand>(new RemoveLinkCommand(), "RemoveLink");
             container.RegisterInstance<IDiagramNodeCommand>(new SelectViewBaseElement(), "SelectView");
             container.RegisterInstance<IDiagramNodeCommand>(new MarkIsTemplateCommand(), "MarkAsTemplate");
+            container.RegisterInstance<IDiagramNodeCommand>(new MarkIsMultiInstanceCommand(), "MarkAsMulti");
 
             // For node item context menu
             container.RegisterInstance<IDiagramNodeItemCommand>(new MarkIsYieldCommand(),"MarkIsYield");
+            container.RegisterInstance<IDiagramNodeItemCommand>(new DeleteItemCommand(),"Delete");
 
             // Drawers
             container.RegisterRelation<ViewData, INodeDrawer, ViewDrawer>();
@@ -253,6 +317,11 @@ namespace Invert.uFrame.Editor
             container.RegisterRelation<SceneManagerData, INodeDrawer, SceneManagerDrawer>();
             container.RegisterRelation<EnumData, INodeDrawer, DiagramEnumDrawer>();
 
+#if DEBUG
+            //External Nodes
+            container.RegisterInstance<IDiagramContextCommand>(new ShowExternalItemCommand(), "AddNewExternalItemCommand");
+            container.RegisterRelation<ExternalSubsystem, INodeDrawer, ExternalNodeDrawer>();
+#endif
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
             {
                 container.RegisterInstance(Activator.CreateInstance((Type) diagramPlugin) as IDiagramPlugin, diagramPlugin.Name, false);
@@ -267,6 +336,7 @@ namespace Invert.uFrame.Editor
                 if (diagramPlugin.Enabled)
                 diagramPlugin.Initialize(Container);
             }
+            KeyBindings = Container.ResolveAll<IKeyBinding>().ToArray();
         }
 
 
@@ -275,8 +345,5 @@ namespace Invert.uFrame.Editor
             var command = Container.Resolve<TFor>(name);
             command.Hooks.Add(hook);
         }
-
-
-      
     }
 }

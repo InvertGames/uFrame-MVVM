@@ -11,11 +11,18 @@ using Object = UnityEngine.Object;
 public class UFrameAssetManager : AssetPostprocessor
 {
     public const string VM_ASSEMBLY_NAME = "ViewModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
-    [MenuItem("Assets/[u]Frame/New Element Diagram", false, 40)]
+#if DEBUG
+    [MenuItem("Assets/[u]Frame/New Element Diagram (Legacy Asset)", false, 41)]
     public static void NewViewModelDiagram()
     {
         uFrameEditor.Container.Resolve<IElementsDataRepository>(".asset").CreateNewDiagram();
-        
+    }
+#endif
+
+    [MenuItem("Assets/[u]Frame/New Element Diagram", false, 40)]
+    public static void NewJsonViewModelDiagram()
+    {
+        uFrameEditor.Container.Resolve<IElementsDataRepository>(".json").CreateNewDiagram();
     }
 
     private static List<IElementDesignerData> _diagrams;
@@ -95,61 +102,6 @@ public class UFrameAssetManager : AssetPostprocessor
         return asset;
     }
 
-    /// <summary>
-    /// Used to get assets of a certain type and file extension from entire project
-    /// </summary>
-    /// <param name="type">The type to retrieve. eg typeof(GameObject).</param>
-    /// <param name="fileExtension">The file extention the type uses eg ".prefab".</param>
-    /// <returns>An Object array of assets.</returns>
-    public static Object[] GetAssetsOfType(Type type, string fileExtension)
-    {
-        var tempObjects = new List<Object>();
-        var directory = new DirectoryInfo(Application.dataPath);
-        FileInfo[] goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
-
-        int i = 0; int goFileInfoLength = goFileInfo.Length;
-        FileInfo tempGoFileInfo; string tempFilePath;
-        Object tempGO;
-        for (; i < goFileInfoLength; i++)
-        {
-            tempGoFileInfo = goFileInfo[i];
-            if (tempGoFileInfo == null)
-                continue;
-
-            tempFilePath = tempGoFileInfo.FullName;
-            tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
-            try
-            {
-               
-            tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(ElementDesignerData)) as ElementDesignerData;
-            if (tempGO == null)
-            {
-            }
-            else
-            {
-                tempObjects.Add(tempGO);
-                continue;
-            }
-
-            }
-            catch (Exception ex)
-            {
-                continue;
-            }  
-            
-            //tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(UBGlobals)) as UBGlobals;
-            //if (tempGO == null)
-            //{
-            //    continue;
-            //}
-            //else
-            //{
-            //    tempObjects.Add(tempGO);
-            //}
-        }
-
-        return tempObjects.ToArray();
-    }
 
     public static void OnPostprocessAllAssets(
         String[] importedAssets,
@@ -192,10 +144,12 @@ public class UFrameAssetManager : AssetPostprocessor
 
     private static void Refresh()
     {
+        var repos = uFrameEditor.Container.ResolveAll<IElementsDataRepository>().OfType<DefaultElementsRepository>();
 
-        Diagrams = GetAssetsOfType(typeof(ElementDesignerData), ".asset").Cast<IElementDesignerData>().ToList();
+        Diagrams = repos.SelectMany(p => p.GetAssets()).OfType<IElementDesignerData>().ToList();
+#if DEBUG
+        Debug.Log(string.Join(Environment.NewLine, Diagrams.Select(p=>p.Name + ":" + p.Identifier).ToArray()));
+#endif
         DiagramNames = Diagrams.Select(p => p.Name).ToArray();
-
-
     }
 }

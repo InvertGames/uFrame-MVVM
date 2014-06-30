@@ -8,7 +8,7 @@ public class SceneManagerSystemLink : BeizureLink
 
     public override ISelectable Target { get { return SceneManager; } }
 
-    public SubSystemData SubSystem { get; set; }
+    public ISubSystemData SubSystem { get; set; }
 
     public override Rect EndRect
     {

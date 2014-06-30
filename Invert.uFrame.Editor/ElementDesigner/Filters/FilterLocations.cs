@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -60,5 +61,39 @@ public class FilterLocations
     {
         Keys.Add(key);
         Values.Add(value);
+    }
+
+    public JSONClass  Serialize()
+    {
+        JSONClass cls = new JSONClass();
+        for (int index = 0; index < _keys.Count; index++)
+        {
+            var key = _keys[index];
+            var value = _values[index];
+            cls.Add(key, SerializeValue(value));
+        }
+        return cls;
+    }
+
+    protected JSONNode SerializeValue(Vector2 value)
+    {
+        return new JSONClass
+        {
+            AsVector2 = value
+        };
+    }
+
+    public void Deserialize(JSONClass cls)
+    {
+        foreach (KeyValuePair<string, JSONNode> cl in cls)
+        {
+
+            Add(cl.Key, DeserializeValue(cl.Value));
+        }
+    }
+
+    protected Vector2 DeserializeValue(JSONNode value)
+    {
+        return value.AsVector2;
     }
 }

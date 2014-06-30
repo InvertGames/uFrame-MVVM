@@ -18,11 +18,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         {"UnityEngine.Vector3","Vector3"},
     };
 
-    [SerializeField]
-    private bool _isMultiInstance;
-
-    [SerializeField]
-    private bool _isTemplate;
+    [SerializeField] protected bool _isMultiInstance;
 
     //[DiagramContextMenu("Print Items")]
     //public void Print()
@@ -93,7 +89,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public IEnumerable<ElementDataBase> DerivedElements
+    public IEnumerable<ElementData> DerivedElements
     {
         get
         {
@@ -140,12 +136,6 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
             }
             _isMultiInstance = value;
         }
-    }
-
-    public bool IsTemplate
-    {
-        get { return _isTemplate; }
-        set { _isTemplate = value; }
     }
 
     public override IEnumerable<IDiagramNodeItem> Items

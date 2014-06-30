@@ -15,6 +15,14 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
        // nodeItemClass.Add("ItemType", new JSONData(_itemType));
         //nodeItemClass.Add("IsRealTime", new JSONData(_isRealTimeProperty));
     }
+
+    public override void Deserialize(JSONClass cls)
+    {
+        base.Deserialize(cls);
+        _itemType = cls["ItemType"].Value;
+
+    }
+
     [SerializeField]
     private string _itemType;
 
