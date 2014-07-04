@@ -169,17 +169,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
+  _overrideViewModel: 1
   _forceResolveViewModel: 0
   _resolveName: 
   _BindHealth: 0
-  _HealthIsTwoWay: 0
   _BindState: 0
-  _StateIsTwoWay: 0
   _Health: 0
   _State: 0
   _BindSpeed: 0
-  _SpeedIsTwoWay: 0
   _Speed: 0
   _NavAgent: {fileID: 19500000}
   _TargetPlayer: {fileID: 0}

@@ -64,7 +64,7 @@ public static class SubsystemExtensions
         {
             list.Add(diagramSubItem);
         }
-        foreach (var allDiagramItem in subsystem.Data.AllDiagramItems.OfType<SubSystemData>())
+        foreach (var allDiagramItem in subsystem.OwnerData.AllDiagramItems.OfType<SubSystemData>())
         {
             if (subsystem.Imports.Contains(allDiagramItem.Identifier))
             {
@@ -119,7 +119,7 @@ public class SubSystemData : DiagramNode, IDiagramFilter, ISubSystemData
         get { return true; }
     }
 
-    public List<string> Imports
+    public virtual List<string> Imports
     {
         get { return _imports; }
         set { _imports = value; }
@@ -137,7 +137,8 @@ public class SubSystemData : DiagramNode, IDiagramFilter, ISubSystemData
         {
             if (this == Data.CurrentFilter)
             {
-                foreach (var diagramSubItem in this.GetIncludedItems()) yield return diagramSubItem;
+                yield break;
+                //foreach (var diagramSubItem in this.GetIncludedItems()) yield return diagramSubItem;
                 //foreach (var diagramSubItem1 in GetSubItems(data)) yield return diagramSubItem1;
             }
             else
@@ -178,7 +179,7 @@ public class SubSystemData : DiagramNode, IDiagramFilter, ISubSystemData
 
     public override void CreateLink(IDiagramNode container, IDrawable target)
     {
-        var subSystem = target as SubSystemData;
+        var subSystem = target as ISubSystemData;
         if (subSystem != null)
         {
             subSystem.Imports.Add(Identifier);

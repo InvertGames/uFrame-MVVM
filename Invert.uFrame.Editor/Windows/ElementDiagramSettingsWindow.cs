@@ -1,0 +1,139 @@
+using System;
+using System.Linq;
+using Invert.uFrame.Editor;
+using UnityEditor;
+using UnityEngine;
+
+public class ElementDiagramSettingsWindow : EditorWindow
+{
+    private TextAsset _ChangeLog;
+
+    private Vector2 _ChangeLogScrollPosition;
+
+    private Rect _MainAreaRect = new Rect(4, 48, 512, 345);
+
+    public IElementDesignerData DesignerData { get; set; }
+
+    private bool _ViewingReadme;
+    private ElementsDesigner _designerWindow;
+
+    public ElementsDesigner DesignerWindow
+    {
+        get { return _designerWindow ?? (_designerWindow =   EditorWindow.GetWindow<ElementsDesigner>()); }
+        set { _designerWindow = value; }
+    }
+
+    internal static void ShowWindow(IElementDesignerData designerData)
+    {
+        var window = GetWindow<ElementDiagramSettingsWindow>();
+        window.title = "Settings";
+        //window.minSize = window.maxSize = new Vector2(400, 400);
+        window.DesignerData = designerData;
+        window.Show();
+    }
+
+    private void OnEnable()
+    {
+        //minSize = new Vector2(520, 400);
+       // maxSize = new Vector2(520, 400);
+       
+        position = new Rect(position.x, position.y, 520, 400);
+    }
+
+    public static void DrawTitleBar(string subTitle)
+    {
+        //GUI.Label();
+        UFStyles.DoTilebar(subTitle);
+    }
+
+    public void OnGUI()
+    {
+        try
+        {
+            if (DesignerData == null)
+            {
+
+                if (DesignerWindow != null && DesignerWindow.Diagram != null && DesignerWindow.Diagram.Data != null)
+                {
+                    DesignerData = DesignerWindow.Diagram.Data;
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("Reopen this window.", MessageType.Info);
+                    return;
+                }
+
+            }
+
+            DrawTitleBar(DesignerData.Name);
+            GUILayout.BeginArea(new Rect(5, 50, position.width - 10, this.position.height - 55), GUI.skin.box);
+
+
+            _ChangeLogScrollPosition = GUILayout.BeginScrollView(_ChangeLogScrollPosition, false, false,
+                GUILayout.Width(position.width - 15), GUILayout.Height(this.position.height - 15));
+
+            //GUILayout.Label(_ChangeLog.text, EditorStyles.wordWrappedLabel);
+            var s = DesignerData.Settings;
+            EditorGUI.BeginChangeCheck();
+            s.AssociationLinkColor = EditorGUILayout.ColorField("Association Link Color", s.AssociationLinkColor);
+            s.GridLinesColor = EditorGUILayout.ColorField("Grid Lines Color", s.GridLinesColor);
+            s.GridLinesColorSecondary = EditorGUILayout.ColorField("Grid Lines Secondary Color", s.GridLinesColorSecondary);
+            s.DefinitionLinkColor = EditorGUILayout.ColorField("Definition Link Color", s.DefinitionLinkColor);
+            s.InheritanceLinkColor = EditorGUILayout.ColorField("Inheritance Link Color", s.InheritanceLinkColor);
+            s.SceneManagerLinkColor = EditorGUILayout.ColorField("SceneManager Link Color", s.SceneManagerLinkColor);
+            s.SubSystemLinkColor = EditorGUILayout.ColorField("SubSystem Link Color", s.SubSystemLinkColor);
+            s.TransitionLinkColor = EditorGUILayout.ColorField("Transition Link Color", s.TransitionLinkColor);
+            s.ViewLinkColor = EditorGUILayout.ColorField("View Link Color", s.ViewLinkColor);
+            s.SnapSize = Math.Max(1, EditorGUILayout.IntField("Snap Size", s.SnapSize));
+            if (EditorGUI.EndChangeCheck())
+            {
+
+                DesignerWindow.Repaint();
+            }
+            var pathStrategies =
+                uFrameEditor.Container.Mappings.Where(p => p.From == typeof (ICodePathStrategy)).ToArray();
+            var names = pathStrategies.Select(p => p.Name).ToArray();
+            var selected = Array.IndexOf(names, s.CodePathStrategyName);
+            //var types = pathStrategies.Select(p => p.to);
+            EditorGUI.BeginChangeCheck();
+            var newIndex = EditorGUILayout.Popup("Generator Path Strategy", Math.Max(0, selected), names);
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (newIndex >= 0 && DesignerData.RefactorCount < 1)
+                {
+                    if (names[newIndex] != s.CodePathStrategyName)
+                    {
+                        DesignerData.Settings.CodePathStrategyName = names[newIndex];
+                        EditorApplication.SaveAssets();
+                        
+                        var newStrategy = uFrameEditor.Container.Resolve<ICodePathStrategy>(names[newIndex]);
+                        DesignerData.Settings.CodePathStrategy.MoveTo(newStrategy, names[newIndex], this.DesignerWindow);
+                    }
+
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Save First",
+                        "Save your diagram first before changing the path strategy.", "OK");
+                }
+            }
+            GUILayout.EndScrollView();
+
+            //GUILayout.BeginVertical();
+
+            //GUILayout.FlexibleSpace();
+
+            //if (GUILayout.Button("Done", GUILayout.Height(22)))
+            //    this.Close();
+
+            //GUILayout.FlexibleSpace();
+            //GUILayout.EndVertical();
+
+            GUILayout.EndArea();
+        }
+        catch(Exception ex)
+        {
+            //UnityEngine.Debug.LogException(ex);
+        }
+    }
+}

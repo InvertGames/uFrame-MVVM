@@ -96,7 +96,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.34964967, z: 0}
+  m_LocalPosition: {x: 0, y: 2.33119392, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
@@ -365,13 +365,10 @@ MonoBehaviour:
   _forceResolveViewModel: 1
   _resolveName: LocalPlayer
   _BindHealth: 0
-  _HealthIsTwoWay: 0
   _BindState: 0
-  _StateIsTwoWay: 0
   _Health: 1
   _State: 0
   _BindCurrentWeaponIndex: 1
-  _CurrentWeaponIndexIsTwoWay: 0
   _BindWeapons: 1
   _WeaponsList: []
   _WeaponsSceneFirst: 1

@@ -28,10 +28,7 @@ public class SubSystemDrawer : DiagramNodeDrawer<SubSystemData>
 
     public override bool AllowCollapsing
     {
-        get
-        {
-            return Diagram.Data.CurrentFilter == this.Data;
-        }
+        get { return false; }
     }
 
     public NodeItemHeader TransitionsHeader

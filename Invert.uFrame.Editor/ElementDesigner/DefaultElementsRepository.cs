@@ -302,6 +302,8 @@ public interface ICodePathStrategy
     /// </summary>
     string ScenesPath { get; }
 
+    IElementDesignerData Data { get; set; }
+
     /// <summary>
     /// The relative path to the controller designer file
     /// </summary>
@@ -317,75 +319,252 @@ public interface ICodePathStrategy
     /// </summary>
     string GetViewModelsFileName(string name);
 
-    string GetEditableViewFilename(string nameAsView);
-    string GetEditableViewComponentFilename(string name);
-    string GetEditableSceneManagerFilename(string nameAsSceneManager);
-    string GetEditableSceneManagerSettingsFilename(string nameAsSettings);
-    string GetEditableControllerFilename(string controllerName);
-    string GetEditableViewModelFilename(string nameAsViewModel);
-    string GetEnumsFilename(string name);
+    string GetEditableViewFilename(ViewData nameAsView);
+    string GetEditableViewComponentFilename(ViewComponentData name);
+    string GetEditableSceneManagerFilename(SceneManagerData nameAsSceneManager);
+    string GetEditableSceneManagerSettingsFilename(SceneManagerData nameAsSettings);
+    string GetEditableControllerFilename(ElementData controllerName);
+    string GetEditableViewModelFilename(ElementData nameAsViewModel);
+    string GetEnumsFilename(EnumData name);
+    
+    void MoveTo(ICodePathStrategy strategy,string name,ElementsDesigner designerWindow);
 }
 
 public class DefaultCodePathStrategy : ICodePathStrategy
 {
+    public IElementDesignerData Data { get; set; }
+
     public string AssetPath { get; set; }
 
-    public string BehavioursPath
+    public virtual string BehavioursPath
     {
         get { return Path.Combine(AssetPath, "Behaviours"); }
     }
-    public string ScenesPath
+    public virtual string ScenesPath
     {
         get { return Path.Combine(AssetPath, "Scenes"); }
     }
 
-    public string GetControllersFileName(string name)
+    public virtual string GetControllersFileName(string name)
     {
         return name + "Controllers.designer.cs";
     }
 
-    public string GetViewsFileName(string name)
+    public virtual string GetViewsFileName(string name)
     {
         return name + "Views.designer.cs";
     }
 
-    public string GetViewModelsFileName(string name)
+    public virtual string GetViewModelsFileName(string name)
     {
         return name + ".designer.cs";
     }
 
-    public string GetEditableViewFilename(string nameAsView)
+    public virtual string GetEditableViewFilename(ViewData nameAsView)
     {
-        return Path.Combine("Views", nameAsView + ".cs");
+        return Path.Combine("Views", nameAsView.NameAsView + ".cs");
     }
 
-    public string GetEditableViewComponentFilename(string name)
+    public virtual string GetEditableViewComponentFilename(ViewComponentData name)
     {
-        return Path.Combine("ViewComponents", name + ".cs");
+        return Path.Combine("ViewComponents", name.Name + ".cs");
     }
 
-    public string GetEditableSceneManagerFilename(string nameAsSceneManager)
+    public virtual string GetEditableSceneManagerFilename(SceneManagerData nameAsSceneManager)
     {
-        return Path.Combine("SceneManagers", nameAsSceneManager + ".cs");
+        return Path.Combine("SceneManagers", nameAsSceneManager.NameAsSceneManager + ".cs");
     }
 
-    public string GetEditableSceneManagerSettingsFilename(string nameAsSettings)
+    public virtual string GetEditableSceneManagerSettingsFilename(SceneManagerData nameAsSettings)
     {
-        return Path.Combine("SceneManagers", nameAsSettings + ".cs");
+        return Path.Combine("SceneManagers", nameAsSettings.NameAsSettings + ".cs");
     }
 
-    public string GetEditableControllerFilename(string controllerName)
+    public virtual string GetEditableControllerFilename(ElementData controllerName)
     {
-        return Path.Combine("Controllers", controllerName + ".cs");
+        return Path.Combine("Controllers", controllerName.NameAsController + ".cs");
     }
 
-    public string GetEditableViewModelFilename(string nameAsViewModel)
+    public virtual string GetEditableViewModelFilename(ElementData nameAsViewModel)
     {
-        return Path.Combine("ViewModels", nameAsViewModel + ".cs");
+        return Path.Combine("ViewModels", nameAsViewModel.NameAsViewModel + ".cs");
     }
 
-    public string GetEnumsFilename(string name)
+    public virtual string GetEnumsFilename(EnumData name)
     {
-        return GetViewModelsFileName(name);
+        return GetViewModelsFileName(name.Name);
     }
+
+    public virtual void MoveTo(ICodePathStrategy strategy, string name, ElementsDesigner designerWindow)
+    {
+        var sourceFiles = uFrameEditor.GetAllFileGenerators(Data, this).ToArray();
+        strategy.Data = Data;
+        strategy.AssetPath = AssetPath;
+        var targetFiles = uFrameEditor.GetAllFileGenerators(Data, strategy).ToArray();
+
+        
+
+        if (sourceFiles.Length == targetFiles.Length)
+        {
+            // Attempt to move every file
+            ProcessMove(strategy, name, sourceFiles, targetFiles);
+        }
+        else
+        {
+            // Attempt to move non designer files
+           // var designerFiles = sourceFiles.Where(p => p.Filename.EndsWith("designer.cs"));
+            sourceFiles = sourceFiles.Where(p => !p.Filename.EndsWith("designer.cs")).ToArray();
+            targetFiles = targetFiles.Where(p => !p.Filename.EndsWith("designer.cs")).ToArray();
+            if (sourceFiles.Length == targetFiles.Length)
+            {
+                ProcessMove(strategy,name,sourceFiles,targetFiles);
+                //// Remove all designer files
+                //foreach (var designerFile in designerFiles)
+                //{
+                //    File.Delete(System.IO.Path.Combine(AssetPath, designerFile.Filename));
+                //}
+                //var saveCommand = uFrameEditor.Container.Resolve<IToolbarCommand>("SaveCommand");
+                //saveCommand.Execute();
+            }
+        }
+        
+    }
+
+    protected virtual void ProcessMove(ICodePathStrategy strategy, string name, CodeFileGenerator[] sourceFiles,
+        CodeFileGenerator[] targetFiles)
+    {
+        for (int index = 0; index < sourceFiles.Length; index++)
+        {
+            var sourceFile = sourceFiles[index];
+            var targetFile = targetFiles[index];
+
+            var sourceFileInfo = new FileInfo(System.IO.Path.Combine(AssetPath, sourceFile.Filename));
+            var targetFileInfo = new FileInfo(System.IO.Path.Combine(AssetPath, targetFile.Filename));
+            if (sourceFileInfo.FullName == targetFileInfo.FullName) continue;
+            if (!sourceFileInfo.Exists) continue;
+            EnsurePath(sourceFileInfo);
+            if (targetFileInfo.Exists) continue;
+            EnsurePath(targetFileInfo);
+            
+            //sourceFileInfo.MoveTo(targetFileInfo.FullName);
+            Debug.Log(Application.dataPath);
+            var sourceAsset = "Assets" + sourceFileInfo.FullName.Replace("\\", "/").Replace(Application.dataPath, "").Replace("\\", "/");
+            var targetAsset = "Assets" + targetFileInfo.FullName.Replace("\\", "/").Replace(Application.dataPath, "").Replace("\\", "/");
+            Debug.Log(string.Format("Moving file {0} to {1}",sourceAsset, targetAsset));
+            AssetDatabase.MoveAsset(sourceAsset, targetAsset);
+        }
+ 
+        Data.Settings.CodePathStrategy = strategy;
+        Data.Settings.CodePathStrategyName = name;
+
+        EditorUtility.SetDirty(Data as UnityEngine.Object);
+        AssetDatabase.SaveAssets();
+        EditorApplication.SaveAssets();
+        AssetDatabase.Refresh();
+        ////Clean up old directories
+        //foreach (var sourceFile in sourceFiles)
+        //{
+        //    var sourceFileInfo = new FileInfo(System.IO.Path.Combine(AssetPath, sourceFile.Filename));
+        //    if (sourceFileInfo.Directory != null)
+        //    {
+        //        if (!sourceFileInfo.Directory.Exists) continue;
+
+        //        var directories = sourceFileInfo.Directory.GetDirectories("*", SearchOption.AllDirectories);
+        //        foreach (var directory in directories)
+        //        {
+        //            if (directory.GetFiles("*").Count(x => x.Extension != ".meta" && x.Extension != "meta") == 0)
+        //            {
+        //                directory.Delete(true);
+        //                Debug.Log("Removed Directory " + directory.FullName);
+        //            }
+        //        }
+        //    }
+        //}
+        //AssetDatabase.Refresh();
+    }
+
+    protected void EnsurePath(FileInfo fileInfo)
+    {
+        
+// Get the path to the directory
+        var directory = System.IO.Path.GetDirectoryName(fileInfo.FullName);
+        // Create it if it doesn't exist
+        if (directory != null && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+    }
+}
+
+public class SubSystemPathStrategy : DefaultCodePathStrategy
+{
+    public IDiagramFilter FindFilter(IDiagramNode node)
+    {
+        var allFilters = Data.GetFilters();
+        foreach (var diagramFilter in allFilters)
+        {
+            if (node != diagramFilter &&  diagramFilter.Locations.Keys.Contains(node.Identifier))
+            {
+                return diagramFilter;
+            }
+        }
+        return null;
+    }
+
+    public SubSystemData FindSubsystem(IDiagramNode node)
+    {
+        var filter = FindFilter(node);
+        if (filter == node) return null;
+        if (filter == null) return null;
+
+        while (!(filter is SubSystemData))
+        {
+            // Convert to node
+            var filterNode = filter as IDiagramNode;
+            
+            // If its not a node at this point it must be hidden
+            if (filterNode == null) return null;
+            // Try again with the new filternode
+            filter = FindFilter(filterNode);
+            // if its null return
+            if (filter == null)
+            {
+                return null;
+            }
+        }
+        return filter as SubSystemData;
+    }
+
+    public string GetSubSystemPath(IDiagramNode node)
+    {
+        var subsystem = FindSubsystem(node);
+        if (subsystem == null) return string.Empty;
+        return subsystem.Name;
+    }
+
+    public override string GetEditableControllerFilename(ElementData controllerName)
+    {
+        return Path.Combine(GetSubSystemPath(controllerName), base.GetEditableControllerFilename(controllerName));
+    }
+
+    //public override string GetEditableSceneManagerFilename(SceneManagerData nameAsSceneManager)
+    //{
+    //    return Path.Combine(GetSubSystemPath(nameAsSceneManager),base.GetEditableSceneManagerFilename(nameAsSceneManager);
+    //}
+
+    public override string GetEditableViewFilename(ViewData nameAsView)
+    {
+        return Path.Combine(GetSubSystemPath(nameAsView),base.GetEditableViewFilename(nameAsView));
+    }
+
+    public override string GetEditableViewModelFilename(ElementData nameAsViewModel)
+    {
+        return Path.Combine(GetSubSystemPath(nameAsViewModel),base.GetEditableViewModelFilename(nameAsViewModel));
+    }
+
+    public override string GetEditableViewComponentFilename(ViewComponentData name)
+    {
+        return Path.Combine(GetSubSystemPath(name),base.GetEditableViewComponentFilename(name));
+    }
+    
 }

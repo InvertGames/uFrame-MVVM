@@ -311,11 +311,11 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ControllerGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\EnumCodeGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Elements\ViewModelGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ElementDataGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\EnumDataGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ViewDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ElementDataGeneratorFactory.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\EnumDataGeneratorFactory.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\NodeGenerators\ViewDataGeneratorFactory.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerClassGenerator.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerDataGenerator.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerDataGeneratorFactory.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\SceneManagers\SceneManagerSettingsGenerator.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\DiagramPlugins\uFrame\CodeGenerators\Views\CodeDomExtensions.cs" />
@@ -358,7 +358,7 @@
     <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\AddVariablesToFsm.cs" />
     <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\AddVariableToFsm.cs" />
     <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\PlaymakerActionCodeGenerator.cs" />
-    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\PlaymakerElementNodeGenerator.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\PlaymakerElementNodeGeneratorFactory.cs" />
     <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\PlaymakerEnumActionCodeGenerator.cs" />
     <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\PlaymakerFSMBindingSyncExtender.cs" />
     <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Editor\PlaymakerPlugin.cs" />

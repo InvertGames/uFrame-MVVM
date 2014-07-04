@@ -17,3 +17,7 @@ D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\Invert.uFrame.Editor.dll
 D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\Invert.uBehaviours.dll
 D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\Invert.uBehaviours.Editor.dll
 D:\Invert\Git\uFrame\Invert.uFrame.Editor\obj\Release\Invert.uFrame.Editor.csprojResolveAssemblyReference.cache
+D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\UnityEditor.dll
+D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\UnityEngine.dll
+D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\UnityEditor.xml
+D:\Invert\Git\uFrame\Invert.uFrame.Editor\bin\Release\UnityEngine.xml

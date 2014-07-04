@@ -40,6 +40,10 @@ public class ElementDrawer : DiagramNodeDrawer<ElementData>
     }
 
 
+    public override bool ShowSubtitle
+    {
+        get { return !string.IsNullOrEmpty(Data.SubTitle); }
+    }
 
     public NodeItemHeader PropertiesHeader
     {

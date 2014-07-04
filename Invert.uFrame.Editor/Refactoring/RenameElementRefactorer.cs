@@ -24,9 +24,9 @@ namespace Invert.uFrame.Editor.Refactoring
             ViewModelRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
             ControllerRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
             ViewModelRenamer.From =
-                data.Data.Settings.CodePathStrategy.GetEditableViewModelFilename(data.NameAsViewModel);
+                data.Data.Settings.CodePathStrategy.GetEditableViewModelFilename(data);
             ControllerRenamer.From =
-                data.Data.Settings.CodePathStrategy.GetEditableControllerFilename(data.NameAsController);
+                data.Data.Settings.CodePathStrategy.GetEditableControllerFilename(data);
             ViewBase.From = data.NameAsViewBase;
             ControllerBase.From = data.NameAsControllerBase;
             Controller.From = data.NameAsController;
@@ -42,9 +42,9 @@ namespace Invert.uFrame.Editor.Refactoring
         {
 
             ViewModelRenamer.To =
-              data.Data.Settings.CodePathStrategy.GetEditableViewModelFilename(data.NameAsViewModel);
+              data.Data.Settings.CodePathStrategy.GetEditableViewModelFilename(data);
             ControllerRenamer.To =
-                data.Data.Settings.CodePathStrategy.GetEditableControllerFilename(data.NameAsController);
+                data.Data.Settings.CodePathStrategy.GetEditableControllerFilename(data);
 
             ViewBase.To = data.NameAsViewBase;
             ControllerBase.To = data.NameAsControllerBase;

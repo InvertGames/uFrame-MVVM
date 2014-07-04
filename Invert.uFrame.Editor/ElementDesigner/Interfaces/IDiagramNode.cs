@@ -6,6 +6,7 @@ using UnityEngine;
 
 public interface IDiagramNode : ISelectable,IDiagramNodeItem
 {
+    string SubTitle { get; }
     /// <summary>
     /// The label that sits above the node providing additional insight.
     /// </summary>

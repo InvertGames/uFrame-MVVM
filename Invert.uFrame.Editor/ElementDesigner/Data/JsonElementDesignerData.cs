@@ -9,7 +9,7 @@ using UnityEngine;
 public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, ISerializationCallbackReceiver 
 {
 
-    [SerializeField]
+    [SerializeField,HideInInspector]
     public string _jsonData;
 
     [NonSerialized]
@@ -184,6 +184,7 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
         }
         catch (Exception ex)
         {
+            Debug.Log(this.name + " has a problem.");
             Debug.LogException(ex);
             Errors = true;
             Error = ex;
@@ -208,6 +209,10 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
         if (jsonNode["SceneFlow"] is JSONClass)
             SceneFlowFilter = jsonNode["SceneFlow"].DeserializeObject() as SceneFlowFilter;
         if (jsonNode["FilterState"] is JSONClass)
-        FilterState.Deserialize(jsonNode["FilterState"].AsObject);
+            FilterState.Deserialize(jsonNode["FilterState"].AsObject);
+        if (jsonNode["Settings"] is JSONClass)
+        {
+            Settings.Deserialize(jsonNode["Settings"].AsObject);
+        }
     }
 }

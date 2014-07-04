@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using HutongGames.PlayMaker;
 using UnityEngine;
 
 
@@ -22,20 +23,10 @@ public abstract class FPSDamageableViewBase : ViewBase {
     [UFRequireInstanceMethod("HealthChanged")]
     public bool _BindHealth;
     
-    [UFGroup("Health")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetHealthTwoWayValue")]
-    public bool _HealthIsTwoWay;
-    
     [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("StateChanged")]
     public bool _BindState;
-    
-    [UFGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetStateTwoWayValue")]
-    public bool _StateIsTwoWay;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -69,33 +60,15 @@ public abstract class FPSDamageableViewBase : ViewBase {
     public virtual void HealthChanged(float value) {
     }
     
-    public virtual float GetHealthTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void StateChanged(FPSPlayerState value) {
-    }
-    
-    public virtual FPSPlayerState GetStateTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public override void Bind() {
         if (this._BindHealth) {
-            if (this._HealthIsTwoWay) {
-                this.BindProperty(()=>FPSDamageable._HealthProperty, this.HealthChanged, this.GetHealthTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSDamageable._HealthProperty, this.HealthChanged);
-            }
+            this.BindProperty(()=>FPSDamageable._HealthProperty, this.HealthChanged);
         }
         if (this._BindState) {
-            if (this._StateIsTwoWay) {
-                this.BindProperty(()=>FPSDamageable._StateProperty, this.StateChanged, this.GetStateTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSDamageable._StateProperty, this.StateChanged);
-            }
+            this.BindProperty(()=>FPSDamageable._StateProperty, this.StateChanged);
         }
     }
     
@@ -121,11 +94,6 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("SpeedChanged")]
     public bool _BindSpeed;
-    
-    [UFGroup("Speed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetSpeedTwoWayValue")]
-    public bool _SpeedIsTwoWay;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -155,19 +123,10 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
     public virtual void SpeedChanged(float value) {
     }
     
-    public virtual float GetSpeedTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public override void Bind() {
         base.Bind();
         if (this._BindSpeed) {
-            if (this._SpeedIsTwoWay) {
-                this.BindProperty(()=>FPSEnemy._SpeedProperty, this.SpeedChanged, this.GetSpeedTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSEnemy._SpeedProperty, this.SpeedChanged);
-            }
+            this.BindProperty(()=>FPSEnemy._SpeedProperty, this.SpeedChanged);
         }
     }
     
@@ -191,11 +150,6 @@ public abstract class FPSGameViewBase : ViewBase {
     
     [UFGroup("CurrentPlayer")]
     [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetCurrentPlayerTwoWayValue")]
-    public bool _CurrentPlayerIsTwoWay;
-    
-    [UFGroup("CurrentPlayer")]
-    [UnityEngine.HideInInspector()]
     public UnityEngine.GameObject _CurrentPlayerPrefab;
     
     [UFToggleGroup("State")]
@@ -203,30 +157,15 @@ public abstract class FPSGameViewBase : ViewBase {
     [UFRequireInstanceMethod("StateChanged")]
     public bool _BindState;
     
-    [UFGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetStateTwoWayValue")]
-    public bool _StateIsTwoWay;
-    
     [UFToggleGroup("Score")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("ScoreChanged")]
     public bool _BindScore;
     
-    [UFGroup("Score")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetScoreTwoWayValue")]
-    public bool _ScoreIsTwoWay;
-    
     [UFToggleGroup("Kills")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("KillsChanged")]
     public bool _BindKills;
-    
-    [UFGroup("Kills")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetKillsTwoWayValue")]
-    public bool _KillsIsTwoWay;
     
     [UFToggleGroup("Enemies")]
     [UnityEngine.HideInInspector()]
@@ -292,32 +231,13 @@ public abstract class FPSGameViewBase : ViewBase {
         }
     }
     
-    public virtual FPSPlayerViewModel GetCurrentPlayerTwoWayValue() {
-        if (this._CurrentPlayer == null || this._CurrentPlayer.ViewModelObject == null) {
-            return null;
-        }
-        return ((FPSPlayerViewModel)(this._CurrentPlayer.ViewModelObject));
-    }
-    
     public virtual void StateChanged(FPSGameState value) {
-    }
-    
-    public virtual FPSGameState GetStateTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void ScoreChanged(int value) {
     }
     
-    public virtual int GetScoreTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void KillsChanged(int value) {
-    }
-    
-    public virtual int GetKillsTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void EnemiesAdded(FPSEnemyViewBase fPSEnemy) {
@@ -335,36 +255,16 @@ public abstract class FPSGameViewBase : ViewBase {
     
     public override void Bind() {
         if (this._BindCurrentPlayer) {
-            if (this._CurrentPlayerIsTwoWay) {
-                this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged, this.GetCurrentPlayerTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
-            }
+            this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
         }
         if (this._BindState) {
-            if (this._StateIsTwoWay) {
-                this.BindProperty(()=>FPSGame._StateProperty, this.StateChanged, this.GetStateTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSGame._StateProperty, this.StateChanged);
-            }
+            this.BindProperty(()=>FPSGame._StateProperty, this.StateChanged);
         }
         if (this._BindScore) {
-            if (this._ScoreIsTwoWay) {
-                this.BindProperty(()=>FPSGame._ScoreProperty, this.ScoreChanged, this.GetScoreTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSGame._ScoreProperty, this.ScoreChanged);
-            }
+            this.BindProperty(()=>FPSGame._ScoreProperty, this.ScoreChanged);
         }
         if (this._BindKills) {
-            if (this._KillsIsTwoWay) {
-                this.BindProperty(()=>FPSGame._KillsProperty, this.KillsChanged, this.GetKillsTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSGame._KillsProperty, this.KillsChanged);
-            }
+            this.BindProperty(()=>FPSGame._KillsProperty, this.KillsChanged);
         }
         if (this._BindEnemies) {
             var binding = this.BindToViewCollection(() => FPSGame._EnemiesProperty);
@@ -411,11 +311,6 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
     public bool _BindCurrentWeaponIndex;
     
-    [UFGroup("CurrentWeaponIndex")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetCurrentWeaponIndexTwoWayValue")]
-    public bool _CurrentWeaponIndexIsTwoWay;
-    
     [UFToggleGroup("Weapons")]
     [UnityEngine.HideInInspector()]
     public bool _BindWeapons;
@@ -459,10 +354,6 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     public virtual void CurrentWeaponIndexChanged(int value) {
     }
     
-    public virtual int GetCurrentWeaponIndexTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void WeaponsAdded(FPSWeaponViewBase fPSWeapon) {
         this._WeaponsList.Add(fPSWeapon);
     }
@@ -479,12 +370,7 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     public override void Bind() {
         base.Bind();
         if (this._BindCurrentWeaponIndex) {
-            if (this._CurrentWeaponIndexIsTwoWay) {
-                this.BindProperty(()=>FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged, this.GetCurrentWeaponIndexTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
-            }
+            this.BindProperty(()=>FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
         }
         if (this._BindWeapons) {
             var binding = this.BindToViewCollection(() => FPSPlayer._WeaponsProperty);
@@ -543,130 +429,65 @@ public abstract class FPSWeaponViewBase : ViewBase {
     [UFRequireInstanceMethod("AmmoChanged")]
     public bool _BindAmmo;
     
-    [UFGroup("Ammo")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetAmmoTwoWayValue")]
-    public bool _AmmoIsTwoWay;
-    
     [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("StateChanged")]
     public bool _BindState;
-    
-    [UFGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetStateTwoWayValue")]
-    public bool _StateIsTwoWay;
     
     [UFToggleGroup("ZoomIndex")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("ZoomIndexChanged")]
     public bool _BindZoomIndex;
     
-    [UFGroup("ZoomIndex")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetZoomIndexTwoWayValue")]
-    public bool _ZoomIndexIsTwoWay;
-    
     [UFToggleGroup("MaxZooms")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("MaxZoomsChanged")]
     public bool _BindMaxZooms;
-    
-    [UFGroup("MaxZooms")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetMaxZoomsTwoWayValue")]
-    public bool _MaxZoomsIsTwoWay;
     
     [UFToggleGroup("WeaponType")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("WeaponTypeChanged")]
     public bool _BindWeaponType;
     
-    [UFGroup("WeaponType")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetWeaponTypeTwoWayValue")]
-    public bool _WeaponTypeIsTwoWay;
-    
     [UFToggleGroup("ReloadTime")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("ReloadTimeChanged")]
     public bool _BindReloadTime;
-    
-    [UFGroup("ReloadTime")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetReloadTimeTwoWayValue")]
-    public bool _ReloadTimeIsTwoWay;
     
     [UFToggleGroup("RoundSize")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("RoundSizeChanged")]
     public bool _BindRoundSize;
     
-    [UFGroup("RoundSize")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetRoundSizeTwoWayValue")]
-    public bool _RoundSizeIsTwoWay;
-    
     [UFToggleGroup("MinSpread")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("MinSpreadChanged")]
     public bool _BindMinSpread;
-    
-    [UFGroup("MinSpread")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetMinSpreadTwoWayValue")]
-    public bool _MinSpreadIsTwoWay;
     
     [UFToggleGroup("BurstSize")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("BurstSizeChanged")]
     public bool _BindBurstSize;
     
-    [UFGroup("BurstSize")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetBurstSizeTwoWayValue")]
-    public bool _BurstSizeIsTwoWay;
-    
     [UFToggleGroup("RecoilSpeed")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("RecoilSpeedChanged")]
     public bool _BindRecoilSpeed;
-    
-    [UFGroup("RecoilSpeed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetRecoilSpeedTwoWayValue")]
-    public bool _RecoilSpeedIsTwoWay;
     
     [UFToggleGroup("FireSpeed")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("FireSpeedChanged")]
     public bool _BindFireSpeed;
     
-    [UFGroup("FireSpeed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetFireSpeedTwoWayValue")]
-    public bool _FireSpeedIsTwoWay;
-    
     [UFToggleGroup("BurstSpeed")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("BurstSpeedChanged")]
     public bool _BindBurstSpeed;
     
-    [UFGroup("BurstSpeed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetBurstSpeedTwoWayValue")]
-    public bool _BurstSpeedIsTwoWay;
-    
     [UFToggleGroup("SpreadMultiplier")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("SpreadMultiplierChanged")]
     public bool _BindSpreadMultiplier;
-    
-    [UFGroup("SpreadMultiplier")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetSpreadMultiplierTwoWayValue")]
-    public bool _SpreadMultiplierIsTwoWay;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -762,198 +583,81 @@ public abstract class FPSWeaponViewBase : ViewBase {
     public virtual void AmmoChanged(int value) {
     }
     
-    public virtual int GetAmmoTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void StateChanged(FPSWeaponState value) {
-    }
-    
-    public virtual FPSWeaponState GetStateTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void ZoomIndexChanged(int value) {
     }
     
-    public virtual int GetZoomIndexTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void MaxZoomsChanged(int value) {
-    }
-    
-    public virtual int GetMaxZoomsTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void WeaponTypeChanged(WeaponType value) {
     }
     
-    public virtual WeaponType GetWeaponTypeTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void ReloadTimeChanged(float value) {
-    }
-    
-    public virtual float GetReloadTimeTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void RoundSizeChanged(int value) {
     }
     
-    public virtual int GetRoundSizeTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void MinSpreadChanged(int value) {
-    }
-    
-    public virtual int GetMinSpreadTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void BurstSizeChanged(int value) {
     }
     
-    public virtual int GetBurstSizeTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void RecoilSpeedChanged(float value) {
-    }
-    
-    public virtual float GetRecoilSpeedTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void FireSpeedChanged(float value) {
     }
     
-    public virtual float GetFireSpeedTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void BurstSpeedChanged(float value) {
-    }
-    
-    public virtual float GetBurstSpeedTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void SpreadMultiplierChanged(float value) {
     }
     
-    public virtual float GetSpreadMultiplierTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public override void Bind() {
         if (this._BindAmmo) {
-            if (this._AmmoIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._AmmoProperty, this.AmmoChanged, this.GetAmmoTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._AmmoProperty, this.AmmoChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._AmmoProperty, this.AmmoChanged);
         }
         if (this._BindState) {
-            if (this._StateIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._StateProperty, this.StateChanged, this.GetStateTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._StateProperty, this.StateChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._StateProperty, this.StateChanged);
         }
         if (this._BindZoomIndex) {
-            if (this._ZoomIndexIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._ZoomIndexProperty, this.ZoomIndexChanged, this.GetZoomIndexTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._ZoomIndexProperty, this.ZoomIndexChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._ZoomIndexProperty, this.ZoomIndexChanged);
         }
         if (this._BindMaxZooms) {
-            if (this._MaxZoomsIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._MaxZoomsProperty, this.MaxZoomsChanged, this.GetMaxZoomsTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._MaxZoomsProperty, this.MaxZoomsChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._MaxZoomsProperty, this.MaxZoomsChanged);
         }
         if (this._BindWeaponType) {
-            if (this._WeaponTypeIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._WeaponTypeProperty, this.WeaponTypeChanged, this.GetWeaponTypeTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._WeaponTypeProperty, this.WeaponTypeChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._WeaponTypeProperty, this.WeaponTypeChanged);
         }
         if (this._BindReloadTime) {
-            if (this._ReloadTimeIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._ReloadTimeProperty, this.ReloadTimeChanged, this.GetReloadTimeTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._ReloadTimeProperty, this.ReloadTimeChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._ReloadTimeProperty, this.ReloadTimeChanged);
         }
         if (this._BindRoundSize) {
-            if (this._RoundSizeIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._RoundSizeProperty, this.RoundSizeChanged, this.GetRoundSizeTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._RoundSizeProperty, this.RoundSizeChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._RoundSizeProperty, this.RoundSizeChanged);
         }
         if (this._BindMinSpread) {
-            if (this._MinSpreadIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._MinSpreadProperty, this.MinSpreadChanged, this.GetMinSpreadTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._MinSpreadProperty, this.MinSpreadChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._MinSpreadProperty, this.MinSpreadChanged);
         }
         if (this._BindBurstSize) {
-            if (this._BurstSizeIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._BurstSizeProperty, this.BurstSizeChanged, this.GetBurstSizeTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._BurstSizeProperty, this.BurstSizeChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._BurstSizeProperty, this.BurstSizeChanged);
         }
         if (this._BindRecoilSpeed) {
-            if (this._RecoilSpeedIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._RecoilSpeedProperty, this.RecoilSpeedChanged, this.GetRecoilSpeedTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._RecoilSpeedProperty, this.RecoilSpeedChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._RecoilSpeedProperty, this.RecoilSpeedChanged);
         }
         if (this._BindFireSpeed) {
-            if (this._FireSpeedIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._FireSpeedProperty, this.FireSpeedChanged, this.GetFireSpeedTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._FireSpeedProperty, this.FireSpeedChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._FireSpeedProperty, this.FireSpeedChanged);
         }
         if (this._BindBurstSpeed) {
-            if (this._BurstSpeedIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._BurstSpeedProperty, this.BurstSpeedChanged, this.GetBurstSpeedTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._BurstSpeedProperty, this.BurstSpeedChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._BurstSpeedProperty, this.BurstSpeedChanged);
         }
         if (this._BindSpreadMultiplier) {
-            if (this._SpreadMultiplierIsTwoWay) {
-                this.BindProperty(()=>FPSWeapon._SpreadMultiplierProperty, this.SpreadMultiplierChanged, this.GetSpreadMultiplierTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>FPSWeapon._SpreadMultiplierProperty, this.SpreadMultiplierChanged);
-            }
+            this.BindProperty(()=>FPSWeapon._SpreadMultiplierProperty, this.SpreadMultiplierChanged);
         }
     }
     
@@ -1007,30 +711,15 @@ public abstract class WavesFPSGameViewBase : FPSGameViewBase {
     [UFRequireInstanceMethod("KillsToNextWaveChanged")]
     public bool _BindKillsToNextWave;
     
-    [UFGroup("KillsToNextWave")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetKillsToNextWaveTwoWayValue")]
-    public bool _KillsToNextWaveIsTwoWay;
-    
     [UFToggleGroup("WaveKills")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("WaveKillsChanged")]
     public bool _BindWaveKills;
     
-    [UFGroup("WaveKills")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetWaveKillsTwoWayValue")]
-    public bool _WaveKillsIsTwoWay;
-    
     [UFToggleGroup("CurrentWave")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("CurrentWaveChanged")]
     public bool _BindCurrentWave;
-    
-    [UFGroup("CurrentWave")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("GetCurrentWaveTwoWayValue")]
-    public bool _CurrentWaveIsTwoWay;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -1068,49 +757,22 @@ public abstract class WavesFPSGameViewBase : FPSGameViewBase {
     public virtual void KillsToNextWaveChanged(int value) {
     }
     
-    public virtual int GetKillsToNextWaveTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public virtual void WaveKillsChanged(int value) {
-    }
-    
-    public virtual int GetWaveKillsTwoWayValue() {
-        throw new System.NotImplementedException();
     }
     
     public virtual void CurrentWaveChanged(int value) {
     }
     
-    public virtual int GetCurrentWaveTwoWayValue() {
-        throw new System.NotImplementedException();
-    }
-    
     public override void Bind() {
         base.Bind();
         if (this._BindKillsToNextWave) {
-            if (this._KillsToNextWaveIsTwoWay) {
-                this.BindProperty(()=>WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged, this.GetKillsToNextWaveTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
-            }
+            this.BindProperty(()=>WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
         }
         if (this._BindWaveKills) {
-            if (this._WaveKillsIsTwoWay) {
-                this.BindProperty(()=>WavesFPSGame._WaveKillsProperty, this.WaveKillsChanged, this.GetWaveKillsTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>WavesFPSGame._WaveKillsProperty, this.WaveKillsChanged);
-            }
+            this.BindProperty(()=>WavesFPSGame._WaveKillsProperty, this.WaveKillsChanged);
         }
         if (this._BindCurrentWave) {
-            if (this._CurrentWaveIsTwoWay) {
-                this.BindProperty(()=>WavesFPSGame._CurrentWaveProperty, this.CurrentWaveChanged, this.GetCurrentWaveTwoWayValue);
-            }
-            else {
-                this.BindProperty(()=>WavesFPSGame._CurrentWaveProperty, this.CurrentWaveChanged);
-            }
+            this.BindProperty(()=>WavesFPSGame._CurrentWaveProperty, this.CurrentWaveChanged);
         }
     }
     

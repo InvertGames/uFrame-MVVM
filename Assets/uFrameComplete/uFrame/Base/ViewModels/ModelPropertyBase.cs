@@ -36,12 +36,13 @@ public abstract class ModelPropertyBase
         set
         {
             var changed = !object.Equals(_value,value);
+            LastValueObject = _value;
             _value = value;
             if (changed)
                 OnPropertyChanged(value);
         }
     }
-
+    public object LastValueObject { get; set; }
     /// <summary>
     /// The value type of this property
     /// </summary>

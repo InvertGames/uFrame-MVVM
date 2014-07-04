@@ -270,8 +270,14 @@ public class ElementsDiagram : ICommandHandler
         }
         else
         {
+
             Data.Settings.CodePathStrategy =
              uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.Settings.CodePathStrategyName ?? "Default");
+            if (Data.Settings.CodePathStrategy == null)
+            {
+                Data.Settings.CodePathStrategy = uFrameEditor.Container.Resolve<ICodePathStrategy>("Default");
+            }
+            Data.Settings.CodePathStrategy.Data = Data;
             Data.Settings.CodePathStrategy.AssetPath =
                 assetPath.Replace(string.Format("{0}{1}", Path.GetFileNameWithoutExtension(assetPath), fileExtension), "").Replace("/", Path.DirectorySeparatorChar.ToString()); 
         

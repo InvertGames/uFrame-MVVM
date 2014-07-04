@@ -60,20 +60,15 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
         }
     }
 
-    public override float HeaderSize
+    public override bool ShowSubtitle
     {
-        get { return base.HeaderSize + 6; }
+        get { return true; }
     }
 
     protected override void DrawHeader(ElementsDiagram diagram, bool importOnly)
     {
         base.DrawHeader(diagram, importOnly);
-        var subTitlePosition = Data.HeaderPosition.Scale(Scale);
-        subTitlePosition.y += (15 * Scale);
-        var style = new GUIStyle(EditorStyles.miniLabel);
-        style.fontSize = Mathf.RoundToInt(10 * Scale);
-        style.alignment = TextAnchor.MiddleCenter;
-        GUI.Label(subTitlePosition,Data.BaseViewName,style);
+        
     }
 
     protected override void DrawContent(ElementsDiagram diagram, bool importOnly)

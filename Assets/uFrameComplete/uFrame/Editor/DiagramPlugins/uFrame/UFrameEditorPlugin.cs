@@ -37,14 +37,16 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         // Where the generated code files are placed
         container.Register<ICodePathStrategy,DefaultCodePathStrategy>("Default");
+        container.Register<ICodePathStrategy,SubSystemPathStrategy>("By Subsystem");
         // The code generators
-        container.Register<NodeItemGenerator,ElementDataGenerator>("ElementData");
-        container.Register<NodeItemGenerator,EnumDataGenerator>("EnumData");
-        container.Register<NodeItemGenerator,ViewDataGenerator>("ViewData");
-        container.Register<NodeItemGenerator,ViewComponentDataGenerator>("ViewComponentData");
-        container.Register<NodeItemGenerator,SceneManagerDataGenerator>("SceneManagerData");
+        container.Register<DesignerGeneratorFactory, ElementDataGeneratorFactory>("ElementData");
+        container.Register<DesignerGeneratorFactory, EnumDataGeneratorFactory>("EnumData");
+        container.Register<DesignerGeneratorFactory, ViewDataGeneratorFactory>("ViewData");
+        container.Register<DesignerGeneratorFactory, ViewComponentDataGeneratorFactory>("ViewComponentData");
+        container.Register<DesignerGeneratorFactory, SceneManagerDataGeneratorFactory>("SceneManagerData");
 
-        container.RegisterInstance<IToolbarCommand>(new ImportCommand(),"Import");
+        // Import is no longer needed
+        //container.RegisterInstance<IToolbarCommand>(new ImportCommand(),"Import");
     }
 }
 

@@ -81,6 +81,7 @@
     <Compile Include="ElementDesigner\Commands\Nodes\RenameCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Nodes\ScaleCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Nodes\SelectViewBaseElement.cs" />
+    <Compile Include="ElementDesigner\Commands\Nodes\ShowExternalItemCommand.cs" />
     <Compile Include="ElementDesigner\Data\ConvertToJSON.cs" />
     <Compile Include="ElementDesigner\Data\ElementDesignerDataExtensions.cs" />
     <Compile Include="ElementDesigner\Data\ElementDiagramSettings.cs" />
@@ -93,10 +94,10 @@
     <Compile Include="ElementDesigner\Drawers\ExternalNodeDrawer.cs" />
     <Compile Include="ElementsDesigner.cs" />
     <Compile Include="IJsonSerializable.cs" />
-    <Compile Include="ITypeDeclerationModifier.cs" />
+    <Compile Include="ITypeGeneratorPostProcessor.cs" />
     <Compile Include="TypeGeneratorPostProcessor.cs" />
     <Compile Include="UI\ContextMenuUI.cs" />
-    <Compile Include="NodeItemGenerator.cs" />
+    <Compile Include="DesignerGeneratorFactory.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\AddNewCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\AutoLayoutCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Hooks\CommandHook.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="ElementDesigner\Data\ViewModelCommandData.cs" />
     <Compile Include="ElementDesigner\Data\ViewModelPropertyData.cs" />
     <Compile Include="Extensions\UFrameAssetManager.cs" />
+    <Compile Include="Windows\ElementDiagramSettingsWindow.cs" />
     <Compile Include="Windows\uFrameExtensionsWindow.cs" />
     <Compile Include="Windows\uFrameStartDialog.cs" />
     <Compile Include="Windows\uFrameToolsWindow.cs" />

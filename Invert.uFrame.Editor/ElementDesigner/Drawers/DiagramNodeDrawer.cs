@@ -36,7 +36,14 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         }
     }
 
-    public virtual float HeaderSize { get { return 35; } }
+    public virtual float HeaderSize
+    {
+        get
+        {
+            if (ShowSubtitle) return 41;
+            return 35;
+        }
+    }
 
     public float Scale
     {
@@ -74,7 +81,15 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
                     }
                 }
             }
-
+            if (ShowSubtitle)
+            {
+                var subTitle = EditorStyles.largeLabel.CalcSize(new GUIContent(Data.SubTitle));
+                if (subTitle.x > maxLengthItem.x)
+                {
+                    maxLengthItem = subTitle;
+                }
+            }
+            
 
             return Math.Max(150f, maxLengthItem.x + 35);
         }
@@ -182,9 +197,15 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             //}
 
             GUI.Label(position.Scale(Scale), _cachedLabel ?? string.Empty, style);
+            var subTitlePosition = Data.HeaderPosition.Scale(Scale);
+            subTitlePosition.y += (15 * Scale);
+            style = new GUIStyle(EditorStyles.miniLabel);
+            style.fontSize = Mathf.RoundToInt(10 * Scale);
+            style.alignment = TextAnchor.MiddleCenter;
+            GUI.Label(subTitlePosition, Data.SubTitle, style);
         }
     }
-
+    public virtual bool ShowSubtitle { get { return false; } }
     public virtual bool AllowCollapsing
     {
         get
@@ -258,12 +279,12 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         offsetPosition.y += 6;
 
         if (isDiagramFilter)
-            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale),  BackgroundStyle, string.Empty);
+            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale), BackgroundStyle, string.Empty);
         offsetPosition.x -= 3;
         offsetPosition.y -= 3;
 
         if (isDiagramFilter)
-            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale),  BackgroundStyle, string.Empty);
+            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale), BackgroundStyle, string.Empty);
 
         offsetPosition.y -= 16;
         offsetPosition.height = 16;
@@ -281,7 +302,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
 
 
-        UFStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale),  BackgroundStyle, string.Empty);
+        UFStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale), BackgroundStyle, string.Empty);
 
 
         if (Data.IsSelected)
@@ -305,7 +326,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         }
 
 
-        DrawHeader(diagram,false);
+        DrawHeader(diagram, false);
 
         if (!Data.IsCollapsed)
             DrawContent(diagram, false);
@@ -363,7 +384,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     protected virtual void DrawSelectedItem(IDiagramNodeItem nodeItem, ElementsDiagram diagram)
     {
-     
+
         GUI.SetNextControlName(nodeItem.Name);
         var newName = EditorGUILayout.TextField(nodeItem.Name, UFStyles.ClearItemStyle);
         if (EditorGUI.EndChangeCheck() && !string.IsNullOrEmpty(newName))
@@ -377,7 +398,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
             }
         }
-        
+
 
         if (GUILayout.Button(string.Empty, UBStyles.RemoveButtonStyle.Scale(Scale)))
         {

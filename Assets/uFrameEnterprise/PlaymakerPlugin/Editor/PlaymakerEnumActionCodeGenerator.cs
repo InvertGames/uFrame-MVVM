@@ -11,12 +11,13 @@ public class PlaymakerEnumActionCodeGenerator : CodeGenerator
     public override void Initialize(CodeFileGenerator fileGenerator)
     {
         base.Initialize(fileGenerator);
+        Namespace.Name = string.Format("{0}.PlaymakerActions", EnumData.Data.Name);
         Namespace.Imports.Add(new CodeNamespaceImport("UnityEngine"));
         Namespace.Imports.Add(new CodeNamespaceImport("HutongGames.PlayMaker"));
         Decleration = new CodeTypeDeclaration(ClassName)
         {
             TypeAttributes = TypeAttributes.Public
-        };
+        }; 
         Decleration.BaseTypes.Add("FsmStateAction");
 
         ViewModelPropertyField = new CodeMemberField(typeof(FsmString), "_" + PropertyData.Name)

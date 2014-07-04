@@ -971,6 +971,9 @@
     <Compile Include="Assets\PrivateStuff\TargetingDemo\Views\PlayerMapHud.cs" />
     <Compile Include="Assets\PrivateStuff\TargetingDemo\Views\PlayerMapTerrain.cs" />
     <Compile Include="Assets\PrivateStuff\TargetingDemo\Views\RTSBuildingView.cs" />
+    <Compile Include="Assets\PrivateStuff\Tests\NewJsonElementDesignerDataControllers.designer.cs" />
+    <Compile Include="Assets\PrivateStuff\Tests\SceneManagers\NewSceneManager.cs" />
+    <Compile Include="Assets\PrivateStuff\Tests\SceneManagers\NewSceneManagerSettings.cs" />
     <Compile Include="Assets\PrivateStuff\UBTriggersPlayground\DaikonForge\dfButton\GetdfButtonShadow.cs" />
     <Compile Include="Assets\PrivateStuff\UBTriggersPlayground\DaikonForge\dfButton\GetdfButtonShadowOffset.cs" />
     <Compile Include="Assets\PrivateStuff\UBTriggersPlayground\DaikonForge\dfButton\GetdfButtonState.cs" />
@@ -2255,6 +2258,7 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Controllers\CheckerPlateController.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Controllers\CheckersGameController.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Controllers\MainMenuController.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Position.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\SceneManagers\CheckersMenuSceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\SceneManagers\CheckersSceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\AICheckersGameViewModel.cs" />
@@ -2266,7 +2270,6 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\CheckerViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\MainMenuViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\NewElement1ViewModel.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\Position.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\ViewModels\SceneFirstCheckersGameViewModel.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Views\CheckerBoardView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Views\CheckerPlateView.cs" />
@@ -2355,7 +2358,17 @@
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Triggers\ViewModelPropertyTrigger.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\UFrameBehaviours.cs" />
     <Compile Include="Assets\uFrameEnterprise\EnterpriseDataRepository.cs" />
-    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Extensions.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\Controllers\PlaymakerElementController.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\PlaymakerElementState.designer.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\PlaymakerExample.designer.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\PlaymakerExampleControllers.designer.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\PlaymakerExamplePlaymakerActions.designer.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\PlaymakerExampleViews.designer.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\SceneManagers\PlaymakerExampleManager.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\SceneManagers\PlaymakerExampleManagerSettings.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\Example\Views\PlaymakerView.cs" />
+    <Compile Include="Assets\uFrameEnterprise\PlaymakerPlugin\uFramePlaymakerExtensions.cs" />
+    <Compile Include="Assets\uFrameEnterprise\RepositoryPlugin\DataRepository.cs" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />

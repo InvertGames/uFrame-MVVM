@@ -44,7 +44,7 @@ public class UBComponent : MonoBehaviour, IUBContext
         {
             Debug.Log(trigger.TriggerType.FullName);
         }
-        triggerComponent.hideFlags = HideFlags.HideInInspector;
+        //triggerComponent.hideFlags = HideFlags.HideInInspector;
 
         triggerComponent.Instance = this;
         triggerComponent.Sheet = trigger.Sheet;

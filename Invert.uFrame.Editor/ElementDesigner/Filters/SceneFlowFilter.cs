@@ -35,7 +35,7 @@ public class SceneFlowFilter : DefaultFilter
         if (t == typeof(ViewModelCommandData)) return true;
         if (t == typeof(SceneManagerData)) return true;
         if (t == typeof(SubSystemData)) return true;
-        if (t == typeof (ExternalSubsystem)) return true;
+        //if (t == typeof (ExternalSubsystem)) return true;
 
         //var element = item as ElementDataBase;
         //if (element != null && !element.IsMultiInstance)

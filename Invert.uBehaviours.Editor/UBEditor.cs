@@ -625,7 +625,6 @@ public abstract class UBEditor : Editor
         return false;
     }
 
-
     public static bool DoTreeItem(TreeItemInfo treeItemInfo)
     {
         Indent = treeItemInfo.Indent;
@@ -655,6 +654,7 @@ public abstract class UBEditor : Editor
             GUI.DrawTexture(new Rect(rect.x + rect.width - 18f, rect.y + ((rect.height / 2) - 8), 16, 16), UBStyles.ArrowRightTexture);
         return result;
     }
+
     public static int GetHeight(int enumIndex)
     {
         switch (enumIndex)
@@ -826,6 +826,7 @@ public abstract class UBEditor : Editor
             return member.Name;
         }
     }
+
     public void InitActions()
     {
         if (_actionGroups != null) return;

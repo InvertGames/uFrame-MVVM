@@ -192,7 +192,9 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
 
     public string Highlighter { get { return null; } }
 
-    public string Identifier { get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier; } }
+    public virtual string Identifier { get { return string.IsNullOrEmpty(_identifier) ? (_identifier = Guid.NewGuid().ToString()) : _identifier; } }
+
+    public virtual string SubTitle { get { return string.Empty; } }
 
     public virtual string InfoLabel
     {

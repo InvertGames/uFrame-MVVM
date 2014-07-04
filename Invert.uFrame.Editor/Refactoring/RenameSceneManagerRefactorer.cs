@@ -20,9 +20,9 @@ namespace Invert.uFrame.Editor.Refactoring
             SceneManagerSettingsFileRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
             SceneManagerFileRenamer.RootPath = data.Data.Settings.CodePathStrategy.AssetPath;
             SceneManagerSettingsFileRenamer.From =
-                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerSettingsFilename(data.NameAsSettings);
+                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerSettingsFilename(data);
             SceneManagerFileRenamer.From =
-                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerFilename(data.NameAsSceneManager);
+                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerFilename(data);
            
         }
         public override void Set(ISelectable data)
@@ -36,9 +36,9 @@ namespace Invert.uFrame.Editor.Refactoring
             Settings.To = data.NameAsSettings;
             SettingsField.To = data.NameAsSettingsField;
             SceneManagerSettingsFileRenamer.To =
-               data.Data.Settings.CodePathStrategy.GetEditableSceneManagerSettingsFilename(data.NameAsSettings);
+               data.Data.Settings.CodePathStrategy.GetEditableSceneManagerSettingsFilename(data);
             SceneManagerFileRenamer.To =
-                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerFilename(data.NameAsSceneManager);
+                data.Data.Settings.CodePathStrategy.GetEditableSceneManagerFilename(data);
            
          
         }

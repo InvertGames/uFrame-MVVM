@@ -13,6 +13,6 @@ public class PlaymakerPlugin : DiagramPlugin
         //container.RegisterInstance<IDiagramNodeItemCommand>(new AddAsStateToFsm("Add To Current FSM", true), "AddAsState");
         container.RegisterInstance<IDiagramNodeItemCommand>(new AddAsStateToFsm("Create FSM On Selection", false), "CreateFSMOnSelection");
         container.Register<ViewBindingExtender, PlaymakerFSMBindingSyncExtender>("PlaymakerBindings");
-        container.Register<NodeItemGenerator, PlaymakerElementNodeGenerator>("PlaymakerElementNodeGenerator");
+        container.Register<DesignerGeneratorFactory, PlaymakerElementNodeGeneratorFactory>("PlaymakerElementNodeGenerator");
     }
 }

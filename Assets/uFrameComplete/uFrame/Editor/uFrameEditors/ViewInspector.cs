@@ -10,6 +10,19 @@ using Object = UnityEngine.Object;
 [CustomEditor(typeof(ViewBase), true)]
 public class ViewInspector : uFrameInspector
 {
+    private Dictionary<string, ICommand> _commands;
+
+    public bool ShowInfoLabels
+    {
+        get
+        {
+            return EditorPrefs.GetBool("UFRAME_ShowInfoLabels", true);
+        }
+        set
+        {
+            EditorPrefs.SetBool("UFRAME_ShowInfoLabels", value);
+        }
+    }
     public bool ShowDefaultSettings
     {
         get
@@ -87,6 +100,17 @@ public class ViewInspector : uFrameInspector
         GUILayout.EndArea();
         Handles.EndGUI();
     }
+
+    public void Info(string message)
+    {
+        if (!ShowInfoLabels) return;
+        EditorGUILayout.HelpBox(message,MessageType.Info);
+    }
+    public void Warning(string message)
+    {
+        
+        EditorGUILayout.HelpBox(message, MessageType.Warning);
+    }
     public override void OnInspectorGUI()
     {
         UBEditor.IsGlobals = false;
@@ -95,23 +119,7 @@ public class ViewInspector : uFrameInspector
         if (EditorApplication.isPlaying)
         {
             base.OnInspectorGUI();
-            if (EditorApplication.isPlaying)
-            {
-                if (t != null && t.ViewModelObject != null)
-                    foreach (var p in t.ViewModelObject.Properties)
-                    {
-                        EditorGUILayout.LabelField(p.Key.Replace("_","").Replace("Property",""), p.Value.Serialize().ToString());
-                        //if (p.Value.ValueType.IsPrimitive)
-                        //{
-                        //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
-                        //}
-                        //else
-                        //{
-                        //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
-                        //}
-                    }
-            }
-            Repaint();
+            DrawPlayModeGui(t);
             return;
         }
         
@@ -125,22 +133,30 @@ public class ViewInspector : uFrameInspector
         EditorGUILayout.Space();
         if (t.IsMultiInstance)
         {
+            Info("Store the ViewModel instance in the container.  So other views can use the same instance.");
             var resolveProperty = serializedObject.FindProperty("_forceResolveViewModel");
             EditorGUILayout.PropertyField(resolveProperty, new GUIContent("Force Resolve"));
         }
         if (!t.IsMultiInstance || t.ForceResolveViewModel)
         {
+            Info("The name that is used to share this instance among others (if any).");
             var resolveNameProperty = serializedObject.FindProperty("_resolveName");
             EditorGUILayout.PropertyField(resolveNameProperty, new GUIContent("Resolve Name"));
+            if (!t.IsMultiInstance && !string.IsNullOrEmpty(resolveNameProperty.stringValue))
+            {
+                Warning(
+                    "When using a 'ResolveName' on a single instance element, the element must be initialized manually in the scene manager's setup method.");
+            }
+            
         }
+
+        Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
         var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
         EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));
-
 
         if (_groupFields == null)
             GetFieldInformation(t);
         
-
         if (_groupFields != null)
         {
          
@@ -193,6 +209,7 @@ public class ViewInspector : uFrameInspector
                 }
             }
             EditorPrefs.SetBool("UFRAME_BindingsOpen", Toggle("Bindings", EditorPrefs.GetBool("UFRAME_BindingsOpen", false)));
+
             if (EditorPrefs.GetBool("UFRAME_BindingsOpen", false))
             {
                
@@ -234,5 +251,61 @@ public class ViewInspector : uFrameInspector
 
 
         serializedObject.ApplyModifiedProperties();
+    }
+
+    public ViewBase Target
+    {
+        get { return (ViewBase) target; }
+    }
+    public Dictionary<string, ICommand> Commands
+    {
+        get
+        {
+            if (_commands == null)
+            {
+                if (Target.ViewModelObject != null)
+                {
+                    _commands = Target.ViewModelObject.Commands;
+                }
+            }
+            return _commands;
+        }
+    }
+    private void DrawPlayModeGui(ViewBase t)
+    {
+        if (EditorApplication.isPlaying)
+        {
+            if (t != null && t.ViewModelObject != null)
+                foreach (var p in t.ViewModelObject.Properties)
+                {
+                    var serialized = p.Value.Serialize().ToString();
+                    if (serialized.Length > 100)
+                    {
+                        serialized = serialized.Substring(0, 100);
+                    }
+                    EditorGUILayout.LabelField(p.Key.Replace("_", "").Replace("Property", ""), serialized);
+                    //if (p.Value.ValueType.IsPrimitive)
+                    //{
+                    //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
+                    //}
+                    //else
+                    //{
+                    //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
+                    //}
+                }
+
+            if (Commands != null)
+            {
+                foreach (var command in Commands)
+                {
+                    if (GUI.Button(UBEditor.GetRect(UFStyles.ButtonStyle), command.Key, UFStyles.ButtonStyle))
+                    {
+                        Target.ExecuteCommand(command.Value);
+                    }
+                }
+            }
+        }
+        Repaint();
+        return;
     }
 }

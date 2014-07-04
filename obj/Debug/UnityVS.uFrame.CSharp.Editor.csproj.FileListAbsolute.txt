@@ -57,3 +57,4 @@ D:\Invert\Git\uFrame\Temp\UnityVS_bin\Debug\Invert.uFrame.Editor.pdb
 D:\Invert\Git\uFrame\obj\Debug\UnityVS.uFrame.CSharp.Editor.csprojResolveAssemblyReference.cache
 D:\Invert\Git\uFrame\obj\Debug\Assembly-CSharp-Editor.dll
 D:\Invert\Git\uFrame\obj\Debug\Assembly-CSharp-Editor.pdb
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Debug\Assembly-UnityScript.pdb

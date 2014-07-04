@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
@@ -36,22 +37,33 @@ public class CreateSceneCommand : EditorCommand<IDiagramNode>, IDiagramNodeComma
         var go = new GameObject("_GameManager");
         go.AddComponent<GameManager>()._LoadingLevel = "Loading";
         EditorUtility.SetDirty(go);
-        EnsureSceneContainerInScene(sceneManagerData);
+        var sceneManager = EnsureSceneContainerInScene(sceneManagerData);
+        if (sceneManager != null)
+        go.GetComponent<GameManager>()._Start = sceneManager;
         EditorApplication.SaveScene();
         AssetDatabase.Refresh();
     }
 
-  
-    private static void EnsureSceneContainerInScene(SceneManagerData sceneManagerData)
+
+    private static SceneManager EnsureSceneContainerInScene(SceneManagerData sceneManagerData)
     {
         if (sceneManagerData.CurrentType != null)
         {
-            if (Object.FindObjectsOfType(sceneManagerData.CurrentType).Length < 1)
+            var objs = Object.FindObjectsOfType(sceneManagerData.CurrentType);
+            if (objs.Length < 1)
             {
-                var go = new GameObject("_SceneManager", sceneManagerData.CurrentType);
-                go.name = "_SceneManager";
+                var go = new GameObject("_SceneManager", sceneManagerData.CurrentType)
+                {
+                    name = "_SceneManager"
+                };
+                return go.GetComponent<SceneManager>();
+            }
+            else
+            {
+                return objs.FirstOrDefault() as SceneManager;
             }
         }
+        return null;
     }
 
     public override string CanPerform(IDiagramNode node)

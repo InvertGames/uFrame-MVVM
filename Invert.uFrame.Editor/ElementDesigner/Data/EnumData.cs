@@ -40,7 +40,6 @@ public class EnumData : DiagramNode
         return true;
     }
 
-  
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();

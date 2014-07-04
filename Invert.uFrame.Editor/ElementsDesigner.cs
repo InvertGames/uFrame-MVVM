@@ -184,8 +184,8 @@ namespace Invert.uFrame.Editor
                 HandlePanning(diagramRect);
                 if (Diagram.Data != null)
                 {
-                    var softColor = new Color(0f, 0f, 0f, 0.1f);
-                    var hardColor = new Color(0f, 0f, 0f, 0.3f);
+                    var softColor = Diagram.Data.Settings.GridLinesColor;
+                    var hardColor = Diagram.Data.Settings.GridLinesColorSecondary;
                     //var softColor = new Color(1f, 1f, 0f, 0.1f);
                     //var hardColor = new Color(1f, 1f, 1f, 0.3f);
                     var x = 0f;

@@ -169,29 +169,46 @@ namespace Invert.uFrame.Editor
         public static IEnumerable<CodeGenerator> GetAllCodeGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData)
         {
             // Grab all the code generators
-            var diagramItemGenerators = Container.ResolveAll<NodeItemGenerator>().ToArray();
+            var diagramItemGenerators = Container.ResolveAll<DesignerGeneratorFactory>().ToArray();
 
             foreach (var diagramItemGenerator in diagramItemGenerators)
             {
-                NodeItemGenerator generator = diagramItemGenerator;
-                var items = diagramData.AllDiagramItems.Where(p => p.GetType() == generator.DiagramItemType);
-
-                foreach (var item in items)
+                DesignerGeneratorFactory generator = diagramItemGenerator;
+                // If its a generator for the entire diagram
+                if (typeof (IElementDesignerData).IsAssignableFrom(generator.DiagramItemType))
                 {
-                    var codeGenerators = generator.GetGenerators(pathStrategy,diagramData, item);
+                    var codeGenerators = generator.GetGenerators(pathStrategy, diagramData, diagramData);
                     foreach (var codeGenerator in codeGenerators)
                     {
-                        codeGenerator.ObjectData = item;
+                        codeGenerator.ObjectData = diagramData;
                         codeGenerator.GeneratorFor = diagramItemGenerator.DiagramItemType;
                         yield return codeGenerator;
                     }
+
                 }
+                    // If its a generator for a specific node type
+                else
+                {
+                    var items = diagramData.AllDiagramItems.Where(p => p.GetType() == generator.DiagramItemType);
+
+                    foreach (var item in items)
+                    {
+                        var codeGenerators = generator.GetGenerators(pathStrategy, diagramData, item);
+                        foreach (var codeGenerator in codeGenerators)
+                        {
+                            codeGenerator.ObjectData = item;
+                            codeGenerator.GeneratorFor = diagramItemGenerator.DiagramItemType;
+                            yield return codeGenerator;
+                        }
+                    }
+                }
+               
             }
         }
 
-        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(IElementDesignerData diagramData)
+        public static IEnumerable<CodeFileGenerator> GetAllFileGenerators(IElementDesignerData diagramData,ICodePathStrategy strategy = null)
         {
-            var codeGenerators = GetAllCodeGenerators(diagramData.Settings.CodePathStrategy, diagramData).ToArray();
+            var codeGenerators = GetAllCodeGenerators(strategy ?? diagramData.Settings.CodePathStrategy, diagramData).ToArray();
             var groups = codeGenerators.GroupBy(p => p.Filename);
             foreach (var @group in groups)
             {
@@ -272,6 +289,7 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IToolbarCommand>(new SaveCommand(), "SaveCommand");
             container.RegisterInstance<IToolbarCommand>(new AutoLayoutCommand(), "AutoLayoutCommand");
             container.RegisterInstance<IToolbarCommand>(new AddNewCommand(), "AddNewCommand");
+            container.RegisterInstance<IToolbarCommand>(new DiagramSettingsCommand() { Title = "Settings"}, "SettingsCommand");
 #if DEBUG
             container.RegisterInstance<IToolbarCommand>(new ConvertToJSON(), "SaveAsJson");
 #endif
@@ -319,8 +337,8 @@ namespace Invert.uFrame.Editor
 
 #if DEBUG
             //External Nodes
-            container.RegisterInstance<IDiagramContextCommand>(new ShowExternalItemCommand(), "AddNewExternalItemCommand");
-            container.RegisterRelation<ExternalSubsystem, INodeDrawer, ExternalNodeDrawer>();
+            //container.RegisterInstance<IDiagramContextCommand>(new ShowExternalItemCommand(), "AddNewExternalItemCommand");
+            //container.RegisterRelation<ExternalSubsystem, INodeDrawer, ExternalNodeDrawer>();
 #endif
             foreach (var diagramPlugin in GetDerivedTypes<DiagramPlugin>(false, false))
             {
@@ -330,9 +348,9 @@ namespace Invert.uFrame.Editor
             container.InjectAll();
             foreach (var diagramPlugin in Plugins.OrderBy(p=>p.LoadPriority))
             {
-#if DEBUG
-                Debug.Log("Loaded Plugin: " + diagramPlugin);
-#endif
+//#if DEBUG
+//                Debug.Log("Loaded Plugin: " + diagramPlugin);
+//#endif
                 if (diagramPlugin.Enabled)
                 diagramPlugin.Initialize(Container);
             }

@@ -17,6 +17,11 @@ public class ViewData : DiagramNode, ISubSystemType
     [SerializeField]
     private string _forAssemblyQualifiedName;
 
+    public override string SubTitle
+    {
+        get { return BaseViewName; }
+    }
+
     /// <summary>
     /// The baseview class if any
     /// </summary>

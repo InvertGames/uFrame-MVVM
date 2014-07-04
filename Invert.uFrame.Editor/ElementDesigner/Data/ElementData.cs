@@ -10,7 +10,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
 {
     public override void Serialize(JSONClass cls)
     {
-        base.Serialize(cls);
+        base.Serialize(cls); 
         cls.Add("IsTemplate",new JSONData(IsTemplate));
         cls.Add("BaseType", new JSONData(_baseType));
         cls.Add("IsMultiInstance", new JSONData(_isMultiInstance));
@@ -70,6 +70,23 @@ public class ElementData : ElementDataBase, IDiagramFilter
         {
             _baseType = value;
             Dirty = true;
+        }
+    }
+
+    public override string SubTitle
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(BaseTypeName))
+            {
+                return string.Empty;
+            }
+            if (BaseTypeShortName == "ViewModel")
+            {
+                return null;
+            }
+            return BaseTypeShortName;
+            //return BaseTypeShortName ?? string.Empty;
         }
     }
 
@@ -193,7 +210,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
         
         if (item == this) return true;
         if (t == typeof(SubSystemData)) return false;
-        if (t == typeof(ExternalSubsystem)) return false;
+        //if (t == typeof(ExternalSubsystem)) return false;
         if (t == typeof(SceneManagerData)) return false;
         if (t == typeof(ViewComponentData)) return true;
         if (t == typeof(ViewData)) return true;
@@ -205,7 +222,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
 
     public bool IsItemAllowed(object item, Type t)
     {
-        if (typeof(IViewModelItem).IsAssignableFrom(t)) return true;
+        //if (typeof(IViewModelItem).IsAssignableFrom(t)) return true;
 
         return true;
     }

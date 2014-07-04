@@ -85,7 +85,8 @@ public class uFrameEditorSceneManager
     #region Editor Icons
     private static Texture2D textureGameManager;
     private static Texture2D textureSceneManager;
-    private static Texture2D textureView;
+    private static Texture2D textureViewSI;
+    private static Texture2D textureViewMI;
 
     static uFrameEditorSceneManager()
     {
@@ -96,7 +97,8 @@ public class uFrameEditorSceneManager
         //AssetDatabase.LoadAssetAtPath("Assets/Images/Testicon.png", typeof(Texture2D)) as Texture2D;
         textureGameManager = UFStyles.GetSkinTexture("GameManager");
         textureSceneManager = UFStyles.GetSkinTexture("SceneManager");
-        textureView = UFStyles.GetSkinTexture("View");
+        textureViewSI = UFStyles.GetSkinTexture("ViewSingleInstance");
+        textureViewMI = UFStyles.GetSkinTexture("ViewMultiInstance");
         EditorApplication.update += RefreshSceneObjects;
         EditorApplication.hierarchyWindowItemOnGUI += HierarchyItemCB;
         
@@ -131,8 +133,16 @@ public class uFrameEditorSceneManager
         }
         if (markedViews.Contains(instanceID))
         {
-            if (textureView != null)
-                GUI.DrawTexture(r, textureView);
+            if (textureViewMI != null && textureViewSI != null)
+            {
+                //GUI.DrawTexture(r, textureView);
+                var viewBase = SceneViews.FirstOrDefault(p => p.gameObject.GetInstanceID() == instanceID);
+                if (viewBase != null)
+                {
+                    GUI.DrawTexture(r,viewBase.IsMultiInstance ? textureViewMI : textureViewSI);
+                }
+            }
+                
             // Draw the texture if it's a light (e.g.)
             //GUI.Label(r, textureView);
         }

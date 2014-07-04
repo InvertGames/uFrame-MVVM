@@ -36,6 +36,11 @@ public class P<T> : ModelPropertyBase
         }
     }
 
+    public T LastValue
+    {
+        get { return (T) LastValueObject; }
+    }
+   
     /// <summary>
     /// Gets the type of the value.
     /// </summary>

@@ -23,4 +23,10 @@ public class WavesFPSGameManager : WavesFPSGameManagerBase {
         base.OnLoaded();
         StartCoroutine(WavesFPSGameController.StartGame());
     }
+
+    public override void Setup()
+    {
+        base.Setup();
+     
+    }
 }

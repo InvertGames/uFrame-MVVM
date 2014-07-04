@@ -607,9 +607,9 @@ namespace Invert.uFrame.Editor
 
         public virtual string Value { get { return ""; } set { } }
 
-        public virtual JSONNode this[int aIndex] { get { return null; } set { } }
+        public virtual JSONNode this[int aIndex] { get { return new JSONNode(); } set { } }
 
-        public virtual JSONNode this[string aKey] { get { return null; } set { } }
+        public virtual JSONNode this[string aKey] { get { return new JSONNode(); } set { } }
 
         public virtual void Add(string aKey, JSONNode aItem)
         {
@@ -692,6 +692,7 @@ namespace Invert.uFrame.Editor
             get
             {
                 float v = 0.0f;
+                if (Value == null) return 0.0f;
                 if (float.TryParse(Value, out v))
                     return v;
                 return 0.0f;

@@ -22,10 +22,6 @@ public abstract class FPSDamageableControllerBase : Controller {
         fPSDamageable.ApplyDamage = new CommandWithSenderAndArgument<FPSDamageableViewModel, int>(fPSDamageable, ApplyDamage);
     }
     
-    public override ViewModel CreateEmpty() {
-        return new FPSDamageableViewModel();
-    }
-    
     public virtual FPSDamageableViewModel CreateFPSDamageable() {
         return ((FPSDamageableViewModel)(this.Create()));
     }
@@ -325,7 +321,6 @@ public class WavesFPSGameManagerBase : SceneManager {
     
     public WavesFPSGameController WavesFPSGameController { get; set; }
     public DeathMatchGameController DeathMatchGameController { get; set; }
-    public FPSDamageableController FPSDamageableController { get; set; }
     public FPSEnemyController FPSEnemyController { get; set; }
     public FPSGameController FPSGameController { get; set; }
     public FPSPlayerController FPSPlayerController { get; set; }
@@ -336,8 +331,6 @@ public class WavesFPSGameManagerBase : SceneManager {
         this.Container.RegisterInstance(this.WavesFPSGameController, false);
         this.DeathMatchGameController = new DeathMatchGameController();
         this.Container.RegisterInstance(this.DeathMatchGameController, false);
-        this.FPSDamageableController = new FPSDamageableController();
-        this.Container.RegisterInstance(this.FPSDamageableController, false);
         this.FPSEnemyController = new FPSEnemyController();
         this.Container.RegisterInstance(this.FPSEnemyController, false);
         this.FPSGameController = new FPSGameController();

@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
+//using UnityEngine;
+//using Debug = UnityEngine.Debug;
 
 /// <summary>
 /// A controller is a integral part of uFrame and is used for an extra layer connecting services and "Elements" of a
@@ -120,7 +119,9 @@ public abstract class Controller : IViewModelObserver
             {
                 if ((o is IViewModelObserver))
                 {
-                    Debug.LogWarning("A view was passed as a parameter to an event.  This is not recommended.");
+#if !DLL
+                    UnityEngine.Debug.LogWarning("A view was passed as a parameter to an event.  This is not recommended.");
+#endif
                 }
                 if (o == null) continue;
                 list.Add(o);
@@ -157,12 +158,11 @@ public abstract class Controller : IViewModelObserver
         AddBinding(binding);
         return binding;
     }
-
-    public Coroutine StartCoroutine(IEnumerator routine)
+#if !DLL
+    public UnityEngine.Coroutine StartCoroutine(IEnumerator routine)
     {
         return GameManager.ActiveSceneManager.StartCoroutine(routine);
     }
-
     public void StopCoroutine(string name)
     {
         GameManager.ActiveSceneManager.StopCoroutine(name);
@@ -171,6 +171,7 @@ public abstract class Controller : IViewModelObserver
     {
         GameManager.ActiveSceneManager.StopAllCoroutines();
     }
+#endif
     public void ExecuteCommand(ICommand command, object argument)
     {
         if (command == null) return;

@@ -133,6 +133,7 @@ public static class uFramePlaymakerPluginExtensions
                 var evt = new FsmEvent(enumItem.Name);
                 FsmEditor.Builder.AddEvent(FsmEditor.SelectedFsm, evt);
                 var itemState = FsmEditor.Builder.AddState(statePosition);
+                itemState.Name = enumItem.Name;
                 FsmEditor.Builder.AddTransition(state, itemState.Name, evt);
                 statePosition += new Vector2(0f, 30f);
            
@@ -147,7 +148,8 @@ public static class uFramePlaymakerPluginExtensions
         FsmEditor.SetFsmDirty(FsmEditor.SelectedFsm, true);
         state.Position = new Rect(35f, 100f, state.Position.width, state.Position.height);
         FsmEditor.RepaintAll();
-        var action = FsmEditor.Builder.AddAction(state, uFrameEditor.FindType(string.Format("{0}.PlaymakerActions.{1}", data.Node.Data.Name, data.NameAsEnumCompareClass())));
+        var action = FsmEditor.Builder.AddAction(state, uFrameEditor.FindType(
+            string.Format("{0}.PlaymakerActions.{1}", data.Node.Data.Name, data.NameAsEnumCompareClass())));
         var dataProperty = FsmEditor.SelectedFsm.Variables.GetVariable(data.Name);
         action.GetType().GetField("_" + data.Name).SetValue(action,dataProperty);
      

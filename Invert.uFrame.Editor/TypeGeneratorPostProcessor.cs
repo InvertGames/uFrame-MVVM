@@ -3,7 +3,7 @@ using System.CodeDom;
 
 namespace Invert.uFrame.Editor
 {
-    public abstract class TypeGeneratorPostProcessor<TCodeGenerator> : ITypeDeclerationModifier where TCodeGenerator : CodeGenerator
+    public abstract class TypeGeneratorPostProcessor<TCodeGenerator> : ITypeGeneratorPostProcessor where TCodeGenerator : CodeGenerator
     {
         public Type For
         {
@@ -12,7 +12,7 @@ namespace Invert.uFrame.Editor
 
         public CodeGenerator Generator { get; set; }
 
-        public CodeTypeDeclaration Decleration { get; set; }
+        public CodeTypeDeclaration Declaration { get; set; }
 
         public TCodeGenerator CodeGenerator
         {

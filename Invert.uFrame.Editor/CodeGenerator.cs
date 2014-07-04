@@ -47,13 +47,13 @@ namespace Invert.uFrame.Editor
         public Type GeneratorFor { get; set; }
         public object ObjectData { get; set; }
 
-        public void ProcessModifiers(CodeTypeDeclaration decleration)
+        public void ProcessModifiers(CodeTypeDeclaration declaration)
         {
-            var typeDeclerationModifiers = uFrameEditor.Container.ResolveAll<ITypeDeclerationModifier>().Where(p=>p.For == this.GetType());
+            var typeDeclerationModifiers = uFrameEditor.Container.ResolveAll<ITypeGeneratorPostProcessor>().Where(p => p.For.IsAssignableFrom(this.GetType()));
             foreach (var typeDeclerationModifier in typeDeclerationModifiers)
             {
                 //typeDeclerationModifier.FileGenerator = codeFileGenerator;
-                typeDeclerationModifier.Decleration = decleration;
+                typeDeclerationModifier.Declaration = declaration;
 
                 typeDeclerationModifier.Generator = this;
                 typeDeclerationModifier.Apply();
