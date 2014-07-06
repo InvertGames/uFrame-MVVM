@@ -4,6 +4,11 @@ using Invert.uFrame.Editor.ElementDesigner.Commands;
 
 public class PlaymakerPlugin : DiagramPlugin
 {
+    public override string PackageName
+    {
+        get { return "PlaymakerFSM"; }
+    }
+
     public override void Initialize(uFrameContainer container)
     {
         // Playmaker enabled element flag

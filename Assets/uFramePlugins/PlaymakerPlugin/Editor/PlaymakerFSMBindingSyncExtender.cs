@@ -45,6 +45,7 @@ public class PlaymakerFSMBindingSyncExtender : ViewBindingExtender
         {
             return false;
         }
+        if (!viewClass.ElementData["Playmaker"]) return false;
         viewClass.Namespace.Imports.Add(new CodeNamespaceImport("HutongGames.PlayMaker"));
         return viewClass.ElementData["Playmaker"];
     }
