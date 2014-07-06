@@ -2,6 +2,10 @@
 Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, notifications, and cool info.
 IMPORTANT!!!: MAKE A BACKUP TO BE SAFE! THEN RE-SAVE ANY DIAGRAMS!
 IMPORTANT!!!: You may need to remove the old installation and reinstall as there has been many changes.
+1.28 7/6/2014
+- Added: Playmaker Plugin
+- 
+
 1.26 6/20/2014
 - Fixed: Annoying error when clicking add on a node that is not selected adds to the wrong element.
 - Fixed: SceneManager Load method being invoked twice when switching scenes.

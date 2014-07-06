@@ -13,7 +13,6 @@ public partial class FPSPlayerView : FPSPlayerViewBase
         AddWeapon("ColtWeapon");
     }
 
-
     public override ViewBase CreateWeaponsView(FPSWeaponViewModel fPSWeapon)
     {
         var prefabName = fPSWeapon.WeaponType.ToString() + "Weapon";
