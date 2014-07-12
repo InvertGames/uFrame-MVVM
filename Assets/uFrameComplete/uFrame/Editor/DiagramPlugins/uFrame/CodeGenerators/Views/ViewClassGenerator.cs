@@ -80,7 +80,7 @@ public abstract class ViewClassGenerator : CodeGenerator
             else
             {
                 var viewPrefabField = AddPropertyBindingField(decl, typeof(GameObject).FullName, propertyData.Name, "Prefab");
-                setterMethod.Statements.Add(new CodeConditionStatement(new CodeSnippetExpression("value == null"),
+                setterMethod.Statements.Add(new CodeConditionStatement(new CodeSnippetExpression(string.Format("value == null && {0} != null",viewPrefabField.Name)),
                     new CodeExpressionStatement(
                         new CodeMethodInvokeExpression(null,
                             "Destroy",
@@ -88,7 +88,7 @@ public abstract class ViewClassGenerator : CodeGenerator
 
                 var prefabSetCondition =
                     new CodeConditionStatement(
-                        new CodeSnippetExpression(String.Format((string)"{0} == null", (object)viewPrefabField.Name)));
+                        new CodeSnippetExpression(String.Format((string)"{0} == null ", (object)viewPrefabField.Name)));
 
                 prefabSetCondition.TrueStatements.Add(new CodeAssignStatement(
                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), propertyData.ViewFieldName),

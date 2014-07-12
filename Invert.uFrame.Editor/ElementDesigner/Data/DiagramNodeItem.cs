@@ -145,6 +145,6 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
     {
         Name = name;
     }
-
+    
    
 }

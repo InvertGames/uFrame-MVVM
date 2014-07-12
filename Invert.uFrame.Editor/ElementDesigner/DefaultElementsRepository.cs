@@ -402,8 +402,6 @@ public class DefaultCodePathStrategy : ICodePathStrategy
         strategy.AssetPath = AssetPath;
         var targetFiles = uFrameEditor.GetAllFileGenerators(Data, strategy).ToArray();
 
-        
-
         if (sourceFiles.Length == targetFiles.Length)
         {
             // Attempt to move every file
@@ -491,7 +489,9 @@ public class DefaultCodePathStrategy : ICodePathStrategy
         // Create it if it doesn't exist
         if (directory != null && !Directory.Exists(directory))
         {
+            
             Directory.CreateDirectory(directory);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
     }
 }

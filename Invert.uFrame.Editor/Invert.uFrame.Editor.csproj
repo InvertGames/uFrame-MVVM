@@ -93,6 +93,7 @@
     <Compile Include="ElementDesigner\Data\Json\JsonRepository.cs" />
     <Compile Include="ElementDesigner\Drawers\ExternalNodeDrawer.cs" />
     <Compile Include="ElementsDesigner.cs" />
+    <Compile Include="Extensions\UFramePluginProcessor.cs" />
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="ITypeGeneratorPostProcessor.cs" />
     <Compile Include="TypeGeneratorPostProcessor.cs" />

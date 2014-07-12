@@ -118,6 +118,9 @@
     <Reference Include="UnityVS.VersionSpecific">
       <HintPath>Assets\UnityVS\Editor\UnityVS.VersionSpecific.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>Assets\uTomate\Editor\Libs\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UnityVS.uFrame.CSharp.csproj">
@@ -130,8 +133,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Editor\Image Effects\DepthOfFieldScatterEditor.js" />
-    <Compile Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Editor\LightShaftsEditor.js" />
+    <Compile Include="Assets\uTomate\Editor\UTEval.js" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\ExtractDocXMLRegex.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\research.txt" />
     <None Include="Assets\PrivateStuff\AssetStoreStuff\StoreImages\Description.txt" />
@@ -180,41 +182,6 @@
     <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 2.shader" />
     <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
     <None Include="Assets\PrivateStuff\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras\Camera Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\First Person Character\First Person Character Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\Third Person Character\Third Person Character Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cross Platform Input\Cross Platform Input Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField\DepthOfFieldDX11.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField\DepthOfFieldScatter.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Light Shafts Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\ColorFilter.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Coord.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Depth.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\DepthBreaks.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\FinalInterpolation.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\InterpolateAlongRays.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Raymarch.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\SamplePositions.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders\Shared.cginc" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Particle Systems Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Add (Soft).shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Add.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders\Priority Particle Alpha.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Shaders\Mobile-Spec.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders\BumpedSpecularDisplacement.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders\BumpedSpecularSmooth.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-Basic.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-BasicOutline.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-Lighted.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders\Toony-LightedOutline.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping\Shaders\WorldCoord Diffuse.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Aircraft\Aircraft Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Car Guidelines.txt" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
-    <None Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Rolling Ball\Rolling Ball Guidelines.txt" />
     <None Include="Assets\PrivateStuff\Photon Unity Networking\changelog.txt" />
     <None Include="Assets\PrivateStuff\Photon Unity Networking\PlayMaker\ReleaseNotes.txt" />
     <None Include="Assets\PrivateStuff\Photon Unity Networking\Plugins\PhotonNetwork\library\Photon3Unity3D.xml" />
@@ -226,6 +193,9 @@
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />
+    <None Include="Assets\uTomate\CHANGES.txt" />
+    <None Include="Assets\uTomate\Editor\PublicAPI\README.txt" />
+    <None Include="Assets\uTomate\README.txt" />
     <None Include="Assets\XmlDocs\Assembly-CSharp.XML" />
     <None Include="Assets\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\XmlDocs\UnityEngine.xml" />
@@ -249,6 +219,7 @@
     <None Include="Assets\UnityVS\Editor\SyntaxTree.VisualStudio.Unity.Bridge.dll" />
     <None Include="Assets\UnityVS\Editor\SyntaxTree.VisualStudio.Unity.Messaging.dll" />
     <None Include="Assets\UnityVS\Editor\UnityVS.VersionSpecific.dll" />
+    <None Include="Assets\uTomate\Editor\Libs\Ionic.Zip.Reduced.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets" />
@@ -281,38 +252,6 @@
     <Folder Include="Assets\PrivateStuff\NGUI\Examples\Shaders" />
     <Folder Include="Assets\PrivateStuff\NGUI\Resources" />
     <Folder Include="Assets\PrivateStuff\NGUI\Resources\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cameras" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\First Person Character" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Characters\Third Person Character" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Cross Platform Input" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Editor" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Editor\Image Effects" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Image Effects (Pro Only)\Shaders\_DepthOfField" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Editor" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Light Shafts\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Particle Systems\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Projectors\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Tessellation Shaders\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Effects\Toon Shading\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Prototyping\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Aircraft" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Car\Shaders" />
-    <Folder Include="Assets\PrivateStuff\OtherCrap\Sample Assets\Vehicles\Rolling Ball" />
     <Folder Include="Assets\PrivateStuff\Photon Unity Networking" />
     <Folder Include="Assets\PrivateStuff\Photon Unity Networking\Editor" />
     <Folder Include="Assets\PrivateStuff\Photon Unity Networking\Editor\PhotonNetwork" />
@@ -343,6 +282,10 @@
     <Folder Include="Assets\uFrameComplete\uFrame\Editor\Resources" />
     <Folder Include="Assets\UnityVS" />
     <Folder Include="Assets\UnityVS\Editor" />
+    <Folder Include="Assets\uTomate" />
+    <Folder Include="Assets\uTomate\Editor" />
+    <Folder Include="Assets\uTomate\Editor\Libs" />
+    <Folder Include="Assets\uTomate\Editor\PublicAPI" />
     <Folder Include="Assets\XmlDocs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.UnityScript.targets" />

@@ -286,7 +286,7 @@ public static class UFStyles
             if (_diagramBox4 == null)
                 _diagramBox4 = new GUIStyle
                 {
-                    normal = { background = GetSkinTexture("Box4"), textColor = new Color(0.88f, 0.88f, 0.88f) },
+                    normal = { background = GetSkinTexture("Box4"), textColor = new Color(0.22f, 0.22f, 0.22f) },
                     stretchHeight = true,
                     stretchWidth = true,
                     border = new RectOffset(171, 180, 120, 135),

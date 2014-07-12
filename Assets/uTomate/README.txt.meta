@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2856a9d2777534470a2c71ccdc09b527
+labels:
+- player
+- build
+- continuous
+- integration
+- maven
+- ant
+- project
+- nuget
+- package
+- automation
+TextScriptImporter:
+  userData: 

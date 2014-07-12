@@ -180,6 +180,7 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
         try
         {
             Deserialize(_jsonData);
+            CleanUpDuplicates();
             Errors = false;
         }
         catch (Exception ex)
@@ -188,6 +189,18 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
             Debug.LogException(ex);
             Errors = true;
             Error = ex;
+        }
+    }
+
+    private void CleanUpDuplicates()
+    {
+        foreach (var nodes in Nodes.GroupBy(p=>p.Identifier).ToArray())
+        {
+            if (nodes.Count() > 1)
+            {
+                var identifier = nodes.First();
+                Nodes.Remove(identifier);
+            }
         }
     }
 

@@ -156,6 +156,7 @@ namespace Invert.uFrame.Editor
 
                 if (command.For.IsAssignableFrom(o.GetType()))
                 {
+                    if (command.CanPerform(o) != null) continue;
                     handler.CommandExecuting(command);
                     command.Execute(o);
                     if (command.Hooks != null)
@@ -292,6 +293,8 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance<IToolbarCommand>(new DiagramSettingsCommand() { Title = "Settings"}, "SettingsCommand");
 #if DEBUG
             container.RegisterInstance<IToolbarCommand>(new ConvertToJSON(), "SaveAsJson");
+            container.RegisterInstance<IToolbarCommand>(new PrintPlugins(), "PrintJson");
+
 #endif
             // For the add new menu
             container.RegisterInstance<AddNewCommand>(new AddNewSceneManagerCommand(), "AddNewSceneManagerCommand");
@@ -324,6 +327,9 @@ namespace Invert.uFrame.Editor
             // For node item context menu
             container.RegisterInstance<IDiagramNodeItemCommand>(new MarkIsYieldCommand(),"MarkIsYield");
             container.RegisterInstance<IDiagramNodeItemCommand>(new DeleteItemCommand(),"Delete");
+
+            container.RegisterInstance<IDiagramNodeItemCommand>(new MoveUpCommand(),"MoveItemUp");
+            container.RegisterInstance<IDiagramNodeItemCommand>(new MoveDownCommand(), "MoveItemDown");
 
             // Drawers
             container.RegisterRelation<ViewData, INodeDrawer, ViewDrawer>();

@@ -269,6 +269,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         if (view != null)
         {
             view.ForAssemblyQualifiedName = AssemblyQualifiedName;
+            view.BaseViewIdentifier = null;
         }
     }
 

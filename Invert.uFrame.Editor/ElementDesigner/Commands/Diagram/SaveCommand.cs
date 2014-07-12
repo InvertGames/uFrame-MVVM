@@ -1,6 +1,8 @@
 
+using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Invert.uFrame.Editor.Refactoring;
 using UnityEditor;
 using UnityEngine;
@@ -91,16 +93,15 @@ namespace Invert.uFrame.Editor.ElementDesigner
     {
         public override string Name
         {
-            get { return "Print Plugins"; }
+            get { return "Print Json"; }
         }
 
         public override void Perform(ElementsDiagram node)
         {
-            foreach (var diagramPlugin in uFrameEditor.GetAllCodeGenerators(node.Data.Settings.CodePathStrategy, node.Data))
-            {
-                UnityEngine.Debug.Log((diagramPlugin.IsDesignerFile ? "Designer File" : "Editable File" ) + 
-                    diagramPlugin.GetType().Name + diagramPlugin.Filename );
-            }
+            Type T = typeof(GUIUtility);
+            PropertyInfo systemCopyBufferProperty = T.GetProperty("systemCopyBuffer", BindingFlags.Static | BindingFlags.NonPublic);
+            systemCopyBufferProperty.SetValue(null, JsonElementDesignerData.Serialize(node.Data).ToString(), null);
+            Debug.Log("Json copied to clipboard.");
         }
     }
 

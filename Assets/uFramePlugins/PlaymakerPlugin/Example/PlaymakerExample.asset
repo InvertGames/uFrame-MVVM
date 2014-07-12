@@ -31,7 +31,7 @@ MonoBehaviour:
     "cd6bb425-fde3-42e6-a019-e5792dd3ee55":{"x":"50", "y":"170"}, "3112c2ff-24bb-455c-bc83-d433bd24e4d3":{"x":"280",
     "y":"30"}}, "CollapsedValues":{"cd6bb425-fde3-42e6-a019-e5792dd3ee55":"true"},
     "Flags":{"_CLRType":"true"}, "Imports":[  ]}, {"_CLRType":"ElementData", "Name":"PlaymakerElement",
-    "IsCollapsed":"true", "Identifier":"cd6bb425-fde3-42e6-a019-e5792dd3ee55", "Items":[
+    "IsCollapsed":"false", "Identifier":"cd6bb425-fde3-42e6-a019-e5792dd3ee55", "Items":[
     {"_CLRType":"ViewModelPropertyData", "Name":"State", "Identifier":"", "ItemType":"PlaymakerElementState,
     Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "IsRealTime":"false"},
     {"_CLRType":"ViewModelPropertyData", "Name":"UpgradeCompleteTime", "Identifier":"",
@@ -41,9 +41,9 @@ MonoBehaviour:
     PublicKeyToken=b77a5c561934e089", "IsRealTime":"false"}, {"_CLRType":"ViewModelCommandData",
     "Name":"Upgrade", "Identifier":"", "ItemType":"", "IsYield":"false"}, {"_CLRType":"ViewModelCommandData",
     "Name":"Kill", "Identifier":"", "ItemType":"", "IsYield":"false"}, {"_CLRType":"ViewModelCommandData",
-    "Name":"Tick", "Identifier":"", "ItemType":"", "IsYield":"false"} ], "Locations":{"cd6bb425-fde3-42e6-a019-e5792dd3ee55":{"x":"220",
-    "y":"180"}, "3112c2ff-24bb-455c-bc83-d433bd24e4d3":{"x":"500", "y":"200"}, "e9de4754-57f8-4cf6-aa6d-1bd2afd6a945":{"x":"490",
-    "y":"80"}}, "CollapsedValues":{"cd6bb425-fde3-42e6-a019-e5792dd3ee55":"true"},
+    "Name":"Tick", "Identifier":"", "ItemType":"", "IsYield":"false"} ], "Locations":{"cd6bb425-fde3-42e6-a019-e5792dd3ee55":{"x":"100",
+    "y":"200"}, "3112c2ff-24bb-455c-bc83-d433bd24e4d3":{"x":"500", "y":"300"}, "e9de4754-57f8-4cf6-aa6d-1bd2afd6a945":{"x":"500",
+    "y":"200"}, "58a51775-638b-43ce-b413-d175be7f6215":{"x":"800", "y":"160"}}, "CollapsedValues":{"cd6bb425-fde3-42e6-a019-e5792dd3ee55":"false"},
     "Flags":{"_CLRType":"true", "Playmaker":"true"}, "IsTemplate":"false", "BaseType":"",
     "IsMultiInstance":"true"}, {"_CLRType":"EnumData", "Name":"PlaymakerElementState",
     "IsCollapsed":"false", "Identifier":"3112c2ff-24bb-455c-bc83-d433bd24e4d3", "Items":[
@@ -57,4 +57,8 @@ MonoBehaviour:
     "IsCollapsed":"false", "Identifier":"17b3b6d3-33f1-44da-951f-f81402dd7e6c", "Items":[  ],
     "Locations":{"17b3b6d3-33f1-44da-951f-f81402dd7e6c":{"x":"160", "y":"80"}, "cd6bb425-fde3-42e6-a019-e5792dd3ee55":{"x":"150",
     "y":"170"}}, "CollapsedValues":{"cd6bb425-fde3-42e6-a019-e5792dd3ee55":"true"},
-    "Flags":{"_CLRType":"true"}, "Imports":[  ]} ]}'
+    "Flags":{"_CLRType":"true"}, "Imports":[  ]}, {"_CLRType":"ViewData", "Name":"View2",
+    "IsCollapsed":"false", "Identifier":"58a51775-638b-43ce-b413-d175be7f6215", "Items":[  ],
+    "Flags":{"_CLRType":"true"}, "ForAssemblyQualifiedName":"PlaymakerView, Assembly-CSharp,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "BaseViewIdentifier":"",
+    "ComponentIdentifiers":[  ]} ]}'

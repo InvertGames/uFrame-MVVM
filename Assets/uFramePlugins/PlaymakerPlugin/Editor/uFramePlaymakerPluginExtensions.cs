@@ -4,6 +4,7 @@ using System.Linq;
 using HutongGames.PlayMaker;
 using HutongGames.PlayMakerEditor;
 using Invert.uFrame.Editor;
+using UnityEditor;
 using UnityEngine;
 
 public static class uFramePlaymakerPluginExtensions
@@ -98,7 +99,7 @@ public static class uFramePlaymakerPluginExtensions
 
     public static void AddVariableToFsm(this ViewModelPropertyData data)
     {
-        var variable = FsmEditor.SelectedFsm.Variables.GetVariable(data.Name);
+        var variable = FsmEditor.SelectedFsm.Variables.GetAllNamedVariables().FirstOrDefault(p => p.Name == data.Name);
         if (variable == null)
         {
             FsmBuilder.AddVariable(FsmEditor.SelectedFsm, data.FsmVarType(data.Node.Data),
@@ -144,14 +145,16 @@ public static class uFramePlaymakerPluginExtensions
         }
         else return;
 
-
         FsmEditor.SetFsmDirty(FsmEditor.SelectedFsm, true);
         state.Position = new Rect(35f, 100f, state.Position.width, state.Position.height);
         FsmEditor.RepaintAll();
         var action = FsmEditor.Builder.AddAction(state, uFrameEditor.FindType(
             string.Format("{0}.PlaymakerActions.{1}", data.Node.Data.Name, data.NameAsEnumCompareClass())));
         var dataProperty = FsmEditor.SelectedFsm.Variables.GetVariable(data.Name);
-        action.GetType().GetField("_" + data.Name).SetValue(action,dataProperty);
+        action.GetType().GetField("_" + data.Name).SetValue(action, dataProperty);
+        FsmEditor.SelectedState.ActionData.SaveActions(FsmEditor.SelectedState.Actions);
+        FsmEditor.SetFsmDirty(FsmEditor.SelectedFsm, true);
+        AssetDatabase.SaveAssets();
      
     }
 

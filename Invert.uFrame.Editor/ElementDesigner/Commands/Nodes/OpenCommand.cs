@@ -32,13 +32,21 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
             var diagramItem = item as IDiagramNode;
             if (diagramItem == null) yield break;
             var generators = uFrameEditor.GetAllCodeGenerators(diagramItem.Data.Settings.CodePathStrategy, diagramItem.Data)
-                .Where(p =>!p.IsDesignerFile && p.ObjectData == item);
+                .Where(p =>p.ObjectData == item).ToArray();
 
-            foreach (var codeGenerator in generators)
+            foreach (var codeGenerator in generators.Where(p=>!p.IsDesignerFile))
             {
                 yield return new UFContextMenuItem()
                 {
                     Name = "Open/" + codeGenerator.Filename,
+                    Value = codeGenerator
+                };
+            }
+            foreach (var codeGenerator in generators.Where(p => p.IsDesignerFile))
+            {
+                yield return new UFContextMenuItem()
+                {
+                    Name = "Open/Designer Files/" + codeGenerator.Filename,
                     Value = codeGenerator
                 };
             }

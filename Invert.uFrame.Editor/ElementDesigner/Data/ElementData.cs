@@ -10,8 +10,8 @@ public class ElementData : ElementDataBase, IDiagramFilter
 {
     public override void Serialize(JSONClass cls)
     {
-        base.Serialize(cls); 
-        cls.Add("IsTemplate",new JSONData(IsTemplate));
+        base.Serialize(cls);
+        cls.Add("IsTemplate", new JSONData(IsTemplate));
         cls.Add("BaseType", new JSONData(_baseType));
         cls.Add("IsMultiInstance", new JSONData(_isMultiInstance));
     }
@@ -152,7 +152,7 @@ public class ElementData : ElementDataBase, IDiagramFilter
         {
             if (Data.CurrentFilter == this)
             {
-                return IncludedViews.Cast<IDiagramNodeItem>().Concat(IncludedComponents.Cast<IDiagramNodeItem>());
+                return base.Items.Concat(IncludedViews.Cast<IDiagramNodeItem>().Concat(IncludedComponents.Cast<IDiagramNodeItem>()));
             }
             return base.Items;
         }
@@ -207,16 +207,17 @@ public class ElementData : ElementDataBase, IDiagramFilter
 
     public bool IsAllowed(object item, Type t)
     {
-        
+
         if (item == this) return true;
+        if (t == typeof(EnumData)) return true;
         if (t == typeof(SubSystemData)) return false;
         //if (t == typeof(ExternalSubsystem)) return false;
         if (t == typeof(SceneManagerData)) return false;
         if (t == typeof(ViewComponentData)) return true;
         if (t == typeof(ViewData)) return true;
         if (t == typeof(ElementData)) return false;
-        if (t == typeof(EnumData)) return true;
-        if (t == typeof (IDiagramNodeItem)) return false;
+
+        if (t == typeof(IDiagramNodeItem)) return false;
         return true;
     }
 
@@ -313,6 +314,59 @@ public class ElementData : ElementDataBase, IDiagramFilter
         if (viewComponent != null)
         {
             viewComponent.ElementIdentifier = null;
+        }
+    }
+
+    public override void MoveItemDown(IDiagramNodeItem nodeItem)
+    {
+        base.MoveItemDown(nodeItem);
+        MoveItem(nodeItem, false);
+    }
+
+    public override void MoveItemUp(IDiagramNodeItem nodeItem)
+    {
+        base.MoveItemUp(nodeItem);
+        MoveItem(nodeItem, true);
+    }
+
+    public void MoveItem(IDiagramNodeItem nodeItem, bool up)
+    {
+        var commandNode = nodeItem as ViewModelCommandData;
+        if (commandNode != null)
+            _commands.Move(_commands.IndexOf(commandNode), up);
+
+        var collectionNode = nodeItem as ViewModelCollectionData;
+        if (collectionNode != null)
+            _collections.Move(_collections.IndexOf(collectionNode), up);
+
+        var propertyNode = nodeItem as ViewModelPropertyData;
+        if (propertyNode != null)
+            _properties.Move(_properties.IndexOf(propertyNode), up);
+    }
+
+}
+
+public static class UFListExtensions
+{
+
+    public static void Move<T>(this IList<T> list, int iIndexToMove, bool up = true)
+    {
+
+        if (up)
+        {
+            var move = iIndexToMove - 1;
+            if (move < 0) return;
+            var old = list[move];
+            list[move] = list[iIndexToMove];
+            list[iIndexToMove] = old;
+        }
+        else
+        {
+            var move = iIndexToMove + 1;
+            if (move >= list.Count) return;
+            var old = list[move];
+            list[move] = list[iIndexToMove];
+            list[iIndexToMove] = old;
         }
     }
 }

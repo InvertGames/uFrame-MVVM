@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
@@ -63,6 +65,42 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         public override string CanPerform(IDiagramNode node)
         {
             return null;
+        }
+    }
+
+    public class MoveUpCommand : EditorCommand<IDiagramNodeItem>, IDiagramNodeItemCommand, IKeyBindable
+    {
+        public override string Name
+        {
+            get { return "Move Up"; }
+        }
+        public override void Perform(IDiagramNodeItem node)
+        {
+            node.Node.MoveItemUp(node);
+        }
+
+        public override string CanPerform(IDiagramNodeItem node)
+        {
+            if (node != null && node.Node != null) return null;
+            return "Can't move item.";
+        }
+    }
+    public class MoveDownCommand : EditorCommand<IDiagramNodeItem>, IDiagramNodeItemCommand, IKeyBindable
+    {
+        public override string Name
+        {
+            get { return "Move Down"; }
+        }
+
+        public override void Perform(IDiagramNodeItem node)
+        {
+            node.Node.MoveItemDown(node);
+        }
+
+        public override string CanPerform(IDiagramNodeItem node)
+        {
+            if (node != null && node.Node != null) return null;
+            return "Can't move item.";
         }
     }
 }

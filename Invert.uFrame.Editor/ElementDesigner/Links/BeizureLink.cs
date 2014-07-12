@@ -25,11 +25,28 @@ public abstract class BeizureLink : IDiagramLink
 
     public virtual Rect StartRect
     {
-        get { return Source.Position; }
+        get
+        {
+            var source = Source as IDiagramNode;
+            if (source != null)
+            {
+                return source.HeaderPosition;
+            }
+            return Source.Position;
+        }
     }
+
     public virtual Rect EndRect
     {
-        get { return Target.Position; }
+        get
+        {
+            var target = Target as IDiagramNode;
+            if (target != null)
+            {
+                return target.HeaderPosition;
+            }
+            return Target.Position;
+        }
     }
 
     public virtual float Width

@@ -22,6 +22,16 @@ public class EnumData : DiagramNode
         set { EnumItems = value.OfType<EnumItem>().ToList(); }
     }
 
+    public override void MoveItemDown(IDiagramNodeItem nodeItem)
+    {
+        base.MoveItemDown(nodeItem);
+        EnumItems.Move(EnumItems.IndexOf(nodeItem as EnumItem),false);
+    }
+    public override void MoveItemUp(IDiagramNodeItem nodeItem)
+    {
+        base.MoveItemDown(nodeItem);
+        EnumItems.Move(EnumItems.IndexOf(nodeItem as EnumItem), true);
+    }
     public override bool EndEditing()
     {
         if (!base.EndEditing()) return false;

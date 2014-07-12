@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e24a62eb5d524cd3b323c691e8e55a5, type: 3}
+  m_Name: Demo Plan
+  m_EditorClassIdentifier: 
+  automationPlanId: b36e6cc4-1760-4d0e-8b6e-55099e4c8183
+  firstEntry: {fileID: 11400004}
+  hideInExecutionWindow: 0
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8335df163f4fa433c8a67415db6de35f, type: 3}
+  m_Name: Graph
+  m_EditorClassIdentifier: 
+  nodes:
+  - bounds:
+      serializedVersion: 2
+      x: 248
+      y: 53
+      width: 200
+      height: 57
+    data: {fileID: 11400004}
+  references: []
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e716dc6c1dc44510b48cd9a02e13bd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  automationPlanEntryId: 
+  nextEntry: {fileID: 0}
+  action: {fileID: 11400000, guid: 976111342d14f1d4c952e39399e5ccb0, type: 2}

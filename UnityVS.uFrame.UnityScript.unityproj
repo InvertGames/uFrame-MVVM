@@ -124,6 +124,9 @@
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />
+    <None Include="Assets\uTomate\CHANGES.txt" />
+    <None Include="Assets\uTomate\Editor\PublicAPI\README.txt" />
+    <None Include="Assets\uTomate\README.txt" />
     <None Include="Assets\XmlDocs\Assembly-CSharp.XML" />
     <None Include="Assets\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\XmlDocs\UnityEngine.xml" />
@@ -180,6 +183,9 @@
     <Folder Include="Assets\uFrameComplete\uFrame\Examples" />
     <Folder Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter" />
     <Folder Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Components" />
+    <Folder Include="Assets\uTomate" />
+    <Folder Include="Assets\uTomate\Editor" />
+    <Folder Include="Assets\uTomate\Editor\PublicAPI" />
     <Folder Include="Assets\XmlDocs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.UnityScript.targets" />

@@ -21,7 +21,7 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get { return BaseViewName; }
     }
-
+    
     /// <summary>
     /// The baseview class if any
     /// </summary>
@@ -29,6 +29,7 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get
         {
+            
             if (string.IsNullOrEmpty(BaseViewIdentifier)) return null;
             return Data.Views.FirstOrDefault(p => p.Identifier == BaseViewIdentifier);
         }
@@ -50,12 +51,18 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get
         {
+            var baseNode = BaseNode;
+            var viewNode = baseNode as ViewData;
+            if (viewNode != null)
+            {
+                return viewNode.NameAsView;
+            }
             var baseView = BaseView;
             if (baseView != null)
             {
                 return baseView.NameAsView;
             }
-            var element = ViewForElement;
+            var element = baseNode as ElementData;
             if (element != null)
             {
                 return element.NameAsViewBase;
@@ -144,12 +151,19 @@ public class ViewData : DiagramNode, ISubSystemType
         }
     }
 
+    //public DiagramNode BaseView
+    //{
+    //    get { return Data.Elements.FirstOrDefault(p => p.Identifier == BaseViewIdentifier); }
+    //}
+
+    public IDiagramNode BaseNode
+    {
+        get { return Data.AllDiagramItems.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName); }
+    }
+
     public ElementData ViewForElement
     {
-        get
-        {
-            return Data.Elements.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
-        }
+        get { return BaseNode as ElementData; }
     }
 
     public override bool CanCreateLink(IDrawable target)
@@ -160,8 +174,8 @@ public class ViewData : DiagramNode, ISubSystemType
     public override void CreateLink(IDiagramNode container, IDrawable target)
     {
         var i = target as ViewData;
-
         i.ForAssemblyQualifiedName = AssemblyQualifiedName;
+        //i.BaseViewIdentifier = Identifier;
     }
 
     public override RenameRefactorer CreateRenameRefactorer()
@@ -173,8 +187,10 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         base.Deserialize(cls);
         _forAssemblyQualifiedName = cls["ForAssemblyQualifiedName"].Value;
+        
         _baseViewIdentifier = cls["BaseViewIdentifier"].Value;
         _componentIdentifiers = cls["ComponentIdentifiers"].AsArray.DeserializePrimitiveArray(n => n.Value).ToList();
+     
     }
 
     public override bool EndEditing()
@@ -199,6 +215,17 @@ public class ViewData : DiagramNode, ISubSystemType
         //}
 
         //Behaviours = items.Select(p => new BehaviourSubItem() { Behaviour = p }).ToArray();
+
+        var baseView = nodes.FirstOrDefault(p => p.Identifier == BaseViewIdentifier);
+
+        if (baseView != null)
+        {
+            yield return new ViewLink()
+            {
+                Element = baseView,
+                Data = this
+            };
+        }
 
         var item = nodes.FirstOrDefault(p => p.AssemblyQualifiedName == ForAssemblyQualifiedName);
         if (item != null)

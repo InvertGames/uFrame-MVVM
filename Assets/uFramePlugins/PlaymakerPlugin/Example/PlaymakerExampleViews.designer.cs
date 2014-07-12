@@ -16,7 +16,7 @@ using UnityEngine;
 
 
 [DiagramInfoAttribute("PlaymakerExample")]
-public abstract class PlaymakerElementViewBase : ViewBase {
+public abstract class PlaymakerElementViewBase : ViewBase { 
     
     [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]

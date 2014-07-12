@@ -99,7 +99,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     public virtual float Padding
     {
-        get { return 5; }
+        get { return 7; }
     }
 
     public virtual GUIStyle BackgroundStyle

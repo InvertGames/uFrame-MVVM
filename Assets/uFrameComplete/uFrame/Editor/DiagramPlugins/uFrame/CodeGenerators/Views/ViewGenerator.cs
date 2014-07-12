@@ -14,7 +14,10 @@ public class ViewGenerator : ViewClassGenerator
     public override void Initialize(CodeFileGenerator fileGenerator)
     {
         base.Initialize(fileGenerator);
-        if (View.ViewForElement == null) return;
+        if (View.BaseNode == null)
+        {
+            return;
+        }
 
         var baseView = View.BaseView;
         if (baseView != null && IsDesignerFile)
@@ -31,10 +34,18 @@ public class ViewGenerator : ViewClassGenerator
     public void AddView(ViewData view)
     {
         var decl = new CodeTypeDeclaration(view.NameAsView) {IsPartial = true};
-        if (view.ViewForElement.IsTemplate)
+        if (view.ViewForElement != null)
         {
-            decl.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
+            if (view.ViewForElement.IsTemplate)
+            {
+                decl.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
+            }
         }
+        else
+        {
+            decl.TypeAttributes = TypeAttributes.Public;
+        }
+        
       
         if (IsDesignerFile)
         {

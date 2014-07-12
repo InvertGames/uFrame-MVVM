@@ -111,7 +111,7 @@ namespace Invert.uFrame.Editor
         {
             // Get existing open window or if none, make a new one:
             var window = (ElementsDesigner)GetWindow(typeof(ElementsDesigner));
-            window.title = "Element Designer";
+            window.title = "Elements";
 
             //var repo = new ElementsDataRepository();
             //var diagram = new ElementsDiagram(repo);
@@ -407,8 +407,6 @@ namespace Invert.uFrame.Editor
             }
             menu.ShowAsContext();
         }
-
- 
 
         public IEnumerable<object> ContextObjects
         {

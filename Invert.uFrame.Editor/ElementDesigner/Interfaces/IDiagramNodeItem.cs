@@ -11,7 +11,4 @@ public interface IDiagramNodeItem : ISelectable, IJsonObject
     DiagramNode Node { get; set; }
     void Remove(IDiagramNode diagramNode);
     void Rename(IDiagramNode data, string name);
-
-
-    
 }

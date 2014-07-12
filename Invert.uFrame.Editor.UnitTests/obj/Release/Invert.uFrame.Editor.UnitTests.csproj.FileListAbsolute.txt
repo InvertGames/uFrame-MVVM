@@ -8,3 +8,5 @@ D:\Invert\Git\uFrame\Invert.uFrame.Editor.UnitTests\bin\Release\Invert.uBehaviou
 D:\Invert\Git\uFrame\Invert.uFrame.Editor.UnitTests\obj\Release\Invert.uFrame.Editor.UnitTests.csprojResolveAssemblyReference.cache
 D:\Invert\Git\uFrame\Invert.uFrame.Editor.UnitTests\obj\Release\Invert.uFrame.Editor.UnitTests.dll
 D:\Invert\Git\uFrame\Invert.uFrame.Editor.UnitTests\obj\Release\Invert.uFrame.Editor.UnitTests.pdb
+D:\Invert\Git\uFrame\Invert.uFrame.Editor.UnitTests\bin\Release\UnityEngine.xml
+D:\Invert\Git\uFrame\Invert.uFrame.Editor.UnitTests\bin\Release\UnityEditor.xml

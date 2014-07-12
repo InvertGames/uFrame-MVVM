@@ -219,10 +219,10 @@ public abstract class FPSGameViewBase : ViewBase {
     }
     
     public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
-        if (value == null) {
+        if (value == null && _CurrentPlayerPrefab != null) {
             Destroy(_CurrentPlayer.gameObject);
         }
-        if (_CurrentPlayerPrefab == null) {
+        if (_CurrentPlayerPrefab == null ) {
             this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(value)));
         }
         else {
@@ -886,6 +886,12 @@ public partial class FPSEnemyView : FPSEnemyViewBase {
 }
 
 public partial class FPSMainMenuView : FPSMenuViewBase {
+}
+
+public abstract partial class DamageableView : FPSDamageableViewBase {
+}
+
+public partial class fpsdhudview2 : FPSHUDView {
 }
 
 public partial class FPSWeaponFire : ViewComponent {

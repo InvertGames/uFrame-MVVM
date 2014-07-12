@@ -27,7 +27,7 @@ public class FilterLocations
         set
         {
             var indexOf = Keys.IndexOf(node.Identifier);
-            if (indexOf > -1)
+            if (indexOf != -1)
             {
                 Values[indexOf] = value;
             }
@@ -52,6 +52,7 @@ public class FilterLocations
 
     public void Remove(string key)
     {
+        if (key == null) return;
         var index = Keys.IndexOf(key);
         Keys.RemoveAt(index);
         Values.RemoveAt(index);
@@ -59,6 +60,7 @@ public class FilterLocations
 
     protected void Add(string key, Vector2 value)
     {
+        if (Keys.Contains(key)) return;
         Keys.Add(key);
         Values.Add(value);
     }

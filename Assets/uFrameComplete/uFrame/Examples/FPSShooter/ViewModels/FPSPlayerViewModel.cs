@@ -10,7 +10,7 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel
         get
         {
             return _WeaponsProperty.Value[CurrentWeaponIndex];
-        }
+        } 
     }
 
 
