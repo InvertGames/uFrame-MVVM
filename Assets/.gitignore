@@ -1,19 +1,19 @@
-UBTriggersPlayground
+#UBTriggersPlayground
 DiagramTests
-Extras
-Gizmos
-iTween
-NGUI
-OtherCrap
+#Extras
+#Gizmos
+#iTween
+#NGUI
+#OtherCrap
 Packages
 Photon Unity Networking
 PlayMaker
 Scenes
-Tests
-AssetStoreStuff
-AssetStoreTools
-Daikon Forge
+#Tests
+#AssetStoreStuff
+#AssetStoreTools
+#Daikon Forge
 XmlDocs
-UnityVS
+#UnityVS
 /SceneManager.psd.meta
 /SceneManager.psd
