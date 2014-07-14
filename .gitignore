@@ -1,53 +1,42 @@
-Library
-
+# Unity
+/Library
 /Temp
-#Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll
-#Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll.meta
-#Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll
-#Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll.meta
+*.unityproj
+
+# Visual Studio
+/obj
 *.cache
-#UnityVS.uFrame.sln.GhostDoc.xml
-CarExample
-## Brad Changes
+*.suo
+*.DotSettings*
+_UpgradeReport_Files
+
+# Random Stuff
+UnityVS.uFrame.sln.GhostDoc.xml
+Invert.uFrame.Editor/ElementDesigner/Data/PluginData.cs
+sysinfo.txt
+
+# Is this still around?
+CarExample*
+
+# 3rd Party Plugins/Tools etc.
+FluentCodeDom
 Assets/AssetStoreTools*
 Assets/PrivateStuff*
 Assets/XmlDocs*
-Assets/UnityVS*
-## End Brad Changes
-#AssetStoreTools
-#/Assets/AssetStoreTools.meta
-/Assets/CarExample.meta
-#/Assets/PrivateStuff.meta
-/Assets/uFrameEnterprise.meta
-#Assets/PrivateStuff/AssetStoreTools.meta
-#Assets/PrivateStuff/AssetStoreStuff.meta
-#/Assets/PrivateStuff
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
-Assets/uFrameComplete/uFrame/Examples/FPSShooter/FPSShooterPlaymakerActions.designer.cs
-Assets/uFrameComplete/uFrame/Examples/FPSShooter/Playmaker.meta
-#UnityVS.uFrame.v12.suo
-#UnityVS.uFrame.v12.suo
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
-Assets/uFrameComplete/uFrame/Examples/FPSShooter/FPSShooterPlaymakerActions.designer.cs.meta
-#Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
-Assets/uFrameComplete/uFrame/Editor/Invert.uFrame.Editor.dll
-Invert.uBehaviours.Editor/bin/Debug/Invert.uBehaviours.Editor.dll
-Invert.uBehaviours.Editor/bin/Debug/Invert.uBehaviours.Editor.pdb
-Invert.uBehaviours.Editor/obj/Debug/Invert.uBehaviours.Editor.pdb
-Invert.uFrame.Editor/bin/Debug/Invert.uBehaviours.Editor.dll
-Invert.uFrame.Editor/bin/Debug/Invert.uBehaviours.Editor.dll
-Invert.uFrame.Editor/bin/Debug/Invert.uBehaviours.Editor.pdb
-Invert.uFrame.Editor/bin/Debug/Invert.uFrame.Editor.dll
-Invert.uFrame.Editor/bin/Debug/Invert.uFrame.Editor.pdb
-Invert.uFrame.Editor/obj/Debug/Invert.uFrame.Editor.dll
-Invert.uFrame.Editor/obj/Debug/Invert.uFrame.Editor.pdb
+Assets/**/UnityVS*
+Assets/uTomate*
+**/FPSShooter/**/Playmaker*
+
+# Dont Track
+Assets/DiagramTests*
+Assets/Packages*
+Assets/Tests*
+Assets/Scenes*
+**/SceneManager.psd*
+Assets/Untracked*
+
+# Debug Builds
+**/Debug/Invert*
+
+# Release Builds
 Invert.uFrame.Editor/obj/Release/Invert.uFrame.Editor.dll
-#UnityVS.uFrame.v12.suo
-Invert.uFrame.Editor/ElementDesigner/Data/PluginData.cs
-Invert.uFrame.Editor/ElementDesigner/Data/PluginData.cs
-#UnityVS.uFrame.v12.suo
-FluentCodeDom
