@@ -27,6 +27,12 @@ Assets/**/UnityVS*
 Assets/uTomate*
 **/FPSShooter/**/Playmaker*
 
+# Added Playmaker explicitly for easy compile with Playmaker plugin
+Assets/Gizmos/PlayMaker*
+Assets/iTween*
+Assets/Photon*
+Assets/PlayMaker*
+
 # Dont Track
 Assets/DiagramTests*
 Assets/Packages*
