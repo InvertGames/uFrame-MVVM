@@ -1,12 +1,18 @@
 # Unity
-/Library
-/Temp
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
 *.unityproj
 
 # Visual Studio
-/obj
+/*.csproj
+/*.unityproj
+/*.sln
+/*.suo
+/*.user
+/*.userprefs
+/*.pidb
 *.cache
-*.suo
 *.DotSettings*
 _UpgradeReport_Files
 
