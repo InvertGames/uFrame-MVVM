@@ -8,9 +8,9 @@ public partial class FPSPlayerView : FPSPlayerViewBase
     public override void Awake()
     {
         base.Awake();
-        AddWeapon("MP5Weapon");
-        AddWeapon("UMP5Weapon");
-        AddWeapon("ColtWeapon");
+        AddWeapon("MP5Weapon", new MP5WeaponViewModel());
+        AddWeapon("UMP5Weapon", new UMP5WeaponViewModel());
+        AddWeapon("ColtWeapon", new ColtWeaponViewModel());
     }
 
     public override ViewBase CreateWeaponsView(FPSWeaponViewModel fPSWeapon)
@@ -47,9 +47,10 @@ public partial class FPSPlayerView : FPSPlayerViewBase
             _WeaponsList[i].gameObject.SetActive(i == value);
     }
 
-    public void AddWeapon(string weaponName)
+    public void AddWeapon(string weaponName,ViewModel model)
     {
-        var weapon = InstantiateView(weaponName) as FPSWeaponViewBase;
+        model.Identifier = weaponName;
+        var weapon = InstantiateView(weaponName, model) as FPSWeaponViewBase;
 
         weapon.transform.parent = _WeaponsContainer;
         weapon.transform.localEulerAngles = new Vector3(0f,0f,0f);

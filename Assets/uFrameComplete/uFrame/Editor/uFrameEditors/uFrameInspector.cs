@@ -126,10 +126,10 @@ public class uFrameInspector : Editor
         return prop.stringValue;
     }
 
-    public bool Toggle(string text, bool open)
+    public bool Toggle(string text, bool open, bool allowCollapse = true)
     {
         var rect = UBEditor.GetRect(UBStyles.SubHeaderStyle);
-        var result = GUI.Toggle(rect, open, (open ? "- " : "+ ") + text, UBStyles.SubHeaderStyle);
+        var result = GUI.Toggle(rect, open,allowCollapse ? (open ? "- " : "+ ") + text : text, UBStyles.SubHeaderStyle);
         if (result) EditorGUILayout.Space();
         return result;
     }

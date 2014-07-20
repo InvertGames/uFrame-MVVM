@@ -169,6 +169,7 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
     {
         if (!Errors)
         {
+         
             _jsonData = Serialize().ToString();    
         }
         
@@ -213,6 +214,8 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
         var jsonNode = JSONNode.Parse(jsonData);
         if (jsonNode == null) return;
 
+        Nodes.Clear();
+
         this.Version = jsonNode["Version"].Value;
         this._identifier = jsonNode["Identifier"].Value;
 
@@ -221,11 +224,19 @@ public class JsonElementDesignerData : ScriptableObject, IElementDesignerData, I
 
         if (jsonNode["SceneFlow"] is JSONClass)
             SceneFlowFilter = jsonNode["SceneFlow"].DeserializeObject() as SceneFlowFilter;
+
         if (jsonNode["FilterState"] is JSONClass)
+        {
+            FilterState = new FilterState();
             FilterState.Deserialize(jsonNode["FilterState"].AsObject);
+            
+        }
+            
         if (jsonNode["Settings"] is JSONClass)
         {
+            Settings = new ElementDiagramSettings();
             Settings.Deserialize(jsonNode["Settings"].AsObject);
+            
         }
     }
 }

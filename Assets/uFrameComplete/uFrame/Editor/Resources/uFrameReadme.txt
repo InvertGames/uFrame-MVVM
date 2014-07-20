@@ -2,6 +2,21 @@
 Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, notifications, and cool info.
 IMPORTANT!!!: MAKE A BACKUP TO BE SAFE! THEN RE-SAVE ANY DIAGRAMS!
 IMPORTANT!!!: You may need to remove the old installation and reinstall as there has been many changes.
+1.284 
+Fixed: Controller's ExecuteCommand method sending a null sender.  So multi-instance element didn't received the correct reference.
+
+
+1.283 7/13/2014
+Fixed: Undo not reload correctly
+Fixed: Enums Generating their own file.  (You may need to delete {EnumName}.designer.cs)
+
+1.282 7/12/2014
+Fixed: Duplicates on Undo
+Fixed: View Inheritance issues
+Feature: Property, Collection, & Command re-ordering.
+Added: Theme Updates
+Fixed: Links pointing an element now point to the top of the element rather than the middle.
+
 1.28 7/6/2014
 Feature: Playmaker Plugin
 Feature: Save diagrams as json

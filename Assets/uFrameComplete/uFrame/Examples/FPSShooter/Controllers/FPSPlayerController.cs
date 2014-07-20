@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class FPSPlayerController : FPSPlayerControllerBase
 {
-
     public override void NextWeapon(FPSPlayerViewModel fPsPlayer)
     {
         fPsPlayer.CurrentWeapon.State = FPSWeaponState.Active;
@@ -17,6 +16,7 @@ public class FPSPlayerController : FPSPlayerControllerBase
         {
             fPsPlayer.CurrentWeaponIndex++;
         }
+        
     }
 
     public override void PickupWeapon( FPSPlayerViewModel fPsPlayer, FPSWeaponViewModel fpsWeaponViewModel)
@@ -46,4 +46,4 @@ public class FPSPlayerController : FPSPlayerControllerBase
         if (index > fPsPlayer.Weapons.Count) return;
         fPsPlayer.CurrentWeaponIndex = index;
     }
-}
+} 

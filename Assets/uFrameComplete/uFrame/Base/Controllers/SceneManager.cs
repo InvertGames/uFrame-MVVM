@@ -15,7 +15,22 @@ using Object = UnityEngine.Object;
 public abstract class SceneManager : ViewContainer
 {
     private List<ViewBase> _rootViews;
-    public IGameContainer Container { get; set; }
+    private SceneContext _context;
+
+    public IGameContainer Container
+    {
+        get { return GameManager.Container; }
+        set
+        {
+            
+        }
+    }
+
+    public SceneContext Context
+    {
+        get { return _context ?? (_context = new SceneContext(Container)); }
+        set { _context = value; }
+    }
 
     /// <summary>
     /// This method should do any set up necessary to load the controller and is invoked when you call
@@ -50,6 +65,7 @@ public abstract class SceneManager : ViewContainer
     /// </summary>
     public virtual void Reload()
     {
+        
         GameManager.SwitchGame(this);
     }
 
@@ -98,6 +114,74 @@ public abstract class SceneManager : ViewContainer
     {
         get { return _rootViews ?? (_rootViews = new List<ViewBase>()); }
         set { _rootViews = value; }
+    }
+
+    public ViewModel SetupViewModel(Controller controller, string identifier)
+    {
+        var contextViewModel = Context[identifier];
+        if (contextViewModel == null)
+        {
+            
+            return controller.CreateEmpty(identifier);
+        }
+        return contextViewModel;
+    }
+    public ViewModel RequestViewModel(ViewBase viewBase, Controller controller, string identifier)
+    {
+        var contextViewModel = Context[identifier];
+
+        if (contextViewModel == null)
+        {
+            contextViewModel = Container.Resolve(viewBase.ViewModelType) as ViewModel;
+            if (contextViewModel == null)
+            {
+                contextViewModel = Container.Resolve<ViewModel>(identifier);
+                if (contextViewModel == null)
+                {
+                    contextViewModel = controller.CreateEmpty(identifier);
+                    Context[identifier] = contextViewModel;
+                    if (!viewBase.IsMultiInstance || viewBase.ForceResolveViewModel)
+                    {
+                        Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
+                            string.IsNullOrEmpty(identifier) ? null : identifier);
+                    }
+                }
+                else
+                {
+                    //contextViewModel.Identifier = identifier;
+                    //// Make sure it's added to the context
+                    //Context[identifier] = contextViewModel;
+                }
+            }
+            else
+            {
+                //contextViewModel.Identifier = identifier;
+                //// Make sure it's added to the context
+                //Context[identifier] = contextViewModel;
+            }
+        }
+        else
+        {
+           
+            
+           // return contextViewModel;
+        }
+        if (contextViewModel != null)
+        {
+            // If its just an empty view model we need to initialize it
+            if (viewBase.OverrideViewModel)
+            {
+                contextViewModel.Identifier = identifier;
+                Context[identifier] = contextViewModel;
+
+                viewBase.InitializeData(contextViewModel);
+                controller.WireCommands(contextViewModel);
+                controller.Initialize(contextViewModel);
+            }
+           
+        }
+
+        return contextViewModel;
     }
 }
 

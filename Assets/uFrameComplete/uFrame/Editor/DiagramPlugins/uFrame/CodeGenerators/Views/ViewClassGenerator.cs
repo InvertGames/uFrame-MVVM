@@ -184,8 +184,18 @@ public abstract class ViewClassGenerator : CodeGenerator
 
         if (data.IsControllerDerived)
         {
-            var baseType = DiagramData.GetAllElements().First(p => p.Name == data.BaseTypeShortName);
-            Decleration.BaseTypes.Add(new CodeTypeReference(baseClassName ?? baseType.NameAsViewBase));
+            try
+            {
+                var baseType = DiagramData.GetAllElements().First(p => p.Name == data.BaseTypeShortName);
+                Decleration.BaseTypes.Add(new CodeTypeReference(baseClassName ?? baseType.NameAsViewBase));
+            }
+            catch (Exception ex)
+            {
+                data.BaseTypeName = null;
+                Decleration.BaseTypes.Add(new CodeTypeReference(typeof(ViewBase)));
+                Debug.Log(data.BaseTypeName);
+                Debug.Log(data.BaseTypeShortName);
+            }
         }
         else
         {
@@ -195,8 +205,21 @@ public abstract class ViewClassGenerator : CodeGenerator
         {
             Decleration.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
                 new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
+            if (data.BaseElement == null)
+            {
+                var defaultIdentifierProperty = new CodeMemberProperty()
+                {
+                    Name = "DefaultIdentifier",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    Type = new CodeTypeReference(typeof(string))
+                };
+                defaultIdentifierProperty.GetStatements.Add(
+                    new CodeMethodReturnStatement(new CodePrimitiveExpression(data.Name)));
+                Decleration.Members.Add(defaultIdentifierProperty);
+            }
+            
         }
-
+        
         var viewModelTypeProperty = new CodeMemberProperty
         {
             Attributes = MemberAttributes.Override | MemberAttributes.Public,

@@ -105,9 +105,9 @@ public abstract class FPSPlayerControllerBase : FPSDamageableController {
     public override void WireCommands(ViewModel viewModel) {
         base.WireCommands(viewModel);
         var fPSPlayer = viewModel as FPSPlayerViewModel;
+        fPSPlayer.PreviousWeapon = new CommandWithSender<FPSPlayerViewModel>(fPSPlayer, PreviousWeapon);
         fPSPlayer.NextWeapon = new CommandWithSender<FPSPlayerViewModel>(fPSPlayer, NextWeapon);
         fPSPlayer.PickupWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, FPSWeaponViewModel>(fPSPlayer, PickupWeapon);
-        fPSPlayer.PreviousWeapon = new CommandWithSender<FPSPlayerViewModel>(fPSPlayer, PreviousWeapon);
         fPSPlayer.SelectWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, int>(fPSPlayer, SelectWeapon);
     }
     
@@ -124,13 +124,13 @@ public abstract class FPSPlayerControllerBase : FPSDamageableController {
         this.InitializeFPSPlayer(((FPSPlayerViewModel)(viewModel)));
     }
     
+    public virtual void PreviousWeapon(FPSPlayerViewModel fPSPlayer) {
+    }
+    
     public virtual void NextWeapon(FPSPlayerViewModel fPSPlayer) {
     }
     
     public virtual void PickupWeapon(FPSPlayerViewModel fPSPlayer, FPSWeaponViewModel arg) {
-    }
-    
-    public virtual void PreviousWeapon(FPSPlayerViewModel fPSPlayer) {
     }
     
     public virtual void SelectWeapon(FPSPlayerViewModel fPSPlayer, int arg) {
@@ -286,7 +286,7 @@ public class FPSMainMenuManagerBase : SceneManager {
         this.FPSMenuController = new FPSMenuController();
         this.Container.RegisterInstance(this.FPSMenuController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateEmpty() as FPSMenuViewModel, false);
+        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateEmpty("FPSMenu") as FPSMenuViewModel, false);
     }
     
     public virtual void Play() {
@@ -327,21 +327,21 @@ public class WavesFPSGameManagerBase : SceneManager {
     public FPSWeaponController FPSWeaponController { get; set; }
     public override void Setup() {
         base.Setup();
-        this.WavesFPSGameController = new WavesFPSGameController();
+        this.WavesFPSGameController = new WavesFPSGameController() {Context = Context};
         this.Container.RegisterInstance(this.WavesFPSGameController, false);
-        this.DeathMatchGameController = new DeathMatchGameController();
+        this.DeathMatchGameController = new DeathMatchGameController() { Context = Context };
         this.Container.RegisterInstance(this.DeathMatchGameController, false);
-        this.FPSEnemyController = new FPSEnemyController();
+        this.FPSEnemyController = new FPSEnemyController() { Context = Context };
         this.Container.RegisterInstance(this.FPSEnemyController, false);
-        this.FPSGameController = new FPSGameController();
+        this.FPSGameController = new FPSGameController() { Context = Context };
         this.Container.RegisterInstance(this.FPSGameController, false);
-        this.FPSPlayerController = new FPSPlayerController();
+        this.FPSPlayerController = new FPSPlayerController() { Context = Context };
         this.Container.RegisterInstance(this.FPSPlayerController, false);
-        this.FPSWeaponController = new FPSWeaponController();
+        this.FPSWeaponController = new FPSWeaponController() { Context = Context };
         this.Container.RegisterInstance(this.FPSWeaponController, false);
         this.Container.InjectAll();
         if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.WavesFPSGame)) {
-            WavesFPSGameViewModel wavesFPSGame = WavesFPSGameController.CreateEmpty() as WavesFPSGameViewModel;
+            WavesFPSGameViewModel wavesFPSGame = SetupViewModel(WavesFPSGameController,"FPSGame") as WavesFPSGameViewModel;
             Container.RegisterInstance<WavesFPSGameViewModel>(wavesFPSGame, false);
             Container.RegisterInstance<FPSGameViewModel>(wavesFPSGame, false);
             Container.RegisterInstance<FPSGameController>(WavesFPSGameController, false);
@@ -354,6 +354,7 @@ public class WavesFPSGameManagerBase : SceneManager {
         }
         if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.FPSGame)) {
             FPSGameViewModel fPSGame = FPSGameController.CreateEmpty() as FPSGameViewModel;
+            Context["FPSGame"] = fPSGame;
             Container.RegisterInstance<FPSGameViewModel>(fPSGame, false);
         }
     }

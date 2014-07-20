@@ -55,6 +55,8 @@ public class FilterState : IJsonObject {
                     FilterStack.Clear();
                     break;
                 }
+                
+                //FilterStack.Push(filter);
                 elementDesignerData.PushFilter(filter);
             }
         }

@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Invert.uFrame.Editor;
@@ -12,7 +13,7 @@ public class ControllerGenerator : CodeGenerator
     {
         base.Initialize(fileGenerator);
         AddController(ElementData);
-        
+
     }
 
     public ElementData ElementData
@@ -409,8 +410,25 @@ public class ControllerGenerator : CodeGenerator
         //    .OfType<AssociationLink>()
         //    .ToArray();
 
-        var controllers = new List<string>();
+
         var diagramItems = DiagramData.AllDiagramItems.ToArray();
+
+        var controllers = GetDependencyControllers(data, diagramItems);
+
+        var baseControllers = data.AllBaseTypes.SelectMany(p => GetDependencyControllers(p as ElementData, diagramItems)).ToArray();
+        //var baseNames = baseElements.SelectMany(p => p.ContainedItems.Select(x => x.Name)).Distinct().ToArray();
+        // tDecleration.Members.Add(new CodeSnippetTypeMember(string.Format("[Inject] public {0} {0} {{get;set;}}", element.NameAsController)));
+        foreach (var controller in controllers.Distinct())
+        {
+            if (baseControllers.Contains(controller)) continue;
+            tDecleration.Members.Add(new CodeSnippetTypeMember(string.Format("[Inject] public {0} {0} {{get;set;}}", controller)));
+        }
+    }
+
+    private List<string> GetDependencyControllers(ElementData data, IDiagramNode[] diagramItems)
+    {
+        var controllers = new List<string>();
+
         foreach (var elementDataBase in DiagramData.GetAllElements().ToArray())
         {
             var links = elementDataBase.Items.SelectMany(p => p.GetLinks(diagramItems));
@@ -421,23 +439,21 @@ public class ControllerGenerator : CodeGenerator
 
                 if (link.Element == data)
                 {
-                    var controllerElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Items.Contains(link.Item));
+                    var controllerElement =
+                        DiagramData.GetAllElements().FirstOrDefault(p => p.ContainedItems.Contains(link.Item));
                     if (controllerElement == null) continue;
                     controllers.Add(controllerElement.NameAsController);
                 }
-                else if (data.Items.Contains(link.Item))
+                else if (data.ContainedItems.Contains(link.Item))
                 {
-                    var controllerElement = DiagramData.GetAllElements().FirstOrDefault(p => p.Name == link.Item.RelatedTypeName);
+                    var controllerElement =
+                        DiagramData.GetAllElements().FirstOrDefault(p => p.Name == link.Item.RelatedTypeName);
                     if (controllerElement == null) continue;
                     controllers.Add(controllerElement.NameAsController);
                 }
             }
         }
-        // tDecleration.Members.Add(new CodeSnippetTypeMember(string.Format("[Inject] public {0} {0} {{get;set;}}", element.NameAsController)));
-        foreach (var controller in controllers.Distinct())
-        {
-            tDecleration.Members.Add(new CodeSnippetTypeMember(string.Format("[Inject] public {0} {0} {{get;set;}}", controller)));
-        }
+        return controllers;
     }
 }
 

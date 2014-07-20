@@ -172,7 +172,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             foreach (var element in baseElements)
             {
 
-                setupMethod.Statements.Add(new CodeSnippetExpression(string.Format("Container.RegisterInstance<{0}>({1}.CreateEmpty() as {0}, false)", element.NameAsViewModel, element.NameAsController, element.Name)));
+                setupMethod.Statements.Add(new CodeSnippetExpression(string.Format("Container.RegisterInstance<{0}>({1}.CreateEmpty() as {0}, false)", element.NameAsViewModel, element.NameAsController)));
             }
 
             foreach (var element in rootElements)

@@ -66,7 +66,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -83,15 +83,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
+  _identifier: 2ce20d47-e49e-4b24-8163-b48a2d90ccc4
   _BindCanMoveTo: 0
-  _CanMoveToIsTwoWay: 0
   _BindPosition: 0
-  _PositionIsTwoWay: 0
   _BindIsEven: 0
-  _IsEvenIsTwoWay: 0
   _CanMoveTo: 0
   _Position: {x: 0, y: 0}
   _IsEven: 0

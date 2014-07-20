@@ -1,0 +1,313 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+public class JsonStream : ISerializerStream
+{
+    private Stack<JSONNode> _nodeStack;
+    private ITypeResolver _typeResolver;
+    private Dictionary<string, IUFSerializable> _referenceObjects = new Dictionary<string, IUFSerializable>();
+    public JSONNode RootNode { get; set; }
+
+    public Dictionary<string, IUFSerializable> ReferenceObjects
+    {
+        get { return _referenceObjects; }
+        set { _referenceObjects = value; }
+    }
+
+    public ITypeResolver TypeResolver
+    {
+        get { return _typeResolver ?? (_typeResolver = new DefaultTypeResolver()); }
+        set { _typeResolver = value; }
+    }
+
+    public JsonStream(JSONNode node)
+    {
+        RootNode = node;
+    }
+
+    public JsonStream()
+    {
+        RootNode = new JSONClass();
+    }
+
+    public JsonStream(string json)
+    {
+        RootNode = JSON.Parse(json);
+    }
+
+    public JsonStream(ITypeResolver typeResolver)
+    {
+        _typeResolver = typeResolver;
+        RootNode = new JSONClass();
+    }
+
+    public JsonStream(ITypeResolver typeResolver,string json)
+    {
+        _typeResolver = typeResolver;
+        RootNode = JSON.Parse(json);
+    }
+
+    public Stack<JSONNode> NodeStack
+    {
+        get { return _nodeStack ?? (_nodeStack = new Stack<JSONNode>()); }
+        set { _nodeStack = value; }
+    }
+
+    public JSONNode CurrentNode
+    {
+        get
+        {
+            if (NodeStack.Count < 1)
+                return RootNode;
+            return NodeStack.Peek();
+        }
+    }
+
+    public void Push(string name, JSONNode node)
+    {
+        NodeStack.Push(node);
+    }
+
+    public void Pop()
+    {
+        NodeStack.Pop();
+    }
+
+    public void Serialize(string name, object obj)
+    {
+        //if (obj is IUFSerializable)
+        //{
+
+        //}
+        //else if (obj is Vector3)
+        //{
+        //    Serialize
+        //}
+        //else if (obj is Vector2)
+        //{
+
+        //}
+        //else if (obj is string)
+        //{
+            
+        //}
+        //else if (obj is Vector4)
+        //{
+
+        //}
+        //else if (obj is Quaternion)
+        //{
+            
+        //}
+        //else if (obj is bool)
+        //{
+            
+        //}
+    }
+
+    public void SerializeArray<T>(string name, IEnumerable<T> items)
+    {
+        SerializeObjectArray(name, items.Cast<object>());
+    }
+
+    public void SerializeObjectArray(string name, IEnumerable<object> items)
+    {
+        var array = new JSONArray();
+        if (name == null)
+            CurrentNode.Add(array);
+        else
+            CurrentNode.Add(name, array);
+        Push(name,array);
+        foreach (var item in items)
+        {
+            SerializeObject(null, item);
+        }
+        Pop();
+    }
+    public bool UseReferences { get; set; }
+
+    public void SerializeObject(string name, object value)
+    {
+        
+        var cls = new JSONClass();
+        
+        if (name == null)
+            CurrentNode.Add(cls);
+        else
+            CurrentNode.Add(name, cls);
+        Push(name, cls);
+
+        var serializable = value as IUFSerializable;
+        if (serializable != null)
+        {
+            SerializeString("Identifier", serializable.Identifier);
+            if (!UseReferences || !ReferenceObjects.ContainsKey(serializable.Identifier))
+            {
+                SerializeString("CLRType", TypeResolver.SetType(value.GetType()));
+
+                if (UseReferences)
+                    ReferenceObjects.Add(serializable.Identifier, serializable);
+
+                serializable.Write(this);
+            }
+            
+        }
+        Pop();
+    }
+
+    public void SerializeInt(string name, int value)
+    {
+        CurrentNode.Add(name, new JSONData(value));
+    }
+
+    public void SerializeBool(string name, bool value)
+    {
+        CurrentNode.Add(name, new JSONData(value));
+    }
+
+    public void SerializeString(string name, string value)
+    {
+        CurrentNode.Add(name, new JSONData(value));
+    }
+
+    public void SerializeVector2(string name, Vector2 value)
+    {
+        CurrentNode.Add(name, new JSONClass(){AsVector2 = value});
+    }
+
+    public void SerializeVector3(string name, Vector3 value)
+    {
+        CurrentNode.Add(name, new JSONClass() { AsVector3 = value });
+    }
+
+    public void SerializeQuaternion(string name, Quaternion value)
+    {
+        CurrentNode.Add(name, new JSONClass(){AsQuaternion = value});
+    }
+
+    public void SerializeDouble(string name, double value)
+    {
+        CurrentNode.Add(name, new JSONData(value));
+    }
+
+    public void SerializeFloat(string name, float value)
+    {
+        CurrentNode.Add(name, new JSONData(value));
+    }
+
+    public void SerializeBytes(string name, byte[] bytes)
+    {
+//        throw new NotImplementedException();
+    }
+
+    public IEnumerable<T> DeserializeObjectArray<T>(string name)
+    {
+        Push(name,CurrentNode[name]);
+        foreach (var jsonNode in CurrentNode.Childs)
+        {
+            Push(null,jsonNode);
+            yield return (T)DeserializeObjectFromCurrent();
+            Pop();
+        }
+        Pop();
+    }
+
+    public T DeserializeObject<T>(string name)
+    {
+        return (T)DeserializeObject(name);
+    }
+
+    public object DeserializeObject(string name)
+    {
+        Push(name, CurrentNode[name]);
+
+        var result = DeserializeObjectFromCurrent();
+        Pop();
+        return result;
+    }
+
+    private object DeserializeObjectFromCurrent()
+    {
+        var identifier = CurrentNode["Identifier"].Value;
+
+        if (UseReferences && ReferenceObjects.ContainsKey(identifier))
+        {
+            return ReferenceObjects[identifier];
+        }
+        if (CurrentNode["CLRType"] == null) return null;
+        var clrType = CurrentNode["CLRType"].Value;
+        var instance = TypeResolver.CreateInstance(clrType);
+        var ufSerializable = instance as IUFSerializable;
+        if (ufSerializable != null)
+        {
+            if (UseReferences)
+            ReferenceObjects.Add(identifier, ufSerializable);
+            ufSerializable.Read(this);
+        }
+        return instance;
+    }
+
+    public int DeserializeInt(string name)
+    {
+        return CurrentNode[name].AsInt;
+    }
+
+    public bool DeserializeBool(string name)
+    {
+        return CurrentNode[name].AsBool;
+    }
+
+    public string DeserializeString(string name)
+    {
+        return CurrentNode[name].Value;
+    }
+
+    public Vector2 DeserializeVector2(string name)
+    {
+        return CurrentNode[name].AsVector3;
+    }
+
+    public Vector3 DeserializeVector3(string name)
+    {
+        return CurrentNode[name].AsVector3;
+    }
+
+    public Quaternion DeserializeQuaternion(string name)
+    {
+        return CurrentNode[name].AsQuaternion;
+    }
+
+    public double DeserializeDouble(string name)
+    {
+        return CurrentNode[name].AsDouble;
+    }
+
+    public float DeserializeFloat(string name)
+    {
+        return CurrentNode[name].AsFloat;
+    }
+
+    public byte[] DeserializeBytes(string name)
+    {
+        return null;
+    }
+
+    public void Load(byte[] readAllBytes)
+    {
+        var json = Encoding.UTF8.GetString(readAllBytes);
+        RootNode = JSON.Parse(json);
+    }
+
+    public byte[] Save()
+    {
+        return System.Text.Encoding.UTF8.GetBytes(CurrentNode.ToString());
+    }
+}
+
+//public interface IReferenceHandler
+//{
+//    void IsReference()
+//}

@@ -35,6 +35,12 @@ public abstract class FPSDamageableViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public FPSPlayerState _State;
     
+    public override string DefaultIdentifier {
+        get {
+            return "FPSDamageable";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(FPSDamageableViewModel);
@@ -143,6 +149,11 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
 [DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSGameViewBase : ViewBase {
     
+    [UFToggleGroup("State")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("StateChanged")]
+    public bool _BindState;
+    
     [UFToggleGroup("CurrentPlayer")]
     [UnityEngine.HideInInspector()]
     public bool _BindCurrentPlayer;
@@ -150,11 +161,6 @@ public abstract class FPSGameViewBase : ViewBase {
     [UFGroup("CurrentPlayer")]
     [UnityEngine.HideInInspector()]
     public UnityEngine.GameObject _CurrentPlayerPrefab;
-    
-    [UFToggleGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState;
     
     [UFToggleGroup("Score")]
     [UnityEngine.HideInInspector()]
@@ -183,11 +189,11 @@ public abstract class FPSGameViewBase : ViewBase {
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
-    public ViewBase _CurrentPlayer;
+    public FPSGameState _State;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
-    public FPSGameState _State;
+    public ViewBase _CurrentPlayer;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -196,6 +202,12 @@ public abstract class FPSGameViewBase : ViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public int _Kills;
+    
+    public override string DefaultIdentifier {
+        get {
+            return "FPSGame";
+        }
+    }
     
     public override System.Type ViewModelType {
         get {
@@ -218,6 +230,9 @@ public abstract class FPSGameViewBase : ViewBase {
         }
     }
     
+    public virtual void StateChanged(FPSGameState value) {
+    }
+    
     public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
         if (value == null && _CurrentPlayerPrefab != null) {
             Destroy(_CurrentPlayer.gameObject);
@@ -228,9 +243,6 @@ public abstract class FPSGameViewBase : ViewBase {
         else {
             this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(this._CurrentPlayerPrefab, value)));
         }
-    }
-    
-    public virtual void StateChanged(FPSGameState value) {
     }
     
     public virtual void ScoreChanged(int value) {
@@ -253,11 +265,11 @@ public abstract class FPSGameViewBase : ViewBase {
     }
     
     public override void Bind() {
-        if (this._BindCurrentPlayer) {
-            this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
-        }
         if (this._BindState) {
             this.BindProperty(()=>FPSGame._StateProperty, this.StateChanged);
+        }
+        if (this._BindCurrentPlayer) {
+            this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
         }
         if (this._BindScore) {
             this.BindProperty(()=>FPSGame._ScoreProperty, this.ScoreChanged);
@@ -295,8 +307,8 @@ public abstract class FPSGameViewBase : ViewBase {
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         FPSGameViewModel fPSGame = ((FPSGameViewModel)(viewModel));
-        fPSGame.CurrentPlayer = this._CurrentPlayer == null ? null : this._CurrentPlayer.ViewModelObject as FPSPlayerViewModel;
         fPSGame.State = this._State;
+        fPSGame.CurrentPlayer = this._CurrentPlayer == null ? null : this._CurrentPlayer.ViewModelObject as FPSPlayerViewModel;
         fPSGame.Score = this._Score;
         fPSGame.Kills = this._Kills;
     }
@@ -391,16 +403,16 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSPlayerController>());
     }
     
+    public virtual void ExecutePreviousWeapon() {
+        this.ExecuteCommand(FPSPlayer.PreviousWeapon);
+    }
+    
     public virtual void ExecuteNextWeapon() {
         this.ExecuteCommand(FPSPlayer.NextWeapon);
     }
     
     public virtual void ExecutePickupWeapon(FPSWeaponViewModel fPSWeapon) {
         this.ExecuteCommand(FPSPlayer.PickupWeapon, fPSWeapon);
-    }
-    
-    public virtual void ExecutePreviousWeapon() {
-        this.ExecuteCommand(FPSPlayer.PreviousWeapon);
     }
     
     public virtual void ExecuteSelectWeapon(int arg) {
@@ -539,6 +551,12 @@ public abstract class FPSWeaponViewBase : ViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public float _SpreadMultiplier;
+    
+    public override string DefaultIdentifier {
+        get {
+            return "FPSWeapon";
+        }
+    }
     
     public override System.Type ViewModelType {
         get {
@@ -791,6 +809,12 @@ public abstract class WavesFPSGameViewBase : FPSGameViewBase {
 [DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSMenuViewBase : ViewBase {
     
+    public override string DefaultIdentifier {
+        get {
+            return "FPSMenu";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(FPSMenuViewModel);
@@ -889,9 +913,6 @@ public partial class FPSMainMenuView : FPSMenuViewBase {
 }
 
 public abstract partial class DamageableView : FPSDamageableViewBase {
-}
-
-public partial class fpsdhudview2 : FPSHUDView {
 }
 
 public partial class FPSWeaponFire : ViewComponent {

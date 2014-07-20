@@ -18,6 +18,15 @@ public class WavesFPSGameController : WavesFPSGameControllerBase
 
     private int _EnemiesSpawned = 0;
 
+    public WavesFPSGameController()
+    {
+    }
+
+    public WavesFPSGameController(SceneContext context)
+    {
+        Context = context;
+    }
+
     public override IEnumerator StartGame()
     {
         WavesFPSGame.State = FPSGameState.Active;
@@ -60,7 +69,7 @@ public class WavesFPSGameController : WavesFPSGameControllerBase
     {
         
         // Additionaly call the base initialize
-        wavesFPSGame.CurrentPlayer = FPSPlayerController.CreateFPSPlayer();
+        //wavesFPSGame.CurrentPlayer = FPSPlayerController.CreateFPSPlayer();
         wavesFPSGame.CurrentWave = 1;
         wavesFPSGame.KillsToNextWave = _NumberOfEnemiesAtStart;
     }

@@ -8,10 +8,6 @@ public class HUDPlayerView : FPSPlayerViewBase
     public GUIText _ReloadLabel;
     public List<Texture2D> _HudTextures;
 
-    public override ViewModel CreateModel()
-    {
-        return ResolveViewModel();
-    }
 
     public override ViewBase CreateWeaponsView(FPSWeaponViewModel fPSWeapon)
     {

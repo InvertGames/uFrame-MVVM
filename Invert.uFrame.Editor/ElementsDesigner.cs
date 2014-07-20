@@ -129,7 +129,7 @@ namespace Invert.uFrame.Editor
 
         public void OnGUI()
         {
-            
+         
             if ((Diagram == null || Diagram.Data == null) && !string.IsNullOrEmpty(LastLoadedDiagram))
             {
                 Diagram = null;
@@ -143,16 +143,6 @@ namespace Invert.uFrame.Editor
                     LastLoadedDiagram = null;
                     return;
                 }
-                    
-                //var index = Array.IndexOf(UFrameAssetManager.DiagramNames, LastLoadedDiagram);
-                //if (index > -1 && index < UFrameAssetManager.Diagrams.Count)
-                //{
-                //    var lastDiagram = UFrameAssetManager.Diagrams[index];
-                //    if (lastDiagram != null)
-                //    {
-                //        LoadDiagram(lastDiagram);
-                //    }
-                //}
             }
             
           
@@ -253,18 +243,19 @@ namespace Invert.uFrame.Editor
                     evt.Use();
                 }
             }
+            if (Event.current.type == EventType.ValidateCommand &&
+          Event.current.commandName == "UndoRedoPerformed")
+            {
+               
+            }
+
             if (Diagram != null && Diagram.Dirty || EditorApplication.isCompiling)
             {
                 Repaint();
             }
-            if (Event.current.type == EventType.ValidateCommand &&
-                Event.current.commandName == "UndoRedoPerformed")
-            {
-                if (Diagram != null)
-                    LoadDiagram(LastLoadedDiagram);
-            }
+         
         }
-
+   
         public void OnLostFocus()
         {
             if (Diagram == null) return;
@@ -351,13 +342,16 @@ namespace Invert.uFrame.Editor
         {
             try
             {
+                //Undo.undoRedoPerformed = UndoRedoPerformed;
+                Undo.undoRedoPerformed += UndoRedoPerformed;
                 //Diagram = uFrameEditor.Container.Resolve<ElementsDiagram>();
                 Diagram = new ElementsDiagram(path);
                 //Diagram.SelectionChanged += DiagramOnSelectionChanged;
                 LastLoadedDiagram = path;
-
+                Diagram.Dirty = true;
                 Diagram.Data.ApplyFilter();
                 Diagram.Refresh(true);
+                this.Repaint();
             }
             catch (Exception ex)
             {
@@ -371,6 +365,12 @@ namespace Invert.uFrame.Editor
             return true;
             // var newScrollPosition = new Vector2(Diagram.DiagramSize.width, Diagram.DiagramSize.height).normalized / 2;
             //_scrollPosition = new Vector2(250,250);
+        }
+
+        private void UndoRedoPerformed()
+        {
+            Diagram = null;
+            Repaint();
         }
 
         public void LoadDiagramByName(string diagramName)

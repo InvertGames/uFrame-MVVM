@@ -42,8 +42,6 @@ public class GameContainer : IGameContainer
             set { _relationshipMappings = value; }
         }
 
-
-
         public IEnumerable<TType> ResolveAll<TType>()
         {
             foreach (var obj in ResolveAll(typeof(TType)))
@@ -149,7 +147,7 @@ public class GameContainer : IGameContainer
         /// <param name="name">The name for the instance to be resolved.</param>
         /// <param name="instance">The instance that will be resolved be the name</param>
         /// <param name="injectNow">Perform the injection immediately</param>
-        public void RegisterInstance(Type baseType, object instance = null, string name = null, bool injectNow = true)
+        public virtual void RegisterInstance(Type baseType, object instance = null, string name = null, bool injectNow = true)
         {
             Instances[baseType, name] = instance;
             if (injectNow)

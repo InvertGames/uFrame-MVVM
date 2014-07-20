@@ -36,6 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,6 +54,64 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\Command.cs">
+      <Link>Serialization\Command.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\CommandWith.cs">
+      <Link>Serialization\CommandWith.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\ControllerActionCommand.cs">
+      <Link>Serialization\ControllerActionCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\DelegateCommand.cs">
+      <Link>Serialization\DelegateCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\GameEventCommand.cs">
+      <Link>Serialization\GameEventCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\ICommand.cs">
+      <Link>Serialization\ICommand.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\YieldCommandWith.cs">
+      <Link>Serialization\YieldCommandWith.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\IJsonSerializable.cs">
+      <Link>Serialization\IJsonSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\SimpleJSON.cs">
+      <Link>Serialization\SimpleJSON.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\ViewModels\ModelCollection.cs">
+      <Link>Serialization\ModelCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\ViewModels\ModelPropertyBase.cs">
+      <Link>Serialization\ModelPropertyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\ViewModels\P.cs">
+      <Link>Serialization\P.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\ISerializer.cs">
+      <Link>Serialization\ISerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\ISerializerStream.cs">
+      <Link>Serialization\ISerializerStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\IUFSerializable.cs">
+      <Link>Serialization\IUFSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\JsonStream.cs">
+      <Link>Serialization\JsonStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\SceneContext.cs">
+      <Link>Serialization\SceneContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\UFJsonSerializer.cs">
+      <Link>Serialization\UFJsonSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\ViewModel.cs">
+      <Link>Serialization\ViewModel.cs</Link>
+    </Compile>
+    <Compile Include="SerializationTests.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

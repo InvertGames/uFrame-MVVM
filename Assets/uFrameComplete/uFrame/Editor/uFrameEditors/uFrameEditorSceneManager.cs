@@ -136,10 +136,17 @@ public class uFrameEditorSceneManager
             if (textureViewMI != null && textureViewSI != null)
             {
                 //GUI.DrawTexture(r, textureView);
-                var viewBase = SceneViews.FirstOrDefault(p => p.gameObject.GetInstanceID() == instanceID);
-                if (viewBase != null)
+                try
                 {
-                    GUI.DrawTexture(r,viewBase.IsMultiInstance ? textureViewMI : textureViewSI);
+                    var viewBase = SceneViews.FirstOrDefault(p => p.gameObject.GetInstanceID() == instanceID);
+                    if (viewBase != null)
+                    {
+                        GUI.DrawTexture(r, viewBase.IsMultiInstance ? textureViewMI : textureViewSI);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    
                 }
             }
                 

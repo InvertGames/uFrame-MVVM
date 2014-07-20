@@ -1,4 +1,4 @@
-public partial class FPSDamageableViewModel : ViewModel
+public partial class FPSDamageableViewModel 
 {
-  
+    
 }

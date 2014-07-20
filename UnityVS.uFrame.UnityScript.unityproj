@@ -121,6 +121,7 @@
     <None Include="Assets\PrivateStuff\PlayMaker\Readme.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Resources\PlayMakerAssemblies.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Versions\readme.txt" />
+    <None Include="Assets\test.txt" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />

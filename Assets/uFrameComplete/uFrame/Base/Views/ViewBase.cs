@@ -2,21 +2,46 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting.Lifetime;
 using UnityEngine;
+
+[AttributeUsage(AttributeTargets.Field)]
+public class UFGroup : Attribute
+{
+    public string Name { get; set; }
+
+    public UFGroup(string name)
+    {
+        Name = name;
+    }
+}
+
+[AttributeUsage(AttributeTargets.Field)]
+public class UFRequireInstanceMethod : Attribute
+{
+    public string MethodName { get; set; }
+
+    public UFRequireInstanceMethod(string methodName)
+    {
+        MethodName = methodName;
+    }
+}
+
+[AttributeUsage(AttributeTargets.Field)]
+public class UFToggleGroup : Attribute
+{
+    public string Name { get; set; }
+
+    public UFToggleGroup(string name)
+    {
+        Name = name;
+    }
+}
 
 /// <summary>
 /// The base class for a View that binds to a ViewModel
 /// </summary>
 public abstract class ViewBase : ViewContainer
 {
-    public List<IBindingProvider> BindingProviders
-    {
-        get { return _bindingProviders ?? (_bindingProviders = new List<IBindingProvider>()); }
-        set { _bindingProviders = value; }
-    }
-
     /// <summary>
     /// The View Event delegate that takes a string for the event name.
     /// </summary>
@@ -34,27 +59,43 @@ public abstract class ViewBase : ViewContainer
     [HideInInspector]
     public bool _LogEvents;
 
-    //[HideInInspector]
-    //public string _ViewModelControllerMethod;
+    private List<IBindingProvider> _bindingProviders;
 
-    //[HideInInspector]
-    //public string _ViewModelControllerType;
+    private bool _bound = false;
 
     ///// <summary>
     ///// Where should the viewmodel come from or how should it be instantiated.
     ///// </summary>
     //[HideInInspector]
     //public ViewModelRegistryType _ViewModelFrom = ViewModelRegistryType.ResolveInstance;
-
-    private bool _bound = false;
-
     private List<ViewBase> _children;
 
+    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
+    private bool _forceResolveViewModel = false;
+
+    //[HideInInspector]
+    //public string _ViewModelControllerType;
     [HideInInspector]
     private ViewModel _Model;
 
+    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
+    private bool _overrideViewModel;
+
+    //[HideInInspector]
+    //public string _ViewModelControllerMethod;
     private ViewBase _parentView;
-    private List<IBindingProvider> _bindingProviders;
+
+    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
+    private string _resolveName = null;
+
+    [NonSerialized]
+    private bool _shouldRebindOnEnable = false;
+
+    public List<IBindingProvider> BindingProviders
+    {
+        get { return _bindingProviders ?? (_bindingProviders = new List<IBindingProvider>()); }
+        set { _bindingProviders = value; }
+    }
 
     public IEnumerable<ViewModel> ChildViewModels
     {
@@ -70,7 +111,27 @@ public abstract class ViewBase : ViewContainer
         set { _children = value; }
     }
 
+    public bool ForceResolveViewModel
+    {
+        get { return _forceResolveViewModel; }
+        set { _forceResolveViewModel = value; }
+    }
+
     public bool Instantiated { get; set; }
+
+    public virtual bool IsMultiInstance
+    {
+        get
+        {
+            return true;
+        }
+    }
+
+    public bool OverrideViewModel
+    {
+        get { return _overrideViewModel; }
+        set { _overrideViewModel = value; }
+    }
 
     public ViewBase ParentView
     {
@@ -126,6 +187,14 @@ public abstract class ViewBase : ViewContainer
 
     public abstract Type ViewModelType { get; }
 
+
+    public virtual string DefaultIdentifier
+    {
+        get
+        {
+            return ViewModelType.Name;
+        }
+    }
     /// <summary>
     /// The name of the prefab that created this view
     /// </summary>
@@ -141,6 +210,10 @@ public abstract class ViewBase : ViewContainer
         }
     }
 
+    public virtual void AfterBind()
+    {
+    }
+
     public virtual void Awake()
     {
         if (GameManager.ActiveSceneManager != null)
@@ -149,71 +222,90 @@ public abstract class ViewBase : ViewContainer
 
     public abstract void Bind();
 
-
-
-    protected ViewModel RequestViewModel(Controller controller)
-    {
-        if (ForceResolveViewModel || !IsMultiInstance)
-        {
-            if (string.IsNullOrEmpty(_resolveName))
-            {
-                if (OverrideViewModel)
-                    return controller.GetByType(ViewModelType, true, InitializeViewModel);
-
-                return controller.GetByType(ViewModelType, false);
-            }
-
-            if (OverrideViewModel)
-                return controller.GetByName(_resolveName, true, InitializeViewModel);
-
-            return controller.GetByName(_resolveName, false);
-        }
-
-        if (IsMultiInstance && OverrideViewModel)
-        {
-            return controller.Create(InitializeViewModel);
-        }
-
-        return controller.Create();
-    }
-
-    protected ViewModel ResolveViewModel(Controller controller = null)
-    {
-        var vm = !string.IsNullOrEmpty(_resolveName) ?
-              GameManager.Container.Resolve<ViewModel>(_resolveName) :
-              GameManager.Container.Resolve(ViewModelType) as ViewModel;
-        return vm;
-    }
     public abstract ViewModel CreateModel();
-    //{
 
-    //if (_ViewModelFrom == ViewModelRegistryType.ResolveInstance)
-    //{
-    //    var resolved = GameManager.Container.Resolve(ViewModelType) as ViewModel;
-    //    if (OverrideViewModel)
-    //        InitializeViewModel(resolved);
-    //    return resolved;
-    //}
-    //else if (_ViewModelFrom == ViewModelRegistryType.Controller)
-    //{
-    //    if (string.IsNullOrEmpty(_ViewModelControllerMethod))
-    //    {
-    //        Debug.LogError("You have specified NewFromControllerMethod on View Model From Property but no Controller Method is specified.");
-    //        return null;
-    //    }
+    /// <summary>
+    /// Invoke a .NET event on this view.  This is a convinience method for Event Bindings.
+    /// </summary>
+    /// <param name="eventname">The name of the event that occured</param>
+    public virtual void Event(string eventname)
+    {
+        if (_LogEvents)
+        {
+            Debug.Log(string.Format("Event: {0} occured.", eventname), this.gameObject);
+        }
+        ViewEvent handler = EventTriggered;
+        if (handler != null)
+            handler(eventname);
+    }
 
-    //    var controllerType = Type.GetType(_ViewModelControllerType);
-    //    if (controllerType != null)
-    //    {
-    //        var controllerMethod = controllerType.GetMethod(_ViewModelControllerMethod);
-    //        var controller = GameManager.Container.Resolve(controllerType, true);
-    //        if (controllerMethod != null)
-    //        {
-    //            try
-    //            {
-    //                var vm = controllerMethod.Invoke(controller, null) as ViewModel;
-    //                if (OverrideViewModel)
-    //                    InitializeViewModel(vm);
+    public void ExecuteCommand(ICommand command, object argument)
+    {
+        if (command == null) return;
+
+        command.Parameter = argument;
+        if (command.Parameter == null)
+        {
+            command.Parameter = this.ViewModelObject;
+        }
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    public virtual void ExecuteCommand(ICommand command)
+    {
+        if (command == null) return;
+
+        if (command.Parameter == null)
+            command.Parameter = this.ViewModelObject;
+
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, ViewModel sender, TArgument argument)
+    {
+        if (command == null) return;
+        command.Parameter = argument;
+        if (command.Parameter == null)
+        {
+            command.Parameter = this.ViewModelObject;
+        }
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
+    {
+        if (command == null) return;
+        command.Parameter = argument;
+        if (command.Parameter == null)
+        {
+            command.Parameter = this.ViewModelObject;
+        }
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    public void InitializeData(ViewModel model)
+    {
+        InitializeViewModel(model);
+    }
+
+    public virtual void OnDestroy()
+    {
+        var pv = ParentView;
+        if (pv != null)
+        {
+            pv.ChildViews.Remove(this);
+        }
+        Unbind();
+        Bindings.Clear();
+    }
 
     //                return vm;
     //            }
@@ -237,21 +329,8 @@ public abstract class ViewBase : ViewContainer
     //}
     //return Activator.CreateInstance(ViewModelType) as ViewModel;
     //}
-
-    public virtual void OnDestroy()
-    {
-        var pv = ParentView;
-        if (pv != null)
-        {
-            pv.ChildViews.Remove(this);
-        }
-        Unbind();
-        Bindings.Clear();
-    }
-
     public virtual void OnDisable()
     {
-
         //var pv = ParentView;
         //if (pv != null)
         //{
@@ -261,41 +340,10 @@ public abstract class ViewBase : ViewContainer
         //_shouldRebindOnEnable = true;
     }
 
-    [NonSerialized]
-    private bool _shouldRebindOnEnable = false;
-
-    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
-    private bool _overrideViewModel;
-    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
-    private bool _forceResolveViewModel = false;
-
-    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
-    private string _resolveName = null;
-
-    public virtual bool IsMultiInstance
-    {
-        get
-        {
-            return true;
-        }
-    }
-
     public virtual void OnEnable()
     {
         if (_shouldRebindOnEnable)
             SetupBindings();
-    }
-
-    public bool OverrideViewModel
-    {
-        get { return _overrideViewModel; }
-        set { _overrideViewModel = value; }
-    }
-
-    public bool ForceResolveViewModel
-    {
-        get { return _forceResolveViewModel; }
-        set { _forceResolveViewModel = value; }
     }
 
     /// <summary>
@@ -312,7 +360,6 @@ public abstract class ViewBase : ViewContainer
         if (_bound)
             return;
         // Initialize the model
-
 
         // Loop through and binding providers and let them add bindings
         foreach (var bindingProvider in BindingProviders)
@@ -344,10 +391,7 @@ public abstract class ViewBase : ViewContainer
         AfterBind();
     }
 
-    public virtual void AfterBind()
-    {
-
-    }
+    //{
     public virtual void Start()
     {
         var pv = ParentView;
@@ -382,31 +426,12 @@ public abstract class ViewBase : ViewContainer
     }
 
     /// <summary>
-    /// Invoke a .NET event on this view.  This is a convinience method for Event Bindings.
-    /// </summary>
-    /// <param name="eventname">The name of the event that occured</param>
-    public virtual void Event(string eventname)
-    {
-        if (_LogEvents)
-        {
-            Debug.Log(string.Format("Event: {0} occured.", eventname), this.gameObject);
-        }
-        ViewEvent handler = EventTriggered;
-        if (handler != null)
-            handler(eventname);
-    }
-
-    /// <summary>
     /// This method should be overriden to Initialize the ViewModel
     /// with any options specified in a unity component inspector.
     /// </summary>
     /// <param name="model">The model to initialize.</param>
     protected abstract void InitializeViewModel(ViewModel model);
 
-    public void InitializeData(ViewModel model)
-    {
-        InitializeViewModel(model);
-    }
     protected virtual void LateUpdate()
     {
         foreach (var binding in Bindings)
@@ -417,94 +442,107 @@ public abstract class ViewBase : ViewContainer
             }
         }
     }
+    [SerializeField, HideInInspector]
+    private string _identifier;
 
-    public void ExecuteCommand(ICommand command, object argument)
+    public virtual string Identifier
     {
-        if (command == null) return;
-
-        command.Parameter = argument;
-        if (command.Parameter == null)
+        get
         {
-            command.Parameter = this.ViewModelObject;
+            if (IsMultiInstance && ForceResolveViewModel)
+            {
+                return _resolveName;
+            } else if (!IsMultiInstance && !string.IsNullOrEmpty(_resolveName))
+            {
+                return _resolveName;
+            }
+            else if (!IsMultiInstance)
+            {
+                return DefaultIdentifier;
+            }
+
+            //if (!IsMultiInstance)
+            //{
+            //    return string.Empty;
+            //}
+            if (string.IsNullOrEmpty(_identifier))
+            {
+                _identifier = Guid.NewGuid().ToString();
+            }
+            return _identifier;
         }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        set { _identifier = value; }
     }
 
-    public virtual void ExecuteCommand(ICommand command)
+    public SceneManager SceneManager
     {
-        if (command == null) return;
-
-        if (command.Parameter == null)
-            command.Parameter = this.ViewModelObject;
-
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        get { return GameManager.ActiveSceneManager; }
     }
-    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, ViewModel sender, TArgument argument)
+
+    protected ViewModel RequestViewModel(Controller controller)
     {
-        if (command == null) return;
-        command.Parameter = argument;
-        if (command.Parameter == null)
+        return SceneManager.RequestViewModel(this, controller, Identifier);
+        //if (OverrideViewModel)
+        //{
+        //    if (!IsMultiInstance && string.IsNullOrEmpty(_resolveName))
+        //    {
+        //        return controller.GetByType(ViewModelType);
+        //    }
+        //    var result = controller.Create(Identifier, InitializeViewModel);
+        //    return result;
+        //}
+        //else
+        //{
+        //    if (!IsMultiInstance && string.IsNullOrEmpty(_resolveName))
+        //        return controller.GetByType(ViewModelType);
+
+        //    return controller.Create(Identifier);
+        //}
+
+        //controller.Create(Identifier, InitializeViewModel);
+        if (ForceResolveViewModel || !IsMultiInstance)
         {
-            command.Parameter = this.ViewModelObject;
+            if (string.IsNullOrEmpty(_resolveName))
+            {
+                if (OverrideViewModel)
+                    return controller.GetByType(Identifier, ViewModelType, true, InitializeViewModel);
+
+                return controller.GetByType(Identifier, ViewModelType, false);
+            }
+            if (OverrideViewModel)
+                return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
+            else
+                return controller.Create(Identifier); //controller.Create(InitializeViewModel);
+            if (OverrideViewModel)
+                return controller.GetByName(_resolveName, true, InitializeViewModel);
+
+            return controller.GetByName(_resolveName, false);
         }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+
+        if (IsMultiInstance)
+        {
+            //if (ForceResolveViewModel)
+            //{
+            //    return controller.GetByType(Identifier, ViewModelType, OverrideViewModel, InitializeViewModel);
+            //}
+            if (OverrideViewModel)
+                return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
+            else
+                return controller.Create(Identifier); //controller.Create(InitializeViewModel);
+        }
+        return controller.Create(Identifier);
     }
-    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
+
+    protected ViewModel ResolveViewModel(Controller controller = null)
     {
-        if (command == null) return;
-        command.Parameter = argument;
-        if (command.Parameter == null)
-        {
-            command.Parameter = this.ViewModelObject;
-        }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        var vm = !string.IsNullOrEmpty(_resolveName) ?
+              GameManager.Container.Resolve<ViewModel>(_resolveName) :
+              GameManager.Container.Resolve(ViewModelType) as ViewModel;
+        return vm;
     }
 }
-
 
 [AttributeUsage(AttributeTargets.Field)]
 public class ViewModelOverrideAttribute : Attribute
 {
-
-}
-
-[AttributeUsage(AttributeTargets.Field)]
-public class UFGroup : Attribute
-{
-    public UFGroup(string name)
-    {
-        Name = name;
-    }
-
-    public string Name { get; set; }
-}
-
-[AttributeUsage(AttributeTargets.Field)]
-public class UFRequireInstanceMethod : Attribute
-{
-    public string MethodName { get; set; }
-
-    public UFRequireInstanceMethod(string methodName)
-    {
-        MethodName = methodName;
-    }
-}
-
-[AttributeUsage(AttributeTargets.Field)]
-public class UFToggleGroup : Attribute
-{
-    public UFToggleGroup(string name)
-    {
-        Name = name;
-    }
-
-    public string Name { get; set; }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 //using UnityEngine;
 //using Debug = UnityEngine.Debug;
 
@@ -11,8 +12,17 @@ using System.Linq;
 /// </summary>
 public abstract class Controller : IViewModelObserver
 {
-    private string _typeName;
     private List<IBinding> _bindings;
+    private string _typeName;
+    private SceneContext _context;
+
+  
+
+    public List<IBinding> Bindings
+    {
+        get { return _bindings ?? (_bindings = new List<IBinding>()); }
+        set { _bindings = value; }
+    }
 
     public IGameContainer Container
     {
@@ -42,12 +52,6 @@ public abstract class Controller : IViewModelObserver
         }
     }
 
-    public List<IBinding> Bindings
-    {
-        get { return _bindings ?? (_bindings = new List<IBinding>()); }
-        set { _bindings = value; }
-    }
-
     public void AddBinding(IBinding binding)
     {
         Bindings.Add(binding);
@@ -55,9 +59,244 @@ public abstract class Controller : IViewModelObserver
         binding.Bind();
     }
 
+    //public virtual ViewModel Create(string identifier)
+    //{
+    //    var vm = CreateEmpty();
+    //    WireCommands(vm);
+    //    LoadByIdentifier(identifier, vm);
+    //    return vm;
+    //}
+
+    protected Controller()
+    {
+        //throw new Exception("Default constructor is not allowed.  Please regenerate your diagram or create the controller with a SceneContext.");
+    }
+
+    protected Controller(SceneContext context)
+    {
+        Context = context;
+        Context.Container.RegisterInstance(this.GetType(),this,false);
+    }
+
+    public SceneContext Context
+    {
+        get { return _context ?? (_context = GameManager.ActiveSceneManager.Context); }
+        set { _context = value; }
+    }
+
+    public virtual ViewModel Create()
+    {
+        return Create(Guid.NewGuid().ToString());
+    }
+    public virtual ViewModel CreateEmpty(string identifier)
+    {
+        var vm = CreateEmpty();
+        vm.Identifier = identifier;
+        Context[identifier] = vm;
+        return vm;
+        return new FPSMenuViewModel() { Identifier = identifier };
+    }
+    public virtual ViewModel Create(string identifier)
+    {
+        var vm = Context[identifier];
+
+        if (vm == null)
+        {
+            vm = CreateEmpty(identifier);
+            InitializeInternal(vm);
+        }
+        return vm;
+    }
+
+    public virtual ViewModel Create(string identifier, Action<ViewModel> preInitializer)
+    {
+        var vm = Context[identifier];
+        
+        if (vm == null)
+        {
+            vm = CreateEmpty(identifier);
+            InitializeInternal(vm, preInitializer);
+            return vm;
+        }
+        if (preInitializer != null)
+        {
+            InitializeInternal(vm,preInitializer);
+        }
+        return vm;
+    }
+
+    public virtual ViewModel CreateEmpty()
+    {
+        throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
+    }
+
+    //public TViewModel Ensure<TViewModel>(string identifier) where TViewModel : ViewModel
+    //{
+    //    return (TViewModel)GetByType(identifier,typeof(TViewModel));
+    //}
+
+    //public TViewModel EnsureByName<TViewModel>(string instanceName) where TViewModel : ViewModel
+    //{
+    //    return (TViewModel)GetByName(instanceName);
+    //}
+
+    public void ExecuteCommand(ICommand command, object argument)
+    {
+        if (command == null) return;
+        command.Parameter = argument;
+        if (command.Parameter == null)
+        {
+            command.Parameter = argument;
+        }
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    public virtual void ExecuteCommand(ICommand command)
+    {
+        if (command == null) return;
+        //command.Sender = null;
+        command.Parameter = null;
+
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
+    {
+        if (command == null) return;
+        command.Parameter = argument;
+
+        IEnumerator enumerator = command.Execute();
+        if (enumerator != null)
+            StartCoroutine(enumerator);
+    }
+
+    /// <summary>
+    /// Send an event to our game
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="additionalParamters"></param>
+    public virtual void GameEvent(string message, params object[] additionalParamters)
+    {
+        Event(null, message, additionalParamters);
+    }
+
+    public virtual ViewModel GetByName(string resolveName, bool initialize = true, Action<ViewModel> preInitializer = null)
+    {
+        if (string.IsNullOrEmpty(resolveName))
+            throw new Exception("GetByName on a controller can't be called with a null or empty resolve name.");
+
+        var viewModel = ResolveByName(resolveName);
+        if (viewModel == null)
+        {
+            viewModel = CreateEmpty();
+            Container.RegisterInstance(viewModel, resolveName);
+            Container.RegisterInstance(viewModel.GetType(), viewModel, resolveName);
+        }
+
+        if (initialize)
+            InitializeInternal(viewModel, preInitializer);
+
+        return viewModel;
+    }
+
+    public virtual ViewModel GetByType(string identifier, Type viewModelType, bool initialize = true, Action<ViewModel> preInitializer = null)
+    {
+        var viewModel = GameManager.Container.Resolve(viewModelType, null, true) as ViewModel;
+
+        if (viewModel == null)
+        {
+            var contextViewModel = Context[identifier];
+            if (contextViewModel == null)
+            {
+                contextViewModel = CreateEmpty();
+                contextViewModel.Identifier = identifier;
+                Context[identifier] = contextViewModel;
+            }
+            
+            Container.RegisterInstance(viewModelType, contextViewModel);
+
+            if (initialize)
+            {
+                InitializeInternal(contextViewModel,preInitializer);
+            }
+
+            return contextViewModel;
+        }
+        else
+        {
+            var contextViewModel = Context[identifier];
+            // Ensure the view model exists in the context
+            if (contextViewModel == null)
+            {
+                Context[identifier] = viewModel;
+            }
+            viewModel.Identifier = identifier;
+        }
+        if (initialize)
+        {
+            InitializeInternal(viewModel, preInitializer);
+        }
+        
+        return viewModel;
+    }
+
+    public abstract void Initialize(ViewModel viewModel);
+
+    public virtual void LoadByIdentifier(string identifier, ViewModel viewModel)
+    {
+    }
+
     public void RemoveBinding(IBinding binding)
     {
         Bindings.Remove(binding);
+    }
+
+    [Obsolete("No longer needed.  Use inject")]
+    public virtual void Setup(IGameContainer container)
+    {
+    }
+
+    public UnityEngine.Coroutine StartCoroutine(IEnumerator routine)
+    {
+        return GameManager.ActiveSceneManager.StartCoroutine(routine);
+    }
+
+    public void StopAllCoroutines()
+    {
+        GameManager.ActiveSceneManager.StopAllCoroutines();
+    }
+
+    public void StopCoroutine(string name)
+    {
+        GameManager.ActiveSceneManager.StopCoroutine(name);
+    }
+
+    public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction)
+    {
+        var binding = new ModelPropertyBinding()
+        {
+            SetTargetValueDelegate = (o) => changedAction(source, (TBindingType)o),
+            ModelPropertySelector = () => sourceProperty,
+            IsImmediate = false
+        };
+        AddBinding(binding);
+        return binding;
+    }
+
+    public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
+    {
+        var binding = new ModelPropertyBinding()
+        {
+            SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
+            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty,
+            IsImmediate = false
+        };
+        AddBinding(binding);
+        return binding;
     }
 
     public void Unbind()
@@ -71,18 +310,11 @@ public abstract class Controller : IViewModelObserver
         Bindings.RemoveAll(p => !p.IsComponent);
     }
 
-    /// <summary>
-    /// Send an event to our game
-    /// </summary>
-    /// <param name="message"></param>
-    /// <param name="additionalParamters"></param>
-    public virtual void GameEvent(string message, params object[] additionalParamters)
+    public abstract void WireCommands(ViewModel viewModel);
+
+    protected virtual ViewModel ResolveByName(string resolveName)
     {
-        Event(null, message, additionalParamters);
-    }
-    [Obsolete("No longer needed.  Use inject")]
-    public virtual void Setup(IGameContainer container)
-    {
+        return GameManager.Container.Resolve<ViewModel>(resolveName);
     }
 
     protected void SubscribeToCommand(ICommand command, Action action)
@@ -136,143 +368,10 @@ public abstract class Controller : IViewModelObserver
             method.Invoke(controller, additionalParameters);
         }
     }
-    public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction)
-    {
-        var binding = new ModelPropertyBinding()
-        {
-            SetTargetValueDelegate = (o) => changedAction(source, (TBindingType)o),
-            ModelPropertySelector = () => sourceProperty,
-            IsImmediate = false
-        };
-        AddBinding(binding);
-        return binding;
-    }
-    public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
-    {
-        var binding = new ModelPropertyBinding()
-        {
-            SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty,
-            IsImmediate = false
-        };
-        AddBinding(binding);
-        return binding;
-    }
+
 #if !DLL
-    public UnityEngine.Coroutine StartCoroutine(IEnumerator routine)
-    {
-        return GameManager.ActiveSceneManager.StartCoroutine(routine);
-    }
-    public void StopCoroutine(string name)
-    {
-        GameManager.ActiveSceneManager.StopCoroutine(name);
-    }
-    public void StopAllCoroutines()
-    {
-        GameManager.ActiveSceneManager.StopAllCoroutines();
-    }
 #endif
-    public void ExecuteCommand(ICommand command, object argument)
-    {
-        if (command == null) return;
-        command.Parameter = argument;
-        if (command.Parameter == null)
-        {
-            command.Parameter = argument;
-        }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
-    }
-    public virtual void ExecuteCommand(ICommand command)
-    {
-        if (command == null) return;
-        command.Sender = null;
-        command.Parameter = null;
 
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
-    }
-
-    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
-    {
-        if (command == null) return;
-        command.Parameter = argument;
-
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
-    }
-
-    public abstract void WireCommands(ViewModel viewModel);
-
-    public virtual ViewModel CreateEmpty()
-    {
-        throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
-    }
-    
-    public abstract void Initialize(ViewModel viewModel);
-
-    public virtual ViewModel Create()
-    {
-        var vm = CreateEmpty();
-        InitializeInternal(vm, null);
-        return vm;
-        
-    }
-    public virtual ViewModel Create(Action<ViewModel> preInitializer)
-    {
-        var vm = CreateEmpty();
-        InitializeInternal(vm,preInitializer);
-        return vm;
-    }
-
-    protected virtual ViewModel ResolveByName(string resolveName)
-    {
-        return GameManager.Container.Resolve<ViewModel>(resolveName);
-    }
-    public TViewModel Ensure<TViewModel>() where TViewModel : ViewModel
-    {
-        return (TViewModel)GetByType(typeof(TViewModel));
-    }
-    public TViewModel EnsureByName<TViewModel>(string instanceName) where TViewModel : ViewModel
-    {
-        return (TViewModel)GetByName(instanceName);
-    }
-    public virtual ViewModel GetByName(string resolveName, bool initialize = true, Action<ViewModel> preInitializer = null)
-    {
-        if (string.IsNullOrEmpty(resolveName)) 
-            throw new Exception("GetByName on a controller can't be called with a null or empty resolve name.");
-        
-        var viewModel = ResolveByName(resolveName);
-        if (viewModel == null)
-        {
-            viewModel = CreateEmpty();
-            Container.RegisterInstance(viewModel, resolveName);
-            Container.RegisterInstance(viewModel.GetType(), viewModel, resolveName);
-        }
-
-        if (initialize)
-            InitializeInternal(viewModel, preInitializer);
-
-        return viewModel;
-    }
-    public virtual ViewModel GetByType(Type viewModelType, bool initialize = true, Action<ViewModel> preInitializer = null)
-    {
-        var viewModel = GameManager.Container.Resolve(viewModelType,null, true) as ViewModel;
-
-        if (viewModel == null)
-        {
-            viewModel = CreateEmpty();
-            Container.RegisterInstance(viewModelType, viewModel);
-        }
-        if (initialize)
-        {  
-           InitializeInternal(viewModel,preInitializer);
-        }
-        return viewModel;
-    }
     private void InitializeInternal(ViewModel viewModel, Action<ViewModel> preInitializer = null)
     {
         if (preInitializer != null)

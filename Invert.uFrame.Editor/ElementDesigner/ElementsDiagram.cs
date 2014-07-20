@@ -270,7 +270,7 @@ public class ElementsDiagram : ICommandHandler
         }
         else
         {
-
+            
             Data.Settings.CodePathStrategy =
              uFrameEditor.Container.Resolve<ICodePathStrategy>(Data.Settings.CodePathStrategyName ?? "Default");
             if (Data.Settings.CodePathStrategy == null)

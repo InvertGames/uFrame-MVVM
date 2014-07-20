@@ -133,9 +133,10 @@ public static class ViewExtensions
         view.transform.parent = parent;
         view.ParentView = parent.GetView();
         view.ViewName = name;
-       
+
         if (model != null)
         {
+            view.Identifier = model.Identifier;
             view.OverrideViewModel = false;
             view.ForceResolveViewModel = false;
             view.ViewModelObject = model;

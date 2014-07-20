@@ -126,17 +126,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 1
+  _overrideViewModel: 0
   _resolveName: LocalPlayer
+  _identifier: 5a9f743a-9061-46d9-aed1-68e4ab49a09e
   _BindHealth: 0
-  _HealthIsTwoWay: 0
   _BindState: 0
-  _StateIsTwoWay: 0
   _Health: 0
   _State: 0
   _BindCurrentWeaponIndex: 0
-  _CurrentWeaponIndexIsTwoWay: 0
   _BindWeapons: 1
   _WeaponsList: []
   _WeaponsSceneFirst: 0

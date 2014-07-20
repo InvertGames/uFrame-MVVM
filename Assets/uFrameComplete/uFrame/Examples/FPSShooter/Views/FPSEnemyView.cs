@@ -7,16 +7,19 @@ public partial class FPSEnemyView : FPSEnemyViewBase
 
     public override void Bind()
     {
-        // Add bindings here or add binding components in unity.
-        this.BindProperty(() => FPSEnemy._StateProperty, state => gameObject.SetActive(state != FPSPlayerState.Dead));
-        this.BindProperty(() => FPSEnemy._HealthProperty,
-            v => gameObject.renderer.material.SetColor("_Color", new Color(1.0f, 1.0f - (1.0f - v), 1.0f - (1.0f - v))));
+        base.Bind();
 
-        //this.BindCollision(() => FPSEnemy.BulletHit, CollisionEventType.OnCollisionEnter)
-        //    .When(g => g.IsView<FPSBulletView>())
-        //    .SetParameterSelector((go) => go.GetViewModel<FPSBulletViewModel>())
-        //    .Subscribe(() => Debug.Log("Was hit!!!"))
-        //    ;
+    }
+
+    public override void HealthChanged(float value)
+    {
+        base.HealthChanged(value);
+        gameObject.renderer.material.SetColor("_Color", new Color(1.0f, 1.0f - (1.0f - value), 1.0f - (1.0f - value)));
+    }
+    public override void StateChanged(FPSPlayerState value)
+    {
+        base.StateChanged(value);
+        gameObject.SetActive(value != FPSPlayerState.Dead);
     }
 
     public override void Start()

@@ -119,12 +119,8 @@
     <Compile Include="Triggers\UBOnCollisionStayTrigger.cs" />
     <Compile Include="Triggers\UBOnConnectedToServerTrigger.cs" />
     <Compile Include="Triggers\UBOnControllerColliderHitTrigger.cs" />
-    <Compile Include="Triggers\UBOnFailedToConnectToMasterServerTrigger.cs" />
-    <Compile Include="Triggers\UBOnFailedToConnectTrigger.cs" />
     <Compile Include="Triggers\UBOnJointBreakTrigger.cs" />
     <Compile Include="Triggers\UBOnLevelWasLoadedTrigger.cs" />
-    <Compile Include="Triggers\UBOnMasterServerEventTrigger.cs" />
-    <Compile Include="Triggers\UBOnServerInitializedTrigger.cs" />
     <Compile Include="Triggers\UBOnTriggerEnter2DTrigger.cs" />
     <Compile Include="Triggers\UBOnTriggerEnterTrigger.cs" />
     <Compile Include="Triggers\UBOnTriggerExit2DTrigger.cs" />

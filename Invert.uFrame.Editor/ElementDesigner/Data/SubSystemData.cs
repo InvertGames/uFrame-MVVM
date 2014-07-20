@@ -219,7 +219,9 @@ public class SubSystemData : DiagramNode, IDiagramFilter, ISubSystemData
 
     public bool IsAllowed(object item, Type t)
     {
-        if (item == this) return true;
+      
+        if (item == this) 
+            return true;
 
         if (t == typeof(SubSystemData)) return false;
         if (t == typeof(SceneManagerData)) return false;

@@ -211,7 +211,7 @@ MeshFilter:
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 100002, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 141528935}
@@ -228,7 +228,7 @@ GUIText:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 13200000, guid: f462d264fe9984c4cb3eb8e262182fb7,
     type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 141528933}
   m_Enabled: 1
   serializedVersion: 3
@@ -251,7 +251,7 @@ GUIText:
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400002, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 141528933}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.15557861, y: -14.2062645, z: -1.26683807}
@@ -357,20 +357,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 0
+  _overrideViewModel: 0
   _resolveName: 
+  _identifier: 
+  _BindState: 0
   _BindCurrentPlayer: 0
   _CurrentPlayerPrefab: {fileID: 0}
-  _BindState: 0
   _BindScore: 0
   _BindKills: 0
   _BindEnemies: 0
   _EnemiesList: []
   _EnemiesSceneFirst: 0
   _EnemiesContainer: {fileID: 0}
-  _CurrentPlayer: {fileID: 0}
   _State: 0
+  _CurrentPlayer: {fileID: 0}
   _Score: 0
   _Kills: 0
   _BindKillsToNextWave: 1
@@ -685,20 +686,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 0
+  _overrideViewModel: 0
   _resolveName: 
+  _identifier: f878a535-3be4-4eef-9a54-2856d481c491
+  _BindState: 1
   _BindCurrentPlayer: 0
   _CurrentPlayerPrefab: {fileID: 0}
-  _BindState: 1
   _BindScore: 0
   _BindKills: 1
   _BindEnemies: 0
   _EnemiesList: []
   _EnemiesSceneFirst: 0
   _EnemiesContainer: {fileID: 0}
-  _CurrentPlayer: {fileID: 0}
   _State: 0
+  _CurrentPlayer: {fileID: 0}
   _Score: 0
   _Kills: 0
   _GameOverLabel: {fileID: 386323272}
@@ -795,9 +797,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 1
   _forceResolveViewModel: 1
+  _overrideViewModel: 1
   _resolveName: LocalPlayer
+  _identifier: 29c80d8b-52cb-467c-a90e-f8f8fff87adc
   _BindHealth: 0
   _BindState: 0
   _Health: 1
@@ -807,7 +810,7 @@ MonoBehaviour:
   _WeaponsList: []
   _WeaponsSceneFirst: 1
   _WeaponsContainer: {fileID: 933135608}
-  _CurrentWeaponIndex: 1
+  _CurrentWeaponIndex: 2
 --- !u!114 &887022876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1065,11 +1068,12 @@ MonoBehaviour:
   _WavesFPSGameManagerSettings:
     _Scenes: []
     FPSGameTypes: 1
+  _SceneState: {fileID: 4900000, guid: 354687cfbc1c92f48ba5aaf7f79cf755, type: 3}
 --- !u!1 &1071219177
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 100004, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1071219178}
@@ -1085,7 +1089,7 @@ GameObject:
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400004, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 1071219177}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.69450378, y: -14.3162651, z: -1.26683807}
@@ -1098,7 +1102,7 @@ GUIText:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 13200002, guid: f462d264fe9984c4cb3eb8e262182fb7,
     type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 1071219177}
   m_Enabled: 1
   serializedVersion: 3
@@ -1161,20 +1165,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 1
   _forceResolveViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
+  _identifier: 7457b045-489a-4c7e-af00-e4e9cf61689a
+  _BindState: 1
   _BindCurrentPlayer: 0
   _CurrentPlayerPrefab: {fileID: 100000, guid: b01f223937df6f249a26798b3eaeea71, type: 2}
-  _BindState: 1
   _BindScore: 0
   _BindKills: 0
   _BindEnemies: 1
   _EnemiesList: []
   _EnemiesSceneFirst: 0
   _EnemiesContainer: {fileID: 901754239}
-  _CurrentPlayer: {fileID: 887022875}
   _State: 0
+  _CurrentPlayer: {fileID: 887022875}
   _Score: 0
   _Kills: 0
   _SpawnPointsParent: {fileID: 371131675}
@@ -1337,6 +1342,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 11400008, guid: b01f223937df6f249a26798b3eaeea71, type: 2}
+      propertyPath: _forceResolveViewModel
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400008, guid: b01f223937df6f249a26798b3eaeea71, type: 2}
+      propertyPath: _identifier
+      value: 29c80d8b-52cb-467c-a90e-f8f8fff87adc
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400008, guid: b01f223937df6f249a26798b3eaeea71, type: 2}
+      propertyPath: _CurrentWeaponIndex
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b01f223937df6f249a26798b3eaeea71, type: 2}
   m_RootGameObject: {fileID: 887022872}
@@ -1460,7 +1477,7 @@ Transform:
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 100000, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1663105857}
@@ -1476,7 +1493,7 @@ GameObject:
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400000, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 1663105856}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.65557861, y: 14.3439674, z: 1.26683807}
@@ -1492,7 +1509,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 11400000, guid: f462d264fe9984c4cb3eb8e262182fb7,
     type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 1663105856}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -1500,9 +1517,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 1
+  _overrideViewModel: 0
   _resolveName: LocalPlayer
+  _identifier: 5a9f743a-9061-46d9-aed1-68e4ab49a09e
   _BindHealth: 0
   _BindState: 0
   _Health: 0
@@ -1516,7 +1534,7 @@ MonoBehaviour:
   _AmmoLabel: {fileID: 1071219179}
   _ReloadLabel: {fileID: 141528934}
   _HudTextures: []
---- !u!1001 &1759701665
+--- !u!1001 &1671468827
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1557,6 +1575,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
       propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1684,7 +1706,7 @@ Transform:
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 100006, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 2124747445}
@@ -1699,7 +1721,7 @@ GameObject:
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400006, guid: f462d264fe9984c4cb3eb8e262182fb7, type: 2}
-  m_PrefabInternal: {fileID: 1759701665}
+  m_PrefabInternal: {fileID: 1671468827}
   m_GameObject: {fileID: 2124747444}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.60175562, y: -14.530673, z: -1.30306113}

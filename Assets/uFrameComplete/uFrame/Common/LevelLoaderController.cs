@@ -111,10 +111,10 @@ public class LevelLoaderController : Controller
         throw new NotImplementedException();
     }
 
-    public override ViewModel Create(System.Action<ViewModel> preInitializer = null)
-    {
-        throw new NotImplementedException();
-    }
+    //public override ViewModel Create(System.Action<ViewModel> preInitializer = null)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     public override void Initialize(ViewModel viewModel)
     {

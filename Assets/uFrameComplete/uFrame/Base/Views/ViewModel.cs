@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 using System.Reflection;
-using UnityEngine;
 
 /// <summary>
 ///  A data structure that contains information/data needed for a 'View'
 /// </summary>
 [Serializable]
-public class ViewModel : IJsonSerializable
+public class ViewModel : IJsonSerializable, IUFSerializable
 {
+
     public virtual string Identifier { get; set; }
 
     private Dictionary<string, ICommand> _commands;
@@ -101,6 +101,10 @@ public class ViewModel : IJsonSerializable
     public virtual void Deserialize(JSONNode node)
     {
         CacheReflectedModelProperties();
+        if (node["Identifier"] != null)
+        {
+            Identifier = node["Identifier"].Value;
+        }
         foreach (var property in _modelProperties)
         {
             if (property.Value == null) continue;
@@ -126,7 +130,7 @@ public class ViewModel : IJsonSerializable
 
         var node = new JSONClass();
         node.Add("TypeName", GetType().FullName);
-
+        node.Add("Identifier",Identifier);
         foreach (var property in _modelProperties)
         {
             if (property.Value == null) continue;
@@ -161,95 +165,14 @@ public class ViewModel : IJsonSerializable
 
         _modelProperties = dictionary;
     }
+
+    public virtual void Write(ISerializerStream stream)
+    {
+        stream.SerializeString("Identifier",Identifier);
+    }
+
+    public virtual void Read(ISerializerStream stream)
+    {
+        Identifier = stream.DeserializeString("Identifier");
+    }
 }
-
-//public interface ILocatable
-//{
-//    string Identifier { get; set; }
-//}
-//public interface IUFrameNetworking
-//{
-//    void SyncView(ViewBase view);
-//    void SyncViewModel<T>(string identifier, T viewModel);
-
-//    void SyncProperty<TPropertyValueType>(string viewIdentifier, ModelPropertyBase property);
-
-//}
-
-//public class NetworkManager
-//{
-//    public IUFrameNetworking Networking { get; set; }
-//    public Dictionary<string, INetworkView> NetworkViews { get; set; }
-
-//    public string RegisterView(ViewModel view)
-//    {
-        
-//    }
-
-//    public string SendCommand(INetworkView view, ICommand command)
-//    {
-//        var networkCommand = command as NetworkCommand;
-//        if (networkCommand != null)
-//        {
-//            Networking.RPC(networkCommand.OwnerIdentifier, networkCommand.Identifier);
-//        }
-//    }
-//    public string AddNetworkView(string viewModelIdentifier, INetworkView networkView)
-//    {
-//        NetworkViews.Add(networkView.Identifier, networkView);
-//        foreach (var view in networkView.SyncronizedCommands)
-//        {
-             
-//        }
-//    }
-
-//    public string InstantiateNetworkView(GameObject prefab, ViewModel model)
-//    {
-//        // Send message to syncronize the viewmodel
-
-//    }
-//}
-
-//public interface INetworkView
-//{
-//    string Identifier { get; }
-//    Dictionary<string, ICommand> SyncronizedCommands { get; set; }
-//    Dictionary<string, ModelPropertyBase> SyncronizedProperties { get; set; }
-
-//}
-
-//public class NetworkCommand : ICommand
-//{
-//    public string OwnerIdentifier { get; set; }
-//    public string Identifier { get; set; }
-//    public ICommand ActualCommand { get; set; }
-
-//    public event CommandEvent OnCommandExecuted
-//    {
-//        add { ActualCommand.OnCommandExecuted += value; }
-//        remove { ActualCommand.OnCommandExecuted -= value; }
-//    }
-
-//    public event CommandEvent OnCommandExecuting
-//    {
-//        add { ActualCommand.OnCommandExecuting += value; }
-//        remove { ActualCommand.OnCommandExecuting -= value; }
-//    }
-
-//    public object Sender
-//    {
-//        get { return ActualCommand.Sender; }
-//        set { ActualCommand.Sender = value; }
-//    }
-
-//    public object Parameter
-//    {
-//        get { return ActualCommand.Parameter; }
-//        set { ActualCommand.Parameter = value; }
-//    }
-
-//    public IEnumerator Execute()
-//    {
-//        return ActualCommand.Execute();
-//    }
-//}

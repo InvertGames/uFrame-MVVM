@@ -725,7 +725,7 @@ public static class UBStyles
                     normal = new GUIStyleState() { textColor = new Color(0.9f, 0.9f, 0.9f) },
                     fontStyle = FontStyle.Bold,
                     fontSize = 10,
-                    alignment = TextAnchor.MiddleRight
+                    alignment = TextAnchor.MiddleCenter
                 };
 
             return _subLabelStyle;

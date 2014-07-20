@@ -69,9 +69,10 @@ public static class ElementDesignerDataExtensions
     public static void ApplyFilter(this IElementDesignerData designerData)
     {
         designerData.UpdateLinks();
-        //foreach (var item in DiagramItems)
+        //foreach (var item in designerData.AllDiagramItems)
         //{
-        //    item.Filter = CurrentFilter;
+            
+            
         //}
         //UpdateLinks();
     }

@@ -7,16 +7,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{68BE0193-FE40-BD95-D644-D5C75A89F7D9}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -372,6 +370,7 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\GameEditor.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\GameManagerInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\ManagerInspector.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\SceneManagerInspector.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\UFrameBehaviourEditor.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\uFrameEditorSceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Editor\uFrameEditors\uFrameInspector.cs" />
@@ -715,6 +714,7 @@
     <None Include="Assets\PrivateStuff\PlayMaker\Readme.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Resources\PlayMakerAssemblies.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Versions\readme.txt" />
+    <None Include="Assets\test.txt" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />

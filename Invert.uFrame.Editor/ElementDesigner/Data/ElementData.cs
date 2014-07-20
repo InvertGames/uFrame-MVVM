@@ -90,6 +90,8 @@ public class ElementData : ElementDataBase, IDiagramFilter
         }
     }
 
+    
+
     public FilterCollapsedDictionary CollapsedValues
     {
         get { return _collapsedValues; }

@@ -50,6 +50,12 @@ public abstract class CheckerBoardViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _PlatesContainer;
     
+    public override string DefaultIdentifier {
+        get {
+            return "CheckerBoard";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CheckerBoardViewModel);
@@ -148,6 +154,12 @@ public abstract class CheckerBoardViewBase : ViewBase {
 [DiagramInfoAttribute("Checkers")]
 public abstract class CheckerMoveViewBase : ViewBase {
     
+    public override string DefaultIdentifier {
+        get {
+            return "CheckerMove";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CheckerMoveViewModel);
@@ -209,6 +221,12 @@ public abstract class CheckerPlateViewBase : ViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public bool _IsEven;
+    
+    public override string DefaultIdentifier {
+        get {
+            return "CheckerPlate";
+        }
+    }
     
     public override System.Type ViewModelType {
         get {
@@ -337,6 +355,12 @@ public abstract class CheckersGameViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public int _RedScore;
     
+    public override string DefaultIdentifier {
+        get {
+            return "CheckersGame";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CheckersGameViewModel);
@@ -362,10 +386,10 @@ public abstract class CheckersGameViewBase : ViewBase {
     }
     
     public virtual void BoardChanged(CheckerBoardViewModel value) {
-        if (value == null) {
+        if (value == null && _BoardPrefab != null) {
             Destroy(_Board.gameObject);
         }
-        if (_BoardPrefab == null) {
+        if (_BoardPrefab == null ) {
             this._Board = ((CheckerBoardViewBase)(this.InstantiateView(value)));
         }
         else {
@@ -374,10 +398,10 @@ public abstract class CheckersGameViewBase : ViewBase {
     }
     
     public virtual void CurrentCheckerChanged(CheckerViewModel value) {
-        if (value == null) {
+        if (value == null && _CurrentCheckerPrefab != null) {
             Destroy(_CurrentChecker.gameObject);
         }
-        if (_CurrentCheckerPrefab == null) {
+        if (_CurrentCheckerPrefab == null ) {
             this._CurrentChecker = ((CheckerViewBase)(this.InstantiateView(value)));
         }
         else {
@@ -498,6 +522,12 @@ public abstract class CheckerViewBase : ViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public CheckerType _Type;
+    
+    public override string DefaultIdentifier {
+        get {
+            return "Checker";
+        }
+    }
     
     public override System.Type ViewModelType {
         get {
@@ -621,6 +651,12 @@ public abstract class AICheckersGameViewBase : CheckersGameViewBase {
 
 [DiagramInfoAttribute("Checkers")]
 public abstract class MainMenuViewBase : ViewBase {
+    
+    public override string DefaultIdentifier {
+        get {
+            return "MainMenu";
+        }
+    }
     
     public override System.Type ViewModelType {
         get {

@@ -126,7 +126,7 @@ public abstract class ModelPropertyBase
 
             j["x"].AsFloat = v.x;
             j["y"].AsFloat = v.y;
-            j["_Width"].AsFloat = v.width;
+            j["width"].AsFloat = v.width;
             j["height"].AsFloat = v.height;
             return j;
         }

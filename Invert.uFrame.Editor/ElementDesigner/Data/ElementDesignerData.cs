@@ -156,7 +156,6 @@ public class ElementDesignerData : ScriptableObject,  IElementDesignerData
         }
     }
 
-
     IEnumerable<SceneManagerData> IElementDesignerData.SceneManagers
     {
         get { return SceneManagers; }

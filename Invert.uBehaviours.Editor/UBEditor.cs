@@ -426,7 +426,7 @@ public abstract class UBEditor : Editor
         {
             var subLabelRect = new Rect(labelRect);
             subLabelRect.y += 12;
-
+            
             GUI.Label(subLabelRect, ubTriggerContent.SubLabel, UBStyles.SubLabelStyle);
         }
         if (ubTriggerContent.ShowArrow)

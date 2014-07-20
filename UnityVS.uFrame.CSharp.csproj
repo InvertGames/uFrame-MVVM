@@ -971,9 +971,6 @@
     <Compile Include="Assets\PrivateStuff\TargetingDemo\Views\PlayerMapHud.cs" />
     <Compile Include="Assets\PrivateStuff\TargetingDemo\Views\PlayerMapTerrain.cs" />
     <Compile Include="Assets\PrivateStuff\TargetingDemo\Views\RTSBuildingView.cs" />
-    <Compile Include="Assets\PrivateStuff\Tests\NewJsonElementDesignerDataControllers.designer.cs" />
-    <Compile Include="Assets\PrivateStuff\Tests\SceneManagers\NewSceneManager.cs" />
-    <Compile Include="Assets\PrivateStuff\Tests\SceneManagers\NewSceneManagerSettings.cs" />
     <Compile Include="Assets\PrivateStuff\UBTriggersPlayground\DaikonForge\dfButton\GetdfButtonShadow.cs" />
     <Compile Include="Assets\PrivateStuff\UBTriggersPlayground\DaikonForge\dfButton\GetdfButtonShadowOffset.cs" />
     <Compile Include="Assets\PrivateStuff\UBTriggersPlayground\DaikonForge\dfButton\GetdfButtonState.cs" />
@@ -1431,6 +1428,10 @@
     <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\ConsoleLog.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\EnumSwitch.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\ExecuteEvent.cs" />
+    <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\Networking\UBOnFailedToConnectToMasterServerTrigger.cs" />
+    <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\Networking\UBOnFailedToConnectTrigger.cs" />
+    <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\Networking\UBOnMasterServerEventTrigger.cs" />
+    <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\Networking\UBOnServerInitializedTrigger.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\UBehaviours\UBehavioursInstance\SetBool.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\UBehaviours\UBGUI\RectAtWorldPosition.cs" />
     <Compile Include="Assets\uFrameComplete\uBehaviours\UBActions\UBehaviours\UBMath\AddFloat.cs" />
@@ -2229,7 +2230,13 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Base\ViewModels\ModelCollection.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Base\ViewModels\ModelPropertyBase.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Base\ViewModels\P.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\ISerializer.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\ISerializerStream.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\IUFSerializable.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\IView.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\JsonStream.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\SceneContext.cs" />
+    <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\UFJsonSerializer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\View.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\ViewBase.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Base\Views\ViewComponent.cs" />
@@ -2249,7 +2256,6 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Checkers.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\CheckersControllers.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\CheckersViews.designer.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\CheckerType.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Components\NewViewComponent.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Components\NewViewComponent1.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\Checkers\Controllers\AiCheckersGameController.cs" />
@@ -2295,13 +2301,10 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Controllers\FPSPlayerController.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Controllers\FPSWeaponController.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Controllers\WavesFPSGameController.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSGameState.designer.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSPlayerState.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSShooter.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSShooterControllers.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSShooterPlaymakerActions.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSShooterViews.designer.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\FPSWeaponState.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Playmaker\ApplyDamagePlaymakerAction.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Playmaker\BeginFirePlaymakerAction.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Playmaker\BulletFiredPlaymakerAction.cs" />
@@ -2335,7 +2338,6 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\ColtView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\DamageableView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\FPSBulletView.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\fpsdhudview2.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\FPSEnemyView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\FPSGameView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\FPSHUDView.cs" />
@@ -2348,7 +2350,6 @@
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\HUDPlayerView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\WavesFPSHudView.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\Views\WavesHudView.cs" />
-    <Compile Include="Assets\uFrameComplete\uFrame\Examples\FPSShooter\WeaponType.designer.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\LoadingScreenExample\SceneASceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrame\Examples\LoadingScreenExample\SceneBSceneManager.cs" />
     <Compile Include="Assets\uFrameComplete\uFrameBehaviours\Actions\Event.cs" />
@@ -2432,6 +2433,7 @@
     <None Include="Assets\PrivateStuff\PlayMaker\Readme.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Resources\PlayMakerAssemblies.txt" />
     <None Include="Assets\PrivateStuff\PlayMaker\Versions\readme.txt" />
+    <None Include="Assets\test.txt" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UBehaviours.XML" />
     <None Include="Assets\uFrameComplete\uBehaviours\XmlDocs\UnityEngine.xml" />
     <None Include="Assets\uFrameComplete\uFrame\Editor\Resources\uFrameReadme.txt" />

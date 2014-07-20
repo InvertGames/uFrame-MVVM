@@ -1,0 +1,14 @@
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\Assembly-CSharp-firstpass.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\Assembly-CSharp-firstpass.pdb
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\dfScriptLite.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\Invert.uBehaviours.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\Photon3Unity3D.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\PlayMaker.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\UnityEditor.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\UnityEngine.dll
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\UnityEngine.xml
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\UnityEditor.xml
+D:\Invert\Git\uFrame\Temp\UnityVS_bin\Release\Photon3Unity3D.xml
+D:\Invert\Git\uFrame\obj\Release\UnityVS.uFrame.CSharp.Plugins.csprojResolveAssemblyReference.cache
+D:\Invert\Git\uFrame\obj\Release\Assembly-CSharp-firstpass.dll
+D:\Invert\Git\uFrame\obj\Release\Assembly-CSharp-firstpass.pdb

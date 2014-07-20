@@ -12,7 +12,7 @@ public class ViewInspector : uFrameInspector
 {
     private Dictionary<string, ICommand> _commands;
 
-    public bool ShowInfoLabels
+    public static bool ShowInfoLabels
     {
         get
         {
@@ -23,6 +23,13 @@ public class ViewInspector : uFrameInspector
             EditorPrefs.SetBool("UFRAME_ShowInfoLabels", value);
         }
     }
+
+    [MenuItem("Tools/[u]Frame/Info Labels")]
+    public static void ShowHideInfoLabels()
+    {
+        ShowInfoLabels = !ShowInfoLabels;
+    }
+
     public bool ShowDefaultSettings
     {
         get
@@ -116,19 +123,24 @@ public class ViewInspector : uFrameInspector
         UBEditor.IsGlobals = false;
         var t = target as ViewBase;
       
-        if (EditorApplication.isPlaying)
-        {
-            base.OnInspectorGUI();
-            DrawPlayModeGui(t);
-            return;
-        }
+    
         
         ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
         serializedObject.Update();
         if (ShowDefaultSettings)
         {
+          
             base.OnInspectorGUI();
             
+        }
+        if (EditorApplication.isPlaying)
+        {
+            if (t != null)
+                EditorGUILayout.LabelField("Id", t.ViewModelObject.Identifier);
+            base.OnInspectorGUI();
+            DrawPlayModeGui(t);
+            serializedObject.ApplyModifiedProperties();
+            return;
         }
         EditorGUILayout.Space();
         if (t.IsMultiInstance)
@@ -137,6 +149,10 @@ public class ViewInspector : uFrameInspector
             var resolveProperty = serializedObject.FindProperty("_forceResolveViewModel");
             EditorGUILayout.PropertyField(resolveProperty, new GUIContent("Force Resolve"));
         }
+
+        if (t != null)
+            EditorGUILayout.LabelField("Id", t.Identifier);
+
         if (!t.IsMultiInstance || t.ForceResolveViewModel)
         {
             Info("The name that is used to share this instance among others (if any).");

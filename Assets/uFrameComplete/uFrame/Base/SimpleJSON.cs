@@ -326,7 +326,18 @@ namespace Invert.uFrame.Editor
             get { return m_Data; }
             set { m_Data = value; }
         }
-
+        public JSONData(Vector3 value)
+        {
+            AsVector3 = value;
+        }
+        public JSONData(Vector2 value)
+        {
+            AsVector2 = value;
+        }
+        public JSONData(Quaternion value)
+        {
+            AsQuaternion = value;
+        }
         public JSONData(string aData)
         {
             m_Data = aData;

@@ -71,20 +71,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 0
+  _overrideViewModel: 0
   _resolveName: 
+  _identifier: 73ab69c2-49b9-4603-930b-507c92f12b28
   _KingMeStrategy: {fileID: 0}
   _ContiniousRotation: {fileID: 0}
   _BindIsKingMe: 0
-  _IsKingMeIsTwoWay: 0
   _BindPosition: 0
-  _PositionIsTwoWay: 0
   _BindSelected: 0
-  _SelectedIsTwoWay: 0
   _BindType: 0
-  _TypeIsTwoWay: 0
-  _IsKingMe: 0
+  _IsKingMe: 1
   _Position: {x: 0, y: 0}
   _Selected: 0
   _Type: 0
@@ -245,7 +242,7 @@ CapsuleCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: .519999981
   m_Height: 4.11999989

@@ -4,14 +4,9 @@ using UnityEngine;
 
 public partial class FPSPlayerViewModel : FPSDamageableViewModel
 {
-
     public FPSWeaponViewModel CurrentWeapon
     {
-        get
-        {
-            return _WeaponsProperty.Value[CurrentWeaponIndex];
-        } 
+        get { return _WeaponsProperty.Value[CurrentWeaponIndex]; }
     }
-
-
+    
 }

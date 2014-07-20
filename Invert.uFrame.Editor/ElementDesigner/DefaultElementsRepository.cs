@@ -392,7 +392,7 @@ public class DefaultCodePathStrategy : ICodePathStrategy
 
     public virtual string GetEnumsFilename(EnumData name)
     {
-        return GetViewModelsFileName(name.Name);
+        return GetViewModelsFileName(name.Data.Name);
     }
 
     public virtual void MoveTo(ICodePathStrategy strategy, string name, ElementsDesigner designerWindow)

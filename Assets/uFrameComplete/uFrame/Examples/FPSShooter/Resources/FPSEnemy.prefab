@@ -172,12 +172,12 @@ MonoBehaviour:
   _overrideViewModel: 1
   _forceResolveViewModel: 0
   _resolveName: 
-  _BindHealth: 0
-  _BindState: 0
-  _Health: 0
+  _BindHealth: 1
+  _BindState: 1
+  _Health: 1
   _State: 0
   _BindSpeed: 0
-  _Speed: 0
+  _Speed: .5
   _NavAgent: {fileID: 19500000}
   _TargetPlayer: {fileID: 0}
   _started: 0

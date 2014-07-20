@@ -63,7 +63,11 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The current running game
     /// </summary>
-    public static SceneManager ActiveSceneManager { get; private set; }
+    public static SceneManager ActiveSceneManager
+    {
+        get { return _activeSceneManager ?? Instance._Start; }
+        private set { _activeSceneManager = value; }
+    }
 
     public static IGameContainer Container
     {
@@ -71,7 +75,7 @@ public class GameManager : MonoBehaviour
         {
             if (_container == null)
             {
-                _container = new GameContainer();
+                _container = new SceneContext();
                 _container.RegisterInstance(Progress);
             }
             return _container;
@@ -79,6 +83,7 @@ public class GameManager : MonoBehaviour
     }
 
     private static LevelLoadViewModel _progress;
+    private static SceneManager _activeSceneManager;
 
     public static LevelLoadViewModel Progress
     {
