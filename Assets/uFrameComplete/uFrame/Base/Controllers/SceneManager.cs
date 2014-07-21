@@ -19,7 +19,10 @@ public abstract class SceneManager : ViewContainer
 
     public IGameContainer Container
     {
-        get { return GameManager.Container; }
+        get
+        {
+            return GameManager.Container;
+        }
         set
         {
             
@@ -116,20 +119,22 @@ public abstract class SceneManager : ViewContainer
         set { _rootViews = value; }
     }
 
-    public ViewModel SetupViewModel(Controller controller, string identifier)
+    public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
     {
+       
         var contextViewModel = Context[identifier];
         if (contextViewModel == null)
         {
+            contextViewModel = new TViewModel {Controller = controller,Identifier = identifier};
+            Context[identifier] = contextViewModel;
             
-            return controller.CreateEmpty(identifier);
         }
-        return contextViewModel;
+        return (TViewModel)contextViewModel;
     }
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller, string identifier)
     {
+        
         var contextViewModel = Context[identifier];
-
         if (contextViewModel == null)
         {
             contextViewModel = Container.Resolve(viewBase.ViewModelType) as ViewModel;
@@ -146,36 +151,21 @@ public abstract class SceneManager : ViewContainer
                             string.IsNullOrEmpty(identifier) ? null : identifier);
                     }
                 }
-                else
-                {
-                    //contextViewModel.Identifier = identifier;
-                    //// Make sure it's added to the context
-                    //Context[identifier] = contextViewModel;
-                }
             }
-            else
-            {
-                //contextViewModel.Identifier = identifier;
-                //// Make sure it's added to the context
-                //Context[identifier] = contextViewModel;
-            }
-        }
-        else
-        {
-           
-            
-           // return contextViewModel;
+            Context[identifier] = contextViewModel;
         }
         if (contextViewModel != null)
         {
+
+            // Make sure its wired to the controller
+            contextViewModel.Controller = controller;
+
+
             // If its just an empty view model we need to initialize it
             if (viewBase.OverrideViewModel)
             {
-                contextViewModel.Identifier = identifier;
-                Context[identifier] = contextViewModel;
 
                 viewBase.InitializeData(contextViewModel);
-                controller.WireCommands(contextViewModel);
                 controller.Initialize(contextViewModel);
             }
            

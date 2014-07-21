@@ -115,8 +115,8 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection
             NewItemsOfT = value.ToArray(),
             OldItemsOfT = ObjectValue == null ? null : Value.ToArray()
         };
-
-        OnChangedWith(changed);
+        
+        //OnChangedWith(changed);
         return true;
     }
 

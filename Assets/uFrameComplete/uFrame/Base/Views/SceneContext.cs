@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -66,13 +67,8 @@ public class SceneContext : GameContainer
         {
             if (!ViewModels.ContainsKey(identifier))
             {
-                Debug.Log("Added " + identifier + value.GetType().Name);
                 ViewModels.Add(identifier, value);
                 value.Identifier = identifier;
-            }
-            else
-            {
-                ViewModels[identifier] = value;
             }
         }
     }
@@ -89,29 +85,32 @@ public class SceneContext : GameContainer
         base.RegisterInstance(baseType, instance, name, injectNow);
     }
 
+    public TViewModel CreateViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
+    {
+
+        var contextViewModel = this[identifier];
+        if (contextViewModel == null)
+        {
+            contextViewModel = new TViewModel { Controller = controller, Identifier = identifier };
+            this[identifier] = contextViewModel;
+
+        }
+        contextViewModel.Controller = controller;
+        return (TViewModel)contextViewModel;
+    }
+
     public void Save(ISerializerStorage storage, ISerializerStream stream)
     {
-        stream.SerializeArray("ViewModels", ViewModels.Values);
+        stream.SerializeArray("ViewModels", ViewModels.Values.Where(p=>p.References > 0));
         storage.Save(stream);
     }
 
     public void Load(ISerializerStorage storage,ISerializerStream stream)
     {
         storage.Load(stream);
-        var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels");
+        stream.TypeResolver = new StateLoaderResolver(this);
+        var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();
 
-        foreach (var viewModel in viewModels)
-        {
-            if (ViewModels.ContainsKey(viewModel.Identifier))
-            {
-                ViewModels[viewModel.Identifier] = viewModel;
-            }
-            else
-            {
-                ViewModels.Add(viewModel.Identifier, viewModel);
-            }
-            
-        }
     }
 }
 
@@ -161,3 +160,23 @@ public class StringSerializerStorage : ISerializerStorage
     }
 }
 
+public class StateLoaderResolver : DefaultTypeResolver
+{
+    public SceneContext Context { get; set; }
+
+    public StateLoaderResolver(SceneContext context)
+    {
+        Context = context;
+
+    }
+
+    public override object CreateInstance(string name, string identifier)
+    {
+        var contextViewModel = Context[identifier];
+        if (contextViewModel != null)
+        {
+            return contextViewModel;
+        }
+        return base.CreateInstance(name, identifier);
+    }
+}

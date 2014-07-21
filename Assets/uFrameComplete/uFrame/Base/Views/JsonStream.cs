@@ -223,7 +223,6 @@ public class JsonStream : ISerializerStream
     public object DeserializeObject(string name)
     {
         Push(name, CurrentNode[name]);
-
         var result = DeserializeObjectFromCurrent();
         Pop();
         return result;
@@ -239,7 +238,7 @@ public class JsonStream : ISerializerStream
         }
         if (CurrentNode["CLRType"] == null) return null;
         var clrType = CurrentNode["CLRType"].Value;
-        var instance = TypeResolver.CreateInstance(clrType);
+        var instance = TypeResolver.CreateInstance(clrType,identifier);
         var ufSerializable = instance as IUFSerializable;
         if (ufSerializable != null)
         {

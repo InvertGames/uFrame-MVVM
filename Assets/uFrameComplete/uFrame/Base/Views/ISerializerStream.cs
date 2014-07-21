@@ -36,13 +36,15 @@ public interface ISerializerStream
     byte[] DeserializeBytes(string name);
     void Load(byte[] readAllBytes);
     byte[] Save();
+    Dictionary<string, IUFSerializable> ReferenceObjects { get; set; }
+    ITypeResolver TypeResolver { get; set; }
 }
 
 public interface ITypeResolver
 {
     Type GetType(string name);
     string SetType(Type type);
-    object CreateInstance(string name);
+    object CreateInstance(string name, string identifier);
 }
 
 public class DefaultTypeResolver : ITypeResolver
@@ -57,8 +59,9 @@ public class DefaultTypeResolver : ITypeResolver
         return type.AssemblyQualifiedName;
     }
 
-    public object CreateInstance(string name)
+    public virtual object CreateInstance(string name,string identifier)
     {
+
         return Activator.CreateInstance(GetType(name));
     }
 }

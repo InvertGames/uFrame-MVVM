@@ -11,7 +11,6 @@ public class WavesFPSGameManager : WavesFPSGameManagerBase
     public TextAsset _SceneState;
     public override IEnumerator Load(UpdateProgressDelegate progress)
     {
- 
         // This is for the future scene serialization :) But not implemented entirely yet.
         for (int index = 0; index < RootViews.Count; index++)
         {

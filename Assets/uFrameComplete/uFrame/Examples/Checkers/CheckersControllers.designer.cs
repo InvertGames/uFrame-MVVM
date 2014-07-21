@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using UnityEngine;
 
 
 public abstract class CheckerBoardControllerBase : Controller {
@@ -264,6 +265,7 @@ public class CheckersSceneManagerBase : SceneManager {
     public CheckerPlateController CheckerPlateController { get; set; }
     public CheckersGameController CheckersGameController { get; set; }
     public CheckerController CheckerController { get; set; }
+    
     public override void Setup() {
         base.Setup();
         this.AICheckersGameController = new AICheckersGameController();
@@ -279,7 +281,11 @@ public class CheckersSceneManagerBase : SceneManager {
         this.CheckerController = new CheckerController();
         this.Container.RegisterInstance(this.CheckerController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<CheckerBoardViewModel>(CheckerBoardController.CreateEmpty() as CheckerBoardViewModel, false);
+        //if (_SceneState != null)
+        //{
+        //    Context.Load(new StringSerializerStorage() { Result = _SceneState.text }, new JsonStream() { UseReferences = true });
+        //}
+        Container.RegisterInstance<CheckerBoardViewModel>(this.SetupViewModel<CheckerBoardViewModel>(CheckerBoardController, "CheckerBoard"), false);
         if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.AICheckersGame)) {
             AICheckersGameViewModel aICheckersGame = AICheckersGameController.CreateEmpty() as AICheckersGameViewModel;
             Container.RegisterInstance<AICheckersGameViewModel>(aICheckersGame, false);

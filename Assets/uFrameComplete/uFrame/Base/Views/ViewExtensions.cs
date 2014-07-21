@@ -120,7 +120,7 @@ public static class ViewExtensions
         return GetViewModel(go) as T;
     }
 
-    public static ViewBase InitializeView(this Transform parent, string name, ViewModel model, GameObject viewObject)
+    public static ViewBase InitializeView(this Transform parent, string name, ViewModel model, GameObject viewObject,string identifier = null)
     {
         var view = viewObject.GetComponent<ViewBase>();
 
@@ -136,9 +136,11 @@ public static class ViewExtensions
 
         if (model != null)
         {
-            view.Identifier = model.Identifier;
+            view.Identifier = identifier ?? model.Identifier;
+            model.Identifier = view.Identifier;
             view.OverrideViewModel = false;
             view.ForceResolveViewModel = false;
+            
             view.ViewModelObject = model;
             //view.InitializeViewModel(model);
             view.SetupBindings();
@@ -147,54 +149,54 @@ public static class ViewExtensions
         return view;
     }
 
-    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, bool registerModel = false)
+    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, string identifier = null)
     {
-        return InstantiateView(parent, prefab, model, Vector3.zero);
+        return InstantiateView(parent, prefab, model, Vector3.zero,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model)
+    public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model, string identifier = null)
     {
-        return InstantiateView(parent, viewName, model, Vector3.zero);
+        return InstantiateView(parent, viewName, model, Vector3.zero,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model, Vector3 position)
+    public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model, Vector3 position, string identifier = null)
     {
-        return InstantiateView(parent, viewName, model, position, Quaternion.identity);
+        return InstantiateView(parent, viewName, model, position, Quaternion.identity,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model, Vector3 position, Quaternion rotation)
+    public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model, Vector3 position, Quaternion rotation, string identifier = null)
     {
-        return InstantiateView(parent, UFrame.ViewManager.FindView(viewName), model, position, rotation);
+        return InstantiateView(parent, UFrame.ViewManager.FindView(viewName), model, position, rotation,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position)
+    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position, string identifier = null)
     {
-        return InstantiateView(parent, prefab, model, position, Quaternion.identity);
+        return InstantiateView(parent, prefab, model, position, Quaternion.identity,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position, Quaternion rotation)
+    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position, Quaternion rotation,string identifier = null)
     {
         // Create the view object from the specified prefab
         var viewObject = (GameObject)Object.Instantiate(prefab, position, rotation);
 
-        var view = InitializeView(parent, prefab.name, model, viewObject);
+        var view = InitializeView(parent, prefab.name, model, viewObject,identifier);
 
         return view;
     }
 
-    public static ViewBase InstantiateView(this Transform parent, ViewModel model)
+    public static ViewBase InstantiateView(this Transform parent, ViewModel model, string identifier = null)
     {
-        return InstantiateView(parent, model, Vector3.zero);
+        return InstantiateView(parent, model, Vector3.zero,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, ViewModel model, Vector3 position)
+    public static ViewBase InstantiateView(this Transform parent, ViewModel model, Vector3 position, string identifier = null)
     {
-        return InstantiateView(parent, model, position, Quaternion.identity);
+        return InstantiateView(parent, model, position, Quaternion.identity,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, ViewModel model, Vector3 position, Quaternion rotation)
+    public static ViewBase InstantiateView(this Transform parent, ViewModel model, Vector3 position, Quaternion rotation, string identifier = null)
     {
-        return InstantiateView(parent, UFrame.ViewManager.FindView(model), model, position, rotation);
+        return InstantiateView(parent, UFrame.ViewManager.FindView(model), model, position, rotation,identifier);
     }
 
     public static bool IsView<TView>(this Transform go) where TView : ViewBase

@@ -321,21 +321,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 1
   _forceResolveViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
+  _identifier: 
   _BindBlackScore: 0
-  _BlackScoreIsTwoWay: 0
   _BindBoard: 0
-  _BoardIsTwoWay: 0
   _BoardPrefab: {fileID: 0}
   _BindCurrentChecker: 0
-  _CurrentCheckerIsTwoWay: 0
   _CurrentCheckerPrefab: {fileID: 0}
   _BindCurrentPlayer: 0
-  _CurrentPlayerIsTwoWay: 0
   _BindRedScore: 0
-  _RedScoreIsTwoWay: 0
   _BindAllowedMoves: 0
   _AllowedMovesList: []
   _AllowedMovesSceneFirst: 0
@@ -374,9 +370,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 1
   _forceResolveViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
+  _identifier: 
   _NewViewComponent: {fileID: 0}
   _BindCheckers: 1
   _CheckersList: []
@@ -540,21 +537,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 0
+  _overrideViewModel: 0
   _resolveName: 
+  _identifier: 
   _BindBlackScore: 0
-  _BlackScoreIsTwoWay: 0
   _BindBoard: 0
-  _BoardIsTwoWay: 0
   _BoardPrefab: {fileID: 0}
   _BindCurrentChecker: 0
-  _CurrentCheckerIsTwoWay: 0
   _CurrentCheckerPrefab: {fileID: 0}
   _BindCurrentPlayer: 0
-  _CurrentPlayerIsTwoWay: 0
   _BindRedScore: 0
-  _RedScoreIsTwoWay: 0
   _BindAllowedMoves: 0
   _AllowedMovesList: []
   _AllowedMovesSceneFirst: 0
@@ -724,6 +717,7 @@ MonoBehaviour:
   _CheckersSceneManagerSettings:
     _Scenes: []
     CheckersGameTypes: 1
+  _SceneState: {fileID: 4900000, guid: 354687cfbc1c92f48ba5aaf7f79cf755, type: 3}
 --- !u!1 &1916944861
 GameObject:
   m_ObjectHideFlags: 0

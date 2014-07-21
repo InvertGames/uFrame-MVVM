@@ -28,17 +28,27 @@ public partial class CheckerBoardViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
+		stream.SerializeArray("Checkers", this.Checkers);
+		stream.SerializeArray("Plates", this.Plates);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
+		this.Checkers = stream.DeserializeObjectArray<CheckerViewModel>("Checkers").ToList();
+		this.Plates = stream.DeserializeObjectArray<CheckerPlateViewModel>("Plates").ToList();
     }
 }
 
 [DiagramInfoAttribute("Checkers")]
 public partial class CheckerMoveViewModel : ViewModel {
+    
+    protected override void WireCommands(Controller controller) {
+    }
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
@@ -94,6 +104,11 @@ public partial class CheckerPlateViewModel : ViewModel {
         set {
             _SelectCommand = value;
         }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+        var checkerPlate = controller as CheckerPlateControllerBase;
+        this.SelectCommand = new CommandWithSender<CheckerPlateViewModel>(this, checkerPlate.SelectCommand);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -191,18 +206,29 @@ public partial class CheckersGameViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        var checkersGame = controller as CheckersGameControllerBase;
+        this.GameOver = new Command(checkersGame.GameOver);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("BlackScore", this.BlackScore);
+		stream.SerializeObject("Board", this.Board);
+		stream.SerializeObject("CurrentChecker", this.CurrentChecker);
 		stream.SerializeInt("CurrentPlayer", (int)this.CurrentPlayer);
 		stream.SerializeInt("RedScore", this.RedScore);
+		stream.SerializeArray("AllowedMoves", this.AllowedMoves);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.BlackScore = stream.DeserializeInt("BlackScore");
+		this.Board = stream.DeserializeObject<CheckerBoardViewModel>("Board");
+		this.CurrentChecker = stream.DeserializeObject<CheckerViewModel>("CurrentChecker");
 		this.CurrentPlayer = (CheckerType)stream.DeserializeInt("CurrentPlayer");
 		this.RedScore = stream.DeserializeInt("RedScore");
+		this.AllowedMoves = stream.DeserializeObjectArray<CheckerMoveViewModel>("AllowedMoves").ToList();
     }
 }
 
@@ -264,6 +290,11 @@ public partial class CheckerViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        var checker = controller as CheckerControllerBase;
+        this.SelectCommand = new CommandWithSender<CheckerViewModel>(this, checker.SelectCommand);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeBool("IsKingMe", this.IsKingMe);
@@ -283,6 +314,10 @@ public partial class CheckerViewModel : ViewModel {
 
 [DiagramInfoAttribute("Checkers")]
 public partial class AICheckersGameViewModel : CheckersGameViewModel {
+    
+    protected override void WireCommands(Controller controller) {
+        base.WireCommands(controller);
+    }
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
@@ -305,6 +340,11 @@ public partial class MainMenuViewModel : ViewModel {
         set {
             _Play = value;
         }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+        var mainMenu = controller as MainMenuControllerBase;
+        this.Play = new Command(mainMenu.Play);
     }
     
     public override void Write(ISerializerStream stream) {

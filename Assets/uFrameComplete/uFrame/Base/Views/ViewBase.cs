@@ -298,6 +298,9 @@ public abstract class ViewBase : ViewContainer
 
     public virtual void OnDestroy()
     {
+        if (ViewModelObject != null)
+            ViewModelObject.References--;
+
         var pv = ParentView;
         if (pv != null)
         {
@@ -360,7 +363,7 @@ public abstract class ViewBase : ViewContainer
         if (_bound)
             return;
         // Initialize the model
-
+        if (ViewModelObject != null) ViewModelObject.References++;
         // Loop through and binding providers and let them add bindings
         foreach (var bindingProvider in BindingProviders)
             bindingProvider.Bind(this);

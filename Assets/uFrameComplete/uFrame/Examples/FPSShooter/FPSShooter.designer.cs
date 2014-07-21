@@ -39,6 +39,11 @@ public partial class FPSDamageableViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        var fPSDamageable = controller as FPSDamageableControllerBase;
+        this.ApplyDamage = new CommandWithSenderAndArgument<FPSDamageableViewModel, int>(this, fPSDamageable.ApplyDamage);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeFloat("Health", this.Health);
@@ -64,6 +69,10 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
         set {
             _SpeedProperty.Value = value;
         }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+        base.WireCommands(controller);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -157,6 +166,12 @@ public partial class FPSGameViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        var fPSGame = controller as FPSGameControllerBase;
+        this.MainMenu = new Command(fPSGame.MainMenu);
+        this.QuitGame = new Command(fPSGame.QuitGame);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("State", (int)this.State);
@@ -241,17 +256,23 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        base.WireCommands(controller);
+        var fPSPlayer = controller as FPSPlayerControllerBase;
+        this.PreviousWeapon = new CommandWithSender<FPSPlayerViewModel>(this, fPSPlayer.PreviousWeapon);
+        this.NextWeapon = new CommandWithSender<FPSPlayerViewModel>(this, fPSPlayer.NextWeapon);
+        this.PickupWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, FPSWeaponViewModel>(this, fPSPlayer.PickupWeapon);
+        this.SelectWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, int>(this, fPSPlayer.SelectWeapon);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("CurrentWeaponIndex", this.CurrentWeaponIndex);
-        stream.SerializeArray("Weapons",this.Weapons);
-
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.CurrentWeaponIndex = stream.DeserializeInt("CurrentWeaponIndex");
-        this.Weapons = stream.DeserializeObjectArray<FPSWeaponViewModel>("Weapons").ToList();
     }
 }
 
@@ -456,6 +477,15 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        var fPSWeapon = controller as FPSWeaponControllerBase;
+        this.BeginFire = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.BeginFire);
+        this.NextZoom = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.NextZoom);
+        this.Reload = new YieldCommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.Reload);
+        this.EndFire = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.EndFire);
+        this.BulletFired = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.BulletFired);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("Ammo", this.Ammo);
@@ -471,7 +501,6 @@ public partial class FPSWeaponViewModel : ViewModel {
 		stream.SerializeFloat("FireSpeed", this.FireSpeed);
 		stream.SerializeFloat("BurstSpeed", this.BurstSpeed);
 		stream.SerializeFloat("SpreadMultiplier", this.SpreadMultiplier);
-
     }
     
     public override void Read(ISerializerStream stream) {
@@ -528,6 +557,10 @@ public partial class WavesFPSGameViewModel : FPSGameViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        base.WireCommands(controller);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("KillsToNextWave", this.KillsToNextWave);
@@ -557,6 +590,11 @@ public partial class FPSMenuViewModel : ViewModel {
         }
     }
     
+    protected override void WireCommands(Controller controller) {
+        var fPSMenu = controller as FPSMenuControllerBase;
+        this.Play = new Command(fPSMenu.Play);
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
     }
@@ -568,6 +606,10 @@ public partial class FPSMenuViewModel : ViewModel {
 
 [DiagramInfoAttribute("FPSShooter")]
 public partial class DeathMatchGameViewModel : FPSGameViewModel {
+    
+    protected override void WireCommands(Controller controller) {
+        base.WireCommands(controller);
+    }
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);

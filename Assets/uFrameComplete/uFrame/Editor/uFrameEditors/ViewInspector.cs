@@ -137,6 +137,9 @@ public class ViewInspector : uFrameInspector
         {
             if (t != null)
                 EditorGUILayout.LabelField("Id", t.ViewModelObject.Identifier);
+            if (t != null)
+                EditorGUILayout.LabelField("# References", t.ViewModelObject.References.ToString());
+
             base.OnInspectorGUI();
             DrawPlayModeGui(t);
             serializedObject.ApplyModifiedProperties();

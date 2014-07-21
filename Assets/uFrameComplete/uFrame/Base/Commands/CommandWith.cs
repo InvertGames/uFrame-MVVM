@@ -74,7 +74,7 @@ public class CommandWithSender<TSender> : ICommandWith<TSender>
         Delegate = @delegate;
     }
 
-    public CommandWithSender(TSender sender, Action<TSender> @delegate)
+    public CommandWithSender(TSender sender, Action<TSender> @delegate,ICommand oldCommand = null)
     {
         Sender = sender;
         Delegate = @delegate;

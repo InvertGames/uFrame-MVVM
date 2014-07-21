@@ -8,9 +8,9 @@ public partial class FPSPlayerView : FPSPlayerViewBase
     public override void Awake()
     {
         base.Awake();
-        AddWeapon("MP5Weapon", new MP5WeaponViewModel());
-        AddWeapon("UMP5Weapon", new UMP5WeaponViewModel());
-        AddWeapon("ColtWeapon", new ColtWeaponViewModel());
+        AddWeapon("MP5Weapon");
+        AddWeapon("UMP5Weapon");
+        AddWeapon("ColtWeapon");
     }
 
     public override ViewBase CreateWeaponsView(FPSWeaponViewModel fPSWeapon)
@@ -21,7 +21,9 @@ public partial class FPSPlayerView : FPSPlayerViewBase
 
     public override void Bind()
     {
+        
         base.Bind();
+      
 
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha1).SetParameter(0);
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha2).SetParameter(1);
@@ -42,16 +44,23 @@ public partial class FPSPlayerView : FPSPlayerViewBase
 
     public override void CurrentWeaponIndexChanged(int value)
     {
+        var jsonStream = new JsonStream();
+        FPSPlayer.Write(jsonStream);
+        var fileStorage = new FileSerializerStorage("MYFILENAME.txt");
+        fileStorage.Save(jsonStream);
+
+        SceneManager.Context.Load(fileStorage,new JsonStream());
+        SceneManager.Context.Load(fileStorage,new JsonStream());
+
         base.CurrentWeaponIndexChanged(value);
         for (var i = 0; i < this._WeaponsList.Count; i++)
             _WeaponsList[i].gameObject.SetActive(i == value);
     }
 
-    public void AddWeapon(string weaponName,ViewModel model)
+    public void AddWeapon(string weaponName)
     {
-        model.Identifier = weaponName;
-        var weapon = InstantiateView(weaponName, model) as FPSWeaponViewBase;
-
+       
+        var weapon = InstantiateView(weaponName, weaponName) as FPSWeaponViewBase;
         weapon.transform.parent = _WeaponsContainer;
         weapon.transform.localEulerAngles = new Vector3(0f,0f,0f);
         weapon.transform.localPosition = new Vector3(0f,0f,0f);

@@ -28,7 +28,10 @@ public class CheckerBoardController : CheckerBoardControllerBase
             for (var x = 0; x < 8; x++)
             {
                 var position = new Vector2(x, y);
-                var plate = CheckerPlateController.CreateCheckerPlate();
+
+                var plate = Context.CreateViewModel<CheckerPlateViewModel>(CheckerPlateController, 
+                    "Plate-"+ position.x + "-" + position.y);
+
                 plate.IsEven = total%2 == 0;
                 // Create the plate first
                 checkerBoard.Plates.Add(plate);
@@ -37,7 +40,7 @@ public class CheckerBoardController : CheckerBoardControllerBase
                 bool place = _StartLayout[y, x] == 1;
                 if (place)
                 {
-                    var checker = CheckerController.CreateChecker();
+                    var checker = Context.CreateViewModel<CheckerViewModel>(CheckerController, "Checker-" + position.x + "-" + position.y);
                     checker.Type = isRed ? CheckerType.Red : CheckerType.Black;
                     checker.Position = position;
                     checkerBoard.Checkers.Add(checker);

@@ -59,9 +59,9 @@ public class ViewContainer : ViewModelObserver
         return InstantiateView(prefab, model, position, Quaternion.identity);
     }
 
-    public ViewBase InstantiateView(string viewName)
+    public ViewBase InstantiateView(string viewName, string identifier = null)
     {
-        return InstantiateView(viewName, null);
+        return InstantiateView(viewName, null,identifier);
     }
 
     /// <summary>
@@ -70,9 +70,9 @@ public class ViewContainer : ViewModelObserver
     /// <param name="viewName">The name of the prefab/view to instantiate</param>
     /// <param name="model">The model that will be passed to the view.</param>
     /// <returns>The instantiated view</returns>
-    public ViewBase InstantiateView(string viewName, ViewModel model)
+    public ViewBase InstantiateView(string viewName, ViewModel model, string identifier = null)
     {
-        return InstantiateView(viewName, model, Vector3.zero);
+        return InstantiateView(viewName, model, Vector3.zero,identifier);
     }
     /// <summary>
     /// Instantiates a view.
@@ -81,9 +81,9 @@ public class ViewContainer : ViewModelObserver
     
     /// <param name="position">The position to instantiate the view.</param>
     /// <returns>The instantiated view</returns>
-    public ViewBase InstantiateView(string viewName, Vector3 position)
+    public ViewBase InstantiateView(string viewName, Vector3 position, string identifier = null)
     {
-        return InstantiateView(viewName, null, position, Quaternion.identity);
+        return InstantiateView(viewName, null, position, Quaternion.identity, identifier);
     }
 
     /// <summary>
@@ -93,9 +93,9 @@ public class ViewContainer : ViewModelObserver
     /// <param name="model">The model that will be passed to the view.</param>
     /// <param name="position">The position to instantiate the view.</param>
     /// <returns>The instantiated view</returns>
-    public ViewBase InstantiateView(string viewName, ViewModel model, Vector3 position)
+    public ViewBase InstantiateView(string viewName, ViewModel model, Vector3 position, string identifier = null)
     {
-        return InstantiateView(viewName, model, position, Quaternion.identity);
+        return InstantiateView(viewName, model, position, Quaternion.identity,identifier);
     }
 
     /// <summary>
@@ -107,9 +107,9 @@ public class ViewContainer : ViewModelObserver
     /// <param name="rotation">The rotation to instantiate the view with.</param>
     /// <returns>The instantiated view</returns>
     public ViewBase InstantiateView(string viewName, ViewModel model, Vector3 position,
-        Quaternion rotation)
+        Quaternion rotation, string identifier = null)
     {
-        return transform.InstantiateView(viewName, model, position, rotation);
+        return transform.InstantiateView(viewName, model, position, rotation,identifier);
     }
 
     /// <summary>
@@ -121,9 +121,9 @@ public class ViewContainer : ViewModelObserver
     /// <param name="rotation">The rotation to instantiate the view with.</param>
     /// <returns>The instantiated view</returns>
     public ViewBase InstantiateView(GameObject prefab, ViewModel model, Vector3 position,
-        Quaternion rotation)
+        Quaternion rotation, string identifier = null)
     {
-        return transform.InstantiateView(prefab, model, position, rotation);
+        return transform.InstantiateView(prefab, model, position, rotation,identifier);
     }
 
     public Coroutine LoadAdditive(string rootObjectName, string levelName, Action<GameObject> complete = null)

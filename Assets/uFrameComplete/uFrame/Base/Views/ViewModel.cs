@@ -2,20 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using System.Reflection;
 
 /// <summary>
 ///  A data structure that contains information/data needed for a 'View'
 /// </summary>
 [Serializable]
-public class ViewModel : IJsonSerializable, IUFSerializable
+public abstract class ViewModel : IJsonSerializable, IUFSerializable
 {
+    
+    public int References { get; set; }
 
     public virtual string Identifier { get; set; }
 
     private Dictionary<string, ICommand> _commands;
     private Dictionary<string, ModelPropertyBase> _modelProperties;
+    private Controller _controller;
 
     /// <summary>
     ///Access a model property via string.  This is optimized using a compiled delegate to
@@ -60,6 +62,22 @@ public class ViewModel : IJsonSerializable, IUFSerializable
         {
             CacheReflectedModelProperties();
             return _modelProperties;
+        }
+    }
+
+    public Controller Controller
+    {
+        get { return _controller; }
+        set
+        {
+            if (_controller == value)
+                return;
+            if (value != null)
+            {
+                WireCommands(value);
+                //value.Initialize(this);
+            }
+            _controller = value;
         }
     }
 
@@ -169,10 +187,23 @@ public class ViewModel : IJsonSerializable, IUFSerializable
     public virtual void Write(ISerializerStream stream)
     {
         stream.SerializeString("Identifier",Identifier);
+        if (Controller != null)
+            stream.SerializeString("Controller", Controller.GetType().AssemblyQualifiedName);
     }
 
     public virtual void Read(ISerializerStream stream)
     {
         Identifier = stream.DeserializeString("Identifier");
+        var controllerName = stream.DeserializeString("Controller");
+        if (controllerName != null)
+        {
+            var controller = GameManager.Container.Resolve(stream.TypeResolver.GetType(controllerName)) as Controller;
+            Controller = controller;
+        }
+    }
+
+    protected virtual void WireCommands(Controller controller)
+    {
+        
     }
 }

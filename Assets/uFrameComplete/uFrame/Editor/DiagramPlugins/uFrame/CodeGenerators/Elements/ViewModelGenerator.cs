@@ -48,6 +48,7 @@ public class ViewModelGenerator : CodeGenerator
             Decleration.CustomAttributes.Add(
                 new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
                     new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
+            AddWireCommandsMethod(data,Decleration,new CodeTypeReference(data.NameAsViewModel));
         }
 
         Decleration.IsPartial = true;
@@ -95,13 +96,23 @@ public class ViewModelGenerator : CodeGenerator
 
         foreach (var viewModelPropertyData in data.Properties)
         {
-            if (viewModelPropertyData.IsEnum(data.OwnerData))
+            var relatedNode = viewModelPropertyData.RelatedNode();
+            if (relatedNode is EnumData)
             {
                 var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeInt(\"{0}\", (int)this.{0});", viewModelPropertyData.Name));
                 writeMethod.Statements.Add(statement);
 
                 var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = ({1})stream.DeserializeInt(\"{0}\");", viewModelPropertyData.Name, viewModelPropertyData.RelatedTypeName));
                 readMethod.Statements.Add(dstatement);
+            }
+            else if (relatedNode is ElementData)
+            {
+                var elementNode = relatedNode as ElementData;
+                var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeObject(\"{0}\", this.{0});",viewModelPropertyData.Name));
+                writeMethod.Statements.Add(statement);
+
+                var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.DeserializeObject<{1}>(\"{0}\");", viewModelPropertyData.Name, elementNode.NameAsViewModel));
+                readMethod.Statements.Add(dstatement);    
             }
             else
             {
@@ -116,7 +127,38 @@ public class ViewModelGenerator : CodeGenerator
             }
             
         }
+        foreach (var collection in data.Collections)
+        {
+            var relatedNode = collection.RelatedNode();
+            if (relatedNode is EnumData)
+            {
+                //var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeInt(\"{0}\", (int)this.{0});", viewModelPropertyData.Name));
+                //writeMethod.Statements.Add(statement);
 
+                //var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = ({1})stream.DeserializeInt(\"{0}\");", viewModelPropertyData.Name, viewModelPropertyData.RelatedTypeName));
+                //readMethod.Statements.Add(dstatement);
+            }
+            else if (relatedNode is ElementData)
+            {
+                var elementNode = relatedNode as ElementData;
+                var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeArray(\"{0}\", this.{0});", collection.Name));
+                writeMethod.Statements.Add(statement);
+
+                var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.DeserializeObjectArray<{1}>(\"{0}\").ToList();", collection.Name, elementNode.NameAsViewModel));
+                readMethod.Statements.Add(dstatement);
+            }
+            else
+            {
+                //if (collection.Type == null) continue;
+                //if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
+                //viewModelPropertyData.IsEnum(data.OwnerData);
+                //var statement = new CodeSnippetStatement(string.Format("\t\tstream.Serialize{0}(\"{1}\", this.{1});", AcceptableTypes[viewModelPropertyData.Type], viewModelPropertyData.Name));
+                //writeMethod.Statements.Add(statement);
+
+                //var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]));
+                //readMethod.Statements.Add(dstatement);
+            }
+        }
         Decleration.Members.Add(writeMethod);
         Decleration.Members.Add(readMethod);
     }
@@ -232,4 +274,157 @@ public class ViewModelGenerator : CodeGenerator
         property.SetStatements.Add(new CodeSnippetExpression(string.Format("{0} = value", itemData.FieldName)));
         return property;
     }
+
+    private void AddWireCommandsMethod(ElementData data, CodeTypeDeclaration tDecleration,
+       CodeTypeReference viewModelTypeReference)
+    {
+        var wireMethod = new CodeMemberMethod { Name = string.Format("WireCommands") };
+        tDecleration.Members.Add(wireMethod);
+        wireMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(Controller)),
+            "controller"));
+        if (data.IsControllerDerived)
+        {
+            wireMethod.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+            var callBase = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), wireMethod.Name,
+                new CodeVariableReferenceExpression("controller"));
+            wireMethod.Statements.Add(callBase);
+        }
+        else
+        {
+            wireMethod.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+        }
+        if (data.Commands.Count > 0)
+        {
+            wireMethod.Statements.Add(
+                new CodeSnippetExpression(string.Format("var {0} = controller as {1}", data.NameAsVariable, data.NameAsControllerBase)));
+        }
+
+        foreach (var command in data.Commands)
+        {
+            var assigner = new CodeAssignStatement();
+            assigner.Left = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), command.Name);
+            var commandWithType = GetCommandTypeReference(command, viewModelTypeReference, data);
+            var commandWith = new CodeObjectCreateExpression(commandWithType);
+            if (data.IsMultiInstance)
+            {
+                commandWith.Parameters.Add(new CodeThisReferenceExpression());
+            }
+            commandWith.Parameters.Add(new CodeMethodReferenceExpression(new CodeVariableReferenceExpression(data.NameAsVariable), command.Name));
+            assigner.Right = commandWith;
+            wireMethod.Statements.Add(assigner);
+        }
+    }
+    public CodeTypeReference GetCommandTypeReference(ViewModelCommandData itemData, CodeTypeReference senderType, ElementData element)
+    {
+        if (!itemData.IsYield)
+        {
+            if (string.IsNullOrEmpty(itemData.RelatedTypeName))
+            {
+                if (element.IsMultiInstance)
+                {
+                    var commandWithType = new CodeTypeReference(typeof(CommandWithSender<>));
+                    commandWithType.TypeArguments.Add(senderType);
+                    return commandWithType;
+                }
+                else
+                {
+                    var commandWithType = new CodeTypeReference(typeof(Command));
+                    return commandWithType;
+                }
+
+            }
+            else
+            {
+                if (element.IsMultiInstance)
+                {
+                    var commandWithType = new CodeTypeReference(typeof(CommandWithSenderAndArgument<,>));
+                    commandWithType.TypeArguments.Add(senderType);
+                    var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
+                    if (typeViewModel == null)
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(itemData.RelatedTypeName));
+                    }
+                    else
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(typeViewModel.NameAsViewModel));
+                    }
+
+                    return commandWithType;
+                }
+                else
+                {
+                    var commandWithType = new CodeTypeReference(typeof(CommandWith<>));
+
+                    var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
+                    if (typeViewModel == null)
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(itemData.RelatedTypeName));
+                    }
+                    else
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(typeViewModel.NameAsViewModel));
+                    }
+
+                    return commandWithType;
+
+                }
+
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(itemData.RelatedTypeName))
+            {
+                if (element.IsMultiInstance)
+                {
+                    var commandWithType = new CodeTypeReference(typeof(YieldCommandWithSender<>));
+                    commandWithType.TypeArguments.Add(senderType);
+                    return commandWithType;
+                }
+                else
+                {
+                    var commandWithType = new CodeTypeReference(typeof(YieldCommand));
+
+                    return commandWithType;
+                }
+
+            }
+            else
+            {
+                if (element.IsMultiInstance)
+                {
+                    var commandWithType = new CodeTypeReference(typeof(YieldCommandWithSenderAndArgument<,>));
+                    commandWithType.TypeArguments.Add(senderType);
+                    var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
+                    if (typeViewModel == null)
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(itemData.RelatedTypeName));
+                    }
+                    else
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(typeViewModel.NameAsViewModel));
+                    }
+                    return commandWithType;
+                }
+                else
+                {
+                    var commandWithType = new CodeTypeReference(typeof(YieldCommandWith<>));
+                    var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
+                    if (typeViewModel == null)
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(itemData.RelatedTypeName));
+                    }
+                    else
+                    {
+                        commandWithType.TypeArguments.Add(new CodeTypeReference(typeViewModel.NameAsViewModel));
+                    }
+                    return commandWithType;
+                }
+
+            }
+        }
+
+
+    }
+
 }

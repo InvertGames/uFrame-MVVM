@@ -130,16 +130,6 @@ public abstract class Controller : IViewModelObserver
         throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
     }
 
-    //public TViewModel Ensure<TViewModel>(string identifier) where TViewModel : ViewModel
-    //{
-    //    return (TViewModel)GetByType(identifier,typeof(TViewModel));
-    //}
-
-    //public TViewModel EnsureByName<TViewModel>(string instanceName) where TViewModel : ViewModel
-    //{
-    //    return (TViewModel)GetByName(instanceName);
-    //}
-
     public void ExecuteCommand(ICommand command, object argument)
     {
         if (command == null) return;
