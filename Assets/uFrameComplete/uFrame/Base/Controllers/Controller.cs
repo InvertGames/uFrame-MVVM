@@ -1,102 +1,61 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-//using UnityEngine;
-//using Debug = UnityEngine.Debug;
-
 /// <summary>
-/// A controller is a integral part of uFrame and is used for an extra layer connecting services and "Elements" of a
-/// game together.
+/// A controller is a group of commands usually to provide an abstract level
 /// </summary>
 public abstract class Controller
 {
-    private List<IBinding> _bindings;
-    private string _typeName;
+
     private SceneContext _context;
-
-  
-
-    //public List<IBinding> Bindings
-    //{
-    //    get { return _bindings ?? (_bindings = new List<IBinding>()); }
-    //    set { _bindings = value; }
-    //}
-
-    public IGameContainer Container
-    {
-        get
-        {
-            return GameManager.Container;
-        }
-    }
+    
 
     /// <summary>
-    /// The friendly name of the controller.
-    /// If this' type name ends with controller it will be removed.
+    /// The dependency container that this controller will use
     /// </summary>
-    public string ControllerName
-    {
-        get
-        {
-            if (_typeName == null)
-            {
-                var typeName = this.GetType().Name;
-                if (typeName.Length > 10 && typeName.ToLower().EndsWith("controller"))
-                {
-                    _typeName = typeName.Substring(0, typeName.Length - 10);
-                }
-            }
-            return _typeName;
-        }
-    }
-
-    //public void AddBinding(IBinding binding)
-    //{
-        
-    //    Bindings.Add(binding);
-    //    // This is key for controllers.  We want to bind it immediately
-    //    binding.Bind();
-    //}
-
-    //public virtual ViewModel Create(string identifier)
-    //{
-    //    var vm = CreateEmpty();
-    //    WireCommands(vm);
-    //    LoadByIdentifier(identifier, vm);
-    //    return vm;
-    //}
+    public IGameContainer Container { get; set; }
 
     protected Controller()
     {
         //throw new Exception("Default constructor is not allowed.  Please regenerate your diagram or create the controller with a SceneContext.");
     }
 
+    /// <summary>
+    /// Initialize this controller with a SceneContext object
+    /// </summary>
+    /// <param name="context"></param>
     protected Controller(SceneContext context)
     {
         Context = context;
-        Context.Container.RegisterInstance(this.GetType(),this,false);
     }
 
+    /// <summary>
+    /// The scene context that contains the View-Models for the current scene.
+    /// </summary>
     public SceneContext Context
     {
-        get { return _context ?? (_context = GameManager.ActiveSceneManager.Context); }
-        set { _context = value; }
+        get { return _context; }
+        set
+        {
+            _context = value;
+            if (value != null)
+            Container = value.Container;
+        }
     }
 
+    /// <summary>
+    /// Create a new ViewModel. This will generate a Unique Identifier for the VM.  If this is a specific instance use the overload and pass
+    /// an identifier.
+    /// </summary>
+    /// <returns></returns>
     public virtual ViewModel Create()
     {
         return Create(Guid.NewGuid().ToString());
     }
-    public virtual ViewModel CreateEmpty(string identifier)
-    {
-        var vm = CreateEmpty();
-        vm.Identifier = identifier;
-        Context[identifier] = vm;
-        return vm;
-        return new FPSMenuViewModel() { Identifier = identifier };
-    }
+
+    /// <summary>
+    /// Creates a new ViewModel with a specific identifier.  If it already exists in the SceneContext it will return that instead
+    /// </summary>
+    /// <param name="identifier">The identifier that will be used to check the context to see if it already exists.</param>
+    /// <returns></returns>
     public virtual ViewModel Create(string identifier)
     {
         var vm = Context[identifier];
@@ -104,33 +63,34 @@ public abstract class Controller
         if (vm == null)
         {
             vm = CreateEmpty(identifier);
-            InitializeInternal(vm);
+            vm.Controller = this;
         }
         return vm;
     }
 
-    public virtual ViewModel Create(string identifier, Action<ViewModel> preInitializer)
+    /// <summary>
+    /// Create an empty view-model with the specified identifer. Note: This method does not wire up the view-model to this controller.
+    /// </summary>
+    /// <param name="identifier"></param>
+    /// <returns>A new View-Model or the view-model found in the context with the same identifier.</returns>
+    public virtual ViewModel CreateEmpty(string identifier)
     {
-        var vm = Context[identifier];
-        
-        if (vm == null)
-        {
-            vm = CreateEmpty(identifier);
-            InitializeInternal(vm, preInitializer);
-            return vm;
-        }
-        if (preInitializer != null)
-        {
-            InitializeInternal(vm,preInitializer);
-        }
+        var vm = CreateEmpty();
+        vm.Identifier = identifier;
         return vm;
     }
 
-    public virtual ViewModel CreateEmpty()
+    /// <summary>
+    /// Create an empty view-model . Note: This method does not wire up the view-model to this controller and only instantiates an associated view-model.
+    /// </summary>
+    /// <returns>A new View-Model or the view-model found in the context with the same identifier.</returns>
+    protected virtual ViewModel CreateEmpty()
     {
         throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
     }
-
+     
+    public abstract void Initialize(ViewModel viewModel);
+#if !TESTS
     public void ExecuteCommand(ICommand command, object argument)
     {
         if (command == null) return;
@@ -165,6 +125,7 @@ public abstract class Controller
             StartCoroutine(enumerator);
     }
 
+
     /// <summary>
     /// Send an event to our game
     /// </summary>
@@ -173,82 +134,6 @@ public abstract class Controller
     public virtual void GameEvent(string message, params object[] additionalParamters)
     {
         Event(null, message, additionalParamters);
-    }
-
-    public virtual ViewModel GetByName(string resolveName, bool initialize = true, Action<ViewModel> preInitializer = null)
-    {
-        if (string.IsNullOrEmpty(resolveName))
-            throw new Exception("GetByName on a controller can't be called with a null or empty resolve name.");
-
-        var viewModel = ResolveByName(resolveName);
-        if (viewModel == null)
-        {
-            viewModel = CreateEmpty();
-            Container.RegisterInstance(viewModel, resolveName);
-            Container.RegisterInstance(viewModel.GetType(), viewModel, resolveName);
-        }
-
-        if (initialize)
-            InitializeInternal(viewModel, preInitializer);
-
-        return viewModel;
-    }
-
-    public virtual ViewModel GetByType(string identifier, Type viewModelType, bool initialize = true, Action<ViewModel> preInitializer = null)
-    {
-        var viewModel = GameManager.Container.Resolve(viewModelType, null, true) as ViewModel;
-
-        if (viewModel == null)
-        {
-            var contextViewModel = Context[identifier];
-            if (contextViewModel == null)
-            {
-                contextViewModel = CreateEmpty();
-                contextViewModel.Identifier = identifier;
-                Context[identifier] = contextViewModel;
-            }
-            
-            Container.RegisterInstance(viewModelType, contextViewModel);
-
-            if (initialize)
-            {
-                InitializeInternal(contextViewModel,preInitializer);
-            }
-
-            return contextViewModel;
-        }
-        else
-        {
-            var contextViewModel = Context[identifier];
-            // Ensure the view model exists in the context
-            if (contextViewModel == null)
-            {
-                Context[identifier] = viewModel;
-            }
-            viewModel.Identifier = identifier;
-        }
-        if (initialize)
-        {
-            InitializeInternal(viewModel, preInitializer);
-        }
-        
-        return viewModel;
-    }
-
-    public abstract void Initialize(ViewModel viewModel);
-
-    public virtual void LoadByIdentifier(string identifier, ViewModel viewModel)
-    {
-    }
-
-    //public void RemoveBinding(IBinding binding)
-    //{
-    //    Bindings.Remove(binding);
-    //}
-
-    [Obsolete("No longer needed.  Use inject")]
-    public virtual void Setup(IGameContainer container)
-    {
     }
 
     public UnityEngine.Coroutine StartCoroutine(IEnumerator routine)
@@ -277,7 +162,7 @@ public abstract class Controller
         source.AddBinding(binding);
         return binding;
     }
-
+#endif
     //public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
     //{
     //    var binding = new ModelPropertyBinding()
@@ -290,29 +175,13 @@ public abstract class Controller
     //    return binding;
     //}
 
-    //public void Unbind()
-    //{
-    //    foreach (var binding in Bindings)
-    //    {
-    //        binding.Unbind();
-    //    }
-
-    //    // Remove all the bindings that are not from a component
-    //    Bindings.RemoveAll(p => !p.IsComponent);
-    //}
-
-    public abstract void WireCommands(ViewModel viewModel);
-
-    protected virtual ViewModel ResolveByName(string resolveName)
-    {
-        return GameManager.Container.Resolve<ViewModel>(resolveName);
-    }
-
     protected void SubscribeToCommand(ICommand command, Action action)
     {
         command.OnCommandExecuted += () => action();
+
     }
 
+#if !TESTS
     /// <summary>
     /// \brief Send an event to a game.
     /// Additional parameters shouldn't pass the view to the controller unless absolutely necessary.
@@ -323,12 +192,12 @@ public abstract class Controller
     /// <param name="additionalParameters">Any additional information to pass along with the event.</param>
     private void Event(ViewModel model, string message, params object[] additionalParameters)
     {
-        var controller = GameManager.ActiveSceneManager;
+        var sceneManager = GameManager.ActiveSceneManager;
         if (controller == null)
         {
-            throw new Exception("Controller is not set.");
+            throw new Exception("SceneManager is not set.");
         }
-        var method = controller.GetType().GetMethod(message);
+        var method = sceneManager.GetType().GetMethod(message);
 
         if (method == null)
         {
@@ -360,16 +229,16 @@ public abstract class Controller
         }
     }
 
-#if !DLL
+
 #endif
 
-    private void InitializeInternal(ViewModel viewModel, Action<ViewModel> preInitializer = null)
-    {
-        if (preInitializer != null)
-        {
-            preInitializer(viewModel);
-        }
-        WireCommands(viewModel);
-        Initialize(viewModel);
-    }
+
 };
+
+
+/// <summary>
+/// Future name of controller.
+/// </summary>
+public abstract class ElementService : Controller
+{
+}

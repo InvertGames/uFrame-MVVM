@@ -5,14 +5,6 @@ using UnityEngine;
 
 public partial class FPSGameViewModel : ViewModel
 {
-    public FPSGameViewModel()
-    {
-    }
-
-    public FPSGameViewModel(FPSGameController controller)
-    {
-        Controller = controller;
-    }
 
     //protected override void WireCommands(Controller controller)
     //{

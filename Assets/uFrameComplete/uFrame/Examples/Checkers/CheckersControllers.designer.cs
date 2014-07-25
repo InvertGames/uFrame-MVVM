@@ -25,11 +25,8 @@ public abstract class CheckerBoardControllerBase : Controller {
     }
     
     public abstract void InitializeCheckerBoard(CheckerBoardViewModel checkerBoard);
-    
-    public override void WireCommands(ViewModel viewModel) {
-    }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new CheckerBoardViewModel();
     }
     
@@ -47,10 +44,7 @@ public abstract class CheckerMoveControllerBase : Controller {
     [Inject] public CheckersGameController CheckersGameController {get;set;}
     public abstract void InitializeCheckerMove(CheckerMoveViewModel checkerMove);
     
-    public override void WireCommands(ViewModel viewModel) {
-    }
-    
-    public override ViewModel CreateEmpty() {
+    protected override ViewModel CreateEmpty() {
         return new CheckerMoveViewModel();
     }
     
@@ -68,12 +62,7 @@ public abstract class CheckerPlateControllerBase : Controller {
     [Inject] public CheckerBoardController CheckerBoardController {get;set;}
     public abstract void InitializeCheckerPlate(CheckerPlateViewModel checkerPlate);
     
-    public override void WireCommands(ViewModel viewModel) {
-        var checkerPlate = viewModel as CheckerPlateViewModel;
-        checkerPlate.SelectCommand = new CommandWithSender<CheckerPlateViewModel>(checkerPlate, SelectCommand);
-    }
-    
-    public override ViewModel CreateEmpty() {
+    protected override ViewModel CreateEmpty() {
         return new CheckerPlateViewModel();
     }
     
@@ -101,16 +90,10 @@ public abstract class CheckersGameControllerBase : Controller {
     }
     
     public abstract void InitializeCheckersGame(CheckersGameViewModel checkersGame);
-    
-    public override void WireCommands(ViewModel viewModel) {
-        var checkersGame = viewModel as CheckersGameViewModel;
-        checkersGame.GameOver = new Command(GameOver);
-    }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new CheckersGameViewModel();
     }
-    
     public virtual CheckersGameViewModel CreateCheckersGame() {
         return ((CheckersGameViewModel)(this.Create()));
     }
@@ -130,12 +113,7 @@ public abstract class CheckerControllerBase : Controller {
     [Inject] public CheckersGameController CheckersGameController {get;set;}
     public abstract void InitializeChecker(CheckerViewModel checker);
     
-    public override void WireCommands(ViewModel viewModel) {
-        var checker = viewModel as CheckerViewModel;
-        checker.SelectCommand = new CommandWithSender<CheckerViewModel>(checker, SelectCommand);
-    }
-    
-    public override ViewModel CreateEmpty() {
+    protected override ViewModel CreateEmpty() {
         return new CheckerViewModel();
     }
     
@@ -161,11 +139,8 @@ public abstract class AICheckersGameControllerBase : CheckersGameController {
     
     public abstract void InitializeAICheckersGame(AICheckersGameViewModel aICheckersGame);
     
-    public override void WireCommands(ViewModel viewModel) {
-        base.WireCommands(viewModel);
-    }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new AICheckersGameViewModel();
     }
     
@@ -189,12 +164,8 @@ public abstract class MainMenuControllerBase : Controller {
     
     public abstract void InitializeMainMenu(MainMenuViewModel mainMenu);
     
-    public override void WireCommands(ViewModel viewModel) {
-        var mainMenu = viewModel as MainMenuViewModel;
-        mainMenu.Play = new Command(Play);
-    }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new MainMenuViewModel();
     }
     

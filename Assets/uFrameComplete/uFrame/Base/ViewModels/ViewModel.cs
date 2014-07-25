@@ -236,7 +236,7 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModel
         var controllerName = stream.DeserializeString("Controller");
         if (controllerName != null)
         {
-            var controller = GameManager.Container.Resolve(stream.TypeResolver.GetType(controllerName)) as Controller;
+            var controller = stream.DependencyContainer.Resolve(stream.TypeResolver.GetType(controllerName)) as Controller;
             Controller = controller;
         }
     }

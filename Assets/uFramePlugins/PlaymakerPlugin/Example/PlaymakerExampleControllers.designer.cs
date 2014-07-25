@@ -17,14 +17,8 @@ public abstract class PlaymakerElementControllerBase : Controller {
     
     public abstract void InitializePlaymakerElement(PlaymakerElementViewModel playmakerElement);
     
-    public override void WireCommands(ViewModel viewModel) {
-        var playmakerElement = viewModel as PlaymakerElementViewModel;
-        playmakerElement.Upgrade = new CommandWithSender<PlaymakerElementViewModel>(playmakerElement, Upgrade);
-        playmakerElement.Kill = new CommandWithSender<PlaymakerElementViewModel>(playmakerElement, Kill);
-        playmakerElement.Tick = new CommandWithSender<PlaymakerElementViewModel>(playmakerElement, Tick);
-    }
-    
-    public override ViewModel CreateEmpty() {
+   
+    protected override ViewModel CreateEmpty() {
         return new PlaymakerElementViewModel();
     }
     

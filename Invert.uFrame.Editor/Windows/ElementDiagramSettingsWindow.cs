@@ -75,6 +75,10 @@ public class ElementDiagramSettingsWindow : EditorWindow
 
             //GUILayout.Label(_ChangeLog.text, EditorStyles.wordWrappedLabel);
             var s = DesignerData.Settings;
+            
+            EditorGUILayout.HelpBox("Turning off 'Generate Default Bindings' will require you to implement all binding methods.",MessageType.Info);
+            s.GenerateDefaultBindings = EditorGUILayout.Toggle("Generate Default Bindings", s.GenerateDefaultBindings);
+          
             EditorGUI.BeginChangeCheck();
             s.AssociationLinkColor = EditorGUILayout.ColorField("Association Link Color", s.AssociationLinkColor);
             s.GridLinesColor = EditorGUILayout.ColorField("Grid Lines Color", s.GridLinesColor);

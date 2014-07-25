@@ -42,8 +42,8 @@ public abstract class FPSEnemyControllerBase : FPSDamageableController {
     public override void WireCommands(ViewModel viewModel) {
         base.WireCommands(viewModel);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new FPSEnemyViewModel();
     }
     
@@ -74,8 +74,8 @@ public abstract class FPSGameControllerBase : Controller {
         fPSGame.MainMenu = new Command(MainMenu);
         fPSGame.QuitGame = new Command(QuitGame);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new FPSGameViewModel();
     }
     
@@ -110,8 +110,8 @@ public abstract class FPSPlayerControllerBase : FPSDamageableController {
         fPSPlayer.PickupWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, FPSWeaponViewModel>(fPSPlayer, PickupWeapon);
         fPSPlayer.SelectWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, int>(fPSPlayer, SelectWeapon);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new FPSPlayerViewModel();
     }
     
@@ -150,8 +150,8 @@ public abstract class FPSWeaponControllerBase : Controller {
         fPSWeapon.EndFire = new CommandWithSender<FPSWeaponViewModel>(fPSWeapon, EndFire);
         fPSWeapon.BulletFired = new CommandWithSender<FPSWeaponViewModel>(fPSWeapon, BulletFired);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new FPSWeaponViewModel();
     }
     
@@ -193,8 +193,8 @@ public abstract class WavesFPSGameControllerBase : FPSGameController {
     public override void WireCommands(ViewModel viewModel) {
         base.WireCommands(viewModel);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new WavesFPSGameViewModel();
     }
     
@@ -222,8 +222,8 @@ public abstract class FPSMenuControllerBase : Controller {
         var fPSMenu = viewModel as FPSMenuViewModel;
         fPSMenu.Play = new Command(Play);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new FPSMenuViewModel();
     }
     
@@ -253,8 +253,8 @@ public abstract class DeathMatchGameControllerBase : FPSGameController {
     public override void WireCommands(ViewModel viewModel) {
         base.WireCommands(viewModel);
     }
-    
-    public override ViewModel CreateEmpty() {
+
+    protected override ViewModel CreateEmpty() {
         return new DeathMatchGameViewModel();
     }
     

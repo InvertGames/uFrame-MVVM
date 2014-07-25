@@ -101,12 +101,7 @@ public class LevelLoaderController : Controller
         //}
     }
 
-    public override void WireCommands(ViewModel viewModel)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override ViewModel CreateEmpty()
+    protected override ViewModel CreateEmpty()
     {
         throw new NotImplementedException();
     }

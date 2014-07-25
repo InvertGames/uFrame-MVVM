@@ -9,7 +9,7 @@ public interface IBinding
 
     string ModelMemberName { get; set; }
 
-    ViewBase Source { get; set; }
+    //ViewBase Source { get; set; }
 
     bool TwoWay { get; set; }
 

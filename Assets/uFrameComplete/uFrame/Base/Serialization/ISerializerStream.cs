@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface ISerializerStream
 {
-
+    IGameContainer DependencyContainer { get; set; }
     void SerializeArray<T>(string name,IEnumerable<T> items);
     void SerializeObjectArray(string name, IEnumerable<object> items);
     //void SerializeObject<T>(string name, T value);

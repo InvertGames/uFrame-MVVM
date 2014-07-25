@@ -6,11 +6,22 @@ using System.Linq;
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSDamageableViewModel : ViewModel {
     
-    public readonly P<System.Single> _HealthProperty = new P<float>();
+    public readonly P<System.Single> _HealthProperty;
     
-    public readonly P<FPSPlayerState> _StateProperty = new P<FPSPlayerState>();
+    public readonly P<FPSPlayerState> _StateProperty;
     
     private ICommand _ApplyDamage;
+    
+    public FPSDamageableViewModel() : 
+            base() {
+        _HealthProperty = new P<float>(this, "Health");
+        _StateProperty = new P<FPSPlayerState>(this, "State");
+    }
+    
+    public FPSDamageableViewModel(FPSDamageableControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual float Health {
         get {
@@ -60,7 +71,17 @@ public partial class FPSDamageableViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
-    public readonly P<System.Single> _SpeedProperty = new P<float>();
+    public readonly P<System.Single> _SpeedProperty;
+    
+    public FPSEnemyViewModel() : 
+            base() {
+        _SpeedProperty = new P<float>(this, "Speed");
+    }
+    
+    public FPSEnemyViewModel(FPSEnemyControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual float Speed {
         get {
@@ -89,19 +110,32 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSGameViewModel : ViewModel {
     
-    public readonly P<FPSGameState> _StateProperty = new P<FPSGameState>();
+    public readonly P<FPSGameState> _StateProperty;
     
-    public readonly P<FPSPlayerViewModel> _CurrentPlayerProperty = new P<FPSPlayerViewModel>();
+    public readonly P<FPSPlayerViewModel> _CurrentPlayerProperty;
     
-    public readonly P<System.Int32> _ScoreProperty = new P<int>();
+    public readonly P<System.Int32> _ScoreProperty;
     
-    public readonly P<System.Int32> _KillsProperty = new P<int>();
+    public readonly P<System.Int32> _KillsProperty;
     
     public readonly ModelCollection<FPSEnemyViewModel> _EnemiesProperty = new ModelCollection<FPSEnemyViewModel>();
     
     private ICommand _MainMenu;
     
     private ICommand _QuitGame;
+    
+    public FPSGameViewModel() : 
+            base() {
+        _StateProperty = new P<FPSGameState>(this, "State");
+        _CurrentPlayerProperty = new P<FPSPlayerViewModel>(this, "CurrentPlayer");
+        _ScoreProperty = new P<int>(this, "Score");
+        _KillsProperty = new P<int>(this, "Kills");
+    }
+    
+    public FPSGameViewModel(FPSGameControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual FPSGameState State {
         get {
@@ -194,7 +228,7 @@ public partial class FPSGameViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     
-    public readonly P<System.Int32> _CurrentWeaponIndexProperty = new P<int>();
+    public readonly P<System.Int32> _CurrentWeaponIndexProperty;
     
     public readonly ModelCollection<FPSWeaponViewModel> _WeaponsProperty = new ModelCollection<FPSWeaponViewModel>();
     
@@ -205,6 +239,16 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     private ICommand _PickupWeapon;
     
     private ICommand _SelectWeapon;
+    
+    public FPSPlayerViewModel() : 
+            base() {
+        _CurrentWeaponIndexProperty = new P<int>(this, "CurrentWeaponIndex");
+    }
+    
+    public FPSPlayerViewModel(FPSPlayerControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual int CurrentWeaponIndex {
         get {
@@ -285,31 +329,31 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSWeaponViewModel : ViewModel {
     
-    public readonly P<System.Int32> _AmmoProperty = new P<int>();
+    public readonly P<System.Int32> _AmmoProperty;
     
-    public readonly P<FPSWeaponState> _StateProperty = new P<FPSWeaponState>();
+    public readonly P<FPSWeaponState> _StateProperty;
     
-    public readonly P<System.Int32> _ZoomIndexProperty = new P<int>();
+    public readonly P<System.Int32> _ZoomIndexProperty;
     
-    public readonly P<System.Int32> _MaxZoomsProperty = new P<int>();
+    public readonly P<System.Int32> _MaxZoomsProperty;
     
-    public readonly P<WeaponType> _WeaponTypeProperty = new P<WeaponType>();
+    public readonly P<WeaponType> _WeaponTypeProperty;
     
-    public readonly P<System.Single> _ReloadTimeProperty = new P<float>();
+    public readonly P<System.Single> _ReloadTimeProperty;
     
-    public readonly P<System.Int32> _RoundSizeProperty = new P<int>();
+    public readonly P<System.Int32> _RoundSizeProperty;
     
-    public readonly P<System.Int32> _MinSpreadProperty = new P<int>();
+    public readonly P<System.Int32> _MinSpreadProperty;
     
-    public readonly P<System.Int32> _BurstSizeProperty = new P<int>();
+    public readonly P<System.Int32> _BurstSizeProperty;
     
-    public readonly P<System.Single> _RecoilSpeedProperty = new P<float>();
+    public readonly P<System.Single> _RecoilSpeedProperty;
     
-    public readonly P<System.Single> _FireSpeedProperty = new P<float>();
+    public readonly P<System.Single> _FireSpeedProperty;
     
-    public readonly P<System.Single> _BurstSpeedProperty = new P<float>();
+    public readonly P<System.Single> _BurstSpeedProperty;
     
-    public readonly P<System.Single> _SpreadMultiplierProperty = new P<float>();
+    public readonly P<System.Single> _SpreadMultiplierProperty;
     
     private ICommand _BeginFire;
     
@@ -320,6 +364,28 @@ public partial class FPSWeaponViewModel : ViewModel {
     private ICommand _EndFire;
     
     private ICommand _BulletFired;
+    
+    public FPSWeaponViewModel() : 
+            base() {
+        _AmmoProperty = new P<int>(this, "Ammo");
+        _StateProperty = new P<FPSWeaponState>(this, "State");
+        _ZoomIndexProperty = new P<int>(this, "ZoomIndex");
+        _MaxZoomsProperty = new P<int>(this, "MaxZooms");
+        _WeaponTypeProperty = new P<WeaponType>(this, "WeaponType");
+        _ReloadTimeProperty = new P<float>(this, "ReloadTime");
+        _RoundSizeProperty = new P<int>(this, "RoundSize");
+        _MinSpreadProperty = new P<int>(this, "MinSpread");
+        _BurstSizeProperty = new P<int>(this, "BurstSize");
+        _RecoilSpeedProperty = new P<float>(this, "RecoilSpeed");
+        _FireSpeedProperty = new P<float>(this, "FireSpeed");
+        _BurstSpeedProperty = new P<float>(this, "BurstSpeed");
+        _SpreadMultiplierProperty = new P<float>(this, "SpreadMultiplier");
+    }
+    
+    public FPSWeaponViewModel(FPSWeaponControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual int Ammo {
         get {
@@ -530,11 +596,23 @@ public partial class FPSWeaponViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class WavesFPSGameViewModel : FPSGameViewModel {
     
-    public readonly P<System.Int32> _KillsToNextWaveProperty = new P<int>();
+    public readonly P<System.Int32> _KillsToNextWaveProperty;
     
-    public readonly P<System.Int32> _WaveKillsProperty = new P<int>();
+    public readonly P<System.Int32> _WaveKillsProperty;
     
-    public readonly P<System.Int32> _CurrentWaveProperty = new P<int>();
+    public readonly P<System.Int32> _CurrentWaveProperty;
+    
+    public WavesFPSGameViewModel() : 
+            base() {
+        _KillsToNextWaveProperty = new P<int>(this, "KillsToNextWave");
+        _WaveKillsProperty = new P<int>(this, "WaveKills");
+        _CurrentWaveProperty = new P<int>(this, "CurrentWave");
+    }
+    
+    public WavesFPSGameViewModel(WavesFPSGameControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual int KillsToNextWave {
         get {
@@ -587,6 +665,15 @@ public partial class FPSMenuViewModel : ViewModel {
     
     private ICommand _Play;
     
+    public FPSMenuViewModel() : 
+            base() {
+    }
+    
+    public FPSMenuViewModel(FPSMenuControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
+    
     public virtual ICommand Play {
         get {
             return _Play;
@@ -612,6 +699,15 @@ public partial class FPSMenuViewModel : ViewModel {
 
 [DiagramInfoAttribute("FPSShooter")]
 public partial class DeathMatchGameViewModel : FPSGameViewModel {
+    
+    public DeathMatchGameViewModel() : 
+            base() {
+    }
+    
+    public DeathMatchGameViewModel(DeathMatchGameControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);

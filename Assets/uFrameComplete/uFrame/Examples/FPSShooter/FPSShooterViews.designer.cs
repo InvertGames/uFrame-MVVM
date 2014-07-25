@@ -234,7 +234,7 @@ public abstract class FPSGameViewBase : ViewBase {
     }
     
     public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
-        if (value == null && _CurrentPlayerPrefab != null) {
+        if (value == null && _CurrentPlayer != null && _CurrentPlayer.gameObject != null) {
             Destroy(_CurrentPlayer.gameObject);
         }
         if (_CurrentPlayerPrefab == null ) {
@@ -889,30 +889,84 @@ public abstract class DeathMatchGameViewBase : FPSGameViewBase {
 }
 
 public partial class FPSGameView : FPSGameViewBase {
+    
+    protected override void Apply() {
+        if (FPSGame.Dirty) {
+        }
+        FPSGame.Dirty = false;
+    }
 }
 
 public partial class FPSWeaponView : FPSWeaponViewBase {
+    
+    protected override void Apply() {
+        if (FPSWeapon.Dirty) {
+        }
+        FPSWeapon.Dirty = false;
+    }
 }
 
 public partial class FPSPlayerView : FPSPlayerViewBase {
+    
+    protected override void Apply() {
+        if (FPSPlayer.Dirty) {
+        }
+        FPSPlayer.Dirty = false;
+    }
 }
 
 public partial class FPSPlayerHUDView : FPSPlayerViewBase {
+    
+    protected override void Apply() {
+        if (FPSPlayer.Dirty) {
+        }
+        FPSPlayer.Dirty = false;
+    }
 }
 
 public partial class WavesHUDView : WavesFPSGameViewBase {
+    
+    protected override void Apply() {
+        if (WavesFPSGame.Dirty) {
+        }
+        WavesFPSGame.Dirty = false;
+    }
 }
 
 public partial class FPSHUDView : FPSGameViewBase {
+    
+    protected override void Apply() {
+        if (FPSGame.Dirty) {
+        }
+        FPSGame.Dirty = false;
+    }
 }
 
 public partial class FPSEnemyView : FPSEnemyViewBase {
+    
+    protected override void Apply() {
+        if (FPSEnemy.Dirty) {
+        }
+        FPSEnemy.Dirty = false;
+    }
 }
 
 public partial class FPSMainMenuView : FPSMenuViewBase {
+    
+    protected override void Apply() {
+        if (FPSMenu.Dirty) {
+        }
+        FPSMenu.Dirty = false;
+    }
 }
 
 public abstract partial class DamageableView : FPSDamageableViewBase {
+    
+    protected override void Apply() {
+        if (FPSDamageable.Dirty) {
+        }
+        FPSDamageable.Dirty = false;
+    }
 }
 
 public partial class FPSWeaponFire : ViewComponent {

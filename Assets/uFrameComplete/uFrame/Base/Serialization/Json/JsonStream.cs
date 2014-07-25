@@ -108,6 +108,8 @@ public class JsonStream : ISerializerStream
         //}
     }
 
+    public IGameContainer DependencyContainer { get; set; }
+
     public void SerializeArray<T>(string name, IEnumerable<T> items)
     {
         SerializeObjectArray(name, items.Cast<object>());
@@ -131,7 +133,41 @@ public class JsonStream : ISerializerStream
 
     public void SerializeObject(string name, object value)
     {
-        
+        if (value is int)
+        {
+            SerializeInt(name,(int)value);
+            return;
+        }
+        if (value is string)
+        {
+            SerializeString(name,(string)value);
+            return;
+        }
+        if (value is bool)
+        {
+            SerializeBool(name, (bool)value);
+            return;
+        }
+        if (value is Vector2)
+        {
+            SerializeVector2(name, (Vector2)value);
+            return;
+        }
+        if (value is Vector3)
+        {
+            SerializeVector3(name, (Vector3)value);
+            return;
+        }
+        if (value is Quaternion)
+        {
+            SerializeQuaternion(name, (Quaternion)value);
+            return;
+        }
+        if (value is double)
+        {
+            SerializeDouble(name, (double)value);
+            return;
+        }
         var cls = new JSONClass();
         
         if (name == null)
@@ -208,9 +244,54 @@ public class JsonStream : ISerializerStream
         Push(name,CurrentNode[name]);
         foreach (var jsonNode in CurrentNode.Childs)
         {
-            Push(null,jsonNode);
-            yield return (T)DeserializeObjectFromCurrent();
-            Pop();
+            if (typeof(T) == typeof(string))
+            {
+                yield return (T)(object)DeserializeString(name);
+            }
+            else
+            if (typeof (T) == typeof (int))
+            {
+                yield return (T) (object) DeserializeInt(name);
+            }
+            else
+            if (typeof(T) == typeof(bool))
+            {
+                yield return (T)(object)DeserializeBool(name);
+            }
+            else
+            if (typeof(T) == typeof(byte[]))
+            {
+                yield return (T)(object)DeserializeBytes(name);
+            }
+            else
+            if (typeof(T) == typeof(double))
+            {
+                yield return (T)(object)DeserializeDouble(name);
+            }
+            else
+            if (typeof(T) == typeof(float))
+            {
+                yield return (T)(object)DeserializeFloat(name);
+            }
+            else
+            if (typeof(T) == typeof(Quaternion))
+            {
+                yield return (T)(object)DeserializeQuaternion(name);
+            } else
+            if (typeof(T) == typeof(Vector2))
+            {
+                yield return (T)(object)DeserializeVector2(name);
+            }
+            else if (typeof (T) == typeof (Vector3))
+            {
+                yield return (T) (object) DeserializeInt(name);
+            }
+            else
+            {
+                Push(null, jsonNode);
+                yield return (T)DeserializeObjectFromCurrent();
+                Pop();
+            }
         }
         Pop();
     }

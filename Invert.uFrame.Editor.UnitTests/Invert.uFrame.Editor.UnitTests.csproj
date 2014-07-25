@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;TESTS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -54,6 +54,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Bindings\IBinding.cs">
+      <Link>Serialization\IBinding.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Bindings\IViewModelObserver.cs">
+      <Link>IViewModelObserver.cs</Link>
+    </Compile>
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\Command.cs">
       <Link>Serialization\Command.cs</Link>
     </Compile>
@@ -75,8 +81,53 @@
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Commands\YieldCommandWith.cs">
       <Link>Serialization\YieldCommandWith.cs</Link>
     </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\Controller.cs">
+      <Link>Serialization\Controller.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\GameContainer.cs">
+      <Link>Serialization\GameContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\IGameContainer.cs">
+      <Link>Serialization\IGameContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Controllers\InjectAttribute.cs">
+      <Link>InjectAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\IJsonSerializable.cs">
       <Link>Serialization\IJsonSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Scene\SceneContext.cs">
+      <Link>Serialization\SceneContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\DefaultTypeResolver.cs">
+      <Link>Serialization\DefaultTypeResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\ISerializer.cs">
+      <Link>Serialization\ISerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\ISerializerStorage.cs">
+      <Link>Serialization\ISerializerStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\ISerializerStream.cs">
+      <Link>Serialization\ISerializerStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\ITypeResolver.cs">
+      <Link>Serialization\ITypeResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\IUFSerializable.cs">
+      <Link>Serialization\IUFSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\Json\JsonStream.cs">
+      <Link>Serialization\JsonStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\StateLoaderResolver.cs">
+      <Link>Serialization\StateLoaderResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\Storage\FileSerializerStorage.cs">
+      <Link>Serialization\FileSerializerStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Serialization\Storage\StringSerializerStorage.cs">
+      <Link>Serialization\StringSerializerStorage.cs</Link>
     </Compile>
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\SimpleJSON.cs">
       <Link>Serialization\SimpleJSON.cs</Link>
@@ -90,25 +141,7 @@
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\ViewModels\P.cs">
       <Link>Serialization\P.cs</Link>
     </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\ISerializer.cs">
-      <Link>Serialization\ISerializer.cs</Link>
-    </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\ISerializerStream.cs">
-      <Link>Serialization\ISerializerStream.cs</Link>
-    </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\IUFSerializable.cs">
-      <Link>Serialization\IUFSerializable.cs</Link>
-    </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\JsonStream.cs">
-      <Link>Serialization\JsonStream.cs</Link>
-    </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\SceneContext.cs">
-      <Link>Serialization\SceneContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\UFJsonSerializer.cs">
-      <Link>Serialization\UFJsonSerializer.cs</Link>
-    </Compile>
-    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\Views\ViewModel.cs">
+    <Compile Include="..\Assets\uFrameComplete\uFrame\Base\ViewModels\ViewModel.cs">
       <Link>Serialization\ViewModel.cs</Link>
     </Compile>
     <Compile Include="SerializationTests.cs" />
