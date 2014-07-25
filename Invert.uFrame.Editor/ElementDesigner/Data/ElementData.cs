@@ -59,7 +59,18 @@ public class ElementData : ElementDataBase, IDiagramFilter
     //        return attribute.DiagramName == Data.name;
     //    }
     //}
-
+    //public ElementData RootElement
+    //{
+    //    get
+    //    {
+    //        var baseElement = BaseElement;
+    //        if (baseElement == null)
+    //        {
+    //            return this;
+    //        }
+    //        return baseElement.RootElement;
+    //    }
+    //}
     public override string BaseTypeName
     {
         get
@@ -184,6 +195,14 @@ public class ElementData : ElementDataBase, IDiagramFilter
                     yield return viewComponentData;
                 }
             }
+        }
+    }
+
+    public IEnumerable<ViewPropertyData> ViewProperties
+    {
+        get
+        {
+            return Views.SelectMany(p => p.Properties);
         }
     }
 

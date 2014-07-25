@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq;
 using Invert.uFrame.Editor;
 using System;
 using System.CodeDom;
@@ -48,16 +50,38 @@ public class ViewModelGenerator : CodeGenerator
             Decleration.CustomAttributes.Add(
                 new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
                     new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
+            CreateViewProperties(data);
             AddWireCommandsMethod(data,Decleration,new CodeTypeReference(data.NameAsViewModel));
         }
+        var constructor = new CodeConstructor()
+        {
+            Name = Decleration.Name,
+            Attributes = MemberAttributes.Public,
+            
+        };
+        constructor.BaseConstructorArgs.Add(new CodeSnippetExpression(""));
+        Decleration.Members.Add(constructor);
+        var constructorWithController = new CodeConstructor()
+        {
+            Name = Decleration.Name,
+            Attributes = MemberAttributes.Public
+        };
+        constructorWithController.ChainedConstructorArgs.Add(new CodeSnippetExpression(""));
 
+        constructorWithController.Parameters.Add(new CodeParameterDeclarationExpression(Data.NameAsControllerBase, "controller"));
+        constructorWithController.Statements.Add(
+            new CodeAssignStatement(
+                new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Controller"),
+                new CodeSnippetExpression("controller")));
+
+        Decleration.Members.Add(constructorWithController);
         Decleration.IsPartial = true;
         if (IsDesignerFile)
         {
             // Now Generator code here
             foreach (var viewModelPropertyData in data.Properties)
             {
-                Decleration.Members.Add(ToCodeMemberField(viewModelPropertyData));
+                Decleration.Members.Add(ToCodeMemberField(viewModelPropertyData,constructor));
                 Decleration.Members.Add(ToCodeMemberProperty(viewModelPropertyData));
             }
             foreach (var viewModelPropertyData in data.Collections)
@@ -72,7 +96,6 @@ public class ViewModelGenerator : CodeGenerator
             }
             AddWriteMethod(data);
         }
-
         Namespace.Types.Add(Decleration);
     }
 
@@ -169,7 +192,7 @@ public class ViewModelGenerator : CodeGenerator
         AddViewModel(Data);
     }
 
-    public virtual CodeMemberField ToCodeMemberField(ViewModelPropertyData itemData)
+    public virtual CodeMemberField ToCodeMemberField(ViewModelPropertyData itemData,CodeConstructor constructor)
     {
         var field = new CodeMemberField { Name = itemData.FieldName };
 
@@ -181,7 +204,13 @@ public class ViewModelGenerator : CodeGenerator
         field.Type = new CodeTypeReference(string.Format("readonly P<{0}>", relatedType));
         var t = new CodeTypeReference(typeof(P<>));
         t.TypeArguments.Add(new CodeTypeReference(relatedType));
-        field.InitExpression = new CodeObjectCreateExpression(t);
+        var initExpr = new CodeObjectCreateExpression(t);
+        //field.InitExpression = initExpr;
+        initExpr.Parameters.Add(new CodeThisReferenceExpression());
+        initExpr.Parameters.Add(new CodePrimitiveExpression(itemData.Name));
+
+        constructor.Statements.Add(new CodeAssignStatement(new CodeSnippetExpression(field.Name), initExpr));
+
         return field;
     }
 
@@ -427,4 +456,33 @@ public class ViewModelGenerator : CodeGenerator
 
     }
 
+    public void CreateViewProperties(ElementData data)
+    {
+        var viewProperties = data.ViewProperties;
+        foreach (var viewProperty in viewProperties)
+        {
+            var name = viewProperty.NameAsProperty;
+
+            if (data.Properties.FirstOrDefault(p => p.Name == name) != null)
+            {
+                Debug.LogError(string.Format("The name '{0}' already exists on the element '{1}'.", name, data.Name));
+                continue;
+            }
+            
+            var viewFieldDecleration = new CodeMemberField()
+            {
+                Type = new CodeTypeReference(viewProperty.MemberType),
+                Name = viewProperty.NameAsField,
+                Attributes = MemberAttributes.Private
+            };
+            
+            var viewPropertyDecleration = viewFieldDecleration.EncapsulateField(name,null,null, true);//,
+                //new CodeSnippetExpression(string.Format("this.GetComponent<{0}>()", viewProperty.MemberType)));
+
+            viewPropertyDecleration.Attributes = MemberAttributes.Public;
+            viewPropertyDecleration.SetStatements.Add(new CodeSnippetExpression("Dirty = true"));
+            Decleration.Members.Add(viewFieldDecleration);
+            Decleration.Members.Add(viewPropertyDecleration);
+        }
+    }
 }

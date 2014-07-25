@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Invert.Common;
 using Invert.uFrame.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -43,7 +44,7 @@ public class ElementDiagramSettingsWindow : EditorWindow
     public static void DrawTitleBar(string subTitle)
     {
         //GUI.Label();
-        UFStyles.DoTilebar(subTitle);
+        ElementDesignerStyles.DoTilebar(subTitle);
     }
 
     public void OnGUI()

@@ -16,7 +16,7 @@ public class CheckerBoardController : CheckerBoardControllerBase
     };
     public override void InitializeCheckerBoard(CheckerBoardViewModel checkerBoard)
     {
-        
+        if (checkerBoard.Checkers.Count > 0) return;
         var total = 0;
         for (var y = 0; y < 8; y++)
         {

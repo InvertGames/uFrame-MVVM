@@ -172,7 +172,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             foreach (var element in baseElements)
             {
 
-                setupMethod.Statements.Add(new CodeSnippetExpression(string.Format("Container.RegisterInstance<{0}>({1}.CreateEmpty() as {0}, false)", element.NameAsViewModel, element.NameAsController)));
+                setupMethod.Statements.Add(new CodeSnippetExpression(string.Format("Container.RegisterInstance<{0}>(SetupViewModel<{0}>({1}, \"{2}\"))", element.NameAsViewModel, element.NameAsController,element.RootElement.Name)));
             }
 
             foreach (var element in rootElements)
@@ -189,7 +189,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
                                 sceneManager.NameAsSceneManager + element.NameAsTypeEnum, derivedElement.Name))));
                     condition.TrueStatements.Add(
                         new CodeVariableDeclarationStatement(new CodeTypeReference(derivedElement.NameAsViewModel),
-                            derivedElement.NameAsVariable, new CodeSnippetExpression(string.Format("{0}.CreateEmpty() as {1}", derivedElement.NameAsController, derivedElement.NameAsViewModel))));
+                            derivedElement.NameAsVariable, new CodeSnippetExpression(string.Format("SetupViewModel<{1}>({0},\"{2}\")", derivedElement.NameAsController, derivedElement.NameAsViewModel,derivedElement.RootElement.Name))));
 
                     condition.TrueStatements.Add(new CodeSnippetExpression(string.Format("Container.RegisterInstance<{0}>({1}, false)", derivedElement.NameAsViewModel, derivedElement.NameAsVariable)));
                     // TODO add a while here for each base type

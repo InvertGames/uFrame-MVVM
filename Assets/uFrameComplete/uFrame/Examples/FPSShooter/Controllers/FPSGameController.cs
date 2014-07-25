@@ -24,9 +24,9 @@ public class FPSGameController : FPSGameControllerBase
     protected void SpawnEnemy()
     {
         var enemy = FPSEnemyController.CreateFPSEnemy();
-        this.SubscribeToProperty(enemy._StateProperty, state =>
+        this.SubscribeToProperty(enemy,enemy._StateProperty, (e, state) =>
         {
-            if (enemy.State == FPSPlayerState.Dead)
+            if (e.State == FPSPlayerState.Dead)
                 EnemyDied(enemy);
         });
         FPSGame.Enemies.Add(enemy);

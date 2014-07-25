@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
 using UnityEngine;
@@ -13,13 +14,13 @@ public class DiagramEnumDrawer : DiagramNodeDrawer<EnumData>
         get
         {
 
-            return UFStyles.DiagramBox9;
+            return ElementDesignerStyles.DiagramBox9;
         }
     }
 
     //public override GUIStyle ItemStyle
     //{
-    //    get { return UFStyles.Item6; }
+    //    get { return ElementDesignerStyles.Item6; }
     //}
     public DiagramEnumDrawer()
     {

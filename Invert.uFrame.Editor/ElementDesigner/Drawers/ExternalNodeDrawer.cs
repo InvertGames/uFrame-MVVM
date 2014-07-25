@@ -12,7 +12,7 @@
 
 //    public override GUIStyle BackgroundStyle
 //    {
-//        get { return UFStyles.DiagramBox5; }
+//        get { return ElementDesignerStyles.DiagramBox5; }
 //    }
 
 //    protected override IEnumerable<DiagramSubItemGroup> GetItemGroups()

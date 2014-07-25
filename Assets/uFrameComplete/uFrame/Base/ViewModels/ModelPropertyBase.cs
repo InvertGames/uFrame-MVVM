@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using UnityEngine;
 
@@ -9,6 +10,20 @@ using UnityEngine;
 [Serializable]
 public abstract class ModelPropertyBase 
 {
+    public ViewModel Owner { get; set; }
+    public string PropertyName { get; set; }
+
+    protected ModelPropertyBase()
+    {
+    }
+
+    protected ModelPropertyBase(ViewModel owner, string propertyName)
+    {
+        Owner = owner;
+        PropertyName = propertyName;
+
+    }
+
     public delegate void PropertyChangedHandler(object value);
 
     /// <summary>
@@ -167,10 +182,13 @@ public abstract class ModelPropertyBase
 
     private void OnPropertyChanged(object value)
     {
-
         PropertyChangedHandler handler = PropertyChanged;
         if (handler != null)
             handler(value);
+        if (Owner != null)
+        {
+            Owner.OnPropertyChanged(PropertyName);
+        }
     }
 
 }

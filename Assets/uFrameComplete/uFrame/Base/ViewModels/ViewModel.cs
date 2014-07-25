@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -8,9 +9,46 @@ using System.Reflection;
 ///  A data structure that contains information/data needed for a 'View'
 /// </summary>
 [Serializable]
-public abstract class ViewModel : IJsonSerializable, IUFSerializable
+public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModelObserver, INotifyPropertyChanged
 {
-    
+    //private List<IBinding> _bindings;
+
+    public Dictionary<int, List<IBinding>> Bindings
+    {
+        get { return _bindings ?? (_bindings = new Dictionary<int, List<IBinding>>()); }
+        set { _bindings = value; }
+    }
+
+    public void AddBinding(IBinding binding)
+    {
+        if (!Bindings.ContainsKey(-1))
+        {
+            Bindings[-1] = new List<IBinding>();
+        }
+        Bindings[-1].Add(binding);
+        binding.Bind();
+    }
+
+    public void RemoveBinding(IBinding binding)
+    {
+        
+        Bindings[-1].Remove(binding);
+    }
+
+    public void Unbind()
+    {
+        foreach (var binding in Bindings)
+        {
+            foreach (var binding1 in binding.Value)
+            {
+                binding1.Unbind();
+            }
+            binding.Value.Clear();
+        }
+        Bindings.Clear();
+        
+    }
+
     public int References { get; set; }
 
     public virtual string Identifier { get; set; }
@@ -18,6 +56,7 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable
     private Dictionary<string, ICommand> _commands;
     private Dictionary<string, ModelPropertyBase> _modelProperties;
     private Controller _controller;
+    private Dictionary<int, List<IBinding>> _bindings;
 
     /// <summary>
     ///Access a model property via string.  This is optimized using a compiled delegate to
@@ -206,4 +245,15 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable
     {
         
     }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChangedEventHandler handler = PropertyChanged;
+        if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+    }
+    public bool Dirty { get; set; }
+
+
 }

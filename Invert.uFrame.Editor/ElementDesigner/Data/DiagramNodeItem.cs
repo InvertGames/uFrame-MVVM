@@ -65,7 +65,7 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
 
     public abstract string Label { get; }
 
-    public string Name
+    public virtual string Name
     {
         get { return _name; }
         set { _name = Regex.Replace(value, "[^a-zA-Z0-9_.]+", ""); }

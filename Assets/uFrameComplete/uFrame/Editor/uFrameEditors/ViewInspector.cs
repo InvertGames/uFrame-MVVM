@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -71,34 +72,34 @@ public class ViewInspector : uFrameInspector
         var padding = 10f;
         var titleContent = new GUIContent(target.name);
         var subTitleContent = new GUIContent(target.GetType().Name);
-        var titleSize = UFStyles.ViewBarTitleStyle.CalcSize(titleContent);
-        var subTitleSize = UFStyles.ViewBarSubTitleStyle.CalcSize(subTitleContent);
+        var titleSize = ElementDesignerStyles.ViewBarTitleStyle.CalcSize(titleContent);
+        var subTitleSize = ElementDesignerStyles.ViewBarSubTitleStyle.CalcSize(subTitleContent);
         var maxTextWidth = Mathf.Max(titleSize.x, subTitleSize.x);
         var barWidth = (padding*4f) + maxTextWidth + (36 * 1);
         var rect = new Rect(15f, 15f, barWidth, 48f);
-        UFStyles.DrawExpandableBox(rect, UFStyles.SceneViewBar, "");
+        ElementDesignerStyles.DrawExpandableBox(rect, ElementDesignerStyles.SceneViewBar, "");
         GUILayout.BeginArea(rect);
         
         GUILayout.BeginHorizontal();
         GUILayout.Space(padding);
-        if (GUILayout.Button(new GUIContent("", "View " + subTitleContent.text + " in Element Designer"), UFStyles.EyeBall))
+        if (GUILayout.Button(new GUIContent("", "View " + subTitleContent.text + " in Element Designer"), ElementDesignerStyles.EyeBall))
         {
             uFrameEditorSceneManager.NavigateBack(target as ViewBase);
         }
         GUILayout.Space(padding);
         GUILayout.BeginVertical();
         GUILayout.Space(6f);
-        GUILayout.Label(titleContent,UFStyles.ViewBarTitleStyle,GUILayout.Width(maxTextWidth));
-        GUILayout.Label(subTitleContent, UFStyles.ViewBarSubTitleStyle, GUILayout.Width(maxTextWidth));
+        GUILayout.Label(titleContent, ElementDesignerStyles.ViewBarTitleStyle, GUILayout.Width(maxTextWidth));
+        GUILayout.Label(subTitleContent, ElementDesignerStyles.ViewBarSubTitleStyle, GUILayout.Width(maxTextWidth));
 
         GUILayout.EndVertical();
         //GUILayout.Space(padding);
-        //if (GUILayout.Button(new GUIContent("", "Move to the previous " + subTitleContent.text), UFStyles.NavigatePreviousStyle))
+        //if (GUILayout.Button(new GUIContent("", "Move to the previous " + subTitleContent.text), ElementDesignerStyles.NavigatePreviousStyle))
         //{
             
         //    uFrameEditorSceneManager.NavigatePrevious();
         //}
-        //if (GUILayout.Button(new GUIContent("","Move to the next " + subTitleContent.text), UFStyles.NavigateNextStyle))
+        //if (GUILayout.Button(new GUIContent("","Move to the next " + subTitleContent.text), ElementDesignerStyles.NavigateNextStyle))
         //{
         //    uFrameEditorSceneManager.NavigateNext();
         //}
@@ -262,7 +263,7 @@ public class ViewInspector : uFrameInspector
             }
            
             var btnContent = new GUIContent("Show In Designer");
-            if (GUI.Button(UBEditor.GetRect(UFStyles.ButtonStyle),btnContent,UFStyles.ButtonStyle))
+            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
             {
                 uFrameEditorSceneManager.NavigateBack(target as ViewBase);
             }
@@ -317,7 +318,7 @@ public class ViewInspector : uFrameInspector
             {
                 foreach (var command in Commands)
                 {
-                    if (GUI.Button(UBEditor.GetRect(UFStyles.ButtonStyle), command.Key, UFStyles.ButtonStyle))
+                    if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), command.Key, ElementDesignerStyles.ButtonStyle))
                     {
                         Target.ExecuteCommand(command.Value);
                     }

@@ -1,3 +1,5 @@
+using Invert.Common;
+using Invert.Common.UI;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
@@ -11,8 +13,8 @@ public class uFramePluginsWindow : EditorWindow
     {
         var window = GetWindow<uFramePluginsWindow>();
         window.title = "uFrame Plugins";
-        window.minSize =  new Vector2(240, 300);
-     
+        window.minSize = new Vector2(240, 300);
+
         window.Show();
     }
 
@@ -26,17 +28,17 @@ public class uFramePluginsWindow : EditorWindow
     public static void DrawTitleBar(string subTitle)
     {
         //GUI.Label();
-        UFStyles.DoTilebar(subTitle);
+        ElementDesignerStyles.DoTilebar(subTitle);
     }
 
     public void OnGUI()
     {
-        UBEditor.IsGlobals = true;
+        
         DrawTitleBar("uFrame Plugins");
         foreach (var plugin in uFrameEditor.Container.ResolveAll<IDiagramPlugin>())
         {
             if (
-                UBEditor.DoTriggerButton(new UBTriggerContent("     " + plugin.Title, UBStyles.EventButtonStyle,
+                GUIHelpers.DoTriggerButton(new UFStyle("     " + plugin.Title, UBStyles.EventButtonStyle,
                     null,
                     plugin.Enabled ? UBStyles.TriggerActiveButtonStyle : UBStyles.TriggerInActiveButtonStyle, () => { }, false, TextAnchor.MiddleCenter)))
             {
@@ -45,6 +47,6 @@ public class uFramePluginsWindow : EditorWindow
             }
 
         }
-        UBEditor.IsGlobals = false;
+        
     }
 }

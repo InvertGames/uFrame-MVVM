@@ -114,7 +114,7 @@ public static class CodeDomHelpers
         
         return typeDeclaration;
     }
-    public static CodeMemberProperty EncapsulateField(this CodeMemberField field, string name, CodeExpression lazyValue, CodeExpression lazyCondition = null)
+    public static CodeMemberProperty EncapsulateField(this CodeMemberField field, string name, CodeExpression lazyValue, CodeExpression lazyCondition = null, bool generateSetter = false)
     {
         var p = new CodeMemberProperty
         {
@@ -125,25 +125,35 @@ public static class CodeDomHelpers
         };
         var r = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), field.Name);
 
-
-        var lazyConditionStatement = new CodeConditionStatement();
-        CodeExpression finalLazyCondition = lazyCondition;
-        if (finalLazyCondition == null)
+        if (lazyValue != null)
         {
-            var defaultConditionStatement =
-               new CodeBinaryOperatorExpression(
-                   r,
-                   CodeBinaryOperatorType.ValueEquality, new CodeSnippetExpression("null"));
-            
-            finalLazyCondition = defaultConditionStatement;
+            var lazyConditionStatement = new CodeConditionStatement();
+            CodeExpression finalLazyCondition = lazyCondition;
+
+            if (finalLazyCondition == null)
+            {
+                var defaultConditionStatement =
+                   new CodeBinaryOperatorExpression(
+                       r,
+                       CodeBinaryOperatorType.ValueEquality, new CodeSnippetExpression("null"));
+
+                finalLazyCondition = defaultConditionStatement;
+            }
+
+            lazyConditionStatement.Condition = finalLazyCondition;
+            lazyConditionStatement.TrueStatements.Add(new CodeAssignStatement(r, lazyValue));
+            p.GetStatements.Add(lazyConditionStatement);
         }
+       
 
-        lazyConditionStatement.Condition = finalLazyCondition;
-        lazyConditionStatement.TrueStatements.Add(new CodeAssignStatement(r, lazyValue));
-
-        p.GetStatements.Add(lazyConditionStatement);
+       
         p.GetStatements.Add(
             new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), field.Name)));
+        if (generateSetter)
+        {
+            p.HasSet = true;
+            p.SetStatements.Add(new CodeSnippetExpression(string.Format("{0} = value", field.Name)));
+        }
         return p;
     }
 }

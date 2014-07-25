@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 /// <summary>
 /// A typed ViewModel Property Class
@@ -6,6 +7,8 @@ using System.Diagnostics;
 /// <typeparam name="T"></typeparam>
 public class P<T> : ModelPropertyBase
 {
+ 
+
     /// <summary>
     /// Gets or sets the value.
     /// </summary>
@@ -58,6 +61,15 @@ public class P<T> : ModelPropertyBase
         Value = default(T);
     }
 
+    public P(ViewModel owner, string propertyName) : base(owner, propertyName)
+    {
+
+    }
+    public P(ViewModel owner, string propertyName,T value)
+        : base(owner, propertyName)
+    {
+        Value = value;
+    }
     public P(T value)
     {
         Value = value;

@@ -11,7 +11,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UnityEngine;
 
 
 public abstract class CheckerBoardControllerBase : Controller {
@@ -230,7 +229,7 @@ public class CheckersMenuSceneManagerBase : SceneManager {
         this.MainMenuController = new MainMenuController();
         this.Container.RegisterInstance(this.MainMenuController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<MainMenuViewModel>(MainMenuController.CreateEmpty() as MainMenuViewModel, false);
+        Container.RegisterInstance<MainMenuViewModel>(SetupViewModel<MainMenuViewModel>(MainMenuController, "MainMenu"));
     }
     
     public virtual void Play() {
@@ -265,7 +264,6 @@ public class CheckersSceneManagerBase : SceneManager {
     public CheckerPlateController CheckerPlateController { get; set; }
     public CheckersGameController CheckersGameController { get; set; }
     public CheckerController CheckerController { get; set; }
-    
     public override void Setup() {
         base.Setup();
         this.AICheckersGameController = new AICheckersGameController();
@@ -281,19 +279,15 @@ public class CheckersSceneManagerBase : SceneManager {
         this.CheckerController = new CheckerController();
         this.Container.RegisterInstance(this.CheckerController, false);
         this.Container.InjectAll();
-        //if (_SceneState != null)
-        //{
-        //    Context.Load(new StringSerializerStorage() { Result = _SceneState.text }, new JsonStream() { UseReferences = true });
-        //}
-        Container.RegisterInstance<CheckerBoardViewModel>(this.SetupViewModel<CheckerBoardViewModel>(CheckerBoardController, "CheckerBoard"), false);
+        Container.RegisterInstance<CheckerBoardViewModel>(SetupViewModel<CheckerBoardViewModel>(CheckerBoardController, "CheckerBoard"));
         if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.AICheckersGame)) {
-            AICheckersGameViewModel aICheckersGame = AICheckersGameController.CreateEmpty() as AICheckersGameViewModel;
+            AICheckersGameViewModel aICheckersGame = SetupViewModel<AICheckersGameViewModel>(AICheckersGameController,"CheckersGame");
             Container.RegisterInstance<AICheckersGameViewModel>(aICheckersGame, false);
             Container.RegisterInstance<CheckersGameViewModel>(aICheckersGame, false);
             Container.RegisterInstance<CheckersGameController>(AICheckersGameController, false);
         }
         if ((this._CheckersSceneManagerSettings.CheckersGameTypes == CheckersSceneManagerCheckersGameTypes.CheckersGame)) {
-            CheckersGameViewModel checkersGame = CheckersGameController.CreateEmpty() as CheckersGameViewModel;
+            CheckersGameViewModel checkersGame = SetupViewModel<CheckersGameViewModel>(CheckersGameController,"CheckersGame");
             Container.RegisterInstance<CheckersGameViewModel>(checkersGame, false);
         }
     }

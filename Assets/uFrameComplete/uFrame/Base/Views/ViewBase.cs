@@ -2,46 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using UnityEngine;
-
-[AttributeUsage(AttributeTargets.Field)]
-public class UFGroup : Attribute
-{
-    public string Name { get; set; }
-
-    public UFGroup(string name)
-    {
-        Name = name;
-    }
-}
-
-[AttributeUsage(AttributeTargets.Field)]
-public class UFRequireInstanceMethod : Attribute
-{
-    public string MethodName { get; set; }
-
-    public UFRequireInstanceMethod(string methodName)
-    {
-        MethodName = methodName;
-    }
-}
-
-[AttributeUsage(AttributeTargets.Field)]
-public class UFToggleGroup : Attribute
-{
-    public string Name { get; set; }
-
-    public UFToggleGroup(string name)
-    {
-        Name = name;
-    }
-}
 
 /// <summary>
 /// The base class for a View that binds to a ViewModel
 /// </summary>
-public abstract class ViewBase : ViewContainer
+public abstract class ViewBase : ViewContainer,IViewModelObserver
 {
+    
     /// <summary>
     /// The View Event delegate that takes a string for the event name.
     /// </summary>
@@ -200,15 +169,16 @@ public abstract class ViewBase : ViewContainer
     /// </summary>
     public string ViewName { get; set; }
 
-    public override void AddBinding(IBinding binding)
-    {
-        base.AddBinding(binding);
-        // If this view has already been binded invoke the bind method
-        if (_bound)
-        {
-            binding.Bind();
-        }
-    }
+    //public void AddBinding(IBinding binding)
+    //{
+
+    //    base.AddBinding(binding);
+    //    // If this view has already been binded invoke the bind method
+    //    if (_bound)
+    //    {
+    //        binding.Bind();
+    //    }
+    //}
 
     public virtual void AfterBind()
     {
@@ -299,7 +269,13 @@ public abstract class ViewBase : ViewContainer
     public virtual void OnDestroy()
     {
         if (ViewModelObject != null)
+        {
             ViewModelObject.References--;
+            if (ViewModelObject.References < 1)
+            {
+                ViewModelObject.Unbind();
+            }
+        }
 
         var pv = ParentView;
         if (pv != null)
@@ -307,7 +283,8 @@ public abstract class ViewBase : ViewContainer
             pv.ChildViews.Remove(this);
         }
         Unbind();
-        Bindings.Clear();
+   
+        //Bindings.Clear();
     }
 
     //                return vm;
@@ -414,12 +391,51 @@ public abstract class ViewBase : ViewContainer
         }
     }
 
+    public List<IBinding> Bindings
+    {
+        get
+        {
+            if (!ViewModelObject.Bindings.ContainsKey(InstanceId))
+            {
+                ViewModelObject.Bindings.Add(InstanceId, new List<IBinding>());
+            }
+
+            return ViewModelObject.Bindings[InstanceId];
+        }
+    }
+
+    public int InstanceId
+    {
+        get
+        {
+            if (_instanceId == 0)
+            {
+                _instanceId = this.gameObject.GetInstanceID();
+            }
+            return _instanceId;
+        }
+    }
+    public void AddBinding(IBinding binding)
+    {
+        Bindings.Add(binding);
+        if (_bound)
+        {
+            binding.Bind();
+        }
+        
+    }
+
+    public void RemoveBinding(IBinding binding)
+    {
+        Bindings.Remove(binding);
+    }
+
     /// <summary>
     /// Unbind the current bindings.
     /// </summary>
-    public override void Unbind()
+    public virtual void Unbind()
     {
-        base.Unbind();
+        //base.Unbind();
 
         // Loop through and binding providers and let them add bindings
         foreach (var bindingProvider in BindingProviders)
@@ -437,16 +453,18 @@ public abstract class ViewBase : ViewContainer
 
     protected virtual void LateUpdate()
     {
-        foreach (var binding in Bindings)
-        {
-            if (binding.TwoWay)
-            {
-                ((ITwoWayBinding)binding).BindReverse();
-            }
-        }
+        Apply();
+    }
+
+    protected virtual void Apply()
+    {
+        
     }
     [SerializeField, HideInInspector]
     private string _identifier;
+
+    private int _instanceId;
+    
 
     public virtual string Identifier
     {
@@ -543,9 +561,4 @@ public abstract class ViewBase : ViewContainer
               GameManager.Container.Resolve(ViewModelType) as ViewModel;
         return vm;
     }
-}
-
-[AttributeUsage(AttributeTargets.Field)]
-public class ViewModelOverrideAttribute : Attribute
-{
 }

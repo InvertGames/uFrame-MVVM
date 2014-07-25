@@ -232,7 +232,7 @@ public class JsonStream : ISerializerStream
     {
         var identifier = CurrentNode["Identifier"].Value;
 
-        if (UseReferences && ReferenceObjects.ContainsKey(identifier))
+        if (UseReferences && ReferenceObjects.ContainsKey(identifier) )
         {
             return ReferenceObjects[identifier];
         }

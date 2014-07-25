@@ -175,15 +175,19 @@ public partial class FPSGameViewModel : ViewModel {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("State", (int)this.State);
+		stream.SerializeObject("CurrentPlayer", this.CurrentPlayer);
 		stream.SerializeInt("Score", this.Score);
 		stream.SerializeInt("Kills", this.Kills);
+		stream.SerializeArray("Enemies", this.Enemies);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.State = (FPSGameState)stream.DeserializeInt("State");
+		this.CurrentPlayer = stream.DeserializeObject<FPSPlayerViewModel>("CurrentPlayer");
 		this.Score = stream.DeserializeInt("Score");
 		this.Kills = stream.DeserializeInt("Kills");
+		this.Enemies = stream.DeserializeObjectArray<FPSEnemyViewModel>("Enemies").ToList();
     }
 }
 
@@ -268,11 +272,13 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("CurrentWeaponIndex", this.CurrentWeaponIndex);
+		stream.SerializeArray("Weapons", this.Weapons);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.CurrentWeaponIndex = stream.DeserializeInt("CurrentWeaponIndex");
+		this.Weapons = stream.DeserializeObjectArray<FPSWeaponViewModel>("Weapons").ToList();
     }
 }
 

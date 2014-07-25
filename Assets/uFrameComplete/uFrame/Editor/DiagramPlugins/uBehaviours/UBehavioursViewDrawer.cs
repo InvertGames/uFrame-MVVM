@@ -82,7 +82,11 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins
         
         protected override IEnumerable<DiagramSubItemGroup> GetItemGroups()
         {
-
+            var baseItems = base.GetItemGroups().ToArray();
+            foreach (var baseItem in baseItems)
+            {
+                yield return baseItem;
+            }
             var vm = Data.ViewForElement;
             if (vm == null) yield break;
             if (Data != null)

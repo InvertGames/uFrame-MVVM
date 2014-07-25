@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
@@ -47,7 +48,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     public float Scale
     {
-        get { return UFStyles.Scale; }
+        get { return ElementDesignerStyles.Scale; }
     }
 
     public virtual GUIStyle ItemStyle
@@ -55,13 +56,13 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         get
         {
 
-            return UFStyles.Item4;
+            return ElementDesignerStyles.Item4;
         }
     }
 
     public GUIStyle SelectedItemStyle
     {
-        get { return UFStyles.SelectedItemStyle; }
+        get { return ElementDesignerStyles.SelectedItemStyle; }
     }
 
     public virtual float Width
@@ -107,7 +108,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         get
         {
 
-            return UFStyles.DiagramBox1;
+            return ElementDesignerStyles.DiagramBox1;
         }
     }
 
@@ -145,7 +146,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             }
 
             if (GUI.Button(rect.Scale(Scale), string.Empty,
-                Data.IsCollapsed ? UFStyles.CollapseRight : UFStyles.CollapseDown))
+                Data.IsCollapsed ? ElementDesignerStyles.CollapseRight : ElementDesignerStyles.CollapseDown))
             {
                 Diagram.ExecuteCommand((item) =>
                 {
@@ -159,7 +160,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         }
 
 
-        var style = new GUIStyle(UFStyles.ViewModelHeaderStyle);
+        var style = new GUIStyle(ElementDesignerStyles.ViewModelHeaderStyle);
         style.normal.textColor = BackgroundStyle.normal.textColor;
         style.alignment = TextAnchor.MiddleCenter;
         var position = new Rect(Data.HeaderPosition);
@@ -279,12 +280,12 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
         offsetPosition.y += 6;
 
         if (isDiagramFilter)
-            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale), BackgroundStyle, string.Empty);
+            ElementDesignerStyles.DrawExpandableBox(offsetPosition.Scale(Scale), BackgroundStyle, string.Empty);
         offsetPosition.x -= 3;
         offsetPosition.y -= 3;
 
         if (isDiagramFilter)
-            UFStyles.DrawExpandableBox(offsetPosition.Scale(Scale), BackgroundStyle, string.Empty);
+            ElementDesignerStyles.DrawExpandableBox(offsetPosition.Scale(Scale), BackgroundStyle, string.Empty);
 
         offsetPosition.y -= 16;
         offsetPosition.height = 16;
@@ -302,7 +303,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
 
 
-        UFStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale), BackgroundStyle, string.Empty);
+        ElementDesignerStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale), BackgroundStyle, string.Empty);
 
 
         if (Data.IsSelected)
@@ -310,18 +311,18 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             var pos = new Rect(((IDrawable)Data).Position);
             pos.x -= 4;
             pos.width += 8;
-            UFStyles.DrawExpandableBox(pos.Scale(Scale), UFStyles.BoxHighlighter2, string.Empty);
+            ElementDesignerStyles.DrawExpandableBox(pos.Scale(Scale), ElementDesignerStyles.BoxHighlighter2, string.Empty);
         }
 
         else if (Data.Equals(diagram.CurrentMouseOverNode))
-            UFStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale), UFStyles.BoxHighlighter1, string.Empty);
+            ElementDesignerStyles.DrawExpandableBox(((IDrawable)Data).Position.Scale(Scale), ElementDesignerStyles.BoxHighlighter1, string.Empty);
         else
         {
             //var highlighter = GetHighlighter();
 
             //if (highlighter != null)
             //{
-            //    UFStyles.DrawExpandableBox(((IDrawable)Data).Position, highlighter, string.Empty);
+            //    ElementDesignerStyles.DrawExpandableBox(((IDrawable)Data).Position, highlighter, string.Empty);
             //}
         }
 
@@ -334,7 +335,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     protected virtual GUIStyle GetHighlighter()
     {
-        return UFStyles.BoxHighlighter4;
+        return ElementDesignerStyles.BoxHighlighter4;
     }
 
     protected virtual void DrawItem(IDiagramNodeItem item, ElementsDiagram diagram, bool importOnly)
@@ -369,7 +370,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             highlighterPosition.y += 2;
             highlighterPosition.x += 2;
             highlighterPosition.height = ItemHeight - 6;
-            GUI.Box(highlighterPosition.Scale(Scale), string.Empty, UFStyles.GetHighlighter(item.Highlighter));
+            GUI.Box(highlighterPosition.Scale(Scale), string.Empty, ElementDesignerStyles.GetHighlighter(item.Highlighter));
         }
     }
 
@@ -384,9 +385,20 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
 
     protected virtual void DrawSelectedItem(IDiagramNodeItem nodeItem, ElementsDiagram diagram)
     {
+        DrawSelectedItemLabel(nodeItem);
 
+
+        if (GUILayout.Button(string.Empty, UBStyles.RemoveButtonStyle.Scale(Scale)))
+        {
+            //this.ExecuteCommand(new SimpleEditorCommand<DiagramNodeItem>(p => nodeItem.Rename(Data, newName)));
+            Diagram.ExecuteCommand(RemoveItemCommand);
+        }
+    }
+
+    protected virtual void DrawSelectedItemLabel(IDiagramNodeItem nodeItem)
+    {
         GUI.SetNextControlName(nodeItem.Name);
-        var newName = EditorGUILayout.TextField(nodeItem.Name, UFStyles.ClearItemStyle);
+        var newName = EditorGUILayout.TextField(nodeItem.Name, ElementDesignerStyles.ClearItemStyle);
         if (EditorGUI.EndChangeCheck() && !string.IsNullOrEmpty(newName))
         {
             if (Data.Items.All(p => p.Name != newName))
@@ -395,17 +407,8 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
                 //Diagram.ExecuteCommand(RemoveItemCommand);
                 Diagram.ExecuteCommand(p => nodeItem.Rename(Data, newName));
                 //EditorUtility.SetDirty(diagram.Data);
-
             }
         }
-
-
-        if (GUILayout.Button(string.Empty, UBStyles.RemoveButtonStyle.Scale(Scale)))
-        {
-            //this.ExecuteCommand(new SimpleEditorCommand<DiagramNodeItem>(p => nodeItem.Rename(Data, newName)));
-            Diagram.ExecuteCommand(RemoveItemCommand);
-        }
-
     }
 
     public virtual IEditorCommand RemoveItemCommand

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using Invert.uFrame.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -71,7 +72,7 @@ public class uFrameEditorSceneManager
     private static void RefreshSceneObjects()
     {
         var gcm = (GameManager)Object.FindObjectOfType(typeof(GameManager));
-        var objs = Object.FindObjectsOfType(typeof(ViewModelObserver));
+        var objs = Object.FindObjectsOfType(typeof(ViewContainer));
 
         if (gcm != null)
             managerId = gcm.gameObject.GetInstanceID();
@@ -95,10 +96,10 @@ public class uFrameEditorSceneManager
         
         //texture = Resources.Load("Controller.png") as Texture2D;
         //AssetDatabase.LoadAssetAtPath("Assets/Images/Testicon.png", typeof(Texture2D)) as Texture2D;
-        textureGameManager = UFStyles.GetSkinTexture("GameManager");
-        textureSceneManager = UFStyles.GetSkinTexture("SceneManager");
-        textureViewSI = UFStyles.GetSkinTexture("ViewSingleInstance");
-        textureViewMI = UFStyles.GetSkinTexture("ViewMultiInstance");
+        textureGameManager = ElementDesignerStyles.GetSkinTexture("GameManager");
+        textureSceneManager = ElementDesignerStyles.GetSkinTexture("SceneManager");
+        textureViewSI = ElementDesignerStyles.GetSkinTexture("ViewSingleInstance");
+        textureViewMI = ElementDesignerStyles.GetSkinTexture("ViewMultiInstance");
         EditorApplication.update += RefreshSceneObjects;
         EditorApplication.hierarchyWindowItemOnGUI += HierarchyItemCB;
         

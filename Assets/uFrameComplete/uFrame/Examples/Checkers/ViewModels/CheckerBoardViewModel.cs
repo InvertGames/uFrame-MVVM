@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-public partial class CheckerBoardViewModel : ViewModel
+public partial class CheckerBoardViewModel
 {
 
     public CheckerViewModel this[Vector2 position]

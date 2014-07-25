@@ -1,3 +1,4 @@
+using Invert.Common;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
@@ -151,7 +152,7 @@ public class ElementsDiagram : ICommandHandler
 
     public static float Scale
     {
-        get { return UFStyles.Scale; }
+        get { return ElementDesignerStyles.Scale; }
     }
 
     public INodeDrawer MouseOverViewData
@@ -401,8 +402,8 @@ public class ElementsDiagram : ICommandHandler
         
         //var diagramSize = DiagramSize;
         var content = new GUIContent(Data.Name);
-      //  var size = UFStyles.DiagramTitle.CalcSize(content);
-        GUI.Box(new Rect( 0,0f,Rect.width,30f),Data.Name,UFStyles.DiagramTitle);
+      //  var size = ElementDesignerStyles.DiagramTitle.CalcSize(content);
+        GUI.Box(new Rect( 0,0f,Rect.width,30f),Data.Name,ElementDesignerStyles.DiagramTitle);
 
         //SerializedObject.Update();
         string focusItem = null;
@@ -479,7 +480,7 @@ public class ElementsDiagram : ICommandHandler
 
                     CurrentMouseOverNode = mouseOver == null ? null : mouseOver.Model;
 
-                    UFStyles.DrawNodeCurve(SelectedData.Position.Scale(UFStyles.Scale), mouseOver != null && canCreateLink ? CurrentMouseOverNode.Position.Scale(UFStyles.Scale) :
+                    ElementDesignerStyles.DrawNodeCurve(SelectedData.Position.Scale(ElementDesignerStyles.Scale), mouseOver != null && canCreateLink ? CurrentMouseOverNode.Position.Scale(ElementDesignerStyles.Scale) :
                             new Rect(CurrentMousePosition.x, CurrentMousePosition.y, 4, 4), Color.yellow, 6);
                 }
                 else
@@ -491,9 +492,9 @@ public class ElementsDiagram : ICommandHandler
 
                         CurrentMouseOverNode = mouseOver == null ? null : mouseOver.Model;
 
-                        UFStyles.DrawNodeCurve(SelectedItem.Position.Scale(UFStyles.Scale),
+                        ElementDesignerStyles.DrawNodeCurve(SelectedItem.Position.Scale(ElementDesignerStyles.Scale),
                             CurrentMouseOverNode != null && canCreateLink
-                                ? CurrentMouseOverNode.Position.Scale(UFStyles.Scale)
+                                ? CurrentMouseOverNode.Position.Scale(ElementDesignerStyles.Scale)
                                 : new Rect(CurrentMousePosition.x, CurrentMousePosition.y, 4, 4),
                             Color.green, 6);
                     }
@@ -556,7 +557,7 @@ public class ElementsDiagram : ICommandHandler
             {
                 item.IsSelected = SelectionRect.Overlaps(item.Position.Scale(Scale));
             }
-            UFStyles.DrawExpandableBox(SelectionRect, UFStyles.BoxHighlighter4, string.Empty);
+            ElementDesignerStyles.DrawExpandableBox(SelectionRect, ElementDesignerStyles.BoxHighlighter4, string.Empty);
         }
         if (Data is JsonElementDesignerData)
         {

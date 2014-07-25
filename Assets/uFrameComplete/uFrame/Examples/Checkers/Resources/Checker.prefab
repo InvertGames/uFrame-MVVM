@@ -72,7 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _LogEvents: 0
   _forceResolveViewModel: 0
-  _overrideViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
   _identifier: 73ab69c2-49b9-4603-930b-507c92f12b28
   _KingMeStrategy: {fileID: 0}

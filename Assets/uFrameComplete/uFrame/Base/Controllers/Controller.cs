@@ -10,7 +10,7 @@ using System.Linq;
 /// A controller is a integral part of uFrame and is used for an extra layer connecting services and "Elements" of a
 /// game together.
 /// </summary>
-public abstract class Controller : IViewModelObserver
+public abstract class Controller
 {
     private List<IBinding> _bindings;
     private string _typeName;
@@ -18,11 +18,11 @@ public abstract class Controller : IViewModelObserver
 
   
 
-    public List<IBinding> Bindings
-    {
-        get { return _bindings ?? (_bindings = new List<IBinding>()); }
-        set { _bindings = value; }
-    }
+    //public List<IBinding> Bindings
+    //{
+    //    get { return _bindings ?? (_bindings = new List<IBinding>()); }
+    //    set { _bindings = value; }
+    //}
 
     public IGameContainer Container
     {
@@ -52,12 +52,13 @@ public abstract class Controller : IViewModelObserver
         }
     }
 
-    public void AddBinding(IBinding binding)
-    {
-        Bindings.Add(binding);
-        // This is key for controllers.  We want to bind it immediately
-        binding.Bind();
-    }
+    //public void AddBinding(IBinding binding)
+    //{
+        
+    //    Bindings.Add(binding);
+    //    // This is key for controllers.  We want to bind it immediately
+    //    binding.Bind();
+    //}
 
     //public virtual ViewModel Create(string identifier)
     //{
@@ -240,10 +241,10 @@ public abstract class Controller : IViewModelObserver
     {
     }
 
-    public void RemoveBinding(IBinding binding)
-    {
-        Bindings.Remove(binding);
-    }
+    //public void RemoveBinding(IBinding binding)
+    //{
+    //    Bindings.Remove(binding);
+    //}
 
     [Obsolete("No longer needed.  Use inject")]
     public virtual void Setup(IGameContainer container)
@@ -265,7 +266,7 @@ public abstract class Controller : IViewModelObserver
         GameManager.ActiveSceneManager.StopCoroutine(name);
     }
 
-    public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction)
+    public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction) where TViewModel : ViewModel
     {
         var binding = new ModelPropertyBinding()
         {
@@ -273,32 +274,32 @@ public abstract class Controller : IViewModelObserver
             ModelPropertySelector = () => sourceProperty,
             IsImmediate = false
         };
-        AddBinding(binding);
+        source.AddBinding(binding);
         return binding;
     }
 
-    public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
-    {
-        var binding = new ModelPropertyBinding()
-        {
-            SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty,
-            IsImmediate = false
-        };
-        AddBinding(binding);
-        return binding;
-    }
+    //public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
+    //{
+    //    var binding = new ModelPropertyBinding()
+    //    {
+    //        SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
+    //        ModelPropertySelector = () => (ModelPropertyBase)sourceProperty,
+    //        IsImmediate = false
+    //    };
+    //    sourceProperty().AddBinding(binding);
+    //    return binding;
+    //}
 
-    public void Unbind()
-    {
-        foreach (var binding in Bindings)
-        {
-            binding.Unbind();
-        }
+    //public void Unbind()
+    //{
+    //    foreach (var binding in Bindings)
+    //    {
+    //        binding.Unbind();
+    //    }
 
-        // Remove all the bindings that are not from a component
-        Bindings.RemoveAll(p => !p.IsComponent);
-    }
+    //    // Remove all the bindings that are not from a component
+    //    Bindings.RemoveAll(p => !p.IsComponent);
+    //}
 
     public abstract void WireCommands(ViewModel viewModel);
 

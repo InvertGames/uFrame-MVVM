@@ -286,7 +286,7 @@ public class FPSMainMenuManagerBase : SceneManager {
         this.FPSMenuController = new FPSMenuController();
         this.Container.RegisterInstance(this.FPSMenuController, false);
         this.Container.InjectAll();
-        Container.RegisterInstance<FPSMenuViewModel>(FPSMenuController.CreateEmpty() as FPSMenuViewModel, false);
+        Container.RegisterInstance<FPSMenuViewModel>(SetupViewModel<FPSMenuViewModel>(FPSMenuController, "FPSMenu"));
     }
     
     public virtual void Play() {
@@ -341,19 +341,19 @@ public class WavesFPSGameManagerBase : SceneManager {
         this.Container.RegisterInstance(this.FPSWeaponController, false);
         this.Container.InjectAll();
         if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.WavesFPSGame)) {
-            WavesFPSGameViewModel wavesFPSGame = SetupViewModel<WavesFPSGameViewModel>(WavesFPSGameController,"FPSGame") as WavesFPSGameViewModel;
+            WavesFPSGameViewModel wavesFPSGame = SetupViewModel<WavesFPSGameViewModel>(WavesFPSGameController,"FPSGame");
             Container.RegisterInstance<WavesFPSGameViewModel>(wavesFPSGame, false);
             Container.RegisterInstance<FPSGameViewModel>(wavesFPSGame, false);
             Container.RegisterInstance<FPSGameController>(WavesFPSGameController, false);
         }
         if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.DeathMatchGame)) {
-            DeathMatchGameViewModel deathMatchGame = DeathMatchGameController.CreateEmpty() as DeathMatchGameViewModel;
+            DeathMatchGameViewModel deathMatchGame = SetupViewModel<DeathMatchGameViewModel>(DeathMatchGameController,"FPSGame");
             Container.RegisterInstance<DeathMatchGameViewModel>(deathMatchGame, false);
             Container.RegisterInstance<FPSGameViewModel>(deathMatchGame, false);
             Container.RegisterInstance<FPSGameController>(DeathMatchGameController, false);
         }
         if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.FPSGame)) {
-            FPSGameViewModel fPSGame = FPSGameController.CreateEmpty() as FPSGameViewModel;
+            FPSGameViewModel fPSGame = SetupViewModel<FPSGameViewModel>(FPSGameController,"FPSGame");
             Container.RegisterInstance<FPSGameViewModel>(fPSGame, false);
         }
     }

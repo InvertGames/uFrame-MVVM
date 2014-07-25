@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ public class SceneManagerInspector : uFrameInspector
 
             }
 
-            if (GUI.Button(UBEditor.GetRect(UFStyles.ButtonStyle), "To Json", UFStyles.ButtonStyle))
+            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), "To Json", ElementDesignerStyles.ButtonStyle))
             {
                 var fileStorage = new TextAssetStorage();
                 var stringStorage = new StringSerializerStorage();

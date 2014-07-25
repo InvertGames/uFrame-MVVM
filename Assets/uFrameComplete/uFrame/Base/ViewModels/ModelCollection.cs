@@ -215,6 +215,14 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection
         if (handler != null)
             handler(changeargs);
     }
+
+    public void AddRange(IEnumerable<T> value)
+    {
+        foreach (var item in value)
+        {
+            Add(item);
+        }
+    }
 }
 
 public class ModelCollectionChangeEvent

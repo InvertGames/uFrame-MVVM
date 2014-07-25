@@ -59,6 +59,8 @@ namespace Invert.uFrame.Editor
     {
         public static Type FindType(string name)
         {
+            //if (string.IsNullOrEmpty(name)) return null;
+
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var t = assembly.GetType(name);
@@ -281,7 +283,10 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance(new AddElementCommandCommand());
             container.RegisterInstance(new AddElementCollectionCommand());
             container.RegisterInstance(new AddElementPropertyCommand());
+            
             container.RegisterInstance(new AddEnumItemCommand());
+
+            container.RegisterInstance(new AddViewPropertyCommand());
 
             container.RegisterInstance<IEditorCommand>(new RemoveNodeItemCommand(),"RemoveNodeItem");
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
@@ -146,7 +147,7 @@ namespace Invert.uFrame.Editor
             }
             
           
-            var style = UFStyles.Background;
+            var style = ElementDesignerStyles.Background;
             style.border = new RectOffset(
                 Mathf.RoundToInt(41),
                 Mathf.RoundToInt(41),
@@ -190,7 +191,7 @@ namespace Invert.uFrame.Editor
                             every10 = 0;
                         }
                         Handles.DrawLine(new Vector2(x, 0f), new Vector2(x, Screen.height + _scrollPosition.y));
-                        x += Diagram.Data.Settings.SnapSize * UFStyles.Scale;
+                        x += Diagram.Data.Settings.SnapSize * ElementDesignerStyles.Scale;
                         every10++;
                     }
                     var y = 3f;
@@ -204,7 +205,7 @@ namespace Invert.uFrame.Editor
                             every10 = 0;
                         }
                         Handles.DrawLine(new Vector2(0, y), new Vector2(Screen.width + _scrollPosition.x, y));
-                        y += Diagram.Data.Settings.SnapSize * UFStyles.Scale;
+                        y += Diagram.Data.Settings.SnapSize * ElementDesignerStyles.Scale;
                         every10++;
                     }
                 }

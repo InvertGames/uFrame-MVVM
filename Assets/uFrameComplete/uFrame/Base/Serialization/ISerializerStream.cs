@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,30 +37,4 @@ public interface ISerializerStream
     byte[] Save();
     Dictionary<string, IUFSerializable> ReferenceObjects { get; set; }
     ITypeResolver TypeResolver { get; set; }
-}
-
-public interface ITypeResolver
-{
-    Type GetType(string name);
-    string SetType(Type type);
-    object CreateInstance(string name, string identifier);
-}
-
-public class DefaultTypeResolver : ITypeResolver
-{
-    public Type GetType(string name)
-    {
-        return Type.GetType(name);
-    }
-
-    public string SetType(Type type)
-    {
-        return type.AssemblyQualifiedName;
-    }
-
-    public virtual object CreateInstance(string name,string identifier)
-    {
-
-        return Activator.CreateInstance(GetType(name));
-    }
 }

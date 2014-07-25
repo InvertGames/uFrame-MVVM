@@ -80,7 +80,7 @@ public abstract class ViewClassGenerator : CodeGenerator
             else
             {
                 var viewPrefabField = AddPropertyBindingField(decl, typeof(GameObject).FullName, propertyData.Name, "Prefab");
-                setterMethod.Statements.Add(new CodeConditionStatement(new CodeSnippetExpression(string.Format("value == null && {0} != null",viewPrefabField.Name)),
+                setterMethod.Statements.Add(new CodeConditionStatement(new CodeSnippetExpression(string.Format("value == null && {0} != null", viewPrefabField.Name)),
                     new CodeExpressionStatement(
                         new CodeMethodInvokeExpression(null,
                             "Destroy",
@@ -175,6 +175,43 @@ public abstract class ViewClassGenerator : CodeGenerator
         return memberField;
     }
 
+    public CodeMemberMethod CreateUpdateMethod(ViewData view)
+    {
+        var updateMethod = new CodeMemberMethod()
+        {
+            Attributes = MemberAttributes.Family | MemberAttributes.Override,
+            Name = "Apply"
+        };
+        var element = view.ViewForElement;
+        var dirtyCondition =
+            new CodeConditionStatement(new CodeSnippetExpression(string.Format("{0}.Dirty", element.Name)));
+        updateMethod.Statements.Add(dirtyCondition);
+        // Create cached properties of monobehaviour types
+        var componentTypeName = view.Properties.GroupBy(p => p.ComponentTypeName);
+        foreach (var propertyGroup in componentTypeName)
+        {
+            var statements = updateMethod.Statements;
+            if (propertyGroup.Key == typeof(Transform).FullName)
+            {
+                var ifTransformChanged = new CodeConditionStatement(new CodeSnippetExpression("Transform.hasChanged"));
+                updateMethod.Statements.Add(ifTransformChanged);
+                statements = ifTransformChanged.TrueStatements;
+            }
+            foreach (var viewPropertyData in propertyGroup)
+            {
+                dirtyCondition.TrueStatements.Add(
+                    new CodeAssignStatement(new CodeSnippetExpression(viewPropertyData.Expression),
+                        new CodeSnippetExpression(string.Format("{0}.{1}", element.Name, viewPropertyData.NameAsProperty))));
+
+                statements.Add(new CodeAssignStatement(new CodeSnippetExpression(string.Format("{0}.{1}", element.Name, viewPropertyData.NameAsProperty)),
+                    new CodeSnippetExpression(viewPropertyData.Expression)));
+            }
+
+        }
+        updateMethod.Statements.Add(new CodeSnippetExpression(string.Format("{0}.Dirty = false", element.Name)));
+
+        return updateMethod;
+    }
     public void AddViewBase(ElementData data, string className = null, string baseClassName = null)
     {
         Decleration = new CodeTypeDeclaration(className ?? data.NameAsViewBase)
@@ -217,9 +254,9 @@ public abstract class ViewClassGenerator : CodeGenerator
                     new CodeMethodReturnStatement(new CodePrimitiveExpression(data.Name)));
                 Decleration.Members.Add(defaultIdentifierProperty);
             }
-            
+           
         }
-        
+
         var viewModelTypeProperty = new CodeMemberProperty
         {
             Attributes = MemberAttributes.Override | MemberAttributes.Public,
@@ -469,7 +506,7 @@ public abstract class ViewClassGenerator : CodeGenerator
 
         decl.Members.Add(removeHandlerMethod);
 
-        if (relatedElement != null)
+        if (relatedElement != null && DiagramData.Settings.GenerateDefaultBindings)
         {
             var createHandlerMethod = new CodeMemberMethod()
             {
@@ -477,8 +514,14 @@ public abstract class ViewClassGenerator : CodeGenerator
                 Name = collectionProperty.NameAsCreateHandler,
                 ReturnType = new CodeTypeReference(typeof(ViewBase))
             };
-            createHandlerMethod.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "InstantiateView", new CodeVariableReferenceExpression(varName))));
+
+
             createHandlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(varTypeName, varName));
+            if (DiagramData.Settings.GenerateDefaultBindings)
+            {
+                createHandlerMethod.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "InstantiateView", new CodeVariableReferenceExpression(varName))));
+            }
+
             decl.Members.Add(createHandlerMethod);
 
             statements.Add(

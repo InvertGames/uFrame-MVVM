@@ -1,4 +1,5 @@
 using System;
+using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -99,8 +100,8 @@ public abstract class BeizureLink : IDiagramLink
     public virtual void DrawBeizure(Rect s, Rect e, Color color, float width)
     {
         //var swap = start.center.x < end.center.x;
-        var start = s.Scale(UFStyles.Scale);
-        var end = e.Scale(UFStyles.Scale);
+        var start = s.Scale(ElementDesignerStyles.Scale);
+        var end = e.Scale(ElementDesignerStyles.Scale);
         var startPosLeft = new Vector3(start.x, (start.y + start.height / 2f) - 4, 0f);
         var startPosRight = new Vector3(start.x + start.width, (start.y + start.height / 2f) - 4, 0f);
 
@@ -141,20 +142,20 @@ public abstract class BeizureLink : IDiagramLink
     {
         if (StartStyle == NodeCurvePointStyle.Circle)
         {
-            GUI.DrawTexture(new Rect(_startPos.x, _startPos.y, 16f, 16f), UFStyles.CircleTexture);
+            GUI.DrawTexture(new Rect(_startPos.x, _startPos.y, 16f, 16f), ElementDesignerStyles.CircleTexture);
         }
         else
         {
-            GUI.DrawTexture(new Rect(_startPos.x, _startPos.y, 16f, 16f), _startRight ? UFStyles.ArrowRightTexture : UFStyles.ArrowLeftTexture);
+            GUI.DrawTexture(new Rect(_startPos.x, _startPos.y, 16f, 16f), _startRight ? ElementDesignerStyles.ArrowRightTexture : ElementDesignerStyles.ArrowLeftTexture);
         }
 
         if (EndStyle == NodeCurvePointStyle.Triangle)
         {
-            GUI.DrawTexture(new Rect(_endPos.x, _endPos.y, 16f, 16f), _startRight ? UFStyles.ArrowLeftTexture : UFStyles.ArrowRightTexture);
+            GUI.DrawTexture(new Rect(_endPos.x, _endPos.y, 16f, 16f), _startRight ? ElementDesignerStyles.ArrowLeftTexture : ElementDesignerStyles.ArrowRightTexture);
         }
         else
         {
-            GUI.DrawTexture(new Rect(_endPos.x, _endPos.y, 16f, 16f), UFStyles.CircleTexture);
+            GUI.DrawTexture(new Rect(_endPos.x, _endPos.y, 16f, 16f), ElementDesignerStyles.CircleTexture);
         }
     }
 }

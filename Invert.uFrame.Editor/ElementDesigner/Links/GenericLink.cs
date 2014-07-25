@@ -1,3 +1,4 @@
+using Invert.Common;
 using UnityEngine;
 
 public class GenericLink : BeizureLink

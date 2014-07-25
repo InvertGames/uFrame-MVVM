@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Invert.Common;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEngine;
@@ -23,7 +24,7 @@ public class NodeItemHeader : IDrawable
 
     public void Draw(ElementsDiagram diagram, float scale,GUIStyle textColorStyle)
     {
-        var style = UFStyles.HeaderStyle;//.Scale(scale);
+        var style = ElementDesignerStyles.HeaderStyle;//.Scale(scale);
         style.normal.textColor = textColorStyle.normal.textColor;
         style.fontStyle = FontStyle.Bold;
 
@@ -35,7 +36,7 @@ public class NodeItemHeader : IDrawable
         btnRect.height = 16;
         if (AddCommand != null)
         {
-            if (GUI.Button(btnRect.Scale(scale), string.Empty, UFStyles.AddButtonStyle))
+            if (GUI.Button(btnRect.Scale(scale), string.Empty, ElementDesignerStyles.AddButtonStyle))
             {
                 // This is a ugly hack but it'll get r dun
                 diagram.DeselectAll();

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using UnityEngine;
 
 public class SceneManagerDrawer : DiagramNodeDrawer<SceneManagerData>
@@ -19,7 +20,7 @@ public class SceneManagerDrawer : DiagramNodeDrawer<SceneManagerData>
         get
         {
 
-            return UFStyles.DiagramBox7;
+            return ElementDesignerStyles.DiagramBox7;
         }
     }
 
@@ -53,7 +54,7 @@ public class SceneManagerDrawer : DiagramNodeDrawer<SceneManagerData>
 
     public override GUIStyle ItemStyle
     {
-        get { return UFStyles.Item4; }
+        get { return ElementDesignerStyles.Item4; }
     }
 
 }

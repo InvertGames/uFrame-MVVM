@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
+using Invert.Common;
 using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
@@ -23,15 +24,15 @@ public class ElementDrawer : DiagramNodeDrawer<ElementData>
         {
             if (Data.IsTemplate)
             {
-                return UFStyles.DiagramBox4;
+                return ElementDesignerStyles.DiagramBox4;
             }
-            return UFStyles.DiagramBox3;
+            return ElementDesignerStyles.DiagramBox3;
         }
     }
 
     public override GUIStyle ItemStyle
     {
-        get { return UFStyles.Item4; }
+        get { return ElementDesignerStyles.Item4; }
     }
 
     public ElementDrawer(ElementData data, ElementsDiagram diagram)
@@ -106,7 +107,7 @@ public class ElementDrawer : DiagramNodeDrawer<ElementData>
     {
         if (!Data.IsMultiInstance)
         {
-            return UFStyles.BoxHighlighter4;
+            return ElementDesignerStyles.BoxHighlighter4;
         }
         return base.GetHighlighter();
     }
@@ -194,7 +195,7 @@ public class ElementDrawer : DiagramNodeDrawer<ElementData>
         {
             rtn = ElementDataBase.TypeNameAliases[rtn];
         }
-        if (GUILayout.Button(rtn, UFStyles.ClearItemStyle))
+        if (GUILayout.Button(rtn, ElementDesignerStyles.ClearItemStyle))
         {
             var commandName = item.GetType().Name.Replace("Data", "") + "TypeSelection";
             var command = Container.Resolve<IEditorCommand>(commandName);
@@ -226,7 +227,7 @@ public class ElementDrawer : DiagramNodeDrawer<ElementData>
             GUILayout.BeginHorizontal();
             GUILayout.Space(7);
 
-            var style = new GUIStyle(UFStyles.ClearItemStyle)
+            var style = new GUIStyle(ElementDesignerStyles.ClearItemStyle)
             {
                 fontStyle = FontStyle.Normal,
                 alignment = TextAnchor.MiddleLeft,

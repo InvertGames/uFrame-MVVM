@@ -6,7 +6,7 @@ using UnityEngine;
 /// A base class for all view containers.
 /// Simply just utility methods for views and events.
 /// </summary>
-public class ViewContainer : ViewModelObserver
+public class ViewContainer : MonoBehaviour
 {
     public virtual TView CreateView<TView>() where TView : ViewBase
     {

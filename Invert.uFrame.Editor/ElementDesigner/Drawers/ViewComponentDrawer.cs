@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using UnityEngine;
 
 public class ViewComponentDrawer : DiagramNodeDrawer<ViewComponentData>
@@ -11,7 +12,7 @@ public class ViewComponentDrawer : DiagramNodeDrawer<ViewComponentData>
         get
         {
 
-            return UFStyles.DiagramBox6;
+            return ElementDesignerStyles.DiagramBox6;
         }
     }
 
@@ -48,7 +49,7 @@ public class ViewComponentDrawer : DiagramNodeDrawer<ViewComponentData>
 
     public override GUIStyle ItemStyle
     {
-        get { return UFStyles.Item4; }
+        get { return ElementDesignerStyles.Item4; }
     }
 
 }

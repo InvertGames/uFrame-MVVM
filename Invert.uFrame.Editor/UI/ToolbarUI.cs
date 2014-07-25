@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
@@ -68,10 +69,10 @@ namespace Invert.uFrame.Editor
 
         public void GoBottom()
         {
-            var scale = GUILayout.HorizontalSlider(UFStyles.Scale, 0.55f, 1f, GUILayout.Width(200f));
-            if (scale != UFStyles.Scale)
+            var scale = GUILayout.HorizontalSlider(ElementDesignerStyles.Scale, 0.55f, 1f, GUILayout.Width(200f));
+            if (scale != ElementDesignerStyles.Scale)
             {
-                UFStyles.Scale = scale;
+                ElementDesignerStyles.Scale = scale;
                 Handler.ExecuteCommand(new ScaleCommand() { Scale = scale });
 
             }

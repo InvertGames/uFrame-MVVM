@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -26,7 +27,7 @@ public class uFrameInspector : Editor
     {
         //GUI.Label();
       
-        UFStyles.DoTilebar(subTitle);
+        ElementDesignerStyles.DoTilebar(subTitle);
         EditorGUILayout.Space();
 
     }

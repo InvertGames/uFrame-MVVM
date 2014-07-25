@@ -1,3 +1,5 @@
+using Invert.Common;
+
 namespace Invert.uFrame.Editor.ElementDesigner.Commands
 {
     public class ScaleCommand : EditorCommand<float>
@@ -7,7 +9,7 @@ namespace Invert.uFrame.Editor.ElementDesigner.Commands
         public override void Perform(float node)
         {
 
-            UFStyles.Scale = Scale;
+            ElementDesignerStyles.Scale = Scale;
 
             
         }

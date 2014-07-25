@@ -210,7 +210,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
 
     public ElementDataBase RootElement
     {
-        get { return AllBaseTypes.LastOrDefault(); }
+        get { return AllBaseTypes.LastOrDefault() ?? this; }
     }
 
     public virtual string ViewModelAssemblyQualifiedName

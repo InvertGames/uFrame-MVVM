@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using UnityEngine;
 
 public class SubSystemDrawer : DiagramNodeDrawer<SubSystemData>
@@ -11,7 +12,7 @@ public class SubSystemDrawer : DiagramNodeDrawer<SubSystemData>
         get
         {
 
-            return UFStyles.DiagramBox1;
+            return ElementDesignerStyles.DiagramBox1;
         }
     }
 
@@ -49,7 +50,7 @@ public class SubSystemDrawer : DiagramNodeDrawer<SubSystemData>
 
     public override GUIStyle ItemStyle
     {
-        get { return UFStyles.Item4; }
+        get { return ElementDesignerStyles.Item4; }
     }
 
 }

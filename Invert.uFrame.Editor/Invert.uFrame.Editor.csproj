@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Invert.uBehaviours, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Invert.uBehaviours.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -91,6 +87,7 @@
     <Compile Include="ElementDesigner\Data\IElementDesignerData.cs" />
     <Compile Include="ElementDesigner\Data\JsonElementDesignerData.cs" />
     <Compile Include="ElementDesigner\Data\Json\JsonRepository.cs" />
+    <Compile Include="ElementDesigner\Data\ViewPropertyData.cs" />
     <Compile Include="ElementDesigner\Drawers\ExternalNodeDrawer.cs" />
     <Compile Include="ElementsDesigner.cs" />
     <Compile Include="Extensions\UFramePluginProcessor.cs" />
@@ -214,6 +211,7 @@
     <Compile Include="ElementDesigner\Data\ViewModelPropertyData.cs" />
     <Compile Include="Extensions\UFrameAssetManager.cs" />
     <Compile Include="Windows\ElementDiagramSettingsWindow.cs" />
+    <Compile Include="Windows\uFrameComponentSearchWindow.cs" />
     <Compile Include="Windows\uFrameExtensionsWindow.cs" />
     <Compile Include="Windows\uFrameStartDialog.cs" />
     <Compile Include="Windows\uFrameToolsWindow.cs" />
@@ -221,9 +219,9 @@
     <Compile Include="Extensions\uFrameVersionProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Invert.uBehaviours.Editor\Invert.uBehaviours.Editor.csproj">
-      <Project>{b9147095-b836-4396-875f-9a1aeb8e94cf}</Project>
-      <Name>Invert.uBehaviours.Editor</Name>
+    <ProjectReference Include="..\Invert.Common\Invert.Common.csproj">
+      <Project>{346c6b33-6fb0-40d1-b8a6-eb2144c10a5c}</Project>
+      <Name>Invert.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

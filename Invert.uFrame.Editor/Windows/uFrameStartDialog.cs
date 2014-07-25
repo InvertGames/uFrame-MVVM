@@ -1,3 +1,4 @@
+using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ public class uFrameStartDialog : EditorWindow
     public static void DrawTitleBar(string subTitle)
     {
         //GUI.Label();
-        UFStyles.DoTilebar(subTitle);
+        ElementDesignerStyles.DoTilebar(subTitle);
     }
 
     public void OnGUI()

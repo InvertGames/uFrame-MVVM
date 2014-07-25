@@ -18,6 +18,7 @@ public class ElementDiagramSettings : IJsonObject
         cls.Add("SubSystemLinkColor", SerializeColor(_subSystemLinkColor));
         cls.Add("TransitionLinkColor", SerializeColor(_transitionLinkColor));
         cls.Add("ViewLinkColor", SerializeColor(_viewLinkColor));
+        cls.Add("GemerateDefaultBindings", new JSONData(GenerateDefaultBindings));
     }
 
     public JSONNode SerializeColor(Color color)
@@ -57,7 +58,10 @@ public class ElementDiagramSettings : IJsonObject
 
         GridLinesColor = DeserializeColor(cls["GridLinesColor"], new Color(0.337f, 0.337f, 0.337f));
         GridLinesColorSecondary = DeserializeColor(cls["GridLinesColorSecondary"], new Color(0.3f, 0.3f, 0.3f));
-
+        if (cls["GemerateDefaultBindings"] != null)
+        {
+            GenerateDefaultBindings = cls["GemerateDefaultBindings"].AsBool;
+        }
     }
 
     public Color GridLinesColorSecondary
@@ -91,6 +95,7 @@ public class ElementDiagramSettings : IJsonObject
 
     private Color _gridLinesColor = new Color(0.337f, 0.337f, 0.337f);
     private Color _gridLinesColorSecondary = new Color(0.3f, 0.3f, 0.3f);
+    private bool _generateDefaultBindings = true;
 
     public Color AssociationLinkColor
     {
@@ -156,6 +161,13 @@ public class ElementDiagramSettings : IJsonObject
     {
         get { return _gridLinesColor; }
         set { _gridLinesColor = value; }
+    }
+
+
+    public bool GenerateDefaultBindings
+    {
+        get { return _generateDefaultBindings; }
+        set { _generateDefaultBindings = value; }
     }
 
     public JSONNode Serialize()

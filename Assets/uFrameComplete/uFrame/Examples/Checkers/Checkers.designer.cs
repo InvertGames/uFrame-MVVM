@@ -14,8 +14,11 @@ public partial class CheckerBoardViewModel : ViewModel {
         get {
             return _CheckersProperty;
         }
-        set {
-            _CheckersProperty.Value = value.ToList();
+        set
+        {
+            _CheckersProperty.Clear();
+            _CheckersProperty.AddRange(value);
+            
         }
     }
     
@@ -24,7 +27,9 @@ public partial class CheckerBoardViewModel : ViewModel {
             return _PlatesProperty;
         }
         set {
-            _PlatesProperty.Value = value.ToList();
+            _PlatesProperty.Clear();
+            _PlatesProperty.AddRange(value);
+           
         }
     }
     

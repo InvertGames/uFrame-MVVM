@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -66,11 +67,11 @@ public class ImportTypeListWindow : EditorWindow
             var filteredItems = group.Where(p => _labelSelector(p).ToUpper().Contains(upperSearchText)).OrderBy(p => _labelSelector(p)).ToArray();
             if (filteredItems.Length < 1) continue;
 
-            GUILayout.Box(group.Key, UFStyles.SubHeaderStyle);
+            GUILayout.Box(group.Key, ElementDesignerStyles.SubHeaderStyle);
 
             foreach (var item in filteredItems)
             {
-                if (GUILayout.Button(_labelSelector(item), UFStyles.ButtonStyle))
+                if (GUILayout.Button(_labelSelector(item), ElementDesignerStyles.ButtonStyle))
                 {
                     _OnAdd(item);
                 }

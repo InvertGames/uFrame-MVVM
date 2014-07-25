@@ -17,11 +17,13 @@ public class ViewData : DiagramNode, ISubSystemType
     [SerializeField]
     private string _forAssemblyQualifiedName;
 
+    private List<ViewPropertyData> _properties;
+
     public override string SubTitle
     {
         get { return BaseViewName; }
     }
-    
+
     /// <summary>
     /// The baseview class if any
     /// </summary>
@@ -29,7 +31,7 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get
         {
-            
+
             if (string.IsNullOrEmpty(BaseViewIdentifier)) return null;
             return Data.Views.FirstOrDefault(p => p.Identifier == BaseViewIdentifier);
         }
@@ -42,6 +44,12 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get { return _baseViewIdentifier; }
         set { _baseViewIdentifier = value; }
+    }
+
+    public List<ViewPropertyData> Properties
+    {
+        get { return _properties ?? (_properties = new List<ViewPropertyData>()); }
+        set { _properties = value; }
     }
 
     /// <summary>
@@ -84,8 +92,12 @@ public class ViewData : DiagramNode, ISubSystemType
 
     public override IEnumerable<IDiagramNodeItem> ContainedItems
     {
-        get { yield break; }
-        set { }
+        get
+        {
+            
+            return this.Properties.Cast<IDiagramNodeItem>().ToArray();
+        }
+        set { this.Properties = value.OfType<ViewPropertyData>().ToList(); }
     }
 
     public Type CurrentViewType
@@ -187,10 +199,10 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         base.Deserialize(cls);
         _forAssemblyQualifiedName = cls["ForAssemblyQualifiedName"].Value;
-        
+
         _baseViewIdentifier = cls["BaseViewIdentifier"].Value;
         _componentIdentifiers = cls["ComponentIdentifiers"].AsArray.DeserializePrimitiveArray(n => n.Value).ToList();
-     
+
     }
 
     public override bool EndEditing()
