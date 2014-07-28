@@ -51,7 +51,7 @@ public class ViewGenerator : ViewClassGenerator
         {
             var viewViewBase = View.BaseView != null;
             decl.BaseTypes.Add(new CodeTypeReference(viewViewBase ? view.NameAsViewViewBase : view.BaseViewName));
-            decl.Members.Add(CreateUpdateMethod(view));
+            decl.Members.Add(CreateUpdateMethod(view,decl));
         }
         else
         {

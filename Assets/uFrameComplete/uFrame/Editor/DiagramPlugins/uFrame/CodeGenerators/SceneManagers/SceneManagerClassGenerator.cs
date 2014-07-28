@@ -139,7 +139,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
                     new CodeAssignStatement(property,
                         new CodeObjectCreateExpression(element.NameAsController)
                         );
-                setupMethod.Statements.Add(assignProperty);
+                setupMethod.Statements.Add(new CodeSnippetExpression(string.Format("this.{0} = new {0}() {{ Container = Container, Context = Context }}", element.NameAsController)));
 
                 var registerInstance = new CodeMethodInvokeExpression(
                     new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Container"), "RegisterInstance");

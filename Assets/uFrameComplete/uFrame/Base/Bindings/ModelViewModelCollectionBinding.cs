@@ -185,9 +185,9 @@ public class ModelViewModelCollectionBinding : Binding
     {
         if (obj == null || viewModel == null) return;
         var instanceId = obj.GetInstanceID();
-        //if (!GameObjectLookup.ContainsKey(instanceId))
+        if (!GameObjectLookup.ContainsKey(instanceId))
         GameObjectLookup.Add(instanceId, obj);
-        //if (!ObjectIdLookup.ContainsKey(viewModel))
+        if (!ObjectIdLookup.ContainsKey(viewModel))
         ObjectIdLookup.Add(viewModel, instanceId);
     }
 

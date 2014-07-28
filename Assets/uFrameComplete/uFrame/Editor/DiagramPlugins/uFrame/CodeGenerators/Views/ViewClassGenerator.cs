@@ -175,17 +175,18 @@ public abstract class ViewClassGenerator : CodeGenerator
         return memberField;
     }
 
-    public CodeMemberMethod CreateUpdateMethod(ViewData view)
+    public CodeMemberMethod CreateUpdateMethod(ViewData view, CodeTypeDeclaration decl)
     {
         var updateMethod = new CodeMemberMethod()
         {
             Attributes = MemberAttributes.Family | MemberAttributes.Override,
             Name = "Apply"
         };
+        updateMethod.Statements.Add(new CodeSnippetExpression("base.Apply()"));
         var element = view.ViewForElement;
         var dirtyCondition =
             new CodeConditionStatement(new CodeSnippetExpression(string.Format("{0}.Dirty", element.Name)));
-        updateMethod.Statements.Add(dirtyCondition);
+        //updateMethod.Statements.Add(dirtyCondition);
         // Create cached properties of monobehaviour types
         var componentTypeName = view.Properties.GroupBy(p => p.ComponentTypeName);
         foreach (var propertyGroup in componentTypeName)
@@ -196,7 +197,18 @@ public abstract class ViewClassGenerator : CodeGenerator
                 var ifTransformChanged = new CodeConditionStatement(new CodeSnippetExpression("Transform.hasChanged"));
                 updateMethod.Statements.Add(ifTransformChanged);
                 statements = ifTransformChanged.TrueStatements;
+
+
+
             }
+            var first = propertyGroup.First();
+            var viewPropertyFieldDecleration = new CodeMemberField(propertyGroup.Key, first.NameAsCachedPropertyField);
+            var viewPropertyDecleration = viewPropertyFieldDecleration.EncapsulateField(first.NameAsCachedProperty,
+                new CodeSnippetExpression(string.Format("this.GetComponent<{0}>()", propertyGroup.Key)));
+
+            decl.Members.Add(viewPropertyFieldDecleration);
+            decl.Members.Add(viewPropertyDecleration);
+
             foreach (var viewPropertyData in propertyGroup)
             {
                 dirtyCondition.TrueStatements.Add(

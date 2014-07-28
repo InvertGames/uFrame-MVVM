@@ -51,37 +51,37 @@ public class ViewModelGenerator : CodeGenerator
                 new CodeAttributeDeclaration(new CodeTypeReference(typeof(DiagramInfoAttribute)),
                     new CodeAttributeArgument(new CodePrimitiveExpression(DiagramData.Name))));
             CreateViewProperties(data);
-            AddWireCommandsMethod(data,Decleration,new CodeTypeReference(data.NameAsViewModel));
+            AddWireCommandsMethod(data, Decleration, new CodeTypeReference(data.NameAsViewModel));
         }
-        var constructor = new CodeConstructor()
-        {
-            Name = Decleration.Name,
-            Attributes = MemberAttributes.Public,
-            
-        };
-        constructor.BaseConstructorArgs.Add(new CodeSnippetExpression(""));
-        Decleration.Members.Add(constructor);
-        var constructorWithController = new CodeConstructor()
-        {
-            Name = Decleration.Name,
-            Attributes = MemberAttributes.Public
-        };
-        constructorWithController.ChainedConstructorArgs.Add(new CodeSnippetExpression(""));
 
-        constructorWithController.Parameters.Add(new CodeParameterDeclarationExpression(Data.NameAsControllerBase, "controller"));
-        constructorWithController.Statements.Add(
-            new CodeAssignStatement(
-                new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Controller"),
-                new CodeSnippetExpression("controller")));
-
-        Decleration.Members.Add(constructorWithController);
         Decleration.IsPartial = true;
         if (IsDesignerFile)
         {
+            var constructor = new CodeConstructor()
+                {
+                    Name = Decleration.Name,
+                    Attributes = MemberAttributes.Public,
+                };
+            constructor.BaseConstructorArgs.Add(new CodeSnippetExpression(""));
+            Decleration.Members.Add(constructor);
+            var constructorWithController = new CodeConstructor()
+            {
+                Name = Decleration.Name,
+                Attributes = MemberAttributes.Public
+            };
+            constructorWithController.ChainedConstructorArgs.Add(new CodeSnippetExpression(""));
+
+            constructorWithController.Parameters.Add(new CodeParameterDeclarationExpression(Data.NameAsControllerBase, "controller"));
+            constructorWithController.Statements.Add(
+                new CodeAssignStatement(
+                    new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Controller"),
+                    new CodeSnippetExpression("controller")));
+
+            Decleration.Members.Add(constructorWithController);
             // Now Generator code here
             foreach (var viewModelPropertyData in data.Properties)
             {
-                Decleration.Members.Add(ToCodeMemberField(viewModelPropertyData,constructor));
+                Decleration.Members.Add(ToCodeMemberField(viewModelPropertyData, constructor));
                 Decleration.Members.Add(ToCodeMemberProperty(viewModelPropertyData));
             }
             foreach (var viewModelPropertyData in data.Collections)
@@ -131,11 +131,11 @@ public class ViewModelGenerator : CodeGenerator
             else if (relatedNode is ElementData)
             {
                 var elementNode = relatedNode as ElementData;
-                var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeObject(\"{0}\", this.{0});",viewModelPropertyData.Name));
+                var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeObject(\"{0}\", this.{0});", viewModelPropertyData.Name));
                 writeMethod.Statements.Add(statement);
 
                 var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.DeserializeObject<{1}>(\"{0}\");", viewModelPropertyData.Name, elementNode.NameAsViewModel));
-                readMethod.Statements.Add(dstatement);    
+                readMethod.Statements.Add(dstatement);
             }
             else
             {
@@ -146,9 +146,9 @@ public class ViewModelGenerator : CodeGenerator
                 writeMethod.Statements.Add(statement);
 
                 var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]));
-                readMethod.Statements.Add(dstatement);    
+                readMethod.Statements.Add(dstatement);
             }
-            
+
         }
         foreach (var collection in data.Collections)
         {
@@ -192,7 +192,7 @@ public class ViewModelGenerator : CodeGenerator
         AddViewModel(Data);
     }
 
-    public virtual CodeMemberField ToCodeMemberField(ViewModelPropertyData itemData,CodeConstructor constructor)
+    public virtual CodeMemberField ToCodeMemberField(ViewModelPropertyData itemData, CodeConstructor constructor)
     {
         var field = new CodeMemberField { Name = itemData.FieldName };
 
@@ -468,16 +468,16 @@ public class ViewModelGenerator : CodeGenerator
                 Debug.LogError(string.Format("The name '{0}' already exists on the element '{1}'.", name, data.Name));
                 continue;
             }
-            
+
             var viewFieldDecleration = new CodeMemberField()
             {
                 Type = new CodeTypeReference(viewProperty.MemberType),
                 Name = viewProperty.NameAsField,
                 Attributes = MemberAttributes.Private
             };
-            
-            var viewPropertyDecleration = viewFieldDecleration.EncapsulateField(name,null,null, true);//,
-                //new CodeSnippetExpression(string.Format("this.GetComponent<{0}>()", viewProperty.MemberType)));
+
+            var viewPropertyDecleration = viewFieldDecleration.EncapsulateField(name, null, null, true);//,
+            //new CodeSnippetExpression(string.Format("this.GetComponent<{0}>()", viewProperty.MemberType)));
 
             viewPropertyDecleration.Attributes = MemberAttributes.Public;
             viewPropertyDecleration.SetStatements.Add(new CodeSnippetExpression("Dirty = true"));

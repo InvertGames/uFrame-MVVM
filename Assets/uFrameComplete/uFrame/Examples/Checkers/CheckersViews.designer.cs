@@ -151,6 +151,7 @@ public abstract class CheckerBoardViewBase : ViewBase {
     }
 }
 
+
 [DiagramInfoAttribute("Checkers")]
 public abstract class CheckerMoveViewBase : ViewBase {
     
@@ -285,6 +286,7 @@ public abstract class CheckerPlateViewBase : ViewBase {
         checkerPlate.IsEven = this._IsEven;
     }
 }
+
 
 [DiagramInfoAttribute("Checkers")]
 public abstract class CheckersGameViewBase : ViewBase {

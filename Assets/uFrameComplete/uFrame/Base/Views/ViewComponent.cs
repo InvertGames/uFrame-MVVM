@@ -15,7 +15,15 @@ public abstract class ViewComponent : MonoBehaviour, IBindingProvider
     public virtual void Awake()
     {
         if (View == null) return;
-        View.BindingProviders.Add(this);
+        if (View.IsBound)
+        {
+            this.Bind(View);
+        }
+        else
+        {
+            View.BindingProviders.Add(this);
+        }
+        
     }
 
     public virtual void Bind(ViewBase view)

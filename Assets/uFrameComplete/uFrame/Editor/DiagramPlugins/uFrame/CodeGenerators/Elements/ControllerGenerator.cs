@@ -172,6 +172,8 @@ public class ControllerGenerator : CodeGenerator
                 property.GetStatements.Add(
                     new CodeMethodReturnStatement(
                         new CodeSnippetExpression(string.Format("Container.Resolve<{0}>()", data.NameAsViewModel))));
+
+                
                 tDecleration.Members.Add(property);
             }
         }
@@ -274,7 +276,7 @@ public class ControllerGenerator : CodeGenerator
             var createEmptyMethod = new CodeMemberMethod
             {
                 Name = "CreateEmpty",
-                Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                Attributes = MemberAttributes.Family | MemberAttributes.Override,
                 ReturnType = new CodeTypeReference(typeof(ViewModel))
             };
             //createOverrideMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof (Action<ViewModel>),
@@ -293,6 +295,7 @@ public class ControllerGenerator : CodeGenerator
     private void AddWireCommandsMethod(ElementData data, CodeTypeDeclaration tDecleration,
         CodeTypeReference viewModelTypeReference)
     {
+        return;
         var wireMethod = new CodeMemberMethod { Name = string.Format("WireCommands") };
         tDecleration.Members.Add(wireMethod);
         wireMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)),

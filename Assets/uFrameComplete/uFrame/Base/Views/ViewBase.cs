@@ -11,6 +11,7 @@ using UnityEngine;
 public abstract class ViewBase : ViewContainer,IViewModelObserver
 {
     
+
     /// <summary>
     /// The View Event delegate that takes a string for the event name.
     /// </summary>
@@ -145,7 +146,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
 
             _Model = value;
             // Should we rebind?
-            if (_bound)
+            if (IsBound)
             {
                 Unbind();
                 SetupBindings();
@@ -337,7 +338,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             _Model = CreateModel();
         }
 
-        if (_bound)
+        if (IsBound)
             return;
         // Initialize the model
         if (ViewModelObject != null) ViewModelObject.References++;
@@ -366,7 +367,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         }
 
         // Mark this view as bound
-        _bound = true;
+        IsBound = true;
 
         AfterBind();
     }
@@ -385,7 +386,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         // If its instantiated then we dont want to recall
         // the bindings init because instantiate does that already
         if (Instantiated) return;
-        if (ParentView == null || ParentView._bound)
+        if (ParentView == null || ParentView.IsBound)
         {
             SetupBindings();
         }
@@ -418,7 +419,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     public void AddBinding(IBinding binding)
     {
         Bindings.Add(binding);
-        if (_bound)
+        if (IsBound)
         {
             binding.Bind();
         }
@@ -441,7 +442,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         foreach (var bindingProvider in BindingProviders)
             bindingProvider.Unbind(this);
 
-        _bound = false;
+        IsBound = false;
     }
 
     /// <summary>
@@ -500,6 +501,12 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         get { return GameManager.ActiveSceneManager; }
     }
 
+    public bool IsBound
+    {
+        get { return _bound; }
+        set { _bound = value; }
+    }
+
     protected ViewModel RequestViewModel(Controller controller)
     {
         return SceneManager.RequestViewModel(this, controller, Identifier);
@@ -521,37 +528,37 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         //}
 
         //controller.Create(Identifier, InitializeViewModel);
-        if (ForceResolveViewModel || !IsMultiInstance)
-        {
-            if (string.IsNullOrEmpty(_resolveName))
-            {
-                if (OverrideViewModel)
-                    return controller.GetByType(Identifier, ViewModelType, true, InitializeViewModel);
+        //if (ForceResolveViewModel || !IsMultiInstance)
+        //{
+        //    if (string.IsNullOrEmpty(_resolveName))
+        //    {
+        //        if (OverrideViewModel)
+        //            return controller.GetByType(Identifier, ViewModelType, true, InitializeViewModel);
 
-                return controller.GetByType(Identifier, ViewModelType, false);
-            }
-            if (OverrideViewModel)
-                return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
-            else
-                return controller.Create(Identifier); //controller.Create(InitializeViewModel);
-            if (OverrideViewModel)
-                return controller.GetByName(_resolveName, true, InitializeViewModel);
+        //        return controller.GetByType(Identifier, ViewModelType, false);
+        //    }
+        //    if (OverrideViewModel)
+        //        return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
+        //    else
+        //        return controller.Create(Identifier); //controller.Create(InitializeViewModel);
+        //    if (OverrideViewModel)
+        //        return controller.GetByName(_resolveName, true, InitializeViewModel);
 
-            return controller.GetByName(_resolveName, false);
-        }
+        //    return controller.GetByName(_resolveName, false);
+        //}
 
-        if (IsMultiInstance)
-        {
-            //if (ForceResolveViewModel)
-            //{
-            //    return controller.GetByType(Identifier, ViewModelType, OverrideViewModel, InitializeViewModel);
-            //}
-            if (OverrideViewModel)
-                return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
-            else
-                return controller.Create(Identifier); //controller.Create(InitializeViewModel);
-        }
-        return controller.Create(Identifier);
+        //if (IsMultiInstance)
+        //{
+        //    //if (ForceResolveViewModel)
+        //    //{
+        //    //    return controller.GetByType(Identifier, ViewModelType, OverrideViewModel, InitializeViewModel);
+        //    //}
+        //    if (OverrideViewModel)
+        //        return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
+        //    else
+        //        return controller.Create(Identifier); //controller.Create(InitializeViewModel);
+        //}
+        //return controller.Create(Identifier);
     }
 
     protected ViewModel ResolveViewModel(Controller controller = null)

@@ -66,6 +66,15 @@ public class ViewPropertyData : DiagramNodeItem
             return name.Substring(0, 1).ToUpper() + name.Substring(1);
         }
     }
+    public string NameAsCachedPropertyField
+    {
+        get
+        {
+            var name = ComponentTypeName.Split('.').Last();
+
+            return string.Format("_{0}{1}", name.Substring(0, 1).ToLower(), name.Substring(1));
+        }
+    }
     public string ComponentTypeName
     {
         get { return _componentTypeName; }

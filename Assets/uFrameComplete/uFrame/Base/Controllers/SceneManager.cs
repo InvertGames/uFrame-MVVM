@@ -16,6 +16,7 @@ public abstract class SceneManager : ViewContainer
 {
     private List<ViewBase> _rootViews;
     private SceneContext _context;
+    private bool _InjectViews = true;
 
     public IGameContainer Container
     {
@@ -133,7 +134,8 @@ public abstract class SceneManager : ViewContainer
     }
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller, string identifier)
     {
-        
+        if (_InjectViews)
+        Container.Inject(viewBase);
         var contextViewModel = Context[identifier];
         if (contextViewModel == null)
         {

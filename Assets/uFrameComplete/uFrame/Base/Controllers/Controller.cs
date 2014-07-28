@@ -1,4 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 /// <summary>
 /// A controller is a group of commands usually to provide an abstract level
 /// </summary>
@@ -7,11 +11,54 @@ public abstract class Controller
 
     private SceneContext _context;
     
-
+#if TESTS
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
     public IGameContainer Container { get; set; }
+        /// <summary>
+    /// The scene context that contains the View-Models for the current scene.
+    /// </summary>
+    public SceneContext Context
+    {
+        get { return _context; }
+        set
+        {
+            _context = value;
+            if (value != null)
+            Container = value.Container;
+        }
+    }
+
+#else
+    /// <summary>
+    /// The dependency container that this controller will use
+    /// </summary>
+    public IGameContainer Container {
+        get
+        {
+            return GameManager.Container;
+        }
+        set
+        {
+            
+        }
+    }
+    /// <summary>
+    /// The scene context that contains the View-Models for the current scene.
+    /// </summary>
+    public SceneContext Context
+    {
+        get { return GameManager.ActiveSceneManager.Context; }
+        set
+        {
+            _context = value;
+            if (value != null)
+                Container = value.Container;
+        }
+    }
+
+#endif
 
     protected Controller()
     {
@@ -27,19 +74,6 @@ public abstract class Controller
         Context = context;
     }
 
-    /// <summary>
-    /// The scene context that contains the View-Models for the current scene.
-    /// </summary>
-    public SceneContext Context
-    {
-        get { return _context; }
-        set
-        {
-            _context = value;
-            if (value != null)
-            Container = value.Container;
-        }
-    }
 
     /// <summary>
     /// Create a new ViewModel. This will generate a Unique Identifier for the VM.  If this is a specific instance use the overload and pass
@@ -193,7 +227,7 @@ public abstract class Controller
     private void Event(ViewModel model, string message, params object[] additionalParameters)
     {
         var sceneManager = GameManager.ActiveSceneManager;
-        if (controller == null)
+        if (sceneManager == null)
         {
             throw new Exception("SceneManager is not set.");
         }
@@ -201,7 +235,7 @@ public abstract class Controller
 
         if (method == null)
         {
-            throw new Exception(string.Format("Event '{0}' was not found on {1}", message, controller));
+            throw new Exception(string.Format("Event '{0}' was not found on {1}", message, sceneManager));
         }
 
         if (model != null && method.GetParameters().Length > 0)
@@ -219,13 +253,13 @@ public abstract class Controller
                 list.Add(o);
             }
 
-            method.Invoke(controller, list.ToArray());
+            method.Invoke(sceneManager, list.ToArray());
             //result.Component = controller;
             //result.Execute();
         }
         else
         {
-            method.Invoke(controller, additionalParameters);
+            method.Invoke(sceneManager, additionalParameters);
         }
     }
 
@@ -241,4 +275,34 @@ public abstract class Controller
 /// </summary>
 public abstract class ElementService : Controller
 {
+}
+
+public class UFToggleGroup : Attribute
+{
+    public UFToggleGroup(string checkers)
+    {
+        Name = checkers;
+    }
+
+    public string Name { get; set; }
+}
+
+public class UFRequireInstanceMethod : Attribute
+{
+    public UFRequireInstanceMethod(string canmovetochanged)
+    {
+        MethodName = canmovetochanged;
+    }
+
+    public string MethodName { get; set; }
+}
+
+public class UFGroup : Attribute
+{
+    public UFGroup(string viewModelProperties)
+    {
+        Name = viewModelProperties;
+    }
+
+    public string Name { get; set; }
 }
