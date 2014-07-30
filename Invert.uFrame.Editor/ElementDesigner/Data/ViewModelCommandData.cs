@@ -39,6 +39,14 @@ public class ViewModelCommandData : DiagramNodeItem, IViewModelItem
         get { return true; }
     }
 
+    public IEnumerable<string> BindingMethodNames
+    {
+        get
+        {
+            yield break;
+        }
+    }
+
     public ElementData Element
     {
         get { return _element; }

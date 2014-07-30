@@ -6,4 +6,5 @@ public interface IViewModelItem : IDiagramNodeItem, IRefactorable
     string RelatedType { get; set; }
     string RelatedTypeName { get; }
     bool AllowEmptyRelatedType { get;  }
+    IEnumerable<string> BindingMethodNames { get; } 
 }
