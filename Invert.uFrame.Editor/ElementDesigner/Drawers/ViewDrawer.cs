@@ -41,6 +41,23 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
 
     private NodeItemHeader _behavioursHeader;
     private NodeItemHeader _propertiesHeader;
+    private NodeItemHeader _bindingsHeader;
+
+    public NodeItemHeader BindingsHeader
+    {
+        get
+        {
+            if (_bindingsHeader == null)
+            {
+                _bindingsHeader = Container.Resolve<NodeItemHeader>();
+                _bindingsHeader.Label = "Bindings";
+                _bindingsHeader.HeaderType = typeof(string);
+                _bindingsHeader.AddCommand = Container.Resolve<AddViewPropertyCommand>();
+            }
+            return _bindingsHeader;
+        }
+        set { _propertiesHeader = value; }
+    }
 
     public NodeItemHeader PropertiesHeader
     {
@@ -50,7 +67,7 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
             {
                 _propertiesHeader = Container.Resolve<NodeItemHeader>();
 
-                _propertiesHeader.Label = "Properties";
+                _propertiesHeader.Label = "2-Way Properties";
 
                 _propertiesHeader.HeaderType = typeof(ViewModelPropertyData);
                 _propertiesHeader.AddCommand = Container.Resolve<AddViewPropertyCommand>();
@@ -67,6 +84,16 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
             Header = PropertiesHeader,
             Items = Data.ContainedItems.ToArray()
         };
+        var vForElement = Data.ViewForElement;
+        if (vForElement != null)
+        {
+            yield return new DiagramSubItemGroup()
+            {
+                Header = BindingsHeader,
+                Items = Data.BindingMethods.Select(p=>(IDiagramNodeItem)(new BindingDiagramItem(p.Name))).ToArray()
+            };
+        }
+       
     }
 
     public override GUIStyle ItemStyle
@@ -90,6 +117,49 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
     {
         get { return true; }
     }
-    
-  
+
+}
+
+public class BindingDiagramItem : DiagramNodeItem
+{
+    public BindingDiagramItem(string methodName)
+    {
+        MethodName = methodName;
+    }
+
+    public string MethodName { get; set; }
+    public override string FullLabel
+    {
+        get { return MethodName; }
+    }
+
+    public override string Label
+    {
+        get { return MethodName; }
+    }
+
+    public override bool CanCreateLink(IDrawable target)
+    {
+        return false;
+    }
+
+    public override IEnumerable<IDiagramLink> GetLinks(IDiagramNode[] diagramNode)
+    {
+        yield break;
+    }
+
+    public override void Remove(IDiagramNode diagramNode)
+    {
+        
+    }
+
+    public override void RemoveLink(IDiagramNode target)
+    {
+        
+    }
+
+    public override void CreateLink(IDiagramNode container, IDrawable target)
+    {
+        
+    }
 }

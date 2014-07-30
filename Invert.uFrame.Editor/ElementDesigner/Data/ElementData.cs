@@ -1,3 +1,4 @@
+using System.Reflection;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using System;
@@ -101,7 +102,23 @@ public class ElementData : ElementDataBase, IDiagramFilter
         }
     }
 
-    
+    public IEnumerable<ElementData> ParentElements
+    {
+        get
+        {
+            foreach (var element in Data.Elements)
+            {
+                foreach (var item in element.ViewModelItems)
+                {
+                    if (item.RelatedType == this.AssemblyQualifiedName)
+                    {
+                        yield return element;
+                        break;
+                    }
+                }   
+            }
+        }
+    }
 
     public FilterCollapsedDictionary CollapsedValues
     {
@@ -170,6 +187,23 @@ public class ElementData : ElementDataBase, IDiagramFilter
             return base.Items;
         }
     }
+
+    public IEnumerable<string> BindingMethodNames
+    {
+        get
+        {
+            return ViewModelItems.SelectMany(p => p.BindingMethodNames);
+        }
+    }
+
+    public Type CurrentType
+    {
+        get
+        {
+            return Type.GetType(AssemblyQualifiedName);
+        }
+    }
+ 
 
     public FilterLocations Locations
     {

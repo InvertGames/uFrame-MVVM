@@ -92,7 +92,7 @@ public abstract class DiagramNodeDrawer<TData> : INodeDrawer where TData : IDiag
             }
             
 
-            return Math.Max(150f, maxLengthItem.x + 35);
+            return Math.Max(150f, maxLengthItem.x + 40);
         }
     }
 

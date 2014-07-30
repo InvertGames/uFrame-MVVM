@@ -1,3 +1,4 @@
+using System.Reflection;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using System;
@@ -108,12 +109,39 @@ public class ViewData : DiagramNode, ISubSystemType
         }
     }
 
+    public override string AssemblyQualifiedName
+    {
+        get { return UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsView); }
+    }
+
     public string ForAssemblyQualifiedName
     {
         get { return _forAssemblyQualifiedName; }
         set { _forAssemblyQualifiedName = value; }
     }
-
+    public IEnumerable<MethodInfo> BindingMethods
+    {
+        get
+        {
+            var element = ViewForElement;
+            if (element == null) yield break;
+            var vmType = this.CurrentViewType;
+            if (vmType == null)
+            {
+                Debug.Log("ITS NULL: " + this.AssemblyQualifiedName);
+                yield break;
+            }
+            var methods = vmType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+            var bindingMethodNames = element.BindingMethodNames.ToArray();
+            foreach (var method in methods)
+            {
+                if (bindingMethodNames.Contains(method.Name))
+                {
+                    yield return method;
+                }
+            }
+        }
+    } 
     public override IEnumerable<IDiagramNodeItem> Items
     {
         get

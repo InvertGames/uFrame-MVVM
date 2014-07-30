@@ -109,6 +109,14 @@ public class ViewModelPropertyData : DiagramNodeItem, IViewModelItem
         get { return false; }
     }
 
+    public IEnumerable<string> BindingMethodNames
+    {
+        get
+        {
+            yield return NameAsChangedMethod;
+        }
+    }
+
     public string FieldName
     {
         get

@@ -31,6 +31,15 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
         get { return false; }
     }
 
+    public IEnumerable<string> BindingMethodNames
+    {
+        get
+        {
+            yield return NameAsAddHandler;
+            yield return NameAsCreateHandler;
+        }
+    }
+
     public string FieldName
     {
         get
@@ -56,7 +65,10 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
     {
         get { return string.Format("{0}Added", Name); }
     }
-
+    public string NameAsAddRemove
+    {
+        get { return string.Format("{0}Removed", Name); }
+    }
     public string NameAsBindingOption
     {
         get { return string.Format("_Bind{0}", Name); }
