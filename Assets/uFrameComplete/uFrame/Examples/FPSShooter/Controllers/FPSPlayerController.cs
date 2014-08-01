@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class FPSPlayerController : FPSPlayerControllerBase
 {
+    
     public override void NextWeapon(FPSPlayerViewModel fPsPlayer)
     {
         fPsPlayer.CurrentWeapon.State = FPSWeaponState.Active;

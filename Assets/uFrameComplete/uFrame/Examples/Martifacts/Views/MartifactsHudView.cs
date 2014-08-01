@@ -6,6 +6,11 @@ using UnityEngine;
 
 public partial class MartifactsHudView
 {
+    public override string Identifier
+    {
+        get { return "BLABLABLABLABLA"; }
+    }
+
     public dfPanel _MessagePanel;
     public dfLabel _MessageTileLabel;
     public dfLabel _MessageLabel;

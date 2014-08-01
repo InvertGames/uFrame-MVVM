@@ -85,7 +85,7 @@ public partial class RoverView
         yield return new WaitForSeconds(2f);
         Camera.main.transform.position = _BirdView2.transform.position;
         //Camera.main.transform.rotation = _BirdView2.transform.rotation;
-        Camera.main.GetComponent<GlowEffect>().enabled = true;
+//        Camera.main.GetComponent<GlowEffect>().enabled = true;
         _ArtifactsContainer.gameObject.SetActive(true);
 
 
@@ -97,7 +97,7 @@ public partial class RoverView
             Camera.main.transform.positionTo(5f, _StartCameraPosition).setOnCompleteHandler((t) =>
             {
                 _ArtifactsContainer.gameObject.SetActive(false);
-                Camera.main.GetComponent<GlowEffect>().enabled = false;
+//                Camera.main.GetComponent<GlowEffect>().enabled = false;
             });
 
             Camera.main.transform.rotationTo(2f, _StartCameraEuler).setOnCompleteHandler((tween) =>

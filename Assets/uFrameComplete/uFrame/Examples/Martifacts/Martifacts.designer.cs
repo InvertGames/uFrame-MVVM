@@ -304,15 +304,6 @@ public partial class TileViewModel : TiledItemViewModel {
         }
     }
     
-    private MartifactsGameViewModel ParentMartifactsGame {
-        get {
-            return Parent as MartifactsGameViewModel;
-        }
-        set {
-            Parent = value;
-        }
-    }
-    
     public virtual bool Selected {
         get {
             return _SelectedProperty.Value;
@@ -404,16 +395,7 @@ public partial class RoverViewModel : ViewModel {
             Dirty = true;
         }
     }
-    
-    private MartifactsGameViewModel ParentMartifactsGame {
-        get {
-            return Parent as MartifactsGameViewModel;
-        }
-        set {
-            Parent = value;
-        }
-    }
-    
+
     public virtual int Battery {
         get {
             return _BatteryProperty.Value;
@@ -722,33 +704,8 @@ public partial class ArtifactViewModel : TiledItemViewModel {
         this.Controller = controller;
     }
     
-    private MartifactsGameViewModel ParentMartifactsGame {
-        get {
-            return Parent as MartifactsGameViewModel;
-        }
-        set {
-            Parent = value;
-        }
-    }
-    
-    private RoverViewModel ParentRover {
-        get {
-            return Parent as RoverViewModel;
-        }
-        set {
-            Parent = value;
-        }
-    }
-    
-    private FlatTileViewModel ParentFlatTile {
-        get {
-            return Parent as FlatTileViewModel;
-        }
-        set {
-            Parent = value;
-        }
-    }
-    
+
+
     public virtual ArtifactType Type {
         get {
             return _TypeProperty.Value;

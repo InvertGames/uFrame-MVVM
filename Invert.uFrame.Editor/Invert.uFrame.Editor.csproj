@@ -59,8 +59,10 @@
     <Compile Include="..\Assets\uFrameComplete\uFrame\Base\SimpleJSON.cs">
       <Link>SimpleJSON.cs</Link>
     </Compile>
+    <Compile Include="AddBindingWindow.cs" />
     <Compile Include="CodeFileGenerator.cs" />
     <Compile Include="CodeGenerator.cs" />
+    <Compile Include="SearchableScrollWindow.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsMultiInstanceCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsYieldCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Nodes\DeleteCommand.cs" />

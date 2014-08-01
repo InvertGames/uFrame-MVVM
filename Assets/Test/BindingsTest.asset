@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1589119517, guid: 8909b3110239b804886e7150f2263a2a, type: 3}
+  m_Name: BindingsTest
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"BindingsTest", "Version":"", "Identifier":"7ba8a55e-6b35-47a6-9dd1-ce2b5c297164",
+    "FilterState":{"_CLRType":"FilterState", "FilterStack":[ "MainSubSystem" ]}, "Settings":{"_CLRType":"ElementDiagramSettings",
+    "SnapSize":"10", "CodePathStrategyName":"Default", "GridLinesColor":{"r":"0.3161765",
+    "g":"0.3161765", "b":"0.3161765", "a":"1"}, "GridLinesColorSecondary":{"r":"0.3",
+    "g":"0.3", "b":"0.3", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1", "b":"1",
+    "a":"1"}, "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"}, "InheritanceLinkColor":{"r":"0",
+    "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5", "a":"1"}, "TransitionLinkColor":{"r":"1",
+    "g":"0.9215686", "b":"0.01568628", "a":"1"}, "ViewLinkColor":{"r":"0", "g":"0",
+    "b":"1", "a":"1"}, "GemerateDefaultBindings":"true"}, "SceneFlow":{"_CLRType":"SceneFlowFilter",
+    "Locations":{"56d87b59-ac53-432d-a93a-8bf901bebf77":{"x":"130", "y":"220"}}, "CollapsedValues":{}},
+    "Nodes":[ {"_CLRType":"SubSystemData", "Name":"MainSubSystem", "IsCollapsed":"false",
+    "Identifier":"56d87b59-ac53-432d-a93a-8bf901bebf77", "Items":[  ], "Locations":{"56d87b59-ac53-432d-a93a-8bf901bebf77":{"x":"40",
+    "y":"60"}, "7f28f2ab-351f-4cc7-8c2d-06b6b8479f8f":{"x":"40", "y":"150"}, "b8bd9ff4-cb3c-4c4b-87af-a893adfb9c3a":{"x":"340",
+    "y":"153"}, "2336dffe-9ac7-4169-bab9-6e24696ccdef":{"x":"561", "y":"93.5"}, "ba712923-08e1-4048-984b-82e42e92826e":{"x":"340",
+    "y":"280"}}, "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "Imports":[  ]},
+    {"_CLRType":"ElementData", "Name":"GameRootElement", "IsCollapsed":"false", "Identifier":"7f28f2ab-351f-4cc7-8c2d-06b6b8479f8f",
+    "Items":[ {"_CLRType":"ViewModelPropertyData", "Name":"TestProperty", "Identifier":"",
+    "ItemType":"System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+    "IsRealTime":"false"}, {"_CLRType":"ViewModelPropertyData", "Name":"TestVMProperty",
+    "Identifier":"", "ItemType":"GameSubElement, Assembly-CSharp, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null", "IsRealTime":"false"}, {"_CLRType":"ViewModelCollectionData",
+    "Name":"TestCollection", "Identifier":"", "ItemType":"System.String, mscorlib,
+    Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"}, {"_CLRType":"ViewModelCollectionData",
+    "Name":"TestVMCollection", "Identifier":"", "ItemType":"GameSubElement, Assembly-CSharp,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"} ], "Locations":{"7f28f2ab-351f-4cc7-8c2d-06b6b8479f8f":{"x":"40",
+    "y":"190"}, "985c2483-3cec-4356-b592-b48474c0b1c2":{"x":"330", "y":"80"}}, "CollapsedValues":{},
+    "Flags":{"_CLRType":"true"}, "IsTemplate":"false", "BaseType":"", "IsMultiInstance":"false"},
+    {"_CLRType":"ElementData", "Name":"GameSubElement", "IsCollapsed":"false", "Identifier":"b8bd9ff4-cb3c-4c4b-87af-a893adfb9c3a",
+    "Items":[  ], "Locations":{"b8bd9ff4-cb3c-4c4b-87af-a893adfb9c3a":{"x":"70", "y":"200"},
+    "d49f80cf-9318-4f65-8f5e-fb1b5484ba4f":{"x":"300", "y":"100"}}, "CollapsedValues":{},
+    "Flags":{"_CLRType":"true"}, "IsTemplate":"false", "BaseType":"", "IsMultiInstance":"false"},
+    {"_CLRType":"ViewData", "Name":"GameRootView", "IsCollapsed":"false", "Identifier":"985c2483-3cec-4356-b592-b48474c0b1c2",
+    "Items":[ {"_CLRType":"ViewPropertyData", "Name":"", "Identifier":"", "ComponentType":"UnityEngine.Transform",
+    "ComponentProperty":"position"}, {"_CLRType":"ViewPropertyData", "Name":"", "Identifier":"",
+    "ComponentType":"UnityEngine.Transform", "ComponentProperty":"localPosition"},
+    {"_CLRType":"ViewPropertyData", "Name":"", "Identifier":"", "ComponentType":"UnityEngine.Transform",
+    "ComponentProperty":"rotation"}, {"_CLRType":"ViewPropertyData", "Name":"", "Identifier":"",
+    "ComponentType":"UnityEngine.Transform", "ComponentProperty":"localRotation"},
+    {"_CLRType":"ViewPropertyData", "Name":"", "Identifier":"", "ComponentType":"UnityEngine.Transform",
+    "ComponentProperty":"localScale"}, {"_CLRType":"ViewPropertyData", "Name":"",
+    "Identifier":"", "ComponentType":"UnityEngine.Collider", "ComponentProperty":"enabled"}
+    ], "Flags":{"_CLRType":"true"}, "ForAssemblyQualifiedName":"GameRootElement, Assembly-CSharp,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "BaseViewIdentifier":"",
+    "ComponentIdentifiers":[  ]}, {"_CLRType":"ViewData", "Name":"GameSubElementView",
+    "IsCollapsed":"false", "Identifier":"d49f80cf-9318-4f65-8f5e-fb1b5484ba4f", "Items":[  ],
+    "Flags":{"_CLRType":"true"}, "ForAssemblyQualifiedName":"GameSubElement, Assembly-CSharp,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "BaseViewIdentifier":"",
+    "ComponentIdentifiers":[  ]}, {"_CLRType":"ElementData", "Name":"GameSubDerivedElement",
+    "IsCollapsed":"false", "Identifier":"2336dffe-9ac7-4169-bab9-6e24696ccdef", "Items":[  ],
+    "Locations":{"2336dffe-9ac7-4169-bab9-6e24696ccdef":{"x":"560", "y":"90"}, "d40ddfa0-394e-426f-9908-d71987ff0316":{"x":"220",
+    "y":"90"}}, "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "IsTemplate":"false",
+    "BaseType":"GameSubElement, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null", "IsMultiInstance":"false"}, {"_CLRType":"ViewData", "Name":"GameSubDerivedElementView",
+    "IsCollapsed":"false", "Identifier":"d40ddfa0-394e-426f-9908-d71987ff0316", "Items":[  ],
+    "Flags":{"_CLRType":"true"}, "ForAssemblyQualifiedName":"GameSubDerivedElement,
+    Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "BaseViewIdentifier":"d49f80cf-9318-4f65-8f5e-fb1b5484ba4f",
+    "ComponentIdentifiers":[  ]}, {"_CLRType":"ElementData", "Name":"Game2RootElement",
+    "IsCollapsed":"false", "Identifier":"ba712923-08e1-4048-984b-82e42e92826e", "Items":[
+    {"_CLRType":"ViewModelPropertyData", "Name":"DerviedTestProperty", "Identifier":"",
+    "ItemType":"System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+    "IsRealTime":"false"} ], "Locations":{"ba712923-08e1-4048-984b-82e42e92826e":{"x":"80",
+    "y":"200"}, "1f7215fe-8a74-40a6-9c7e-4b9b8115198c":{"x":"360", "y":"150"}}, "CollapsedValues":{},
+    "Flags":{"_CLRType":"true"}, "IsTemplate":"false", "BaseType":"GameRootElement,
+    Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "IsMultiInstance":"false"},
+    {"_CLRType":"ViewData", "Name":"Game2RootView", "IsCollapsed":"false", "Identifier":"1f7215fe-8a74-40a6-9c7e-4b9b8115198c",
+    "Items":[  ], "Flags":{"_CLRType":"true"}, "ForAssemblyQualifiedName":"Game2RootElement,
+    Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "BaseViewIdentifier":"985c2483-3cec-4356-b592-b48474c0b1c2",
+    "ComponentIdentifiers":[  ]} ]}'

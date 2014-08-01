@@ -1,4 +1,5 @@
-﻿using Invert.uFrame.Editor.ElementDesigner;
+﻿using Invert.uFrame.Code.Bindings;
+using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using System;
 using System.Collections.Generic;
@@ -110,6 +111,24 @@ namespace Invert.uFrame.Editor
             set { _plugins = value; }
         }
 
+        private static IBindingGenerator[] BindingGenerators { get; set; }
+
+        public static IEnumerable<IBindingGenerator> GetBindingGeneratorsFor(ElementData element,bool isOverride = true)
+        {
+            //var vmItems = new[] {element}.Concat(element.AllBaseTypes).SelectMany(p => p.ViewModelItems);
+            foreach (var viewModelItem in element.ViewModelItems)
+            {
+                var bindingGenerators = Container.ResolveAll<IBindingGenerator>();
+                foreach (var bindingGenerator in bindingGenerators)
+                {
+                    bindingGenerator.IsOverride = isOverride;
+                    bindingGenerator.Item = viewModelItem;
+                    
+                    if (bindingGenerator.IsApplicable)
+                    yield return bindingGenerator;
+                }
+            }
+        }
         public static IEnumerable<IEditorCommand> CreateCommandsFor<T>()
         {
             var commands = Container.ResolveAll<T>();
@@ -287,6 +306,7 @@ namespace Invert.uFrame.Editor
             container.RegisterInstance(new AddEnumItemCommand());
 
             container.RegisterInstance(new AddViewPropertyCommand());
+            container.RegisterInstance(new AddBindingCommand());
 
             container.RegisterInstance<IEditorCommand>(new RemoveNodeItemCommand(),"RemoveNodeItem");
 
@@ -346,6 +366,8 @@ namespace Invert.uFrame.Editor
             container.RegisterRelation<SceneManagerData, INodeDrawer, SceneManagerDrawer>();
             container.RegisterRelation<EnumData, INodeDrawer, DiagramEnumDrawer>();
 
+
+
 #if DEBUG
             //External Nodes
             //container.RegisterInstance<IDiagramContextCommand>(new ShowExternalItemCommand(), "AddNewExternalItemCommand");
@@ -366,6 +388,8 @@ namespace Invert.uFrame.Editor
                 diagramPlugin.Initialize(Container);
             }
             KeyBindings = Container.ResolveAll<IKeyBinding>().ToArray();
+            BindingGenerators = Container.ResolveAll<IBindingGenerator>().ToArray();
+
         }
 
 

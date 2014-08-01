@@ -62,7 +62,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
     {
         get
         {
-            if (IsControllerDerived)
+            if (IsDerived)
             {
                 return Type.GetType(UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", BaseTypeShortName.Replace("ViewModel", "") + "ControllerBase"));
             }
@@ -105,9 +105,9 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public bool IsControllerDerived
+    public bool IsDerived
     {
-        get { return !string.IsNullOrEmpty(BaseTypeName) && BaseTypeShortName != "ViewModel"; }
+        get { return BaseElement != null; }
     }
 
     public bool IsForcedMultiInstance

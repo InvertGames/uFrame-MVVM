@@ -277,10 +277,13 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
         set { _position = value; }
     }
 
-    public List<Refactorer> Refactorings
+    public virtual IEnumerable<Refactorer> Refactorings
     {
-        get { return _refactorings ?? (_refactorings = new List<Refactorer>()); }
-        set { _refactorings = value; }
+        get
+        {
+            if (RenameRefactorer != null)
+                yield return RenameRefactorer;
+        }
     }
 
     public RenameRefactorer RenameRefactorer { get; set; }
@@ -339,11 +342,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
             }
 
             RenameRefactorer.Set(this);
-            if (!Refactorings.Contains(RenameRefactorer))
-            {
-                Refactorings.Add(RenameRefactorer);
-                Data.RefactorCount++;
-            }
+            Data.RefactorCount++;
         }
         return true;
     }
@@ -352,7 +351,6 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
 
     public virtual void RefactorApplied()
     {
-        Refactorings.Clear();
         RenameRefactorer = null;
     }
 
@@ -364,7 +362,7 @@ public abstract class DiagramNode : IDiagramNode, IRefactorable
     //[DiagramContextMenu("Delete From All")]
     public virtual void RemoveFromDiagram()
     {
-        Data.RefactorCount -= Refactorings.Count;
+        Data.RefactorCount --;
     }
 
     [DiagramContextMenu("Hide", 1)]

@@ -11,6 +11,11 @@ using System.Reflection;
 [Serializable]
 public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModelObserver, INotifyPropertyChanged
 {
+    private Dictionary<string, ICommand> _commands;
+    private Dictionary<string, ModelPropertyBase> _modelProperties;
+    private Controller _controller;
+    private Dictionary<int, List<IBinding>> _bindings;
+
     //private List<IBinding> _bindings;
 
     public Dictionary<int, List<IBinding>> Bindings
@@ -52,11 +57,6 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModel
     public int References { get; set; }
 
     public virtual string Identifier { get; set; }
-
-    private Dictionary<string, ICommand> _commands;
-    private Dictionary<string, ModelPropertyBase> _modelProperties;
-    private Controller _controller;
-    private Dictionary<int, List<IBinding>> _bindings;
 
     /// <summary>
     ///Access a model property via string.  This is optimized using a compiled delegate to

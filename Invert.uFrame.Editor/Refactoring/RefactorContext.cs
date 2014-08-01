@@ -53,12 +53,12 @@ namespace Invert.uFrame.Editor.Refactoring
 
         public string CurrentFilename { get; set; }
 
-        public void RefactorFile(string filename)
+        public string RefactorFile(string filename,bool saveFile = true)
         {
-            if (!File.Exists(filename)) return;
+            if (!File.Exists(filename)) return "File does not exist.";
             CurrentFileText = File.ReadAllText(filename);
             CurrentFilename = filename; 
-            string strRegex = @"@?[_\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}][\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]*";
+            string strRegex = @"@?[_\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}][\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]*|\{|\}";
             var myRegex = new Regex(strRegex, RegexOptions.None);
             CurrentTokens = myRegex.Matches(CurrentFileText).OfType<Match>()
                 .Select(p => p.Value).ToArray();
@@ -72,14 +72,21 @@ namespace Invert.uFrame.Editor.Refactoring
             }
             var index = 0;
             CurrentFileText = myRegex.Replace(CurrentFileText, (m) => CurrentTokens[index++]);
+            if (saveFile)
             File.WriteAllText(filename,CurrentFileText);
-    
-                
+
+            return CurrentFileText;
         }
 
         public RefactorContext(List<Refactorer> refactors)
         {
             Refactors = refactors;
+        }
+
+        public RefactorContext(Refactorer refactor)
+        {
+            Refactors = new List<Refactorer>();
+            Refactors.Add(refactor);
         }
 
         public void Refactor(params string[] filenames)
