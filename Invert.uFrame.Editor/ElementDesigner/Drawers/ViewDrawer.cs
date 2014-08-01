@@ -79,25 +79,33 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
 
     protected override IEnumerable<DiagramSubItemGroup> GetItemGroups()
     {
-        yield return new DiagramSubItemGroup()
+    
+
+        if (Data.BaseNode is ElementData)
         {
-            Header = PropertiesHeader,
-            Items = Data.ContainedItems.ToArray()
-        };
-        var vForElement = Data.ViewForElement;
-        if (vForElement != null)
-        {
-            var existing =
-                Data.BindingMethods.Select(p => (IDiagramNodeItem) (new BindingDiagramItem(p.Name)));
-            var adding =
-                Data.NewBindings.Select(p => (IDiagramNodeItem) (new BindingDiagramItem("[Added] " + p.MethodName)));
             yield return new DiagramSubItemGroup()
             {
-                Header = BindingsHeader,
-                Items = existing.Concat(adding).ToArray()
+                Header = PropertiesHeader,
+                Items = Data.ContainedItems.ToArray()
             };
+
+            var vForElement = Data.ViewForElement;
+
+            if (vForElement != null)
+            {
+                var existing =
+                    Data.BindingMethods.Select(p => (IDiagramNodeItem)(new BindingDiagramItem(p.Name)));
+                var adding =
+                    Data.NewBindings.Select(p => (IDiagramNodeItem)(new BindingDiagramItem("[Added] " + p.MethodName)));
+
+                yield return new DiagramSubItemGroup()
+                {
+                    Header = BindingsHeader,
+                    Items = existing.Concat(adding).ToArray()
+                };
+            }
         }
-       
+
     }
 
     public override GUIStyle ItemStyle
@@ -141,7 +149,7 @@ public class BindingDiagramItem : DiagramNodeItem
     {
         get { return MethodName; }
     }
-    
+
     public override bool CanCreateLink(IDrawable target)
     {
         return false;
@@ -154,16 +162,16 @@ public class BindingDiagramItem : DiagramNodeItem
 
     public override void Remove(IDiagramNode diagramNode)
     {
-        
+
     }
 
     public override void RemoveLink(IDiagramNode target)
     {
-        
+
     }
 
     public override void CreateLink(IDiagramNode container, IDrawable target)
     {
-        
+
     }
 }

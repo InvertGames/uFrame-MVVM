@@ -144,7 +144,7 @@ public class ViewData : DiagramNode, ISubSystemType
             {
                 SetBindingMethods();
             }
-            return _bindingMethods;
+            return _bindingMethods ?? (_bindingMethods = new List<MethodInfo>());
         }
     }
 
@@ -231,7 +231,15 @@ public class ViewData : DiagramNode, ISubSystemType
 
     public ElementData ViewForElement
     {
-        get { return BaseNode as ElementData; }
+        get
+        {
+            var bn = BaseNode;
+            if (bn is ElementData)
+                return bn as ElementData;
+            
+            var data = bn as ViewData;
+            return data != null ? data.ViewForElement : null;
+        }
     }
 
     public override bool CanCreateLink(IDrawable target)

@@ -2,7 +2,14 @@ using System.Globalization;
 using UnityEngine;
 
 public partial class FPSWeaponView
-{
+{ 
+    public override void MaxZoomsChanged(int value) {
+        base.MaxZoomsChanged(value);
+    }
+    public override void FireSpeedChanged(float value) {
+        base.FireSpeedChanged(value);
+    }
+
     public float _CrossHairScale = 0.5f;
  
     public Transform _ZoomPositions;

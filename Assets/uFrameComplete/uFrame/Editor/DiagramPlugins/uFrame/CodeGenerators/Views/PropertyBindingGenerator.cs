@@ -71,6 +71,7 @@ namespace Invert.uFrame.Code.Bindings
         }
 
         public abstract void CreateBindingStatement(CodeTypeMemberCollection collection, CodeConditionStatement bindingCondition);
+        
         public override string ToString()
         {
             var cp = new CSharpCodeProvider();
@@ -257,6 +258,14 @@ namespace Invert.uFrame.Code.Bindings
         {
             get { return string.Format("_{0}List", Item.Name); }
         }
+        public string NameAsSceneFirstField
+        {
+            get { return string.Format("_{0}SceneFirst", Item.Name); }
+        }
+        public string NameAsContainerField
+        {
+            get { return string.Format("_{0}Container", Item.Name); }
+        }
         public override bool IsApplicable
         {
             get { return CollectionProperty != null; }
@@ -270,41 +279,57 @@ namespace Invert.uFrame.Code.Bindings
             }
         }
 
-        //public bool HasField(CodeTypeMemberCollection collection,string name)
-        //{
-        //    return collection.OfType<CodeMemberField>().Any(item => item.Name == name);
-        //}
+        public bool HasField(CodeTypeMemberCollection collection, string name)
+        {
+            return collection.OfType<CodeMemberField>().Any(item => item.Name == name);
+        }
+        public override void CreateMembers(CodeTypeMemberCollection collection)
+        {
+            base.CreateMembers(collection);
+           
+
+        }
 
         public override void CreateBindingStatement(CodeTypeMemberCollection collection, CodeConditionStatement bindingCondition)
         {
             if (bindingCondition.TrueStatements.Count > 0) return;
+            if (RelatedElement != null && GenerateDefaultImplementation)
+            {
+                if (!HasField(collection, NameAsListField))
+                {
+                    var listField = CreateBindingField(typeof(List<ViewModel>).FullName.Replace("ViewModel", RelatedElement.NameAsViewBase), CollectionProperty.Name, "List", true);
+                    collection.Add(listField);
+                }
 
-            if (RelatedElement != null)
+                if (!HasField(collection, NameAsSceneFirstField))
+                {
+                    var sceneFirstField = CreateBindingField(typeof(bool).FullName, CollectionProperty.Name,
+                        "SceneFirst");
+                    collection.Add(sceneFirstField);
+                }
+                if (!HasField(collection, NameAsContainerField))
+                {
+                    var containerField = CreateBindingField(typeof(Transform).FullName, CollectionProperty.Name,
+                        "Container");
+                    collection.Add(containerField);
+                }
+            }
+            if (RelatedElement != null && GenerateDefaultImplementation)
             {
                 bindingCondition.TrueStatements.Add(
                     new CodeSnippetExpression(string.Format("var binding = this.BindToViewCollection(() => {0}.{1})", ElementData.Name, CollectionProperty.FieldName)));
 
-
-                var listField = CreateBindingField(typeof(List<ViewModel>).FullName.Replace("ViewModel", RelatedElement.NameAsViewBase), CollectionProperty.Name, "List", true);
-                collection.Add(listField);
-
-                var sceneFirstField = CreateBindingField(typeof(bool).FullName, CollectionProperty.Name, "SceneFirst");
-                collection.Add(sceneFirstField);
-
-                var containerField = CreateBindingField(typeof(Transform).FullName, CollectionProperty.Name, "Container");
-                collection.Add(containerField);
-
                 var containerNullCondition =
                     new CodeConditionStatement(
-                        new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(containerField.Name),
+                        new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(NameAsContainerField),
                             CodeBinaryOperatorType.ValueEquality, new CodeSnippetExpression("null")));
 
-                containerNullCondition.FalseStatements.Add(new CodeSnippetExpression(string.Format("binding.SetParent({0})", containerField.Name)));
+                containerNullCondition.FalseStatements.Add(new CodeSnippetExpression(string.Format("binding.SetParent({0})", NameAsContainerField)));
                 bindingCondition.TrueStatements.Add(containerNullCondition);
 
                 var sceneFirstCondition =
                     new CodeConditionStatement(
-                        new CodeVariableReferenceExpression(sceneFirstField.Name));
+                        new CodeVariableReferenceExpression(NameAsSceneFirstField));
 
                 sceneFirstCondition.TrueStatements.Add(new CodeSnippetExpression("binding.ViewFirst()"));
                 bindingCondition.TrueStatements.Add(sceneFirstCondition);
@@ -314,8 +339,6 @@ namespace Invert.uFrame.Code.Bindings
                 bindingCondition.TrueStatements.Add(
                     new CodeSnippetExpression(string.Format("var binding = this.BindCollection(() => {0}.{1})", ElementData.Name,
                         CollectionProperty.FieldName)));
-
-
             }
         }
 
@@ -359,7 +382,6 @@ namespace Invert.uFrame.Code.Bindings
             }
             else
             {
-
                 bindingCondition.TrueStatements.Add(
                     new CodeSnippetExpression(string.Format("binding.SetAddHandler({0})",
                         MethodName)));
@@ -368,12 +390,13 @@ namespace Invert.uFrame.Code.Bindings
 
         public override void CreateMembers(CodeTypeMemberCollection collection)
         {
+            base.CreateMembers(collection);
             var addHandlerMethod = CreateMethodSignature(null, new CodeParameterDeclarationExpression(ParameterTypeName, VarName));
             if (GenerateDefaultImplementation)
             {
                 addHandlerMethod.Statements.Add(new CodeMethodInvokeExpression(
                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), NameAsListField), "Add",
-                    new CodeVariableReferenceExpression(RelatedElement.NameAsVariable)));
+                    new CodeVariableReferenceExpression("item")));
             }
 
             collection.Add(addHandlerMethod);
@@ -405,8 +428,14 @@ namespace Invert.uFrame.Code.Bindings
 
         }
 
+        public override string VarName
+        {
+            get { return "item"; }
+        }
+
         public override void CreateMembers(CodeTypeMemberCollection collection)
         {
+            base.CreateMembers(collection);
             //decl.Members.Add(addHandlerMethod);
             var removeHandlerMethod = CreateMethodSignature(null,
                 new CodeParameterDeclarationExpression(ParameterTypeName, VarName));
@@ -417,9 +446,9 @@ namespace Invert.uFrame.Code.Bindings
                 {
                     removeHandlerMethod.Statements.Add(new CodeMethodInvokeExpression(
                         new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), NameAsListField), "Remove",
-                        new CodeVariableReferenceExpression(RelatedElement.NameAsVariable)));
+                        new CodeVariableReferenceExpression("item")));
 
-                    removeHandlerMethod.Statements.Add(new CodeSnippetExpression(string.Format("UnityEngine.Object.Destroy({0}.gameObject)", RelatedElement.NameAsVariable)));
+                    removeHandlerMethod.Statements.Add(new CodeSnippetExpression("if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject)"));
                 }
             }
             collection.Add(removeHandlerMethod);

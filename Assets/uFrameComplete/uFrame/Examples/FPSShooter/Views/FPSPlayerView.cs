@@ -2,7 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public partial class FPSPlayerView : FPSPlayerViewBase
-{
+{ 
+    public override void WeaponsRemoved(FPSWeaponViewBase item) {
+        base.WeaponsRemoved(item);
+        this._WeaponsList.Remove(item);
+        if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject);
+    }
+    public override void WeaponsAdded(FPSWeaponViewBase item) {
+        base.WeaponsAdded(item);
+        this._WeaponsList.Add(item);
+    }
+ 
+    
     //public Transform _GunsTransform;
     //public List<ViewBase> _Weapons = new List<ViewBase>();
     public override void Awake()
@@ -44,15 +55,8 @@ public partial class FPSPlayerView : FPSPlayerViewBase
 
     public override void CurrentWeaponIndexChanged(int value)
     {
-        var jsonStream = new JsonStream();
-        FPSPlayer.Write(jsonStream);
-        var fileStorage = new FileSerializerStorage("MYFILENAME.txt");
-        fileStorage.Save(jsonStream);
-
-        SceneManager.Context.Load(fileStorage,new JsonStream());
-        SceneManager.Context.Load(fileStorage,new JsonStream());
-
         base.CurrentWeaponIndexChanged(value);
+        Debug.Log("WeaponIndexChanged");
         for (var i = 0; i < this._WeaponsList.Count; i++)
             _WeaponsList[i].gameObject.SetActive(i == value);
     }

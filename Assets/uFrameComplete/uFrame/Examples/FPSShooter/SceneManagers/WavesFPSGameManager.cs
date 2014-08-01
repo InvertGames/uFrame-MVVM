@@ -11,12 +11,7 @@ public class WavesFPSGameManager : WavesFPSGameManagerBase
     public TextAsset _SceneState;
     public override IEnumerator Load(UpdateProgressDelegate progress)
     {
-        // This is for the future scene serialization :) But not implemented entirely yet.
-        for (int index = 0; index < RootViews.Count; index++)
-        {
-            var persistableView = RootViews[index];
-            progress("Loading " + persistableView.name, (1f / RootViews.Count) * (index + 1));
-        }
+       
         yield break;
     }
 
@@ -28,10 +23,7 @@ public class WavesFPSGameManager : WavesFPSGameManagerBase
 
     public override void Setup()
     {
-        if (_SceneState != null)
-        {
-            Context.Load(new StringSerializerStorage() { Result = _SceneState.text }, new JsonStream() {UseReferences = true});
-        }
+    
         base.Setup();
         
     }

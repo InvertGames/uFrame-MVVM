@@ -23,7 +23,9 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins.UnityVS
             {
                 try
                 {
-                    EditorApplication.ExecuteMenuItem("Visual Studio Tools/Generate Project Files");
+                    
+                    //EditorApplication.ExecuteMenuItem("Visual Studio Tools/Generate Project Files");
+                    EditorApplication.ExecuteMenuItem("UnityVS/Generate Project Files");
                 }
                 catch
                 {

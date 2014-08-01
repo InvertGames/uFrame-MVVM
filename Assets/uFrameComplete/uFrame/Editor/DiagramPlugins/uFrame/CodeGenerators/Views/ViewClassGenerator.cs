@@ -29,7 +29,8 @@ public abstract class ViewClassGenerator : CodeGenerator
         {
             Name = "_Bind" + item.Name,
             Type = new CodeTypeReference(typeof(bool)),
-            Attributes = MemberAttributes.Public
+            Attributes = MemberAttributes.Public,
+            InitExpression = new CodePrimitiveExpression(true)
         };
 
         bindField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFToggleGroup)),
@@ -646,7 +647,7 @@ public abstract class ViewClassGenerator : CodeGenerator
 
     protected void GenerateBindingMembers(CodeTypeDeclaration decl,ElementData data)
     {
-        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data, false).ToArray();
+        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data, false, false).ToArray();
         foreach (var bindingGenerator in bindingGenerators)
         {
             bindingGenerator.CreateMembers(decl.Members);
@@ -676,10 +677,12 @@ public abstract class ViewClassGenerator : CodeGenerator
         //{
             preBindMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "PreBind"));
         //}
-        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data.ViewForElement, false).ToArray();
+        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data.ViewForElement,false, DiagramData.Settings.GenerateDefaultBindings).ToArray();
 
         foreach (var bindingGenerator in bindingGenerators)
         {
+            if (data.BindingMethods.All(p => p.Name != bindingGenerator.MethodName) &&
+                data.NewBindings.All(p => p.MethodName != bindingGenerator.MethodName)) continue;
 
             CodeConditionStatement bindingCondition = null;
             if (this.BindingConditionStatements.ContainsKey(bindingGenerator.BindingConditionFieldName))

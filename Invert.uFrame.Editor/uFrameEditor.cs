@@ -113,7 +113,7 @@ namespace Invert.uFrame.Editor
 
         private static IBindingGenerator[] BindingGenerators { get; set; }
 
-        public static IEnumerable<IBindingGenerator> GetBindingGeneratorsFor(ElementData element,bool isOverride = true)
+        public static IEnumerable<IBindingGenerator> GetBindingGeneratorsFor(ElementData element,bool isOverride = true,bool generateDefaultBindings = true)
         {
             //var vmItems = new[] {element}.Concat(element.AllBaseTypes).SelectMany(p => p.ViewModelItems);
             foreach (var viewModelItem in element.ViewModelItems)
@@ -123,7 +123,7 @@ namespace Invert.uFrame.Editor
                 {
                     bindingGenerator.IsOverride = isOverride;
                     bindingGenerator.Item = viewModelItem;
-                    
+                    bindingGenerator.GenerateDefaultImplementation = generateDefaultBindings;
                     if (bindingGenerator.IsApplicable)
                     yield return bindingGenerator;
                 }

@@ -4,6 +4,21 @@ using Random = UnityEngine.Random;
 
 public partial class FPSGameView
 {
+    public override void EnemiesAdded(FPSEnemyViewBase item)
+    {
+        base.EnemiesAdded(item);
+        this._EnemiesList.Add(item);
+        ((FPSEnemyView)item)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
+        item.transform.position = GetRandomSpawnPoint().position;
+    }
+
+    public override void EnemiesRemoved(FPSEnemyViewBase item)
+    {
+        base.EnemiesRemoved(item);
+        this._EnemiesList.Remove(item);
+        if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject);
+    }
+
     public Transform _SpawnPointsParent;
 
     public override void Bind()
@@ -47,13 +62,13 @@ public partial class FPSGameView
         gameObject.SetActive(value != FPSGameState.Paused);
     }
 
-    public override void EnemiesAdded(FPSEnemyViewBase enemy)
-    {
-        base.EnemiesAdded(enemy);
-        ((FPSEnemyView) enemy)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
-        enemy.transform.position = GetRandomSpawnPoint().position;
+    //public override void EnemiesAdded(FPSEnemyViewBase enemy)
+    //{
+    //    base.EnemiesAdded(enemy);
+    //    ((FPSEnemyView) enemy)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
+    //    enemy.transform.position = GetRandomSpawnPoint().position;
 
-    }
+    //}
 
     public Transform GetRandomSpawnPoint()
     {

@@ -72,6 +72,7 @@ namespace Invert.uFrame.Code.Bindings
         bool IsApplicable { get; }
         bool IsOverride { get; set; }
         string BindingConditionFieldName { get; }
+        bool GenerateDefaultImplementation { get; set; }
         void CreateMembers(CodeTypeMemberCollection collection);
         void CreateBindingStatement(CodeTypeMemberCollection collection, CodeConditionStatement bindingCondition);
     }

@@ -192,7 +192,7 @@ public abstract class FPSGameViewBase : ViewBase {
     public virtual void EnemiesAdded(FPSEnemyViewBase item) {
     }
     
-    public virtual void EnemiesRemoved(FPSEnemyViewBase value) {
+    public virtual void EnemiesRemoved(FPSEnemyViewBase item) {
     }
     
     public virtual ViewBase CreateEnemiesView(FPSEnemyViewModel value) {
@@ -257,7 +257,7 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     public virtual void WeaponsAdded(FPSWeaponViewBase item) {
     }
     
-    public virtual void WeaponsRemoved(FPSWeaponViewBase value) {
+    public virtual void WeaponsRemoved(FPSWeaponViewBase item) {
     }
     
     public virtual ViewBase CreateWeaponsView(FPSWeaponViewModel value) {
@@ -622,25 +622,15 @@ public partial class FPSGameView : FPSGameViewBase {
     [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState;
+    public bool _BindState = true;
     
     [UFToggleGroup("CurrentPlayer")]
     [UnityEngine.HideInInspector()]
-    public bool _BindCurrentPlayer;
-    
-    [UFToggleGroup("Score")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("ScoreChanged")]
-    public bool _BindScore;
-    
-    [UFToggleGroup("Kills")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("KillsChanged")]
-    public bool _BindKills;
+    public bool _BindCurrentPlayer = true;
     
     [UFToggleGroup("Enemies")]
     [UnityEngine.HideInInspector()]
-    public bool _BindEnemies;
+    public bool _BindEnemies = true;
     
     [UnityEngine.HideInInspector()]
     public System.Collections.Generic.List<FPSEnemyViewBase> _EnemiesList;
@@ -666,12 +656,6 @@ public partial class FPSGameView : FPSGameViewBase {
         if (this._BindCurrentPlayer) {
             this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
         }
-        if (this._BindScore) {
-            this.BindProperty(()=>FPSGame._ScoreProperty, this.ScoreChanged);
-        }
-        if (this._BindKills) {
-            this.BindProperty(()=>FPSGame._KillsProperty, this.KillsChanged);
-        }
         if (this._BindEnemies) {
             var binding = this.BindToViewCollection(() => FPSGame._EnemiesProperty);
             if ((_EnemiesContainer == null)) {
@@ -694,67 +678,27 @@ public partial class FPSWeaponView : FPSWeaponViewBase {
     [UFToggleGroup("Ammo")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("AmmoChanged")]
-    public bool _BindAmmo;
+    public bool _BindAmmo = true;
     
     [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState;
+    public bool _BindState = true;
     
     [UFToggleGroup("ZoomIndex")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("ZoomIndexChanged")]
-    public bool _BindZoomIndex;
+    public bool _BindZoomIndex = true;
     
     [UFToggleGroup("MaxZooms")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("MaxZoomsChanged")]
-    public bool _BindMaxZooms;
-    
-    [UFToggleGroup("WeaponType")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("WeaponTypeChanged")]
-    public bool _BindWeaponType;
-    
-    [UFToggleGroup("ReloadTime")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("ReloadTimeChanged")]
-    public bool _BindReloadTime;
-    
-    [UFToggleGroup("RoundSize")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("RoundSizeChanged")]
-    public bool _BindRoundSize;
-    
-    [UFToggleGroup("MinSpread")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("MinSpreadChanged")]
-    public bool _BindMinSpread;
-    
-    [UFToggleGroup("BurstSize")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("BurstSizeChanged")]
-    public bool _BindBurstSize;
-    
-    [UFToggleGroup("RecoilSpeed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("RecoilSpeedChanged")]
-    public bool _BindRecoilSpeed;
+    public bool _BindMaxZooms = true;
     
     [UFToggleGroup("FireSpeed")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("FireSpeedChanged")]
-    public bool _BindFireSpeed;
-    
-    [UFToggleGroup("BurstSpeed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("BurstSpeedChanged")]
-    public bool _BindBurstSpeed;
-    
-    [UFToggleGroup("SpreadMultiplier")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("SpreadMultiplierChanged")]
-    public bool _BindSpreadMultiplier;
+    public bool _BindFireSpeed = true;
     
     protected override void Apply() {
         base.Apply();
@@ -775,32 +719,8 @@ public partial class FPSWeaponView : FPSWeaponViewBase {
         if (this._BindMaxZooms) {
             this.BindProperty(()=>FPSWeapon._MaxZoomsProperty, this.MaxZoomsChanged);
         }
-        if (this._BindWeaponType) {
-            this.BindProperty(()=>FPSWeapon._WeaponTypeProperty, this.WeaponTypeChanged);
-        }
-        if (this._BindReloadTime) {
-            this.BindProperty(()=>FPSWeapon._ReloadTimeProperty, this.ReloadTimeChanged);
-        }
-        if (this._BindRoundSize) {
-            this.BindProperty(()=>FPSWeapon._RoundSizeProperty, this.RoundSizeChanged);
-        }
-        if (this._BindMinSpread) {
-            this.BindProperty(()=>FPSWeapon._MinSpreadProperty, this.MinSpreadChanged);
-        }
-        if (this._BindBurstSize) {
-            this.BindProperty(()=>FPSWeapon._BurstSizeProperty, this.BurstSizeChanged);
-        }
-        if (this._BindRecoilSpeed) {
-            this.BindProperty(()=>FPSWeapon._RecoilSpeedProperty, this.RecoilSpeedChanged);
-        }
         if (this._BindFireSpeed) {
             this.BindProperty(()=>FPSWeapon._FireSpeedProperty, this.FireSpeedChanged);
-        }
-        if (this._BindBurstSpeed) {
-            this.BindProperty(()=>FPSWeapon._BurstSpeedProperty, this.BurstSpeedChanged);
-        }
-        if (this._BindSpreadMultiplier) {
-            this.BindProperty(()=>FPSWeapon._SpreadMultiplierProperty, this.SpreadMultiplierChanged);
         }
     }
 }
@@ -810,11 +730,11 @@ public partial class FPSPlayerView : FPSPlayerViewBase {
     [UFToggleGroup("CurrentWeaponIndex")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
-    public bool _BindCurrentWeaponIndex;
+    public bool _BindCurrentWeaponIndex = true;
     
     [UFToggleGroup("Weapons")]
     [UnityEngine.HideInInspector()]
-    public bool _BindWeapons;
+    public bool _BindWeapons = true;
     
     [UnityEngine.HideInInspector()]
     public System.Collections.Generic.List<FPSWeaponViewBase> _WeaponsList;
@@ -856,26 +776,6 @@ public partial class FPSPlayerView : FPSPlayerViewBase {
 
 public partial class FPSPlayerHUDView : FPSPlayerViewBase {
     
-    [UFToggleGroup("CurrentWeaponIndex")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
-    public bool _BindCurrentWeaponIndex;
-    
-    [UFToggleGroup("Weapons")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindWeapons;
-    
-    [UnityEngine.HideInInspector()]
-    public System.Collections.Generic.List<FPSWeaponViewBase> _WeaponsList;
-    
-    [UFGroup("Weapons")]
-    [UnityEngine.HideInInspector()]
-    public bool _WeaponsSceneFirst;
-    
-    [UFGroup("Weapons")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.Transform _WeaponsContainer;
-    
     protected override void Apply() {
         base.Apply();
         FPSPlayer.Dirty = false;
@@ -883,42 +783,10 @@ public partial class FPSPlayerHUDView : FPSPlayerViewBase {
     
     protected override void PreBind() {
         base.PreBind();
-        if (this._BindCurrentWeaponIndex) {
-            this.BindProperty(()=>FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
-        }
-        if (this._BindWeapons) {
-            var binding = this.BindToViewCollection(() => FPSPlayer._WeaponsProperty);
-            if ((_WeaponsContainer == null)) {
-            }
-            else {
-                binding.SetParent(_WeaponsContainer);
-            }
-            if (_WeaponsSceneFirst) {
-                binding.ViewFirst();
-            }
-            binding.SetAddHandler(item=>WeaponsAdded(item as FPSWeaponViewBase));
-            binding.SetRemoveHandler(item=>WeaponsRemoved(item as FPSWeaponViewBase));
-            binding.SetCreateHandler(viewModel=>{ return CreateWeaponsView(viewModel as FPSWeaponViewModel); }); ;
-        }
     }
 }
 
 public partial class WavesHUDView : WavesFPSGameViewBase {
-    
-    [UFToggleGroup("KillsToNextWave")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("KillsToNextWaveChanged")]
-    public bool _BindKillsToNextWave;
-    
-    [UFToggleGroup("WaveKills")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("WaveKillsChanged")]
-    public bool _BindWaveKills;
-    
-    [UFToggleGroup("CurrentWave")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("CurrentWaveChanged")]
-    public bool _BindCurrentWave;
     
     protected override void Apply() {
         base.Apply();
@@ -927,15 +795,6 @@ public partial class WavesHUDView : WavesFPSGameViewBase {
     
     protected override void PreBind() {
         base.PreBind();
-        if (this._BindKillsToNextWave) {
-            this.BindProperty(()=>WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
-        }
-        if (this._BindWaveKills) {
-            this.BindProperty(()=>WavesFPSGame._WaveKillsProperty, this.WaveKillsChanged);
-        }
-        if (this._BindCurrentWave) {
-            this.BindProperty(()=>WavesFPSGame._CurrentWaveProperty, this.CurrentWaveChanged);
-        }
     }
 }
 
@@ -944,36 +803,12 @@ public partial class FPSHUDView : FPSGameViewBase {
     [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState;
-    
-    [UFToggleGroup("CurrentPlayer")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindCurrentPlayer;
-    
-    [UFToggleGroup("Score")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("ScoreChanged")]
-    public bool _BindScore;
+    public bool _BindState = true;
     
     [UFToggleGroup("Kills")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("KillsChanged")]
-    public bool _BindKills;
-    
-    [UFToggleGroup("Enemies")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindEnemies;
-    
-    [UnityEngine.HideInInspector()]
-    public System.Collections.Generic.List<FPSEnemyViewBase> _EnemiesList;
-    
-    [UFGroup("Enemies")]
-    [UnityEngine.HideInInspector()]
-    public bool _EnemiesSceneFirst;
-    
-    [UFGroup("Enemies")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.Transform _EnemiesContainer;
+    public bool _BindKills = true;
     
     protected override void Apply() {
         base.Apply();
@@ -985,38 +820,13 @@ public partial class FPSHUDView : FPSGameViewBase {
         if (this._BindState) {
             this.BindProperty(()=>FPSGame._StateProperty, this.StateChanged);
         }
-        if (this._BindCurrentPlayer) {
-            this.BindProperty(()=>FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
-        }
-        if (this._BindScore) {
-            this.BindProperty(()=>FPSGame._ScoreProperty, this.ScoreChanged);
-        }
         if (this._BindKills) {
             this.BindProperty(()=>FPSGame._KillsProperty, this.KillsChanged);
-        }
-        if (this._BindEnemies) {
-            var binding = this.BindToViewCollection(() => FPSGame._EnemiesProperty);
-            if ((_EnemiesContainer == null)) {
-            }
-            else {
-                binding.SetParent(_EnemiesContainer);
-            }
-            if (_EnemiesSceneFirst) {
-                binding.ViewFirst();
-            }
-            binding.SetAddHandler(item=>EnemiesAdded(item as FPSEnemyViewBase));
-            binding.SetRemoveHandler(item=>EnemiesRemoved(item as FPSEnemyViewBase));
-            binding.SetCreateHandler(viewModel=>{ return CreateEnemiesView(viewModel as FPSEnemyViewModel); }); ;
         }
     }
 }
 
 public partial class FPSEnemyView : FPSEnemyViewBase {
-    
-    [UFToggleGroup("Speed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("SpeedChanged")]
-    public bool _BindSpeed;
     
     protected override void Apply() {
         base.Apply();
@@ -1025,9 +835,6 @@ public partial class FPSEnemyView : FPSEnemyViewBase {
     
     protected override void PreBind() {
         base.PreBind();
-        if (this._BindSpeed) {
-            this.BindProperty(()=>FPSEnemy._SpeedProperty, this.SpeedChanged);
-        }
     }
 }
 
@@ -1045,16 +852,6 @@ public partial class FPSMainMenuView : FPSMenuViewBase {
 
 public abstract partial class DamageableView : FPSDamageableViewBase {
     
-    [UFToggleGroup("Health")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("HealthChanged")]
-    public bool _BindHealth;
-    
-    [UFToggleGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState;
-    
     protected override void Apply() {
         base.Apply();
         FPSDamageable.Dirty = false;
@@ -1062,12 +859,6 @@ public abstract partial class DamageableView : FPSDamageableViewBase {
     
     protected override void PreBind() {
         base.PreBind();
-        if (this._BindHealth) {
-            this.BindProperty(()=>FPSDamageable._HealthProperty, this.HealthChanged);
-        }
-        if (this._BindState) {
-            this.BindProperty(()=>FPSDamageable._StateProperty, this.StateChanged);
-        }
     }
 }
 

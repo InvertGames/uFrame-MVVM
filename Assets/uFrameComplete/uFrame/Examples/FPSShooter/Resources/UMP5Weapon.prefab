@@ -198,37 +198,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 1
   _forceResolveViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
+  _identifier: 3866fe24-b2a8-4c55-9c49-4335a9846fbb
   _FPSWeaponFire: {fileID: 0}
   _FPSCrosshair: {fileID: 0}
-  _BindAmmo: 0
-  _AmmoIsTwoWay: 0
-  _BindState: 1
-  _StateIsTwoWay: 0
-  _BindZoomIndex: 1
-  _ZoomIndexIsTwoWay: 0
-  _BindMaxZooms: 0
-  _MaxZoomsIsTwoWay: 0
-  _BindWeaponType: 0
-  _WeaponTypeIsTwoWay: 0
-  _BindReloadTime: 0
-  _ReloadTimeIsTwoWay: 0
-  _BindRoundSize: 0
-  _RoundSizeIsTwoWay: 0
-  _BindMinSpread: 0
-  _MinSpreadIsTwoWay: 0
-  _BindBurstSize: 0
-  _BurstSizeIsTwoWay: 0
-  _BindRecoilSpeed: 0
-  _RecoilSpeedIsTwoWay: 0
-  _BindFireSpeed: 0
-  _FireSpeedIsTwoWay: 0
-  _BindBurstSpeed: 0
-  _BurstSpeedIsTwoWay: 0
-  _BindSpreadMultiplier: 0
-  _SpreadMultiplierIsTwoWay: 0
   _Ammo: 90
   _State: 0
   _ZoomIndex: 0
@@ -242,6 +217,19 @@ MonoBehaviour:
   _FireSpeed: .00999999978
   _BurstSpeed: .100000001
   _SpreadMultiplier: .00100000005
+  _BindAmmo: 0
+  _BindState: 1
+  _BindZoomIndex: 1
+  _BindMaxZooms: 0
+  _BindWeaponType: 0
+  _BindReloadTime: 0
+  _BindRoundSize: 0
+  _BindMinSpread: 0
+  _BindBurstSize: 0
+  _BindRecoilSpeed: 0
+  _BindFireSpeed: 0
+  _BindBurstSpeed: 0
+  _BindSpreadMultiplier: 0
   _CrossHairScale: .150000006
   _ZoomPositions: {fileID: 0}
   _HudTexture: {fileID: 0}

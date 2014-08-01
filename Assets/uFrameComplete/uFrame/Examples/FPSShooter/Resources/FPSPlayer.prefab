@@ -365,16 +365,14 @@ MonoBehaviour:
   _overrideViewModel: 1
   _resolveName: LocalPlayer
   _identifier: 29c80d8b-52cb-467c-a90e-f8f8fff87adc
-  _BindHealth: 0
-  _BindState: 0
   _Health: 1
   _State: 0
-  _BindCurrentWeaponIndex: 1
-  _BindWeapons: 1
   _WeaponsList: []
   _WeaponsSceneFirst: 1
   _WeaponsContainer: {fileID: 400006}
   _CurrentWeaponIndex: 1
+  _BindCurrentWeaponIndex: 1
+  _BindWeapons: 1
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

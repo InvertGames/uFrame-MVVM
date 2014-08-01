@@ -34,6 +34,7 @@ public class AddBindingWindow : SearchableScrollWindow
         window.title = title;
         window._ViewData = data;
         window.ApplySearch();
+        window.minSize = new Vector2(500,300);
         window.Show();
 
 
