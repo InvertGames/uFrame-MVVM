@@ -1,5 +1,10 @@
 ﻿using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
+using System.IO;
 using System.Linq;
+using System.Text;
+using Microsoft.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Invert.uFrame.Editor.UnitTests
@@ -12,6 +17,12 @@ namespace Invert.uFrame.Editor.UnitTests
         [TestInitialize]
         public void Init()
         {
+            
+        }
+
+        public void MethodGenerator()
+        {
+            
             
         }
         [TestMethod]

@@ -1,4 +1,5 @@
 using Invert.uFrame;
+using Invert.uFrame.Code.Bindings;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
@@ -45,6 +46,11 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.Register<DesignerGeneratorFactory, ViewDataGeneratorFactory>("ViewData");
         container.Register<DesignerGeneratorFactory, ViewComponentDataGeneratorFactory>("ViewComponentData");
         container.Register<DesignerGeneratorFactory, SceneManagerDataGeneratorFactory>("SceneManagerData");
+
+        container.Register<IBindingGenerator,PropertyBindingGenerator>("PropertyBinding");
+        container.Register<IBindingGenerator,CollectionItemAddedBindingGenerator>("Added");
+        container.Register<IBindingGenerator, CollectionItemRemovedBindingGenerator>("Removed");
+        container.Register<IBindingGenerator, CollectionItemCreateBindingGenerator>("Create");
 
         // Import is no longer needed
         //container.RegisterInstance<IToolbarCommand>(new ImportCommand(),"Import");

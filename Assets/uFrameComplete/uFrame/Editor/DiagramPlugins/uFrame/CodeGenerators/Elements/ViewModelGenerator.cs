@@ -311,7 +311,7 @@ public class ViewModelGenerator : CodeGenerator
         tDecleration.Members.Add(wireMethod);
         wireMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(Controller)),
             "controller"));
-        if (data.IsControllerDerived)
+        if (data.IsDerived)
         {
             wireMethod.Attributes = MemberAttributes.Family | MemberAttributes.Override;
             var callBase = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), wireMethod.Name,

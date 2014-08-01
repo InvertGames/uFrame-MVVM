@@ -150,7 +150,7 @@ public class ControllerGenerator : CodeGenerator
             AddDependencyControllers(tDecleration, data);
             tDecleration.Name = data.NameAsControllerBase;
             tDecleration.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
-            if (data.IsControllerDerived)
+            if (data.IsDerived)
             {
                 tDecleration.BaseTypes.Add(string.Format("{0}Controller", data.BaseTypeShortName.Replace("ViewModel", "")));
             }
@@ -300,7 +300,7 @@ public class ControllerGenerator : CodeGenerator
         tDecleration.Members.Add(wireMethod);
         wireMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)),
             "viewModel"));
-        if (data.IsControllerDerived)
+        if (data.IsDerived)
         {
             wireMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
             var callBase = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), wireMethod.Name,

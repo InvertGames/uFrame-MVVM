@@ -65,7 +65,7 @@ public class ViewModelCollectionData : DiagramNodeItem, IViewModelItem
     {
         get { return string.Format("{0}Added", Name); }
     }
-    public string NameAsAddRemove
+    public string NameAsRemoveHandler
     {
         get { return string.Format("{0}Removed", Name); }
     }

@@ -856,7 +856,7 @@ MonoBehaviour:
   _forceResolveViewModel: 1
   _overrideViewModel: 1
   _resolveName: LocalPlayer
-  _identifier: 
+  _identifier: 29c80d8b-52cb-467c-a90e-f8f8fff87adc
   _BindHealth: 0
   _BindState: 0
   _Health: 1
@@ -1516,7 +1516,7 @@ MonoBehaviour:
   _forceResolveViewModel: 1
   _overrideViewModel: 0
   _resolveName: LocalPlayer
-  _identifier: 
+  _identifier: 5a9f743a-9061-46d9-aed1-68e4ab49a09e
   _BindHealth: 0
   _BindState: 0
   _Health: 0

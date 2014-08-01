@@ -95,6 +95,6 @@ public interface IDiagramNode : ISelectable,IDiagramNodeItem
 
 public interface IRefactorable
 {
-    List<Refactorer> Refactorings { get;  }
+    IEnumerable<Refactorer> Refactorings { get;  }
     void RefactorApplied();
 }

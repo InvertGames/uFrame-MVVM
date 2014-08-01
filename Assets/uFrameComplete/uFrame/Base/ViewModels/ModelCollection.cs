@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 public enum ModelCollectionAction
@@ -28,7 +29,7 @@ public interface IModelCollection
 /// <summary>
 /// An observable collection to use in viewmodels.
 /// </summary>
-public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection
+public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, IList<T>, INotifyPropertyChanged
 {
     public delegate void ModelCollectionChangedWith(ModelCollectionChangeEventWith<T> changeArgs);
 
@@ -222,6 +223,35 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection
         {
             Add(item);
         }
+    }
+
+    public int IndexOf(T item)
+    {
+        return Value.IndexOf(item);
+    }
+
+    public void Insert(int index, T item)
+    {
+        Value.Insert(index, item);
+    }
+
+    public void RemoveAt(int index)
+    {
+        Value.RemoveAt(index);
+    }
+
+    public T this[int index]
+    {
+        get { return Value[index]; }
+        set { Value[index] = value; }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChangedEventHandler handler = PropertyChanged;
+        if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 }
 

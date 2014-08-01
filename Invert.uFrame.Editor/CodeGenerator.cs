@@ -62,3 +62,18 @@ namespace Invert.uFrame.Editor
         }
     }
 }
+
+namespace Invert.uFrame.Code.Bindings
+{
+    public interface IBindingGenerator
+    {
+        string MethodName { get; }
+        IViewModelItem Item { get; set; }
+        bool IsApplicable { get; }
+        bool IsOverride { get; set; }
+        string BindingConditionFieldName { get; }
+        void CreateMembers(CodeTypeMemberCollection collection);
+        void CreateBindingStatement(CodeTypeMemberCollection collection, CodeConditionStatement bindingCondition);
+    }
+
+}

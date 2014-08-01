@@ -52,7 +52,7 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
                 _bindingsHeader = Container.Resolve<NodeItemHeader>();
                 _bindingsHeader.Label = "Bindings";
                 _bindingsHeader.HeaderType = typeof(string);
-                _bindingsHeader.AddCommand = Container.Resolve<AddViewPropertyCommand>();
+                _bindingsHeader.AddCommand = Container.Resolve<AddBindingCommand>();
             }
             return _bindingsHeader;
         }
@@ -87,10 +87,14 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
         var vForElement = Data.ViewForElement;
         if (vForElement != null)
         {
+            var existing =
+                Data.BindingMethods.Select(p => (IDiagramNodeItem) (new BindingDiagramItem(p.Name)));
+            var adding =
+                Data.NewBindings.Select(p => (IDiagramNodeItem) (new BindingDiagramItem("[Added] " + p.MethodName)));
             yield return new DiagramSubItemGroup()
             {
                 Header = BindingsHeader,
-                Items = Data.BindingMethods.Select(p=>(IDiagramNodeItem)(new BindingDiagramItem(p.Name))).ToArray()
+                Items = existing.Concat(adding).ToArray()
             };
         }
        
@@ -137,7 +141,7 @@ public class BindingDiagramItem : DiagramNodeItem
     {
         get { return MethodName; }
     }
-
+    
     public override bool CanCreateLink(IDrawable target)
     {
         return false;

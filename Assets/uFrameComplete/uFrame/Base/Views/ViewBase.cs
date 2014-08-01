@@ -191,6 +191,10 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             GameManager.ActiveSceneManager.RegisterRootView(this);
     }
 
+    protected virtual void PreBind()
+    {
+        
+    }
     public abstract void Bind();
 
     public abstract ViewModel CreateModel();
@@ -347,6 +351,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             bindingProvider.Bind(this);
 
         // Add any programming bindings
+        PreBind();
         Bind();
         // Initialize the bindings
         for (var i = 0; i < Bindings.Count; i++)

@@ -22,9 +22,9 @@ namespace Invert.Common.UI
             rect.y += 3;
             return rect;
         }
-        public static bool DoToolbar(string label, bool open, Action add = null, Action leftButton = null, Action paste = null, GUIStyle addButtonStyle = null, GUIStyle pasteButtonStyle = null)
+        public static bool DoToolbar(string label, bool open, Action add = null, Action leftButton = null, Action paste = null, GUIStyle addButtonStyle = null, GUIStyle pasteButtonStyle = null,bool fullWidth = true)
         {
-            var rect = GetRect(UBStyles.ToolbarStyle);
+            var rect = GetRect(UBStyles.ToolbarStyle,fullWidth);
             GUI.Box(rect, "", UBStyles.ToolbarStyle);
             var labelStyle = new GUIStyle(EditorStyles.label)
             {
@@ -78,13 +78,18 @@ namespace Invert.Common.UI
             var hasSubLabel = !String.IsNullOrEmpty(ubTriggerContent.SubLabel);
 
             var rect = !hasSubLabel
-                ? GetRect(ubTriggerContent.BackgroundStyle,ubTriggerContent.FullWidth)
-                : GetRect(ubTriggerContent.BackgroundStyle, ubTriggerContent.FullWidth, GUILayout.Height(35));
+                ? GetRect(ubTriggerContent.BackgroundStyle,ubTriggerContent.FullWidth && !ubTriggerContent.IsWindow)
+                : GetRect(ubTriggerContent.BackgroundStyle, ubTriggerContent.FullWidth && !ubTriggerContent.IsWindow, GUILayout.Height(35));
 
             var style = ubTriggerContent.BackgroundStyle;
 
             if (UFStyle.MouseDownStyle != null && ubTriggerContent.IsMouseDown(rect))
                 style = UFStyle.MouseDownStyle;
+
+            if (!ubTriggerContent.Enabled)
+            {
+                style = GUIStyle.none;
+            }
 
             GUI.Box(rect, "", style);
 
@@ -105,15 +110,19 @@ namespace Invert.Common.UI
                     if (ubTriggerContent.OnShowOptions != null)
                     ubTriggerContent.OnShowOptions();
                 }
-                var seperatorRect = new Rect(rect);
-                seperatorRect.width = 3;
+                var seperatorRect = new Rect(rect) {width = 3};
                 seperatorRect.y += 2;
                 seperatorRect.height -= 5;
                 seperatorRect.x = eventOptionsButtonRect.x + 17;
                 GUI.Box(seperatorRect, String.Empty, UBStyles.SeperatorStyle);
             }
 
-            var labelStyle = new GUIStyle(EditorStyles.label) { alignment = ubTriggerContent.TextAnchor, fontSize = 10 };
+            var labelStyle =  new GUIStyle(EditorStyles.label) { alignment = ubTriggerContent.TextAnchor, fontSize = 10 };
+            if (!ubTriggerContent.Enabled)
+            {
+                labelStyle.normal.textColor = new Color(0.4f,0.4f,0.4f);
+                
+            }
             var labelRect = new Rect(rect.x, rect.y - (hasSubLabel ? 6 : 0), rect.width - 30, rect.height);
             var lbl = ubTriggerContent.Label;
             var result = GUI.Button(labelRect, lbl, labelStyle);
@@ -127,6 +136,10 @@ namespace Invert.Common.UI
             }
             if (ubTriggerContent.ShowArrow)
                 GUI.DrawTexture(new Rect(rect.x + rect.width - 18f, rect.y + ((rect.height / 2) - 8), 16, 16), UBStyles.ArrowRightTexture);
+            if (ubTriggerContent.Enabled)
+            {
+                return result;
+            }
             return result;
         }
     }
@@ -141,6 +154,7 @@ namespace Invert.Common.UI
 
         public UFStyle()
         {
+            Enabled = true;
         }
 
         public UFStyle(string label, GUIStyle backgroundStyle, GUIStyle indicatorStyle = null, GUIStyle optionsStyle = null, Action onShowOptions = null, bool showArrow = true, TextAnchor textAnchor = TextAnchor.MiddleRight)
@@ -152,6 +166,7 @@ namespace Invert.Common.UI
             OnShowOptions = onShowOptions;
             ShowArrow = showArrow;
             _textAnchor = textAnchor;
+            Enabled = true;
         }
 
         public GUIStyle BackgroundStyle
@@ -179,6 +194,7 @@ namespace Invert.Common.UI
             set { _fullWidth = value; }
         }
 
+        public bool IsWindow { get; set; }
         public TextAnchor TextAnchor
         {
             get { return _textAnchor; }
@@ -192,6 +208,9 @@ namespace Invert.Common.UI
         }
 
         public bool ShowArrow { get; set; }
+        public bool Enabled { get; set; }
+        public string Group { get; set; }
+        public object Tag { get; set; }
 
         public bool IsMouseDown(Rect rect)
         {

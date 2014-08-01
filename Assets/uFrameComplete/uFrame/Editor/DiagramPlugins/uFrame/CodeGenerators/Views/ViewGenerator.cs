@@ -45,23 +45,22 @@ public class ViewGenerator : ViewClassGenerator
         {
             decl.TypeAttributes = TypeAttributes.Public;
         }
-        
-      
         if (IsDesignerFile)
         {
             var viewViewBase = View.BaseView != null;
             decl.BaseTypes.Add(new CodeTypeReference(viewViewBase ? view.NameAsViewViewBase : view.BaseViewName));
             decl.Members.Add(CreateUpdateMethod(view,decl));
+            GenerateBindMethod(decl, view);
         }
         else
         {
-            var bindMethod = new CodeMemberMethod()
-            {
-                Name = "Bind",
-                Attributes = MemberAttributes.Override | MemberAttributes.Public
-            };
-            decl.Members.Add(bindMethod);
-            bindMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "Bind"));
+            //var bindMethod = new CodeMemberMethod()
+            //{
+            //    Name = "Bind",
+            //    Attributes = MemberAttributes.Override | MemberAttributes.Public
+            //};
+            //decl.Members.Add(bindMethod);
+            //bindMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "Bind"));
 
         }
         Namespace.Types.Add(decl);

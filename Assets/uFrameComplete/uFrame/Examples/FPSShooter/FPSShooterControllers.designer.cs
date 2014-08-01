@@ -17,8 +17,6 @@ public abstract class FPSDamageableControllerBase : Controller {
     
     public abstract void InitializeFPSDamageable(FPSDamageableViewModel fPSDamageable);
     
-
-    
     public virtual FPSDamageableViewModel CreateFPSDamageable() {
         return ((FPSDamageableViewModel)(this.Create()));
     }
@@ -36,7 +34,6 @@ public abstract class FPSEnemyControllerBase : FPSDamageableController {
     [Inject] public FPSGameController FPSGameController {get;set;}
     public abstract void InitializeFPSEnemy(FPSEnemyViewModel fPSEnemy);
     
-
     protected override ViewModel CreateEmpty() {
         return new FPSEnemyViewModel();
     }
@@ -63,8 +60,6 @@ public abstract class FPSGameControllerBase : Controller {
     
     public abstract void InitializeFPSGame(FPSGameViewModel fPSGame);
     
-
-
     protected override ViewModel CreateEmpty() {
         return new FPSGameViewModel();
     }
@@ -92,8 +87,6 @@ public abstract class FPSPlayerControllerBase : FPSDamageableController {
     [Inject] public FPSWeaponController FPSWeaponController {get;set;}
     public abstract void InitializeFPSPlayer(FPSPlayerViewModel fPSPlayer);
     
-
-
     protected override ViewModel CreateEmpty() {
         return new FPSPlayerViewModel();
     }
@@ -125,8 +118,6 @@ public abstract class FPSWeaponControllerBase : Controller {
     [Inject] public FPSPlayerController FPSPlayerController {get;set;}
     public abstract void InitializeFPSWeapon(FPSWeaponViewModel fPSWeapon);
     
-
-
     protected override ViewModel CreateEmpty() {
         return new FPSWeaponViewModel();
     }
@@ -165,8 +156,7 @@ public abstract class WavesFPSGameControllerBase : FPSGameController {
     }
     
     public abstract void InitializeWavesFPSGame(WavesFPSGameViewModel wavesFPSGame);
-
-
+    
     protected override ViewModel CreateEmpty() {
         return new WavesFPSGameViewModel();
     }
@@ -191,8 +181,6 @@ public abstract class FPSMenuControllerBase : Controller {
     
     public abstract void InitializeFPSMenu(FPSMenuViewModel fPSMenu);
     
-
-
     protected override ViewModel CreateEmpty() {
         return new FPSMenuViewModel();
     }
@@ -219,7 +207,7 @@ public abstract class DeathMatchGameControllerBase : FPSGameController {
     }
     
     public abstract void InitializeDeathMatchGame(DeathMatchGameViewModel deathMatchGame);
-
+    
     protected override ViewModel CreateEmpty() {
         return new DeathMatchGameViewModel();
     }
@@ -249,7 +237,7 @@ public class FPSMainMenuManagerBase : SceneManager {
     public FPSMenuController FPSMenuController { get; set; }
     public override void Setup() {
         base.Setup();
-        this.FPSMenuController = new FPSMenuController();
+        this.FPSMenuController = new FPSMenuController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.FPSMenuController, false);
         this.Container.InjectAll();
         Container.RegisterInstance<FPSMenuViewModel>(SetupViewModel<FPSMenuViewModel>(FPSMenuController, "FPSMenu"));
@@ -293,17 +281,17 @@ public class WavesFPSGameManagerBase : SceneManager {
     public FPSWeaponController FPSWeaponController { get; set; }
     public override void Setup() {
         base.Setup();
-        this.WavesFPSGameController = new WavesFPSGameController();
+        this.WavesFPSGameController = new WavesFPSGameController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.WavesFPSGameController, false);
-        this.DeathMatchGameController = new DeathMatchGameController();
+        this.DeathMatchGameController = new DeathMatchGameController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.DeathMatchGameController, false);
-        this.FPSEnemyController = new FPSEnemyController();
+        this.FPSEnemyController = new FPSEnemyController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.FPSEnemyController, false);
-        this.FPSGameController = new FPSGameController();
+        this.FPSGameController = new FPSGameController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.FPSGameController, false);
-        this.FPSPlayerController = new FPSPlayerController();
+        this.FPSPlayerController = new FPSPlayerController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.FPSPlayerController, false);
-        this.FPSWeaponController = new FPSWeaponController();
+        this.FPSWeaponController = new FPSWeaponController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.FPSWeaponController, false);
         this.Container.InjectAll();
         if ((this._WavesFPSGameManagerSettings.FPSGameTypes == WavesFPSGameManagerFPSGameTypes.WavesFPSGame)) {

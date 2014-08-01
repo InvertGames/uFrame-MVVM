@@ -29,8 +29,6 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
     private string _name = string.Empty;
 
     [NonSerialized]
-    private List<Refactorer> _refactorings;
-    [NonSerialized]
     private RenameRefactorer _renameRefactorer;
     [NonSerialized]
     private string _oldName;
@@ -83,10 +81,9 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
         set { _position = value; }
     }
 
-    public List<Refactorer> Refactorings
+    public IEnumerable<Refactorer> Refactorings
     {
-        get { return _refactorings ?? (_refactorings = new List<Refactorer>()); }
-        set { _refactorings = value; }
+        get { yield break; }
     }
 
     public RenameRefactorer RenameRefactorer
@@ -123,10 +120,6 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
             }
 
             RenameRefactorer.Set(this);
-            if (!Refactorings.Contains(RenameRefactorer))
-            {
-                Refactorings.Add(RenameRefactorer);
-            }
         }
     }
 
@@ -134,7 +127,7 @@ public abstract class DiagramNodeItem : IDiagramNodeItem
 
     public void RefactorApplied()
     {
-        Refactorings.Clear();
+        RenameRefactorer = null;
     }
 
     public abstract void Remove(IDiagramNode diagramNode);

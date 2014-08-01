@@ -5,7 +5,7 @@ using Invert.Common;
 using UnityEditor;
 using UnityEngine;
 
-public class ElementItemTypesWindow : ElementDataWindow
+public class ElementItemTypesWindow : SearchableScrollWindow
 {
     public string _AssetPath;
     //public UBSharedBehaviour _Context;
@@ -45,6 +45,11 @@ public class ElementItemTypesWindow : ElementDataWindow
     public virtual string GetLabel(ElementItemType item)
     {
         return item.Label;
+    }
+
+    protected override void ApplySearch()
+    {
+        
     }
 
     public override void OnGUIScrollView()

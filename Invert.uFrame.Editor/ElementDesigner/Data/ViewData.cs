@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Text;
+using Invert.uFrame.Code.Bindings;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.Refactoring;
 using System;
@@ -19,6 +21,8 @@ public class ViewData : DiagramNode, ISubSystemType
     private string _forAssemblyQualifiedName;
 
     private List<ViewPropertyData> _properties;
+    private List<IBindingGenerator> _newBindings;
+    private List<MethodInfo> _bindingMethods;
 
     public override string SubTitle
     {
@@ -113,7 +117,20 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get { return UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel", NameAsView); }
     }
-
+    public override IEnumerable<Refactorer> Refactorings
+    {
+        get
+        {
+            if (RenameRefactorer != null)
+            {
+                yield return RenameRefactorer;
+            }
+            if (NewBindings.Count > 0)
+            {
+                yield return BindingInsertMethodRefactorer;
+            }
+        }
+    }
     public string ForAssemblyQualifiedName
     {
         get { return _forAssemblyQualifiedName; }
@@ -123,25 +140,36 @@ public class ViewData : DiagramNode, ISubSystemType
     {
         get
         {
-            var element = ViewForElement;
-            if (element == null) yield break;
-            var vmType = this.CurrentViewType;
-            if (vmType == null)
+            if (_bindingMethods == null)
             {
-                Debug.Log("ITS NULL: " + this.AssemblyQualifiedName);
-                yield break;
+                SetBindingMethods();
             }
-            var methods = vmType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-            var bindingMethodNames = element.BindingMethodNames.ToArray();
-            foreach (var method in methods)
-            {
-                if (bindingMethodNames.Contains(method.Name))
-                {
-                    yield return method;
-                }
-            }
+            return _bindingMethods;
         }
-    } 
+    }
+
+    public List<IBindingGenerator> NewBindings
+    {
+        get { return _newBindings ?? (_newBindings = new List<IBindingGenerator>()); }
+        set { _newBindings = value; }
+    }
+
+    public InsertMethodRefactorer BindingInsertMethodRefactorer
+    {
+        get
+        {
+            var sb = new StringBuilder();
+            foreach (var addedGenerator in NewBindings)
+            {
+                sb.AppendLine(addedGenerator.ToString());
+            }
+            return new InsertMethodRefactorer()
+            {
+                InsertText = sb.ToString(),
+                ClassName = Name
+            };
+        }
+    }
     public override IEnumerable<IDiagramNodeItem> Items
     {
         get
@@ -275,6 +303,33 @@ public class ViewData : DiagramNode, ISubSystemType
                 Element = item,
                 Data = this
             };
+        }
+
+        SetBindingMethods();
+    }
+
+    private void SetBindingMethods()
+    {
+        var element = ViewForElement;
+        if (element != null)
+        {
+            var list = new List<MethodInfo>();
+            var vmType = this.CurrentViewType;
+            if (vmType == null)
+            {
+                return;
+            }
+            var methods = vmType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+            var bindingMethodNames = uFrameEditor.GetBindingGeneratorsFor(element).Select(p => p.MethodName).ToArray();
+            foreach (var method in methods)
+            {
+                if (bindingMethodNames.Contains(method.Name))
+                {
+                    list.Add(method);
+                }
+            }
+            _bindingMethods = list;
         }
     }
 
