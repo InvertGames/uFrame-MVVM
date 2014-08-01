@@ -31,4 +31,10 @@ public class WavesFPSHudView : WavesFPSGameViewBase
         yield return new WaitForSeconds(seconds);
         _WaveStartLabel.gameObject.SetActive(false);
     }
+
+
+    public override void KillsChanged(int value)
+    {
+        
+    }
 }

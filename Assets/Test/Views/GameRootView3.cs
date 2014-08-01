@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 
-public partial class GameRootView {
+public partial class GameRootView3 {
     
     public override void TestPropertyChanged(string value) {
         base.TestPropertyChanged(value);

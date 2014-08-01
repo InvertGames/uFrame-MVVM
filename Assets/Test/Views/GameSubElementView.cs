@@ -5,4 +5,7 @@ using UnityEngine;
 
 
 public partial class GameSubElementView {
+    
+    public override void Bind() {
+    }
 }

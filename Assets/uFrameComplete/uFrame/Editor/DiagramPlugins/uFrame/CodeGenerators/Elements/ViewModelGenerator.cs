@@ -117,9 +117,9 @@ public class ViewModelGenerator : CodeGenerator
         writeMethod.Statements.Add(new CodeSnippetStatement("\t\tbase.Write(stream);"));
         readMethod.Statements.Add(new CodeSnippetStatement("\t\tbase.Read(stream);"));
 
-        foreach (var viewModelPropertyData in data.Properties)
+        foreach (var viewModelPropertyData in data.SerializedProperties)
         {
-            var relatedNode = viewModelPropertyData.RelatedNode();
+            var relatedNode = viewModelPropertyData.TypeNode();
             if (relatedNode is EnumData)
             {
                 var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeInt(\"{0}\", (int)this.{0});", viewModelPropertyData.Name));
@@ -275,7 +275,8 @@ public class ViewModelGenerator : CodeGenerator
         property.GetStatements.Add(
             new CodeMethodReturnStatement(new CodeSnippetExpression(string.Format("{0}", itemData.FieldName))));
 
-        property.SetStatements.Add(new CodeSnippetExpression(string.Format("{0}.Value = value.ToList()", itemData.FieldName)));
+        property.SetStatements.Add(new CodeSnippetExpression(string.Format("{0}.Clear()", itemData.FieldName)));
+        property.SetStatements.Add(new CodeSnippetExpression(string.Format("{0}.AddRange(value)", itemData.FieldName)));
 
         return property;
     }
@@ -480,7 +481,7 @@ public class ViewModelGenerator : CodeGenerator
             //new CodeSnippetExpression(string.Format("this.GetComponent<{0}>()", viewProperty.MemberType)));
 
             viewPropertyDecleration.Attributes = MemberAttributes.Public;
-            viewPropertyDecleration.SetStatements.Add(new CodeSnippetExpression("Dirty = true"));
+            //viewPropertyDecleration.SetStatements.Add(new CodeSnippetExpression("Dirty = true"));
             Decleration.Members.Add(viewFieldDecleration);
             Decleration.Members.Add(viewPropertyDecleration);
         }

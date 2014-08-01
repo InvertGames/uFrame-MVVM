@@ -217,6 +217,14 @@ public class ElementData : ElementDataBase, IDiagramFilter
         set { _properties = value.ToList(); }
     }
 
+    public IEnumerable<ISerializeablePropertyData> SerializedProperties
+    {
+        get
+        {
+            return
+                Properties.Cast<ISerializeablePropertyData>().Concat(ViewProperties.Cast<ISerializeablePropertyData>());
+        }
+    }
     public IEnumerable<ViewComponentData> ViewComponents
     {
         get

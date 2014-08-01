@@ -25,7 +25,7 @@ public abstract class CheckerBoardControllerBase : Controller {
     }
     
     public abstract void InitializeCheckerBoard(CheckerBoardViewModel checkerBoard);
-
+    
     protected override ViewModel CreateEmpty() {
         return new CheckerBoardViewModel();
     }
@@ -90,10 +90,11 @@ public abstract class CheckersGameControllerBase : Controller {
     }
     
     public abstract void InitializeCheckersGame(CheckersGameViewModel checkersGame);
-
+    
     protected override ViewModel CreateEmpty() {
         return new CheckersGameViewModel();
     }
+    
     public virtual CheckersGameViewModel CreateCheckersGame() {
         return ((CheckersGameViewModel)(this.Create()));
     }
@@ -139,7 +140,6 @@ public abstract class AICheckersGameControllerBase : CheckersGameController {
     
     public abstract void InitializeAICheckersGame(AICheckersGameViewModel aICheckersGame);
     
-
     protected override ViewModel CreateEmpty() {
         return new AICheckersGameViewModel();
     }
@@ -164,7 +164,6 @@ public abstract class MainMenuControllerBase : Controller {
     
     public abstract void InitializeMainMenu(MainMenuViewModel mainMenu);
     
-
     protected override ViewModel CreateEmpty() {
         return new MainMenuViewModel();
     }
@@ -197,7 +196,7 @@ public class CheckersMenuSceneManagerBase : SceneManager {
     public MainMenuController MainMenuController { get; set; }
     public override void Setup() {
         base.Setup();
-        this.MainMenuController = new MainMenuController();
+        this.MainMenuController = new MainMenuController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.MainMenuController, false);
         this.Container.InjectAll();
         Container.RegisterInstance<MainMenuViewModel>(SetupViewModel<MainMenuViewModel>(MainMenuController, "MainMenu"));
@@ -237,17 +236,17 @@ public class CheckersSceneManagerBase : SceneManager {
     public CheckerController CheckerController { get; set; }
     public override void Setup() {
         base.Setup();
-        this.AICheckersGameController = new AICheckersGameController();
+        this.AICheckersGameController = new AICheckersGameController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.AICheckersGameController, false);
-        this.CheckerBoardController = new CheckerBoardController();
+        this.CheckerBoardController = new CheckerBoardController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckerBoardController, false);
-        this.CheckerMoveController = new CheckerMoveController();
+        this.CheckerMoveController = new CheckerMoveController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckerMoveController, false);
-        this.CheckerPlateController = new CheckerPlateController();
+        this.CheckerPlateController = new CheckerPlateController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckerPlateController, false);
-        this.CheckersGameController = new CheckersGameController();
+        this.CheckersGameController = new CheckersGameController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckersGameController, false);
-        this.CheckerController = new CheckerController();
+        this.CheckerController = new CheckerController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckerController, false);
         this.Container.InjectAll();
         Container.RegisterInstance<CheckerBoardViewModel>(SetupViewModel<CheckerBoardViewModel>(CheckerBoardController, "CheckerBoard"));

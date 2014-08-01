@@ -18,7 +18,7 @@ public partial class FPSEnemyView : FPSEnemyViewBase
     }
     public override void StateChanged(FPSPlayerState value)
     {
-        base.StateChanged(value);
+        
         gameObject.SetActive(value != FPSPlayerState.Dead);
     }
 

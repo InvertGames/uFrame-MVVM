@@ -645,9 +645,9 @@ public abstract class ViewClassGenerator : CodeGenerator
         set { _bindingConditionStatements = value; }
     }
 
-    protected void GenerateBindingMembers(CodeTypeDeclaration decl,ElementData data)
+    protected void GenerateBindingMembers(CodeTypeDeclaration decl,ElementData data,bool isOverride = false)
     {
-        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data, false, false).ToArray();
+        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data, isOverride, false).ToArray();
         foreach (var bindingGenerator in bindingGenerators)
         {
             bindingGenerator.CreateMembers(decl.Members);

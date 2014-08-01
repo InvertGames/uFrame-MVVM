@@ -5,7 +5,7 @@ using System.Reflection;
 using Invert.uFrame.Editor;
 using UnityEngine;
 
-public class ViewPropertyData : DiagramNodeItem
+public class ViewPropertyData : DiagramNodeItem,ISerializeablePropertyData
 {
     private string _componentTypeName = "";
     private string _componentTypeShortName = "";
@@ -30,6 +30,10 @@ public class ViewPropertyData : DiagramNodeItem
 
     }
 
+    string ISerializeablePropertyData.Name
+    {
+        get { return NameAsProperty; }
+    }
     public override string FullLabel
     {
         get { return Label; }
@@ -42,6 +46,21 @@ public class ViewPropertyData : DiagramNodeItem
         {
             // nothing here
         }
+    }
+
+    public Type Type
+    {
+        get { return MemberType; }
+    }
+
+    public string RelatedTypeName
+    {
+        get { return Type.Name; }
+    }
+
+    public IDiagramNode TypeNode()
+    {
+        return null;
     }
 
     public override string Label
@@ -154,7 +173,7 @@ public class ViewPropertyData : DiagramNodeItem
     {
         get
         {
-            return string.Format("{0}{1}", ComponentProperty.Substring(0, 1).ToUpper(), ComponentProperty.Substring(1));
+            return string.Format("{0}{1}{2}",_componentTypeShortName, ComponentProperty.Substring(0, 1).ToUpper(), ComponentProperty.Substring(1));
         }
     }
 

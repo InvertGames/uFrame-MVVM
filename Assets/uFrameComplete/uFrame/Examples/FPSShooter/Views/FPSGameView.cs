@@ -15,8 +15,10 @@ public partial class FPSGameView
     public override void EnemiesRemoved(FPSEnemyViewBase item)
     {
         base.EnemiesRemoved(item);
+        Debug.Log("Enemy removed");
         this._EnemiesList.Remove(item);
-        if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject);
+        if (item != null && item.gameObject != null) 
+            UnityEngine.Object.Destroy(item.gameObject);
     }
 
     public Transform _SpawnPointsParent;

@@ -17,7 +17,7 @@ public delegate void ModelCollectionChanged(ModelCollectionChangeEvent changeArg
 
 public interface IModelCollection
 {
-    event ModelCollectionChanged Changed;
+    event ModelCollectionChanged CollectionChanged;
 
     IEnumerable<object> Value { get; }
     Type ItemType { get; }
@@ -33,9 +33,9 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 {
     public delegate void ModelCollectionChangedWith(ModelCollectionChangeEventWith<T> changeArgs);
 
-    public event ModelCollectionChanged Changed;
+    public event ModelCollectionChanged CollectionChanged;
 
-    public event ModelCollectionChangedWith ChangedWith;
+    public event ModelCollectionChangedWith CollectionChangedWith;
 
     public int Count
     {
@@ -208,11 +208,11 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 
     protected virtual void OnChangedWith(ModelCollectionChangeEventWith<T> changeargs)
     {
-        ModelCollectionChanged changed = Changed;
+        ModelCollectionChanged changed = CollectionChanged;
         if (changed != null)
             changed(changeargs);
 
-        ModelCollectionChangedWith handler = ChangedWith;
+        ModelCollectionChangedWith handler = CollectionChangedWith;
         if (handler != null)
             handler(changeargs);
     }

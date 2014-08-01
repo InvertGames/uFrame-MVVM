@@ -126,14 +126,7 @@ public class ViewInspector : uFrameInspector
       
     
         
-        ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
-        serializedObject.Update();
-        if (ShowDefaultSettings)
-        {
-          
-            base.OnInspectorGUI();
-            
-        }
+
         if (EditorApplication.isPlaying)
         {
             if (t != null)
@@ -169,11 +162,15 @@ public class ViewInspector : uFrameInspector
             }
             
         }
-
-        Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
-        var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
-        EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));
-
+        ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
+        serializedObject.Update();
+        if (ShowDefaultSettings)
+        {
+          
+            base.OnInspectorGUI();
+            
+        }
+    
         if (_groupFields == null)
             GetFieldInformation(t);
         
@@ -183,12 +180,20 @@ public class ViewInspector : uFrameInspector
             foreach (var groupField in _groupFields)
             {
                 if (_toggleGroups.ContainsKey(groupField.Key)) continue;
-                if (groupField.Key == "View Model Properties" &&
-                    !(t.OverrideViewModel)) continue;
-
+            
                 EditorPrefs.SetBool(groupField.Key, Toggle(groupField.Key, EditorPrefs.GetBool(groupField.Key, false)));
+            
+
                 if (EditorPrefs.GetBool(groupField.Key, false))
                 {
+                    if (groupField.Key == "View Model Properties")
+                    {
+                        Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
+                        var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
+                        EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));
+                    }
+                    if (groupField.Key == "View Model Properties" &&
+                       !(t.OverrideViewModel)) continue;
                     foreach (var field in groupField.Value)
                     {
                         try

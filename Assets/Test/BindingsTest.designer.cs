@@ -47,7 +47,7 @@ public partial class GameRootElementViewModel : ViewModel {
         this.Controller = controller;
     }
     
-    public virtual UnityEngine.Vector3 Position {
+    public virtual UnityEngine.Vector3 TransformPosition {
         get {
             return this._position;
         }
@@ -57,7 +57,7 @@ public partial class GameRootElementViewModel : ViewModel {
         }
     }
     
-    public virtual UnityEngine.Vector3 LocalPosition {
+    public virtual UnityEngine.Vector3 TransformLocalPosition {
         get {
             return this._localPosition;
         }
@@ -67,7 +67,7 @@ public partial class GameRootElementViewModel : ViewModel {
         }
     }
     
-    public virtual UnityEngine.Quaternion Rotation {
+    public virtual UnityEngine.Quaternion TransformRotation {
         get {
             return this._rotation;
         }
@@ -77,7 +77,7 @@ public partial class GameRootElementViewModel : ViewModel {
         }
     }
     
-    public virtual UnityEngine.Quaternion LocalRotation {
+    public virtual UnityEngine.Quaternion TransformLocalRotation {
         get {
             return this._localRotation;
         }
@@ -87,7 +87,7 @@ public partial class GameRootElementViewModel : ViewModel {
         }
     }
     
-    public virtual UnityEngine.Vector3 LocalScale {
+    public virtual UnityEngine.Vector3 TransformLocalScale {
         get {
             return this._localScale;
         }
@@ -97,7 +97,7 @@ public partial class GameRootElementViewModel : ViewModel {
         }
     }
     
-    public virtual bool Enabled {
+    public virtual bool ColliderEnabled {
         get {
             return this._enabled;
         }
@@ -150,6 +150,12 @@ public partial class GameRootElementViewModel : ViewModel {
 		base.Write(stream);
 		stream.SerializeString("TestProperty", this.TestProperty);
 		stream.SerializeObject("TestVMProperty", this.TestVMProperty);
+		stream.SerializeVector3("TransformPosition", this.TransformPosition);
+		stream.SerializeVector3("TransformLocalPosition", this.TransformLocalPosition);
+		stream.SerializeQuaternion("TransformRotation", this.TransformRotation);
+		stream.SerializeQuaternion("TransformLocalRotation", this.TransformLocalRotation);
+		stream.SerializeVector3("TransformLocalScale", this.TransformLocalScale);
+		stream.SerializeBool("ColliderEnabled", this.ColliderEnabled);
 		stream.SerializeArray("TestVMCollection", this.TestVMCollection);
     }
     
@@ -157,6 +163,12 @@ public partial class GameRootElementViewModel : ViewModel {
 		base.Read(stream);
 		this.TestProperty = stream.DeserializeString("TestProperty");
 		this.TestVMProperty = stream.DeserializeObject<GameSubElementViewModel>("TestVMProperty");
+		this.TransformPosition = stream.DeserializeVector3("TransformPosition");
+		this.TransformLocalPosition = stream.DeserializeVector3("TransformLocalPosition");
+		this.TransformRotation = stream.DeserializeQuaternion("TransformRotation");
+		this.TransformLocalRotation = stream.DeserializeQuaternion("TransformLocalRotation");
+		this.TransformLocalScale = stream.DeserializeVector3("TransformLocalScale");
+		this.ColliderEnabled = stream.DeserializeBool("ColliderEnabled");
 		this.TestVMCollection = stream.DeserializeObjectArray<GameSubElementViewModel>("TestVMCollection").ToList();
     }
 }

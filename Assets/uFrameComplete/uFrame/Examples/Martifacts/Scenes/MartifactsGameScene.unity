@@ -833,7 +833,6 @@ MonoBehaviour:
   renderOrder: 44
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: window-active
   backgroundColor:
@@ -946,7 +945,7 @@ Transform:
   - {fileID: 1150764585}
   - {fileID: 482426149}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 79
+  m_RootOrder: 74
 --- !u!114 &25640063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1071,7 +1070,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 216
+  m_RootOrder: 211
 --- !u!114 &35712397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1153,7 +1152,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 166
+  m_RootOrder: 161
 --- !u!114 &36086956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1238,7 +1237,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 126
+  m_RootOrder: 121
 --- !u!114 &36739773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1372,7 +1371,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 46
+  m_RootOrder: 41
 --- !u!114 &46189016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1457,7 +1456,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 206
+  m_RootOrder: 201
 --- !u!114 &48053830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1542,7 +1541,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 26
+  m_RootOrder: 21
 --- !u!114 &48797427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1854,7 +1853,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 209
+  m_RootOrder: 204
 --- !u!114 &66754572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1941,7 +1940,7 @@ Transform:
   - {fileID: 1786853017}
   - {fileID: 584824565}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 76
+  m_RootOrder: 71
 --- !u!114 &67610814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2095,7 +2094,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 123
+  m_RootOrder: 118
 --- !u!114 &70367808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2245,7 +2244,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 200
+  m_RootOrder: 195
 --- !u!114 &74457689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2385,7 +2384,6 @@ MonoBehaviour:
   renderOrder: 29
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: PinnacleRock
   flip: 0
@@ -3298,7 +3296,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 56
+  m_RootOrder: 51
 --- !u!114 &125614680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3568,7 +3566,7 @@ Transform:
   - {fileID: 1051797367}
   - {fileID: 1691926333}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 176
+  m_RootOrder: 171
 --- !u!114 &135155413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3640,7 +3638,7 @@ Transform:
   - {fileID: 2070996425}
   - {fileID: 1504606009}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 170
+  m_RootOrder: 165
 --- !u!114 &138249754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3792,7 +3790,7 @@ Transform:
   - {fileID: 298109260}
   - {fileID: 1737896992}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 175
+  m_RootOrder: 170
 --- !u!114 &147795235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3913,7 +3911,6 @@ MonoBehaviour:
   renderOrder: 30
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -4305,7 +4302,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 207
+  m_RootOrder: 202
 --- !u!114 &159948973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4387,7 +4384,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 125
+  m_RootOrder: 120
 --- !u!114 &162084995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4527,7 +4524,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 7
+  m_RootOrder: 2
 --- !u!114 &164137990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4609,7 +4606,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 136
+  m_RootOrder: 131
 --- !u!114 &169922859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4718,7 +4715,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 143
+  m_RootOrder: 138
 --- !u!114 &172038118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4830,7 +4827,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 12
+  m_RootOrder: 7
 --- !u!114 &188098983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5326,7 +5323,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 19
+  m_RootOrder: 14
 --- !u!114 &205305568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5472,7 +5469,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 144
+  m_RootOrder: 139
 --- !u!114 &216638916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5838,13 +5835,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97b4768c3683045e4bfdb2e78272970c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshhold: .270000011
-  intensity: .689999998
-  blurSize: 2.67000008
-  resolution: 0
-  blurIterations: 1
-  blurType: 0
-  fastBloomShader: {fileID: 4800000, guid: 68a00c837b82e4c6d92e7da765dc5f1d, type: 3}
 --- !u!81 &230271568
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5913,29 +5903,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd05e71c69dd4457fa205c9eea7c2326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 4
-  adaptiveTextureSize: 256
-  remapCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 2
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  exposureAdjustment: 1.5
-  middleGrey: .400000006
-  white: 2
-  adaptionSpeed: 1.5
-  tonemapper: {fileID: 4800000, guid: 003377fc2620a44939dadde6fe3f8190, type: 3}
-  validRenderTextureFormat: 1
 --- !u!114 &230271573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5947,24 +5914,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f202adaee27c646fa9d90739bb84aa42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualizeFocus: 0
-  focalLength: 8.89999962
-  focalSize: .239999995
-  aperture: 6.71999979
-  focalTransform: {fileID: 0}
-  maxBlurSize: 1.53999996
-  highResolution: 1
-  blurType: 0
-  blurSampleCount: 2
-  nearBlur: 1
-  foregroundOverlap: 1
-  dofHdrShader: {fileID: 4800000, guid: acd613035ff3e455e8abf23fdc8c8c24, type: 3}
-  dx11BokehShader: {fileID: 4800000, guid: d8e82664aa8686642a424c88ab10164a, type: 3}
-  dx11BokehThreshhold: .5
-  dx11SpawnHeuristic: .0874999985
-  dx11BokehTexture: {fileID: 2800000, guid: a4cdca73d61814d33ac1587f6c163bca, type: 3}
-  dx11BokehScale: 1.20000005
-  dx11BokehIntensity: 2.5
 --- !u!114 &230271574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5976,13 +5925,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c3946ab5378473cb34bedd1c8194ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fogMode: 0
-  startDistance: 13.5799999
-  globalDensity: .200000003
-  heightScale: 20.2800007
-  height: 141.699997
-  globalFogColor: {r: .389705896, g: 0, b: 0, a: 1}
-  fogShader: {fileID: 4800000, guid: 70d8568987ac0499f952b54c7c13e265, type: 3}
 --- !u!114 &230271575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5994,18 +5936,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dad87ba4f1e04d6eb7f287e1f2e08fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resolution: 1
-  screenBlendMode: 1
-  sunTransform: {fileID: 1562099558}
-  radialBlurIterations: 2
-  sunColor: {r: 1, g: 1, b: 1, a: 1}
-  sunShaftBlurRadius: 2.5
-  sunShaftIntensity: 1.14999998
-  useSkyBoxAlpha: .433999985
-  maxRadius: .764999986
-  useDepthTexture: 1
-  sunShaftsShader: {fileID: 4800000, guid: d3b1c8c1036784176946f5cfbfb7fe4c, type: 3}
-  simpleClearShader: {fileID: 4800000, guid: f688f89ed5eb847c5b19c934a0f1e772, type: 3}
 --- !u!114 &230271576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6017,15 +5947,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57378565f2adf4d3fbe949ebe1453f09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mode: 3
-  sensitivityDepth: 1
-  sensitivityNormals: 1
-  lumThreshhold: .200000003
-  edgeExp: 1
-  sampleDist: 12.8999996
-  edgesOnly: 1
-  edgesOnlyBgColor: {r: .314878851, g: .823529422, b: .296712786, a: 1}
-  edgeDetectShader: {fileID: 4800000, guid: 0d1644bdf064147baa97f235fc5b4903, type: 3}
 --- !u!114 &230271577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6037,13 +5958,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d1352984e3c6465088f6cc7c4ce6e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  glowIntensity: 9.18000031
-  blurIterations: 1
-  blurSpread: 1
-  glowTint: {r: 0, g: .698529422, b: .236054853, a: 1}
-  compositeShader: {fileID: 4800000, guid: 96ca71e39c7b6fb4f9bec2c5bf331349, type: 3}
-  blurShader: {fileID: 4800000, guid: fb52973118cf00648825ced2fcca240c, type: 3}
-  downsampleShader: {fileID: 4800000, guid: b14b79b8936134d3f8238f0c2d40d634, type: 3}
 --- !u!114 &230271578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6055,9 +5969,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243a781cad112c75d0008dfa8d76c639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: daf9781cad112c75d0008dfa8d76c639, type: 3}
-  textureRamp: {fileID: 0}
-  rampOffset: -.100000001
 --- !u!114 &230271579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6069,15 +5980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0923359e9e352a4b9b11c7b7161ad67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Radius: .400000006
-  m_SampleCount: 1
-  m_OcclusionIntensity: 1.5
-  m_Blur: 2
-  m_Downsampling: 2
-  m_OcclusionAttenuation: 1
-  m_MinZ: .00999999978
-  m_SSAOShader: {fileID: 4800000, guid: 43ca18288c424f645aaa1e9e07f04c50, type: 3}
-  m_RandomTexture: {fileID: 2800000, guid: a181ca8e3c62f3e4b8f183f6c586b032, type: 3}
 --- !u!114 &230271580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6089,10 +5991,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a94b781cad112c75d0008dfa8d76c639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: 708b781cad112c75d0008dfa8d76c639, type: 3}
-  radius: {x: .400000006, y: .400000006}
-  angle: 32.1399994
-  center: {x: .5, y: .5}
 --- !u!1001 &230421004
 Prefab:
   m_ObjectHideFlags: 0
@@ -6248,7 +6146,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 214
+  m_RootOrder: 209
 --- !u!114 &233103786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6408,7 +6306,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 244986885}
   m_LocalRotation: {x: 0, y: 0, z: .923879564, w: -.382683486}
-  m_LocalPosition: {x: -2.412498e-05, y: .000783284544, z: 0}
+  m_LocalPosition: {x: -2.41200141e-05, y: .000783284544, z: 0}
   m_LocalScale: {x: .999999881, y: .999999881, z: 1}
   m_Children: []
   m_Father: {fileID: 1412491084}
@@ -6467,7 +6365,6 @@ MonoBehaviour:
   renderOrder: 27
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -6619,7 +6516,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 30
+  m_RootOrder: 25
 --- !u!114 &248510980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6882,7 +6779,6 @@ MonoBehaviour:
   renderOrder: 18
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -7075,13 +6971,12 @@ MonoBehaviour:
     margins:
       left: -5.34765625
       top: -7.04296875
-      right: 1.97555923
+      right: 1.97555542
       bottom: -7.95703125
     owner: {fileID: 264590360}
   renderOrder: 23
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -7228,7 +7123,7 @@ Transform:
   - {fileID: 606335121}
   - {fileID: 378327371}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 16
+  m_RootOrder: 11
 --- !u!95 &268446866
 Animator:
   serializedVersion: 3
@@ -7520,7 +7415,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 44
+  m_RootOrder: 39
 --- !u!114 &276701061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7752,7 +7647,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 82
+  m_RootOrder: 77
 --- !u!114 &281607715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7837,7 +7732,7 @@ Transform:
   - {fileID: 2061754589}
   - {fileID: 2083634929}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 19
+  m_RootOrder: 14
 --- !u!114 &283018151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7956,7 +7851,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 38
+  m_RootOrder: 33
 --- !u!114 &286743602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8199,7 +8094,6 @@ MonoBehaviour:
   renderOrder: 5
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: window-active
   backgroundColor:
@@ -8227,8 +8121,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 1228768907}
     MemberName: OnClick
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1 &295205429
 GameObject:
   m_ObjectHideFlags: 0
@@ -8258,7 +8150,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 49
+  m_RootOrder: 44
 --- !u!114 &295205431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8343,7 +8235,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 34
+  m_RootOrder: 29
 --- !u!114 &295641895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9134,7 +9026,7 @@ Transform:
   m_Children:
   - {fileID: 767887018}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 3
+  m_RootOrder: 22
 --- !u!114 &325316532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9301,7 +9193,6 @@ MonoBehaviour:
   renderOrder: 8
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 3a69f90dd9735b0498caf86210cf1ea9, type: 2}
   backgroundSprite: 
@@ -9457,7 +9348,6 @@ MonoBehaviour:
   renderOrder: 18
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -10565,7 +10455,6 @@ MonoBehaviour:
   renderOrder: 7
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -11003,7 +10892,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 189
+  m_RootOrder: 184
 --- !u!114 &394494789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11186,7 +11075,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 88
+  m_RootOrder: 83
 --- !u!114 &408543184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11355,7 +11244,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 122
+  m_RootOrder: 117
 --- !u!114 &412010586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11437,7 +11326,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 195
+  m_RootOrder: 190
 --- !u!114 &414713241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11522,7 +11411,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 2
+  m_RootOrder: 220
 --- !u!114 &416490298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11662,7 +11551,7 @@ Transform:
   - {fileID: 759871321}
   - {fileID: 1314102482}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 20
+  m_RootOrder: 15
 --- !u!114 &418809468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11717,7 +11606,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 131
+  m_RootOrder: 126
 --- !u!114 &420015115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11870,7 +11759,7 @@ Transform:
   - {fileID: 1837868265}
   - {fileID: 1633420897}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 9
+  m_RootOrder: 4
 --- !u!114 &423486341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12047,7 +11936,6 @@ MonoBehaviour:
   renderOrder: 19
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: Dig-icon
   flip: 0
@@ -12139,7 +12027,6 @@ MonoBehaviour:
   renderOrder: 12
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -12211,8 +12098,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 1580742830}
     MemberName: ExecuteDrill
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1001 &439811329
 Prefab:
   m_ObjectHideFlags: 0
@@ -12492,7 +12377,6 @@ MonoBehaviour:
   renderOrder: 12
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: Flair
   flip: 0
@@ -12568,7 +12452,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 153
+  m_RootOrder: 148
 --- !u!114 &451774175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12788,7 +12672,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 124
+  m_RootOrder: 119
 --- !u!114 &459622194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12870,7 +12754,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 112
+  m_RootOrder: 107
 --- !u!114 &460887025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13457,7 +13341,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 150
+  m_RootOrder: 145
 --- !u!23 &496562988
 Renderer:
   m_ObjectHideFlags: 0
@@ -13885,7 +13769,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 114
+  m_RootOrder: 109
 --- !u!114 &510695646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14267,7 +14151,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .160489336, y: .130208343, z: .00100000005}
+  m_Size: {x: .160489321, y: .130208343, z: .00100000005}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &529136098
 MonoBehaviour:
@@ -14293,7 +14177,7 @@ MonoBehaviour:
   disabledColor:
     serializedVersion: 2
     rgba: 4294967295
-  size: {x: 61.627903, y: 50}
+  size: {x: 61.6278992, y: 50}
   minSize: {x: 0, y: 0}
   maxSize: {x: 0, y: 0}
   clipChildren: 0
@@ -14311,7 +14195,6 @@ MonoBehaviour:
   renderOrder: 20
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: left-arrow
   hoverSprite: 
@@ -14383,8 +14266,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 2134497522}
     MemberName: ExecuteMoveForward
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1 &530373287
 GameObject:
   m_ObjectHideFlags: 0
@@ -14414,7 +14295,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 99
+  m_RootOrder: 94
 --- !u!114 &530373289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14554,7 +14435,6 @@ MonoBehaviour:
   renderOrder: 28
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-style6
   backgroundColor:
@@ -14825,7 +14705,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 110
+  m_RootOrder: 105
 --- !u!114 &547945927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15019,7 +14899,6 @@ MonoBehaviour:
   renderOrder: 13
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: Drill_icon
   flip: 0
@@ -15142,7 +15021,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 104
+  m_RootOrder: 99
 --- !u!114 &562880941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15256,7 +15135,7 @@ Transform:
   - {fileID: 1070021943}
   - {fileID: 1109017822}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 169
+  m_RootOrder: 164
 --- !u!114 &563129323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15487,7 +15366,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 63
+  m_RootOrder: 58
 --- !u!114 &572573402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15921,7 +15800,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 145
+  m_RootOrder: 140
 --- !u!114 &600018434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16546,7 +16425,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 196
+  m_RootOrder: 191
 --- !u!114 &622577180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17015,7 +16894,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 23
+  m_RootOrder: 18
 --- !u!114 &646155454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17219,7 +17098,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 1
+  m_RootOrder: 219
 --- !u!114 &653135233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17365,7 +17244,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 67
+  m_RootOrder: 62
 --- !u!114 &655834272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17447,7 +17326,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 193
+  m_RootOrder: 188
 --- !u!114 &656206613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17593,7 +17472,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 3
+  m_RootOrder: 221
 --- !u!114 &656934235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17945,7 +17824,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 98
+  m_RootOrder: 93
 --- !u!114 &676327060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18143,7 +18022,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 51
+  m_RootOrder: 46
 --- !u!114 &680548098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18233,7 +18112,7 @@ Transform:
   - {fileID: 968614610}
   - {fileID: 715193569}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 179
+  m_RootOrder: 174
 --- !u!114 &686023940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18380,7 +18259,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .160489336, y: .130208343, z: .00100000005}
+  m_Size: {x: .160489321, y: .130208343, z: .00100000005}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &693169633
 MonoBehaviour:
@@ -18406,7 +18285,7 @@ MonoBehaviour:
   disabledColor:
     serializedVersion: 2
     rgba: 4294967295
-  size: {x: 61.627903, y: 50}
+  size: {x: 61.6278992, y: 50}
   minSize: {x: 0, y: 0}
   maxSize: {x: 0, y: 0}
   clipChildren: 0
@@ -18424,7 +18303,6 @@ MonoBehaviour:
   renderOrder: 22
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: left-arrow
   hoverSprite: 
@@ -18496,8 +18374,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 2134497522}
     MemberName: ExecuteMoveLeft
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1001 &693200898
 Prefab:
   m_ObjectHideFlags: 0
@@ -18827,7 +18703,7 @@ Transform:
   - {fileID: 537757845}
   - {fileID: 1874372888}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 8
+  m_RootOrder: 3
 --- !u!114 &720694551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18882,7 +18758,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 72
+  m_RootOrder: 67
 --- !u!114 &727424569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18964,7 +18840,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 220
+  m_RootOrder: 215
 --- !u!114 &731707762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19046,7 +18922,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 212
+  m_RootOrder: 207
 --- !u!114 &739412123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19128,7 +19004,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 218
+  m_RootOrder: 213
 --- !u!114 &742766583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19210,7 +19086,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 57
+  m_RootOrder: 52
 --- !u!114 &743044561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19567,7 +19443,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 11
+  m_RootOrder: 6
 --- !u!114 &757601276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19736,7 +19612,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 190
+  m_RootOrder: 185
 --- !u!95 &767033479
 Animator:
   serializedVersion: 3
@@ -19884,7 +19760,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 160
+  m_RootOrder: 155
 --- !u!114 &769079760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20056,7 +19932,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 64
+  m_RootOrder: 59
 --- !u!114 &776570792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20220,7 +20096,7 @@ Transform:
   m_Children:
   - {fileID: 1442555813}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!1 &782636798
 GameObject:
   m_ObjectHideFlags: 0
@@ -20250,7 +20126,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 116
+  m_RootOrder: 111
 --- !u!114 &782636800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20331,7 +20207,7 @@ Transform:
   m_Children:
   - {fileID: 1178146592}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 16
+  m_RootOrder: 11
 --- !u!114 &783526187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20552,7 +20428,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 59
+  m_RootOrder: 54
 --- !u!114 &792981857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20637,7 +20513,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 84
+  m_RootOrder: 79
 --- !u!114 &795405246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20722,7 +20598,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 24
+  m_RootOrder: 19
 --- !u!114 &806874955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20884,7 +20760,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 17
+  m_RootOrder: 12
 --- !u!114 &810443590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21120,13 +20996,12 @@ MonoBehaviour:
     margins:
       left: -1.7265625
       top: -6.65234375
-      right: -1.64553452
+      right: -1.64553833
       bottom: -8.34765625
     owner: {fileID: 816694615}
   renderOrder: 25
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -21438,7 +21313,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 148
+  m_RootOrder: 143
 --- !u!114 &831348015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21578,7 +21453,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 222
+  m_RootOrder: 217
 --- !u!114 &832181763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21716,7 +21591,6 @@ MonoBehaviour:
   renderOrder: 11
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -21788,8 +21662,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 1580742830}
     MemberName: ExecuteShootFlare
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1 &833847784
 GameObject:
   m_ObjectHideFlags: 0
@@ -21819,7 +21691,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 83
+  m_RootOrder: 78
 --- !u!114 &833847786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21904,7 +21776,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 87
+  m_RootOrder: 82
 --- !u!114 &834141917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22118,7 +21990,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 113
+  m_RootOrder: 108
 --- !u!114 &845035427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22264,7 +22136,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 157
+  m_RootOrder: 152
 --- !u!114 &851520468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22346,7 +22218,7 @@ Transform:
   - {fileID: 272169558}
   - {fileID: 2105537835}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 11
+  m_RootOrder: 6
 --- !u!114 &855044116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22459,7 +22331,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 25
+  m_RootOrder: 20
 --- !u!114 &859277111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22599,7 +22471,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 6
+  m_RootOrder: 1
 --- !u!114 &864678788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22736,7 +22608,6 @@ MonoBehaviour:
   renderOrder: 10
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: progress-frame
   progressSprite: progress-fill
@@ -23186,7 +23057,6 @@ MonoBehaviour:
   renderOrder: 46
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-style4
   hoverSprite: 
@@ -23258,8 +23128,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 1228768907}
     MemberName: ExecuteRetry
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1001 &890912740
 Prefab:
   m_ObjectHideFlags: 0
@@ -23346,7 +23214,7 @@ Transform:
   - {fileID: 1648932124}
   - {fileID: 870097971}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 202
+  m_RootOrder: 197
 --- !u!114 &891291118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23482,7 +23350,7 @@ Transform:
   - {fileID: 905286907}
   - {fileID: 1852003854}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 15
+  m_RootOrder: 10
 --- !u!122 &894588634
 Halo:
   m_ObjectHideFlags: 0
@@ -23592,11 +23460,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1191083640}
-  - {fileID: 653135232}
-  - {fileID: 416490297}
-  - {fileID: 656934234}
-  - {fileID: 1436345784}
   - {fileID: 1143214131}
   - {fileID: 864678787}
   - {fileID: 164137989}
@@ -23815,6 +23678,11 @@ Transform:
   - {fileID: 731707761}
   - {fileID: 1800062547}
   - {fileID: 832181762}
+  - {fileID: 1191083640}
+  - {fileID: 653135232}
+  - {fileID: 416490297}
+  - {fileID: 656934234}
+  - {fileID: 1436345784}
   m_Father: {fileID: 287978764}
   m_RootOrder: 1
 --- !u!1001 &897799860
@@ -24006,7 +23874,6 @@ MonoBehaviour:
   renderOrder: 38
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -24129,7 +23996,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 138
+  m_RootOrder: 133
 --- !u!1001 &903056631
 Prefab:
   m_ObjectHideFlags: 0
@@ -24223,7 +24090,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 43
+  m_RootOrder: 38
 --- !u!114 &903904036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24680,7 +24547,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 9
+  m_RootOrder: 4
 --- !u!114 &928110455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25155,7 +25022,7 @@ Transform:
   m_Children:
   - {fileID: 1660839892}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 2
+  m_RootOrder: 21
 --- !u!114 &947755576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25476,7 +25343,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 203
+  m_RootOrder: 198
 --- !u!114 &959764553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25566,7 +25433,7 @@ Transform:
   - {fileID: 545770971}
   - {fileID: 511501580}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 77
+  m_RootOrder: 72
 --- !u!114 &961618205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25765,7 +25632,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 36
+  m_RootOrder: 31
 --- !u!114 &965716087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26119,7 +25986,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 208
+  m_RootOrder: 203
 --- !u!114 &978110084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26462,7 +26329,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 15
+  m_RootOrder: 10
 --- !u!114 &989518065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26886,7 +26753,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 147
+  m_RootOrder: 142
 --- !u!114 &1003842629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27579,7 +27446,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 66
+  m_RootOrder: 61
 --- !u!114 &1028168699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27728,7 +27595,7 @@ Transform:
   m_Children:
   - {fileID: 411742073}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 1
+  m_RootOrder: 20
 --- !u!114 &1032782956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27835,7 +27702,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 188
+  m_RootOrder: 183
 --- !u!114 &1037705813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27916,11 +27783,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1842432469}
-  - {fileID: 1032782955}
-  - {fileID: 947755575}
-  - {fileID: 325316531}
-  - {fileID: 1528571733}
   - {fileID: 781814693}
   - {fileID: 1903478128}
   - {fileID: 1510771709}
@@ -27940,6 +27802,11 @@ Transform:
   - {fileID: 1772156409}
   - {fileID: 1216458893}
   - {fileID: 1736859648}
+  - {fileID: 1842432469}
+  - {fileID: 1032782955}
+  - {fileID: 947755575}
+  - {fileID: 325316531}
+  - {fileID: 1528571733}
   m_Father: {fileID: 287978764}
   m_RootOrder: 3
 --- !u!1 &1039480357
@@ -27971,7 +27838,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 135
+  m_RootOrder: 130
 --- !u!114 &1039480359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28166,7 +28033,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 60
+  m_RootOrder: 55
 --- !u!114 &1048625379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28382,7 +28249,7 @@ Transform:
   - {fileID: 1533182146}
   - {fileID: 157147151}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 78
+  m_RootOrder: 73
 --- !u!114 &1052335535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28685,13 +28552,12 @@ MonoBehaviour:
     margins:
       left: -.3671875
       top: -7.33984375
-      right: -3.00490952
+      right: -3.00491333
       bottom: -7.66015625
     owner: {fileID: 1055384098}
   renderOrder: 21
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -28901,7 +28767,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 213
+  m_RootOrder: 208
 --- !u!114 &1064213623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29105,7 +28971,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 146
+  m_RootOrder: 141
 --- !u!114 &1072286964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29190,7 +29056,7 @@ Transform:
   - {fileID: 562111076}
   - {fileID: 449596950}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 10
+  m_RootOrder: 5
 --- !u!114 &1074111537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29249,7 +29115,7 @@ Transform:
   - {fileID: 900313807}
   - {fileID: 346222385}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 18
+  m_RootOrder: 13
 --- !u!95 &1078402389
 Animator:
   serializedVersion: 3
@@ -29294,7 +29160,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 52
+  m_RootOrder: 47
 --- !u!114 &1078888271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29433,7 +29299,6 @@ MonoBehaviour:
   renderOrder: 32
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -29501,7 +29366,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 155
+  m_RootOrder: 150
 --- !u!114 &1083225054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29583,7 +29448,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 198
+  m_RootOrder: 193
 --- !u!114 &1088515714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29716,7 +29581,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 42
+  m_RootOrder: 37
 --- !u!114 &1089845109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29869,7 +29734,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 133
+  m_RootOrder: 128
 --- !u!114 &1091046992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30013,7 +29878,7 @@ Transform:
   - {fileID: 2053007259}
   - {fileID: 625204877}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 14
+  m_RootOrder: 9
 --- !u!122 &1095922149
 Halo:
   m_ObjectHideFlags: 0
@@ -30079,7 +29944,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 35
+  m_RootOrder: 30
 --- !u!114 &1097074580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30164,7 +30029,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 163
+  m_RootOrder: 158
 --- !u!114 &1099683384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30303,7 +30168,6 @@ MonoBehaviour:
   renderOrder: 45
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 3a69f90dd9735b0498caf86210cf1ea9, type: 2}
   backgroundSprite: 
@@ -30371,7 +30235,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 154
+  m_RootOrder: 149
 --- !u!114 &1104972836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30786,7 +30650,7 @@ Transform:
   - {fileID: 13154566}
   - {fileID: 1601242013}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 12
+  m_RootOrder: 7
 --- !u!114 &1121050620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30963,7 +30827,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 120
+  m_RootOrder: 115
 --- !u!114 &1133213496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31048,7 +30912,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 167
+  m_RootOrder: 162
 --- !u!114 &1133579718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31133,7 +30997,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 137
+  m_RootOrder: 132
 --- !u!114 &1140297835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31355,7 +31219,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!114 &1143214132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31627,7 +31491,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 28
+  m_RootOrder: 23
 --- !u!114 &1150139527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31770,7 +31634,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 53
+  m_RootOrder: 48
 --- !u!114 &1153248033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31855,7 +31719,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 27
+  m_RootOrder: 22
 --- !u!114 &1153726588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31994,7 +31858,6 @@ MonoBehaviour:
   renderOrder: 39
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -32062,7 +31925,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 20
+  m_RootOrder: 15
 --- !u!114 &1157074552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32144,7 +32007,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 58
+  m_RootOrder: 53
 --- !u!114 &1158936136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32549,7 +32412,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 127
+  m_RootOrder: 122
 --- !u!114 &1178077158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32718,7 +32581,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 106
+  m_RootOrder: 101
 --- !u!114 &1186838925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32800,7 +32663,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 204
+  m_RootOrder: 199
 --- !u!114 &1189320040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32885,7 +32748,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 0
+  m_RootOrder: 218
 --- !u!114 &1191083641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32967,7 +32830,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 55
+  m_RootOrder: 50
 --- !u!114 &1191605121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33252,7 +33115,7 @@ Transform:
   m_Children:
   - {fileID: 68671895}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 22
+  m_RootOrder: 17
 --- !u!114 &1216458894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33455,7 +33318,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 118
+  m_RootOrder: 113
 --- !u!114 &1224744181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33541,6 +33404,7 @@ Transform:
   m_Children:
   - {fileID: 1320728128}
   - {fileID: 1492522911}
+  - {fileID: 1862854934}
   m_Father: {fileID: 0}
   m_RootOrder: 6
 --- !u!114 &1228768907
@@ -33642,16 +33506,10 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
+  - {fileID: 2100000, guid: e773281c06b5e024db5e1a4f549afe5d, type: 2}
+  - {fileID: 2100000, guid: 8825a10ad5a1c5845a3daa5405d03845, type: 3}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 5ddffabbcdbcb3240b185e41f59b6f69, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -33683,7 +33541,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiScale: 1
-  uiScaleLegacy: 0
   inputManager: {fileID: 1228768911}
   fixedWidth: 800
   fixedHeight: 768
@@ -33718,8 +33575,6 @@ MonoBehaviour:
   axisPollingInterval: .150000006
   retainFocus: 0
   touchClickRadius: 125
-  hoverStartDelay: 0
-  hoverNotifactionFrequency: 0
 --- !u!65 &1228768912
 BoxCollider:
   m_ObjectHideFlags: 2
@@ -33887,7 +33742,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 85
+  m_RootOrder: 80
 --- !u!23 &1239416743
 Renderer:
   m_ObjectHideFlags: 0
@@ -33972,7 +33827,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 73
+  m_RootOrder: 68
 --- !u!114 &1241944325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34110,7 +33965,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 197
+  m_RootOrder: 192
 --- !u!114 &1250052015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34195,7 +34050,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 215
+  m_RootOrder: 210
 --- !u!114 &1250216515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34325,7 +34180,6 @@ MonoBehaviour:
   renderOrder: 37
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: window-active
   backgroundColor:
@@ -34609,7 +34463,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 69
+  m_RootOrder: 64
 --- !u!114 &1262760177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34746,7 +34600,6 @@ MonoBehaviour:
   renderOrder: 17
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-bracketed-filled
   backgroundColor:
@@ -34978,7 +34831,6 @@ MonoBehaviour:
   renderOrder: 34
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -35046,7 +34898,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 97
+  m_RootOrder: 92
 --- !u!114 &1270360064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35242,7 +35094,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 205
+  m_RootOrder: 200
 --- !u!114 &1283623517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35327,7 +35179,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 54
+  m_RootOrder: 49
 --- !u!114 &1288538895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35719,7 +35571,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 129
+  m_RootOrder: 124
 --- !u!114 &1299859008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35860,7 +35712,7 @@ Transform:
   - {fileID: 100672898}
   - {fileID: 1768514851}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 187
+  m_RootOrder: 182
 --- !u!95 &1303696414
 Animator:
   serializedVersion: 3
@@ -35905,7 +35757,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 31
+  m_RootOrder: 26
 --- !u!114 &1308936291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35995,7 +35847,7 @@ Transform:
   - {fileID: 1542345651}
   - {fileID: 487439314}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 183
+  m_RootOrder: 178
 --- !u!114 &1310131968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36412,7 +36264,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 41
+  m_RootOrder: 36
 --- !u!114 &1331828211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36497,7 +36349,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 194
+  m_RootOrder: 189
 --- !u!114 &1332827525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36579,7 +36431,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 45
+  m_RootOrder: 40
 --- !u!114 &1335326616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37007,7 +36859,6 @@ MonoBehaviour:
   renderOrder: 14
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-bracketed-filled
   backgroundColor:
@@ -37081,7 +36932,7 @@ Transform:
   - {fileID: 1335701128}
   - {fileID: 538180924}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 174
+  m_RootOrder: 169
 --- !u!114 &1355225442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37613,7 +37464,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 162
+  m_RootOrder: 157
 --- !u!114 &1384109246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37770,7 +37621,7 @@ Transform:
   - {fileID: 1442928339}
   - {fileID: 1123936081}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 185
+  m_RootOrder: 180
 --- !u!95 &1389442033
 Animator:
   serializedVersion: 3
@@ -37815,7 +37666,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 134
+  m_RootOrder: 129
 --- !u!114 &1391612339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38084,12 +37935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aee0c42cfbeb2b45b09ce685ab0323c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPlaylistOnAwake: 1
-  isShuffle: 1
-  isAutoAdvance: 1
-  playlistVolume: 1
-  isMuted: 0
-  startPlaylistName: new playlist
 --- !u!82 &1407060981
 AudioSource:
   m_ObjectHideFlags: 0
@@ -38400,7 +38245,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 109
+  m_RootOrder: 104
 --- !u!114 &1408991185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38552,7 +38397,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .160489336, y: .130208343, z: .00100000005}
+  m_Size: {x: .160489321, y: .130208343, z: .00100000005}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1412491086
 MonoBehaviour:
@@ -38578,7 +38423,7 @@ MonoBehaviour:
   disabledColor:
     serializedVersion: 2
     rgba: 4294967295
-  size: {x: 61.627903, y: 50}
+  size: {x: 61.6278992, y: 50}
   minSize: {x: 0, y: 0}
   maxSize: {x: 0, y: 0}
   clipChildren: 0
@@ -38590,13 +38435,12 @@ MonoBehaviour:
     margins:
       left: 110.808594
       top: 72.8242188
-      right: 17.5635033
+      right: 17.5635071
       bottom: 75.1757812
     owner: {fileID: 1412491086}
   renderOrder: 26
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: left-arrow
   hoverSprite: 
@@ -38668,8 +38512,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 2134497522}
     MemberName: ExecuteMoveRight
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1 &1412614039
 GameObject:
   m_ObjectHideFlags: 0
@@ -38699,7 +38541,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 48
+  m_RootOrder: 43
 --- !u!114 &1412614041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38812,7 +38654,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 142
+  m_RootOrder: 137
 --- !u!114 &1421960720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38897,7 +38739,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 177
+  m_RootOrder: 172
 --- !u!114 &1422090156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39047,7 +38889,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 92
+  m_RootOrder: 87
 --- !u!114 &1427101659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39129,7 +38971,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 10
+  m_RootOrder: 5
 --- !u!114 &1427137728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39269,7 +39111,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 4
+  m_RootOrder: 222
 --- !u!114 &1436345785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39409,7 +39251,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 159
+  m_RootOrder: 154
 --- !u!114 &1441770935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39864,7 +39706,6 @@ MonoBehaviour:
   renderOrder: 4
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: 
   hoverSprite: 
@@ -40057,7 +39898,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 192
+  m_RootOrder: 187
 --- !u!114 &1454563215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40251,7 +40092,6 @@ MonoBehaviour:
   renderOrder: 11
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -40589,7 +40429,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 219
+  m_RootOrder: 214
 --- !u!114 &1472547970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40970,7 +40810,6 @@ MonoBehaviour:
   renderOrder: 1
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: 
   backgroundColor:
@@ -41222,7 +41061,7 @@ Transform:
   - {fileID: 119687829}
   - {fileID: 1652973012}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 80
+  m_RootOrder: 75
 --- !u!114 &1504561005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41415,7 +41254,7 @@ Transform:
   - {fileID: 1109263233}
   - {fileID: 1533209079}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 7
+  m_RootOrder: 2
 --- !u!114 &1510771710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41470,7 +41309,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 61
+  m_RootOrder: 56
 --- !u!114 &1515906611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41582,7 +41421,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 119
+  m_RootOrder: 114
 --- !u!114 &1519726190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41858,7 +41697,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 13
+  m_RootOrder: 8
 --- !u!114 &1527805941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41997,7 +41836,7 @@ Transform:
   m_Children:
   - {fileID: 1503358867}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 4
+  m_RootOrder: 23
 --- !u!114 &1528571734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42364,7 +42203,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 65
+  m_RootOrder: 60
 --- !u!114 &1540263728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42788,7 +42627,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 21
+  m_RootOrder: 16
 --- !u!114 &1554764350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42938,7 +42777,7 @@ Transform:
   - {fileID: 1815047950}
   - {fileID: 340452282}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 18
+  m_RootOrder: 13
 --- !u!114 &1556081823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42993,7 +42832,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 217
+  m_RootOrder: 212
 --- !u!114 &1556175341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43075,7 +42914,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 211
+  m_RootOrder: 206
 --- !u!114 &1557476242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43461,7 +43300,6 @@ MonoBehaviour:
   renderOrder: 9
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-bracketed-filled
   backgroundColor:
@@ -43678,7 +43516,6 @@ MonoBehaviour:
   renderOrder: 40
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -43758,7 +43595,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 14
+  m_RootOrder: 9
 --- !u!114 &1592065693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43840,7 +43677,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 151
+  m_RootOrder: 146
 --- !u!114 &1592314927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43976,7 +43813,6 @@ MonoBehaviour:
   renderOrder: 16
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: Sonar
   flip: 0
@@ -44192,7 +44028,6 @@ MonoBehaviour:
   renderOrder: 36
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -44469,7 +44304,6 @@ MonoBehaviour:
   renderOrder: 2
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: callout
   backgroundColor:
@@ -44567,7 +44401,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 108
+  m_RootOrder: 103
 --- !u!114 &1612142513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44717,7 +44551,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 62
+  m_RootOrder: 57
 --- !u!114 &1615026501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44965,7 +44799,7 @@ Transform:
   - {fileID: 444599951}
   - {fileID: 1473415792}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 181
+  m_RootOrder: 176
 --- !u!114 &1622673540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45086,7 +44920,6 @@ MonoBehaviour:
   renderOrder: 41
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -45154,7 +44987,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 101
+  m_RootOrder: 96
 --- !u!114 &1630491423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45503,7 +45336,6 @@ MonoBehaviour:
   renderOrder: 31
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: MysteryRock
   flip: 0
@@ -45655,7 +45487,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 111
+  m_RootOrder: 106
 --- !u!114 &1643853908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45737,7 +45569,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 50
+  m_RootOrder: 45
 --- !u!114 &1647610411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46078,7 +45910,6 @@ MonoBehaviour:
   renderOrder: 6
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -46204,7 +46035,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 29
+  m_RootOrder: 24
 --- !u!114 &1659423894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46430,7 +46261,6 @@ MonoBehaviour:
   renderOrder: 3
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 3a69f90dd9735b0498caf86210cf1ea9, type: 2}
   backgroundSprite: 
@@ -46497,74 +46327,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c355370a70a4ae5bf187f77a55d870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulkLocationMode: 0
-  curDragGroupMode: 0
-  ledTextures:
-  - {fileID: 2800000, guid: 498cfbcba4b1ca34f8044294a10f9486, type: 3}
-  - {fileID: 2800000, guid: 5a0bea4e29231f74297bbab5a34bc03e, type: 3}
-  - {fileID: 2800000, guid: ad384bbef2d01334dab17b5b8431ea93, type: 3}
-  - {fileID: 2800000, guid: 5db131867b395b94890a10001532ae2d, type: 3}
-  - {fileID: 2800000, guid: 8d23edca0721a704693bc1b23aa1048b, type: 3}
-  - {fileID: 2800000, guid: d548ab6f6e0a2c54090f201fabb9db71, type: 3}
-  stopTrackTexture: {fileID: 2800000, guid: d09d47936d8da854a9e9792c50e941cf, type: 3}
-  nextTrackTexture: {fileID: 2800000, guid: ab40830d0f161b740a73c4e9b9efe068, type: 3}
-  playTrackTexture: {fileID: 2800000, guid: 667161b3813db8a418f5315f715f3c58, type: 3}
-  pauseTrackTexure: {fileID: 2800000, guid: b64008fbe954a7f4baf9c32b56ca7cfd, type: 3}
-  randomTrackTexure: {fileID: 2800000, guid: 322929ab77a9d1b428d8b868d40cd499, type: 3}
-  logoTexture: {fileID: 2800000, guid: 8af7d6a686c12554fa27da741d80348a, type: 3}
-  deleteTexture: {fileID: 2800000, guid: f7ca255c7a49bbd42b6198828da08673, type: 3}
-  settingsTexture: {fileID: 2800000, guid: 58f96f913abb6094b8c0ee62b04ff341, type: 3}
-  soloOnTexture: {fileID: 2800000, guid: 2190b762f478b6c4e86eb56f9b74d401, type: 3}
-  soloOffTexture: {fileID: 2800000, guid: 58c470c4a43147641a0125c6f0b3b9e8, type: 3}
-  muteOnTexture: {fileID: 2800000, guid: 2f79e5faee4cb214c9e7c4b17d3a744a, type: 3}
-  muteOffTexture: {fileID: 2800000, guid: 13e160eda06e25546a8ebca4cc2459f9, type: 3}
-  playTexture: {fileID: 2800000, guid: 60c1aef6e42a1a74686d4fef01f424fc, type: 3}
-  mixerMuted: 0
-  playlistsMuted: 0
-  busFilter: 
-  resourceClipsPauseDoNotUnload: 0
-  playlistControllerPrefab: {fileID: 400000, guid: 8d628ddcfa7a21e49a762de30fc7e9dd,
-    type: 2}
-  persistBetweenScenes: 0
-  areGroupsExpanded: 1
-  soundGroupTemplate: {fileID: 400008, guid: 877a3a4bf0a4abf43aba41125e1d3101, type: 2}
-  soundGroupVariationTemplate: {fileID: 400000, guid: 08eea2d8c4572c7479da53cfbc14bde6,
-    type: 2}
-  groupBuses: []
-  groupByBus: 1
-  playListExpanded: 1
-  playlistEditorExpanded: 1
-  musicPlaylists:
-  - isExpanded: 1
-    playlistName: new playlist
-    songTransitionType: 1
-    MusicSettings:
-    - clip: {fileID: 8300000, guid: 8a63b0325fd491246968f7b370aa2354, type: 3}
-      volume: 1
-      pitch: 1
-      isExpanded: 1
-      isLoop: 0
-      lastKnownTimePoint: 0
-    - clip: {fileID: 8300000, guid: c8556ce49d241384b806412131348015, type: 3}
-      volume: 1
-      pitch: 1
-      isExpanded: 1
-      isLoop: 0
-      lastKnownTimePoint: 0
-    - clip: {fileID: 8300000, guid: bd014e38a47c9db4d8fa59975dfe2134, type: 3}
-      volume: 1
-      pitch: 1
-      isExpanded: 1
-      isLoop: 0
-      lastKnownTimePoint: 0
-  masterAudioVolume: 1
-  LogSounds: 0
-  showMusicDucking: 0
-  enableMusicDucking: 1
-  musicDuckingSounds: []
-  duckedVolumeMultiplier: .5
-  crossFadeTime: 1
-  masterPlaylistVolume: 1
 --- !u!4 &1663050083
 Transform:
   m_ObjectHideFlags: 0
@@ -46817,7 +46579,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 130
+  m_RootOrder: 125
 --- !u!114 &1676766711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47110,7 +46872,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 128
+  m_RootOrder: 123
 --- !u!114 &1704122048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47260,7 +47022,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 70
+  m_RootOrder: 65
 --- !u!114 &1708784463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47418,8 +47180,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 1228768907}
     MemberName: ExecuteRetry
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!65 &1715913266
 BoxCollider:
   m_ObjectHideFlags: 2
@@ -47474,7 +47234,6 @@ MonoBehaviour:
   renderOrder: 43
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -47558,7 +47317,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 103
+  m_RootOrder: 98
 --- !u!114 &1718920685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47640,7 +47399,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 168
+  m_RootOrder: 163
 --- !u!114 &1719001302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47725,7 +47484,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 184
+  m_RootOrder: 179
 --- !u!114 &1720311539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48011,7 +47770,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 132
+  m_RootOrder: 127
 --- !u!114 &1728608618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48096,7 +47855,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 37
+  m_RootOrder: 32
 --- !u!114 &1731017057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48186,7 +47945,7 @@ Transform:
   - {fileID: 1527926162}
   - {fileID: 831452050}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 171
+  m_RootOrder: 166
 --- !u!114 &1732975307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48252,7 +48011,7 @@ Transform:
   m_Children:
   - {fileID: 1755638312}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 23
+  m_RootOrder: 18
 --- !u!114 &1736859649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48423,7 +48182,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 74
+  m_RootOrder: 69
 --- !u!114 &1740431829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48728,7 +48487,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 117
+  m_RootOrder: 112
 --- !u!114 &1746557030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48810,7 +48569,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 149
+  m_RootOrder: 144
 --- !u!23 &1746571013
 Renderer:
   m_ObjectHideFlags: 0
@@ -49422,7 +49181,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 178
+  m_RootOrder: 173
 --- !u!114 &1768626484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49504,7 +49263,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 191
+  m_RootOrder: 186
 --- !u!114 &1769258308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49587,7 +49346,7 @@ Transform:
   - {fileID: 2033256906}
   - {fileID: 1148754944}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 21
+  m_RootOrder: 16
 --- !u!114 &1772156410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49965,7 +49724,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 40
+  m_RootOrder: 35
 --- !u!114 &1790134702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50118,7 +49877,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 141
+  m_RootOrder: 136
 --- !u!114 &1798132927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50203,7 +49962,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 221
+  m_RootOrder: 216
 --- !u!114 &1800062548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50343,7 +50102,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 164
+  m_RootOrder: 159
 --- !u!114 &1806905271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50560,7 +50319,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 210
+  m_RootOrder: 205
 --- !u!114 &1814793543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50855,7 +50614,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 121
+  m_RootOrder: 116
 --- !u!114 &1821528955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51052,7 +50811,7 @@ Transform:
   - {fileID: 2109811729}
   - {fileID: 35472852}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 182
+  m_RootOrder: 177
 --- !u!114 &1826093951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51124,7 +50883,7 @@ Transform:
   - {fileID: 193632217}
   - {fileID: 1993886122}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 81
+  m_RootOrder: 76
 --- !u!114 &1829733729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51278,7 +51037,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 32
+  m_RootOrder: 27
 --- !u!114 &1839546794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51363,7 +51122,7 @@ Transform:
   - {fileID: 771945381}
   - {fileID: 1884709308}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 17
+  m_RootOrder: 12
 --- !u!114 &1839947519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51418,7 +51177,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 39
+  m_RootOrder: 34
 --- !u!114 &1840860565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51570,7 +51329,7 @@ Transform:
   m_Children:
   - {fileID: 346548919}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 0
+  m_RootOrder: 19
 --- !u!114 &1842432470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51873,7 +51632,6 @@ MonoBehaviour:
   renderOrder: 47
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 1bd74a2245f6f9546a7b717a474a36c2, type: 2}
   backgroundSprite: 
@@ -52026,7 +51784,7 @@ Transform:
   - {fileID: 1446472657}
   - {fileID: 219739925}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 173
+  m_RootOrder: 168
 --- !u!114 &1861694525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52064,6 +51822,99 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_HasTransformHierarchy: 1
+--- !u!1 &1862854933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1862854934}
+  - 114: {fileID: 1862854936}
+  - 65: {fileID: 1862854935}
+  m_Layer: 10
+  m_Name: Panel 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1862854934
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862854933}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .0877532959, y: .695129395, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1228768906}
+  m_RootOrder: 2
+--- !u!65 &1862854935
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862854933}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: .833333373, y: .625, z: .00100000005}
+  m_Center: {x: .416666687, y: -.3125, z: 0}
+--- !u!114 &1862854936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862854933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18e0e5854c8aa374597bb28d9adf228a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorStyle: 5
+  isEnabled: 1
+  isVisible: 1
+  isInteractive: 1
+  tooltip: 
+  pivot: 0
+  zindex: -1
+  color:
+    serializedVersion: 2
+    rgba: 4294967295
+  disabledColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  size: {x: 320, y: 240}
+  minSize: {x: 0, y: 0}
+  maxSize: {x: 0, y: 0}
+  clipChildren: 0
+  tabIndex: -1
+  canFocus: 0
+  autoFocus: 0
+  layout:
+    anchorStyle: 5
+    margins:
+      left: 434
+      top: 117
+      right: 46
+      bottom: 411
+    owner: {fileID: 1862854936}
+  renderOrder: 48
+  isLocalized: 0
+  hotZoneScale: {x: 1, y: 1}
+  atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
+  backgroundSprite: 
+  backgroundColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
 --- !u!1 &1874372887
 GameObject:
   m_ObjectHideFlags: 0
@@ -52179,7 +52030,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 165
+  m_RootOrder: 160
 --- !u!114 &1874618362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52264,7 +52115,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 33
+  m_RootOrder: 28
 --- !u!114 &1876510144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52822,7 +52673,7 @@ Transform:
   m_Children:
   - {fileID: 1746052702}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 6
+  m_RootOrder: 1
 --- !u!114 &1903478129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52935,7 +52786,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 140
+  m_RootOrder: 135
 --- !u!114 &1904313387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53071,7 +52922,6 @@ MonoBehaviour:
   renderOrder: 42
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   font: {fileID: 11400000, guid: 3a69f90dd9735b0498caf86210cf1ea9, type: 2}
   backgroundSprite: 
@@ -53277,7 +53127,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 180
+  m_RootOrder: 175
 --- !u!114 &1914063815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53359,7 +53209,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 105
+  m_RootOrder: 100
 --- !u!114 &1915245501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53496,7 +53346,6 @@ MonoBehaviour:
   renderOrder: 35
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: BedRock
   flip: 0
@@ -53584,7 +53433,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 90
+  m_RootOrder: 85
 --- !u!114 &1917762410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53727,7 +53576,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 100
+  m_RootOrder: 95
 --- !u!114 &1928125337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53857,7 +53706,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 96
+  m_RootOrder: 91
 --- !u!114 &1935026258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53997,7 +53846,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 86
+  m_RootOrder: 81
 --- !u!23 &1938050178
 Renderer:
   m_ObjectHideFlags: 0
@@ -54140,7 +53989,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 89
+  m_RootOrder: 84
 --- !u!114 &1943242060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54222,7 +54071,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 47
+  m_RootOrder: 42
 --- !u!114 &1945158740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54487,7 +54336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 91
+  m_RootOrder: 86
 --- !u!114 &1960148325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54853,7 +54702,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 107
+  m_RootOrder: 102
 --- !u!114 &1981129152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54987,7 +54836,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 201
+  m_RootOrder: 196
 --- !u!114 &1983888021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55153,7 +55002,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .160489336, y: .130208343, z: .00100000005}
+  m_Size: {x: .160489321, y: .130208343, z: .00100000005}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1986412358
 MonoBehaviour:
@@ -55179,7 +55028,7 @@ MonoBehaviour:
   disabledColor:
     serializedVersion: 2
     rgba: 4294967295
-  size: {x: 61.627903, y: 50}
+  size: {x: 61.6278992, y: 50}
   minSize: {x: 0, y: 0}
   maxSize: {x: 0, y: 0}
   clipChildren: 0
@@ -55191,13 +55040,12 @@ MonoBehaviour:
     margins:
       left: 64.6171875
       top: 119.1875
-      right: 63.7549095
+      right: 63.7549133
       bottom: 28.8125
     owner: {fileID: 1986412358}
   renderOrder: 24
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: left-arrow
   hoverSprite: 
@@ -55269,8 +55117,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 2134497522}
     MemberName: ExecuteMoveBackward
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1 &1993886121
 GameObject:
   m_ObjectHideFlags: 0
@@ -55474,7 +55320,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 22
+  m_RootOrder: 17
 --- !u!114 &2009408027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55672,7 +55518,7 @@ Transform:
   - {fileID: 1299313996}
   - {fileID: 453343097}
   m_Father: {fileID: 1038127285}
-  m_RootOrder: 13
+  m_RootOrder: 8
 --- !u!114 &2014117113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55727,7 +55573,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 161
+  m_RootOrder: 156
 --- !u!114 &2014298934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55866,7 +55712,6 @@ MonoBehaviour:
   renderOrder: 11
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-style7
   backgroundColor:
@@ -55958,7 +55803,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 152
+  m_RootOrder: 147
 --- !u!114 &2025803242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56088,7 +55933,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 95
+  m_RootOrder: 90
 --- !u!114 &2026653565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56222,7 +56067,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 156
+  m_RootOrder: 151
 --- !u!114 &2029856592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56378,7 +56223,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 199
+  m_RootOrder: 194
 --- !u!114 &2035291752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56460,7 +56305,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 68
+  m_RootOrder: 63
 --- !u!114 &2042632938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56610,7 +56455,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 158
+  m_RootOrder: 153
 --- !u!114 &2049959350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56692,7 +56537,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 8
+  m_RootOrder: 3
 --- !u!114 &2052058354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56853,7 +56698,7 @@ Transform:
   - {fileID: 811447118}
   - {fileID: 821819486}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 75
+  m_RootOrder: 70
 --- !u!114 &2053401982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56920,7 +56765,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 102
+  m_RootOrder: 97
 --- !u!114 &2059985759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57329,7 +57174,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 115
+  m_RootOrder: 110
 --- !u!114 &2070650945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57542,7 +57387,7 @@ Transform:
   - {fileID: 1939889233}
   - {fileID: 579173604}
   m_Father: {fileID: 897427018}
-  m_RootOrder: 172
+  m_RootOrder: 167
 --- !u!114 &2071871452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57665,7 +57510,6 @@ MonoBehaviour:
   renderOrder: 15
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: button-hilite
   hoverSprite: 
@@ -57737,8 +57581,6 @@ MonoBehaviour:
   DataTarget:
     Component: {fileID: 1580742830}
     MemberName: ExecuteShootFlare
-  AutoBind: 1
-  AutoUnbind: 1
 --- !u!1 &2083634928
 GameObject:
   m_ObjectHideFlags: 0
@@ -57902,7 +57744,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 94
+  m_RootOrder: 89
 --- !u!114 &2089578757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58070,7 +57912,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 71
+  m_RootOrder: 66
 --- !u!114 &2091962828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58152,7 +57994,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 139
+  m_RootOrder: 134
 --- !u!114 &2094597010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58436,7 +58278,6 @@ MonoBehaviour:
   renderOrder: 33
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 1
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   spriteName: EtThenRock
   flip: 0
@@ -58530,7 +58371,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 186
+  m_RootOrder: 181
 --- !u!114 &2117515694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58692,7 +58533,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 897427018}
-  m_RootOrder: 93
+  m_RootOrder: 88
 --- !u!114 &2127511461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59129,7 +58970,6 @@ MonoBehaviour:
   renderOrder: 19
   isLocalized: 0
   hotZoneScale: {x: 1, y: 1}
-  allowSignalEvents: 0
   atlas: {fileID: 11400000, guid: 061b63b910d71734eb8a953efb83a358, type: 2}
   backgroundSprite: frame-bracketed-filled
   backgroundColor:

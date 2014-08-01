@@ -9,7 +9,6 @@ public partial class FPSWeaponView
     public override void FireSpeedChanged(float value) {
         base.FireSpeedChanged(value);
     }
-
     public float _CrossHairScale = 0.5f;
  
     public Transform _ZoomPositions;
@@ -43,7 +42,6 @@ public partial class FPSWeaponView
 
     public override void StateChanged(FPSWeaponState value)
     {
-        base.StateChanged(value);
         // If we are reloading hide the gun
         _ModelTransform.gameObject.SetActive(value != FPSWeaponState.Reloading);
 

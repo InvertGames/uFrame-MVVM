@@ -11,7 +11,7 @@ public class ViewModelCollectionItemAddedTrigger : UBCustomTrigger, IBindingProv
     public void Bind(ViewBase view)
     {
         var property = view.ViewModelObject.Properties[PropertyName] as IModelCollection;
-        property.Changed += PropertyOnChanged;
+        property.CollectionChanged += PropertyOnChanged;
     }
 
     public override void Initialize(TriggerInfo triggerInfo, Dictionary<string, object> settings)
@@ -22,7 +22,7 @@ public class ViewModelCollectionItemAddedTrigger : UBCustomTrigger, IBindingProv
     public void Unbind(ViewBase view)
     {
         var property = view.ViewModelObject.Properties[PropertyName] as IModelCollection;
-        property.Changed -= PropertyOnChanged;
+        property.CollectionChanged -= PropertyOnChanged;
     }
 
     public static IEnumerable<IUBVariableDeclare> ViewModelCollectionItemAddedTriggerVariables()

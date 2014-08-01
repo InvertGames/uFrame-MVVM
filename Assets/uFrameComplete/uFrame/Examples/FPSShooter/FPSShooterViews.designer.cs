@@ -121,10 +121,6 @@ public abstract class FPSEnemyViewBase : FPSDamageableViewBase {
 [DiagramInfoAttribute("FPSShooter")]
 public abstract class FPSGameViewBase : ViewBase {
     
-    [UFGroup("CurrentPlayer")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.GameObject _CurrentPlayerPrefab;
-    
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public FPSGameState _State;
@@ -172,15 +168,6 @@ public abstract class FPSGameViewBase : ViewBase {
     }
     
     public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
-        if (value == null && _CurrentPlayer != null && _CurrentPlayer.gameObject != null) {
-            Destroy(_CurrentPlayer.gameObject);
-        }
-        if (_CurrentPlayerPrefab == null ) {
-            this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(value)));
-        }
-        else {
-            this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(this._CurrentPlayerPrefab, value)));
-        }
     }
     
     public virtual void ScoreChanged(int value) {
@@ -628,6 +615,10 @@ public partial class FPSGameView : FPSGameViewBase {
     [UnityEngine.HideInInspector()]
     public bool _BindCurrentPlayer = true;
     
+    [UFGroup("CurrentPlayer")]
+    [UnityEngine.HideInInspector()]
+    public UnityEngine.GameObject _CurrentPlayerPrefab;
+    
     [UFToggleGroup("Enemies")]
     [UnityEngine.HideInInspector()]
     public bool _BindEnemies = true;
@@ -727,6 +718,8 @@ public partial class FPSWeaponView : FPSWeaponViewBase {
 
 public partial class FPSPlayerView : FPSPlayerViewBase {
     
+    private UnityEngine.Transform _transform;
+    
     [UFToggleGroup("CurrentWeaponIndex")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
@@ -747,8 +740,20 @@ public partial class FPSPlayerView : FPSPlayerViewBase {
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _WeaponsContainer;
     
+    public virtual UnityEngine.Transform Transform {
+        get {
+            if ((this._transform == null)) {
+                this._transform = this.GetComponent<UnityEngine.Transform>();
+            }
+            return this._transform;
+        }
+    }
+    
     protected override void Apply() {
         base.Apply();
+        if (Transform.hasChanged) {
+            FPSPlayer.TransformPosition = Transform.position;
+        }
         FPSPlayer.Dirty = false;
     }
     
@@ -776,6 +781,21 @@ public partial class FPSPlayerView : FPSPlayerViewBase {
 
 public partial class FPSPlayerHUDView : FPSPlayerViewBase {
     
+    [UFToggleGroup("Weapons")]
+    [UnityEngine.HideInInspector()]
+    public bool _BindWeapons = true;
+    
+    [UnityEngine.HideInInspector()]
+    public System.Collections.Generic.List<FPSWeaponViewBase> _WeaponsList;
+    
+    [UFGroup("Weapons")]
+    [UnityEngine.HideInInspector()]
+    public bool _WeaponsSceneFirst;
+    
+    [UFGroup("Weapons")]
+    [UnityEngine.HideInInspector()]
+    public UnityEngine.Transform _WeaponsContainer;
+    
     protected override void Apply() {
         base.Apply();
         FPSPlayer.Dirty = false;
@@ -783,10 +803,39 @@ public partial class FPSPlayerHUDView : FPSPlayerViewBase {
     
     protected override void PreBind() {
         base.PreBind();
+        if (this._BindWeapons) {
+            var binding = this.BindToViewCollection(() => FPSPlayer._WeaponsProperty);
+            if ((_WeaponsContainer == null)) {
+            }
+            else {
+                binding.SetParent(_WeaponsContainer);
+            }
+            if (_WeaponsSceneFirst) {
+                binding.ViewFirst();
+            }
+            binding.SetAddHandler(item=>WeaponsAdded(item as FPSWeaponViewBase));
+            binding.SetRemoveHandler(item=>WeaponsRemoved(item as FPSWeaponViewBase));
+            binding.SetCreateHandler(viewModel=>{ return CreateWeaponsView(viewModel as FPSWeaponViewModel); }); ;
+        }
     }
 }
 
 public partial class WavesHUDView : WavesFPSGameViewBase {
+    
+    [UFToggleGroup("KillsToNextWave")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("KillsToNextWaveChanged")]
+    public bool _BindKillsToNextWave = true;
+    
+    [UFToggleGroup("WaveKills")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("WaveKillsChanged")]
+    public bool _BindWaveKills = true;
+    
+    [UFToggleGroup("CurrentWave")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("CurrentWaveChanged")]
+    public bool _BindCurrentWave = true;
     
     protected override void Apply() {
         base.Apply();
@@ -795,6 +844,15 @@ public partial class WavesHUDView : WavesFPSGameViewBase {
     
     protected override void PreBind() {
         base.PreBind();
+        if (this._BindKillsToNextWave) {
+            this.BindProperty(()=>WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
+        }
+        if (this._BindWaveKills) {
+            this.BindProperty(()=>WavesFPSGame._WaveKillsProperty, this.WaveKillsChanged);
+        }
+        if (this._BindCurrentWave) {
+            this.BindProperty(()=>WavesFPSGame._CurrentWaveProperty, this.CurrentWaveChanged);
+        }
     }
 }
 
@@ -828,8 +886,22 @@ public partial class FPSHUDView : FPSGameViewBase {
 
 public partial class FPSEnemyView : FPSEnemyViewBase {
     
+    private UnityEngine.Transform _transform;
+    
+    public virtual UnityEngine.Transform Transform {
+        get {
+            if ((this._transform == null)) {
+                this._transform = this.GetComponent<UnityEngine.Transform>();
+            }
+            return this._transform;
+        }
+    }
+    
     protected override void Apply() {
         base.Apply();
+        if (Transform.hasChanged) {
+            FPSEnemy.TransformPosition = Transform.position;
+        }
         FPSEnemy.Dirty = false;
     }
     

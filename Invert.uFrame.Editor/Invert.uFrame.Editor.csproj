@@ -62,6 +62,7 @@
     <Compile Include="AddBindingWindow.cs" />
     <Compile Include="CodeFileGenerator.cs" />
     <Compile Include="CodeGenerator.cs" />
+    <Compile Include="ElementDesigner\Data\ISerializeablePropertyData.cs" />
     <Compile Include="SearchableScrollWindow.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsMultiInstanceCommand.cs" />
     <Compile Include="ElementDesigner\Commands\Elements\MarkIsYieldCommand.cs" />

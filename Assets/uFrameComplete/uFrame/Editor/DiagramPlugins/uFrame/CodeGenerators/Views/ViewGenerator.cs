@@ -54,6 +54,7 @@ public class ViewGenerator : ViewClassGenerator
         }
         else
         {
+            GenerateBindingMembers(decl,view.ViewForElement,true);
             //var bindMethod = new CodeMemberMethod()
             //{
             //    Name = "Bind",

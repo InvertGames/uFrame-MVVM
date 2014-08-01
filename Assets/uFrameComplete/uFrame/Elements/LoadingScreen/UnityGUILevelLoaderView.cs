@@ -14,7 +14,7 @@ public class UnityGUILevelLoaderView : LevelLoaderView
     public override void Bind()
     {
         base.Bind();
-        Model._Progress.PropertyChanged += _Progress_PropertyChanged;
+        Model._Progress.ValueChanged += _Progress_PropertyChanged;
     }
 
     void _Progress_PropertyChanged(object value)

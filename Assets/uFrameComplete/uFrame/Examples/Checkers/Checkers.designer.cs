@@ -10,15 +10,22 @@ public partial class CheckerBoardViewModel : ViewModel {
     
     public readonly ModelCollection<CheckerPlateViewModel> _PlatesProperty = new ModelCollection<CheckerPlateViewModel>();
     
+    public CheckerBoardViewModel() : 
+            base() {
+    }
+    
+    public CheckerBoardViewModel(CheckerBoardControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
+    
     public virtual System.Collections.Generic.ICollection<CheckerViewModel> Checkers {
         get {
             return _CheckersProperty;
         }
-        set
-        {
+        set {
             _CheckersProperty.Clear();
             _CheckersProperty.AddRange(value);
-            
         }
     }
     
@@ -29,7 +36,6 @@ public partial class CheckerBoardViewModel : ViewModel {
         set {
             _PlatesProperty.Clear();
             _PlatesProperty.AddRange(value);
-           
         }
     }
     
@@ -52,6 +58,15 @@ public partial class CheckerBoardViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class CheckerMoveViewModel : ViewModel {
     
+    public CheckerMoveViewModel() : 
+            base() {
+    }
+    
+    public CheckerMoveViewModel(CheckerMoveControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
+    
     protected override void WireCommands(Controller controller) {
     }
     
@@ -67,13 +82,25 @@ public partial class CheckerMoveViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class CheckerPlateViewModel : ViewModel {
     
-    public readonly P<System.Boolean> _CanMoveToProperty = new P<bool>();
+    public readonly P<System.Boolean> _CanMoveToProperty;
     
-    public readonly P<UnityEngine.Vector2> _PositionProperty = new P<UnityEngine.Vector2>();
+    public readonly P<UnityEngine.Vector2> _PositionProperty;
     
-    public readonly P<System.Boolean> _IsEvenProperty = new P<bool>();
+    public readonly P<System.Boolean> _IsEvenProperty;
     
     private ICommand _SelectCommand;
+    
+    public CheckerPlateViewModel() : 
+            base() {
+        _CanMoveToProperty = new P<bool>(this, "CanMoveTo");
+        _PositionProperty = new P<UnityEngine.Vector2>(this, "Position");
+        _IsEvenProperty = new P<bool>(this, "IsEven");
+    }
+    
+    public CheckerPlateViewModel(CheckerPlateControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual bool CanMoveTo {
         get {
@@ -134,19 +161,33 @@ public partial class CheckerPlateViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class CheckersGameViewModel : ViewModel {
     
-    public readonly P<System.Int32> _BlackScoreProperty = new P<int>();
+    public readonly P<System.Int32> _BlackScoreProperty;
     
-    public readonly P<CheckerBoardViewModel> _BoardProperty = new P<CheckerBoardViewModel>();
+    public readonly P<CheckerBoardViewModel> _BoardProperty;
     
-    public readonly P<CheckerViewModel> _CurrentCheckerProperty = new P<CheckerViewModel>();
+    public readonly P<CheckerViewModel> _CurrentCheckerProperty;
     
-    public readonly P<CheckerType> _CurrentPlayerProperty = new P<CheckerType>();
+    public readonly P<CheckerType> _CurrentPlayerProperty;
     
-    public readonly P<System.Int32> _RedScoreProperty = new P<int>();
+    public readonly P<System.Int32> _RedScoreProperty;
     
     public readonly ModelCollection<CheckerMoveViewModel> _AllowedMovesProperty = new ModelCollection<CheckerMoveViewModel>();
     
     private ICommand _GameOver;
+    
+    public CheckersGameViewModel() : 
+            base() {
+        _BlackScoreProperty = new P<int>(this, "BlackScore");
+        _BoardProperty = new P<CheckerBoardViewModel>(this, "Board");
+        _CurrentCheckerProperty = new P<CheckerViewModel>(this, "CurrentChecker");
+        _CurrentPlayerProperty = new P<CheckerType>(this, "CurrentPlayer");
+        _RedScoreProperty = new P<int>(this, "RedScore");
+    }
+    
+    public CheckersGameViewModel(CheckersGameControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual int BlackScore {
         get {
@@ -198,7 +239,8 @@ public partial class CheckersGameViewModel : ViewModel {
             return _AllowedMovesProperty;
         }
         set {
-            _AllowedMovesProperty.Value = value.ToList();
+            _AllowedMovesProperty.Clear();
+            _AllowedMovesProperty.AddRange(value);
         }
     }
     
@@ -240,15 +282,28 @@ public partial class CheckersGameViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class CheckerViewModel : ViewModel {
     
-    public readonly P<System.Boolean> _IsKingMeProperty = new P<bool>();
+    public readonly P<System.Boolean> _IsKingMeProperty;
     
-    public readonly P<UnityEngine.Vector2> _PositionProperty = new P<UnityEngine.Vector2>();
+    public readonly P<UnityEngine.Vector2> _PositionProperty;
     
-    public readonly P<System.Boolean> _SelectedProperty = new P<bool>();
+    public readonly P<System.Boolean> _SelectedProperty;
     
-    public readonly P<CheckerType> _TypeProperty = new P<CheckerType>();
+    public readonly P<CheckerType> _TypeProperty;
     
     private ICommand _SelectCommand;
+    
+    public CheckerViewModel() : 
+            base() {
+        _IsKingMeProperty = new P<bool>(this, "IsKingMe");
+        _PositionProperty = new P<UnityEngine.Vector2>(this, "Position");
+        _SelectedProperty = new P<bool>(this, "Selected");
+        _TypeProperty = new P<CheckerType>(this, "Type");
+    }
+    
+    public CheckerViewModel(CheckerControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual bool IsKingMe {
         get {
@@ -320,6 +375,15 @@ public partial class CheckerViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class AICheckersGameViewModel : CheckersGameViewModel {
     
+    public AICheckersGameViewModel() : 
+            base() {
+    }
+    
+    public AICheckersGameViewModel(AICheckersGameControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
     }
@@ -337,6 +401,15 @@ public partial class AICheckersGameViewModel : CheckersGameViewModel {
 public partial class MainMenuViewModel : ViewModel {
     
     private ICommand _Play;
+    
+    public MainMenuViewModel() : 
+            base() {
+    }
+    
+    public MainMenuViewModel(MainMenuControllerBase controller) : 
+            this() {
+        this.Controller = controller;
+    }
     
     public virtual ICommand Play {
         get {

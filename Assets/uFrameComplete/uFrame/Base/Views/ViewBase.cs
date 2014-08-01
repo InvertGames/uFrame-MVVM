@@ -269,6 +269,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     public void InitializeData(ViewModel model)
     {
         InitializeViewModel(model);
+        model.Dirty = false;
     }
 
     public virtual void OnDestroy()

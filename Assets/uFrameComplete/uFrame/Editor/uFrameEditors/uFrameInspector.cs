@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Invert.Common;
+using Invert.Common.UI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -129,10 +130,19 @@ public class uFrameInspector : Editor
 
     public bool Toggle(string text, bool open, bool allowCollapse = true)
     {
-        var rect = UBEditor.GetRect(UBStyles.SubHeaderStyle);
-        var result = GUI.Toggle(rect, open,allowCollapse ? (open ? "- " : "+ ") + text : text, UBStyles.SubHeaderStyle);
-        if (result) EditorGUILayout.Space();
-        return result;
+        var result = GUIHelpers.DoToolbar(text, open);
+
+        if (open || result)
+        {
+            EditorGUILayout.Space();
+            if (result) return !open;
+        }
+        
+        return open;
+        //var rect = UBEditor.GetRect(UBStyles.SubHeaderStyle);
+        //var result = GUI.Toggle(rect, open,allowCollapse ? (open ? "- " : "+ ") + text : text, UBStyles.SubHeaderStyle);
+       
+        //return result;
     }
 
     public void Section(string text)

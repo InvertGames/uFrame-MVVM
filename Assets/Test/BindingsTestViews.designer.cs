@@ -17,10 +17,6 @@ using UnityEngine;
 [DiagramInfoAttribute("BindingsTest")]
 public abstract class GameRootElementViewBase : ViewBase {
     
-    [UFGroup("TestVMProperty")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.GameObject _TestVMPropertyPrefab;
-    
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public string _TestProperty;
@@ -60,27 +56,18 @@ public abstract class GameRootElementViewBase : ViewBase {
     }
     
     public virtual void TestVMPropertyChanged(GameSubElementViewModel value) {
-        if (value == null && _TestVMProperty != null && _TestVMProperty.gameObject != null) {
-            Destroy(_TestVMProperty.gameObject);
-        }
-        if (_TestVMPropertyPrefab == null ) {
-            this._TestVMProperty = ((GameSubElementViewBase)(this.InstantiateView(value)));
-        }
-        else {
-            this._TestVMProperty = ((GameSubElementViewBase)(this.InstantiateView(this._TestVMPropertyPrefab, value)));
-        }
     }
     
     public virtual void TestCollectionAdded(string item) {
     }
     
-    public virtual void TestCollectionRemoved(string value) {
+    public virtual void TestCollectionRemoved(string item) {
     }
     
     public virtual void TestVMCollectionAdded(GameSubElementViewBase item) {
     }
     
-    public virtual void TestVMCollectionRemoved(GameSubElementViewBase value) {
+    public virtual void TestVMCollectionRemoved(GameSubElementViewBase item) {
     }
     
     public virtual ViewBase CreateTestVMCollectionView(GameSubElementViewModel value) {
@@ -223,34 +210,6 @@ public partial class GameRootView : GameRootElementViewBase {
     
     private UnityEngine.Collider _collider;
     
-    [UFToggleGroup("TestProperty")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("TestPropertyChanged")]
-    public bool _BindTestProperty;
-    
-    [UFToggleGroup("TestVMProperty")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindTestVMProperty;
-    
-    [UFToggleGroup("TestCollection")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindTestCollection;
-    
-    [UFToggleGroup("TestVMCollection")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindTestVMCollection;
-    
-    [UnityEngine.HideInInspector()]
-    public System.Collections.Generic.List<GameSubElementViewBase> _TestVMCollectionList;
-    
-    [UFGroup("TestVMCollection")]
-    [UnityEngine.HideInInspector()]
-    public bool _TestVMCollectionSceneFirst;
-    
-    [UFGroup("TestVMCollection")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.Transform _TestVMCollectionContainer;
-    
     public virtual UnityEngine.Transform Transform {
         get {
             if ((this._transform == null)) {
@@ -272,43 +231,18 @@ public partial class GameRootView : GameRootElementViewBase {
     protected override void Apply() {
         base.Apply();
         if (Transform.hasChanged) {
-            GameRootElement.Position = Transform.position;
-            GameRootElement.LocalPosition = Transform.localPosition;
-            GameRootElement.Rotation = Transform.rotation;
-            GameRootElement.LocalRotation = Transform.localRotation;
-            GameRootElement.LocalScale = Transform.localScale;
+            GameRootElement.TransformPosition = Transform.position;
+            GameRootElement.TransformLocalPosition = Transform.localPosition;
+            GameRootElement.TransformRotation = Transform.rotation;
+            GameRootElement.TransformLocalRotation = Transform.localRotation;
+            GameRootElement.TransformLocalScale = Transform.localScale;
         }
-        GameRootElement.Enabled = Collider.enabled;
+        GameRootElement.ColliderEnabled = Collider.enabled;
         GameRootElement.Dirty = false;
     }
     
     protected override void PreBind() {
         base.PreBind();
-        if (this._BindTestProperty) {
-            this.BindProperty(()=>GameRootElement._TestPropertyProperty, this.TestPropertyChanged);
-        }
-        if (this._BindTestVMProperty) {
-            this.BindProperty(()=>GameRootElement._TestVMPropertyProperty, this.TestVMPropertyChanged);
-        }
-        if (this._BindTestCollection) {
-            var binding = this.BindCollection(() => GameRootElement._TestCollectionProperty);
-            binding.SetAddHandler(TestCollectionAdded);
-            binding.SetRemoveHandler(TestCollectionRemoved);
-        }
-        if (this._BindTestVMCollection) {
-            var binding = this.BindToViewCollection(() => GameRootElement._TestVMCollectionProperty);
-            if ((_TestVMCollectionContainer == null)) {
-            }
-            else {
-                binding.SetParent(_TestVMCollectionContainer);
-            }
-            if (_TestVMCollectionSceneFirst) {
-                binding.ViewFirst();
-            }
-            binding.SetAddHandler(item=>TestVMCollectionAdded(item as GameSubElementViewBase));
-            binding.SetRemoveHandler(item=>TestVMCollectionRemoved(item as GameSubElementViewBase));
-            binding.SetCreateHandler(viewModel=>{ return CreateTestVMCollectionView(viewModel as GameSubElementViewModel); }); ;
-        }
     }
 }
 
@@ -371,11 +305,6 @@ public abstract class GameSubDerivedElementViewViewBase : GameSubElementView {
 
 public partial class Game2RootView : Game2RootViewViewBase {
     
-    [UFToggleGroup("DerviedTestProperty")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("DerviedTestPropertyChanged")]
-    public bool _BindDerviedTestProperty;
-    
     protected override void Apply() {
         base.Apply();
         Game2RootElement.Dirty = false;
@@ -383,9 +312,6 @@ public partial class Game2RootView : Game2RootViewViewBase {
     
     protected override void PreBind() {
         base.PreBind();
-        if (this._BindDerviedTestProperty) {
-            this.BindProperty(()=>Game2RootElement._DerviedTestPropertyProperty, this.DerviedTestPropertyChanged);
-        }
     }
 }
 
@@ -428,5 +354,17 @@ public abstract class Game2RootViewViewBase : GameRootView {
         base.InitializeViewModel(viewModel);
         Game2RootElementViewModel game2RootElement = ((Game2RootElementViewModel)(viewModel));
         game2RootElement.DerviedTestProperty = this._DerviedTestProperty;
+    }
+}
+
+public partial class GameRootView3 : GameRootElementViewBase {
+    
+    protected override void Apply() {
+        base.Apply();
+        GameRootElement.Dirty = false;
+    }
+    
+    protected override void PreBind() {
+        base.PreBind();
     }
 }

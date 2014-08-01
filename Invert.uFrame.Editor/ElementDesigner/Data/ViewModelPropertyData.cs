@@ -8,7 +8,7 @@ using Invert.uFrame.Editor.Refactoring;
 using UnityEngine;
 
 [Serializable]
-public class ViewModelPropertyData : DiagramNodeItem, IViewModelItem
+public class ViewModelPropertyData : DiagramNodeItem, IViewModelItem,ISerializeablePropertyData
 {
     public override void Serialize(JSONClass cls)
     {
@@ -102,6 +102,11 @@ public class ViewModelPropertyData : DiagramNodeItem, IViewModelItem
 
             return RelatedType.Split(',').FirstOrDefault() ?? "No Type";
         }
+    }
+
+    public IDiagramNode TypeNode()
+    {
+        return this.RelatedNode();
     }
 
     public bool AllowEmptyRelatedType

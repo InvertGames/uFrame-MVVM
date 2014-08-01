@@ -84,6 +84,7 @@ public class SceneContext : GameContainer
 
     public void Load(ISerializerStorage storage, ISerializerStream stream)
     {
+        stream.DependencyContainer = Container;
         storage.Load(stream);
         stream.TypeResolver = new StateLoaderResolver(this);
         var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();

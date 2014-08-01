@@ -29,7 +29,7 @@ public class ModelCollectionBinding<TCollectionType> : Binding
     public override void Bind()
     {
         base.Bind();
-        Collection.Changed += CollectionOnChanged;
+        Collection.CollectionChanged += CollectionOnChanged;
         if (IsImmediate)
         {
             BindNow();
@@ -63,7 +63,7 @@ public class ModelCollectionBinding<TCollectionType> : Binding
 
     public override void Unbind()
     {
-        Collection.Changed -= CollectionOnChanged;
+        Collection.CollectionChanged -= CollectionOnChanged;
         base.Unbind();
     }
 
@@ -164,7 +164,7 @@ public class ModelViewModelCollectionBinding : Binding
 
     public override void Unbind()
     {
-        Collection.Changed -= CollectionOnChanged;
+        Collection.CollectionChanged -= CollectionOnChanged;
         GameObjectLookup.Clear();
         base.Unbind();
     }
@@ -251,7 +251,7 @@ public class ModelViewModelCollectionBinding : Binding
                 }
             }
         }
-        Collection.Changed += CollectionOnChanged;
+        Collection.CollectionChanged += CollectionOnChanged;
         if (!_viewFirst && IsImmediate)
         {
             CollectionOnChanged(new ModelCollectionChangeEvent

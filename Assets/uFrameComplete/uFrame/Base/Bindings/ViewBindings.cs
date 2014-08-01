@@ -301,8 +301,8 @@ public static class ViewBindings
     public static Action Subscribe<TBindingType>(this IViewModelObserver behaviour, P<TBindingType> modelProperty, Action<TBindingType> onChange)
     {
         var action = new ModelPropertyBase.PropertyChangedHandler(value => onChange((TBindingType)value));
-        modelProperty.PropertyChanged += action;
-        return () => modelProperty.PropertyChanged -= action;
+        modelProperty.ValueChanged += action;
+        return () => modelProperty.ValueChanged -= action;
     }
 
     /// <summary>

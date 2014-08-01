@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 
-public partial class FPSHUDView : FPSGameViewBase {
+public partial class FPSHUDView  {
 
     public GUIText _GameOverLabel;
     public GUIText _TotalKillsLabel;

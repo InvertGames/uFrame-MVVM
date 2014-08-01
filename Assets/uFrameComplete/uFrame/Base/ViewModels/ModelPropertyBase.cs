@@ -29,7 +29,7 @@ public abstract class ModelPropertyBase
     /// <summary>
     /// When the value has changed
     /// </summary>
-    public event PropertyChangedHandler PropertyChanged;
+    public event PropertyChangedHandler ValueChanged;
 
 
     [SerializeField]
@@ -182,7 +182,7 @@ public abstract class ModelPropertyBase
 
     private void OnPropertyChanged(object value)
     {
-        PropertyChangedHandler handler = PropertyChanged;
+        PropertyChangedHandler handler = ValueChanged;
         if (handler != null)
             handler(value);
         if (Owner != null)

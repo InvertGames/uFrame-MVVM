@@ -71,6 +71,8 @@ public partial class FPSDamageableViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
+    private UnityEngine.Vector3 _position;
+    
     public readonly P<System.Single> _SpeedProperty;
     
     public FPSEnemyViewModel() : 
@@ -81,6 +83,15 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     public FPSEnemyViewModel(FPSEnemyControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual UnityEngine.Vector3 TransformPosition {
+        get {
+            return this._position;
+        }
+        set {
+            _position = value;
+        }
     }
     
     public virtual float Speed {
@@ -99,11 +110,13 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeFloat("Speed", this.Speed);
+		stream.SerializeVector3("TransformPosition", this.TransformPosition);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.Speed = stream.DeserializeFloat("Speed");
+		this.TransformPosition = stream.DeserializeVector3("TransformPosition");
     }
 }
 
@@ -228,6 +241,8 @@ public partial class FPSGameViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooter")]
 public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     
+    private UnityEngine.Vector3 _position;
+    
     public readonly P<System.Int32> _CurrentWeaponIndexProperty;
     
     public readonly ModelCollection<FPSWeaponViewModel> _WeaponsProperty = new ModelCollection<FPSWeaponViewModel>();
@@ -248,6 +263,15 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     public FPSPlayerViewModel(FPSPlayerControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual UnityEngine.Vector3 TransformPosition {
+        get {
+            return this._position;
+        }
+        set {
+            _position = value;
+        }
     }
     
     public virtual int CurrentWeaponIndex {
@@ -316,12 +340,14 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("CurrentWeaponIndex", this.CurrentWeaponIndex);
+		stream.SerializeVector3("TransformPosition", this.TransformPosition);
 		stream.SerializeArray("Weapons", this.Weapons);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.CurrentWeaponIndex = stream.DeserializeInt("CurrentWeaponIndex");
+		this.TransformPosition = stream.DeserializeVector3("TransformPosition");
 		this.Weapons = stream.DeserializeObjectArray<FPSWeaponViewModel>("Weapons").ToList();
     }
 }

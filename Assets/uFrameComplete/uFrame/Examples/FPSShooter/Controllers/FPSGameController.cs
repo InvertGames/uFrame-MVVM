@@ -35,6 +35,7 @@ public class FPSGameController : FPSGameControllerBase
     public virtual void EnemyDied(FPSEnemyViewModel enemy)
     {
         FPSGame.Kills++;
+        FPSGame.Enemies.Remove(enemy);
     }
 
     public override void InitializeFPSGame(FPSGameViewModel fPSGame)

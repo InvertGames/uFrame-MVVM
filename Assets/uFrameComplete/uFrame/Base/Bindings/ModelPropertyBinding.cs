@@ -21,7 +21,7 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
         if (TwoWay)
             _lastValue = GetTargetValueDelegate();
 
-        ModelProperty.PropertyChanged += PropertyChanged;
+        ModelProperty.ValueChanged += PropertyChanged;
         if (IsImmediate)
         PropertyChanged(ModelProperty.ObjectValue);
     }
@@ -39,9 +39,9 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
         if (_lastValue != currentValue)
         {
             // Remove this property change event for a moment while updating the value so it doesn't do it again
-            ModelProperty.PropertyChanged -= PropertyChanged;
+            ModelProperty.ValueChanged -= PropertyChanged;
             ModelProperty.ObjectValue = currentValue;
-            ModelProperty.PropertyChanged += PropertyChanged;
+            ModelProperty.ValueChanged += PropertyChanged;
             // Store the last value
             _lastValue = currentValue;
         }
@@ -53,7 +53,7 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
     /// </summary>
     public override void Unbind()
     {
-        ModelProperty.PropertyChanged -= PropertyChanged;
+        ModelProperty.ValueChanged -= PropertyChanged;
         base.Unbind();
     }
 
@@ -81,7 +81,7 @@ public class ModelViewPropertyBinding : Binding
     {
         base.Bind();
 
-        ModelProperty.PropertyChanged += PropertyChanged;
+        ModelProperty.ValueChanged += PropertyChanged;
 
         PropertyChanged(ModelProperty.ObjectValue);
     }
@@ -137,7 +137,7 @@ public class ModelViewPropertyBinding : Binding
 
     public override void Unbind()
     {
-        ModelProperty.PropertyChanged -= PropertyChanged;
+        ModelProperty.ValueChanged -= PropertyChanged;
         base.Unbind();
     }
 }
