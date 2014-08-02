@@ -101,7 +101,7 @@ public class LevelLoaderController : Controller
         //}
     }
 
-    protected override ViewModel CreateEmpty()
+    public override ViewModel CreateEmpty()
     {
         throw new NotImplementedException();
     }

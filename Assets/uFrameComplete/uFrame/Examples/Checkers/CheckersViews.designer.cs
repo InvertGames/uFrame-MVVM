@@ -207,6 +207,10 @@ public abstract class CheckersGameViewBase : ViewBase {
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
+    public int _RedScore;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
     public ViewBase _Board;
     
     [UFGroup("View Model Properties")]
@@ -216,10 +220,6 @@ public abstract class CheckersGameViewBase : ViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public CheckerType _CurrentPlayer;
-    
-    [UFGroup("View Model Properties")]
-    [UnityEngine.HideInInspector()]
-    public int _RedScore;
     
     public override string DefaultIdentifier {
         get {
@@ -251,6 +251,9 @@ public abstract class CheckersGameViewBase : ViewBase {
     public virtual void BlackScoreChanged(int value) {
     }
     
+    public virtual void RedScoreChanged(int value) {
+    }
+    
     public virtual void BoardChanged(CheckerBoardViewModel value) {
     }
     
@@ -258,9 +261,6 @@ public abstract class CheckersGameViewBase : ViewBase {
     }
     
     public virtual void CurrentPlayerChanged(CheckerType value) {
-    }
-    
-    public virtual void RedScoreChanged(int value) {
     }
     
     public virtual void AllowedMovesAdded(CheckerMoveViewBase item) {
@@ -287,10 +287,10 @@ public abstract class CheckersGameViewBase : ViewBase {
     protected override void InitializeViewModel(ViewModel viewModel) {
         CheckersGameViewModel checkersGame = ((CheckersGameViewModel)(viewModel));
         checkersGame.BlackScore = this._BlackScore;
+        checkersGame.RedScore = this._RedScore;
         checkersGame.Board = this._Board == null ? null : this._Board.ViewModelObject as CheckerBoardViewModel;
         checkersGame.CurrentChecker = this._CurrentChecker == null ? null : this._CurrentChecker.ViewModelObject as CheckerViewModel;
         checkersGame.CurrentPlayer = this._CurrentPlayer;
-        checkersGame.RedScore = this._RedScore;
     }
 }
 

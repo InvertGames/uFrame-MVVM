@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3134AAFF-4F62-41E4-A03E-55B070FAC334}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Invert.uFrame.CodeGen</RootNamespace>
+    <AssemblyName>Invert.uFrame.CodeGen</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BindingGenerator.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="CodeDomExtensions.cs" />
+    <Compile Include="CodeDomHelper.cs" />
+    <Compile Include="CollectionBindingGenerator.cs" />
+    <Compile Include="CollectionItemAddedBindingGenerator.cs" />
+    <Compile Include="CollectionItemCreateBindingGenerator.cs" />
+    <Compile Include="CollectionItemRemovedBindingGenerator.cs" />
+    <Compile Include="ControllerGenerator.cs" />
+    <Compile Include="ElementDataGeneratorFactory.cs" />
+    <Compile Include="EnumCodeGenerator.cs" />
+    <Compile Include="EnumDataGeneratorFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyBindingGenerator.cs" />
+    <Compile Include="SceneManagerClassGenerator.cs" />
+    <Compile Include="SceneManagerDataGeneratorFactory.cs" />
+    <Compile Include="SceneManagerGenerator.cs" />
+    <Compile Include="SceneManagerSettingsGenerator.cs" />
+    <Compile Include="UFrameEditorPlugin.cs" />
+    <Compile Include="ViewBaseGenerator.cs" />
+    <Compile Include="ViewBindingExtender.cs" />
+    <Compile Include="ViewClassGenerator.cs" />
+    <Compile Include="ViewComponentDataGeneratorFactory.cs" />
+    <Compile Include="ViewComponentGenerator.cs" />
+    <Compile Include="ViewDataGeneratorFactory.cs" />
+    <Compile Include="ViewGenerator.cs" />
+    <Compile Include="ViewModelGenerator.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

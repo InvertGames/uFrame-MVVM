@@ -56,8 +56,18 @@ namespace Invert.uFrame.Editor
             }
         }
     }
+
+    public interface IUFrameTypeProvider
+    {
+        Type ViewModel { get; }
+        Type Controller { get; }
+        Type SceneManager { get; }
+        
+
+    }
     public static class uFrameEditor
     {
+        public static IUFrameTypeProvider uFrameTypes { get; set; }
         public static Type FindType(string name)
         {
             //if (string.IsNullOrEmpty(name)) return null;
@@ -389,6 +399,7 @@ namespace Invert.uFrame.Editor
             }
             KeyBindings = Container.ResolveAll<IKeyBinding>().ToArray();
             BindingGenerators = Container.ResolveAll<IBindingGenerator>().ToArray();
+            uFrameTypes = Container.Resolve<IUFrameTypeProvider>();
 
         }
 

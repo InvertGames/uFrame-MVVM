@@ -93,8 +93,10 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
             Value = enumerable.ToList();
     }
 
+   
     public virtual void Add(T item)
     {
+
         Value.Add(item);
         var value = new ModelCollectionChangeEventWith<T>()
         {

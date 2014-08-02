@@ -16,8 +16,8 @@ using System.Linq;
 public abstract class PlaymakerElementControllerBase : Controller {
     
     public abstract void InitializePlaymakerElement(PlaymakerElementViewModel playmakerElement);
-    
-    protected override ViewModel CreateEmpty() {
+
+    public override ViewModel CreateEmpty() {
         return new PlaymakerElementViewModel();
     }
     

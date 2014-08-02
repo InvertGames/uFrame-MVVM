@@ -20,13 +20,13 @@ public abstract class CheckerBoardControllerBase : Controller {
     [Inject] public CheckersGameController CheckersGameController {get;set;}
     public virtual CheckerBoardViewModel CheckerBoard {
         get {
-            return Container.Resolve<CheckerBoardViewModel>();
+            return Container.Resolve<CheckerBoardViewModel>("CheckerBoard");
         }
     }
     
     public abstract void InitializeCheckerBoard(CheckerBoardViewModel checkerBoard);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new CheckerBoardViewModel();
     }
     
@@ -44,7 +44,7 @@ public abstract class CheckerMoveControllerBase : Controller {
     [Inject] public CheckersGameController CheckersGameController {get;set;}
     public abstract void InitializeCheckerMove(CheckerMoveViewModel checkerMove);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new CheckerMoveViewModel();
     }
     
@@ -62,7 +62,7 @@ public abstract class CheckerPlateControllerBase : Controller {
     [Inject] public CheckerBoardController CheckerBoardController {get;set;}
     public abstract void InitializeCheckerPlate(CheckerPlateViewModel checkerPlate);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new CheckerPlateViewModel();
     }
     
@@ -85,13 +85,13 @@ public abstract class CheckersGameControllerBase : Controller {
     [Inject] public CheckerMoveController CheckerMoveController {get;set;}
     public virtual CheckersGameViewModel CheckersGame {
         get {
-            return Container.Resolve<CheckersGameViewModel>();
+            return Container.Resolve<CheckersGameViewModel>("CheckersGame");
         }
     }
     
     public abstract void InitializeCheckersGame(CheckersGameViewModel checkersGame);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new CheckersGameViewModel();
     }
     
@@ -114,7 +114,7 @@ public abstract class CheckerControllerBase : Controller {
     [Inject] public CheckersGameController CheckersGameController {get;set;}
     public abstract void InitializeChecker(CheckerViewModel checker);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new CheckerViewModel();
     }
     
@@ -134,13 +134,13 @@ public abstract class AICheckersGameControllerBase : CheckersGameController {
     
     public virtual AICheckersGameViewModel AICheckersGame {
         get {
-            return Container.Resolve<AICheckersGameViewModel>();
+            return Container.Resolve<AICheckersGameViewModel>("CheckersGame");
         }
     }
     
     public abstract void InitializeAICheckersGame(AICheckersGameViewModel aICheckersGame);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new AICheckersGameViewModel();
     }
     
@@ -158,13 +158,13 @@ public abstract class MainMenuControllerBase : Controller {
     
     public virtual MainMenuViewModel MainMenu {
         get {
-            return Container.Resolve<MainMenuViewModel>();
+            return Container.Resolve<MainMenuViewModel>("MainMenu");
         }
     }
     
     public abstract void InitializeMainMenu(MainMenuViewModel mainMenu);
     
-    protected override ViewModel CreateEmpty() {
+    public override ViewModel CreateEmpty() {
         return new MainMenuViewModel();
     }
     
@@ -230,7 +230,6 @@ public class CheckersSceneManagerBase : SceneManager {
     
     public AICheckersGameController AICheckersGameController { get; set; }
     public CheckerBoardController CheckerBoardController { get; set; }
-    public CheckerMoveController CheckerMoveController { get; set; }
     public CheckerPlateController CheckerPlateController { get; set; }
     public CheckersGameController CheckersGameController { get; set; }
     public CheckerController CheckerController { get; set; }
@@ -240,8 +239,6 @@ public class CheckersSceneManagerBase : SceneManager {
         this.Container.RegisterInstance(this.AICheckersGameController, false);
         this.CheckerBoardController = new CheckerBoardController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckerBoardController, false);
-        this.CheckerMoveController = new CheckerMoveController() { Container = Container, Context = Context };
-        this.Container.RegisterInstance(this.CheckerMoveController, false);
         this.CheckerPlateController = new CheckerPlateController() { Container = Container, Context = Context };
         this.Container.RegisterInstance(this.CheckerPlateController, false);
         this.CheckersGameController = new CheckersGameController() { Container = Container, Context = Context };

@@ -255,5 +255,9 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModel
     }
     public bool Dirty { get; set; }
 
+    public virtual void SetParent(ViewModel model)
+    {
+        
+    }
 
 }

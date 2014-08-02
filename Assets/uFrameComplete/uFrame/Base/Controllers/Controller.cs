@@ -118,7 +118,7 @@ public abstract class Controller
     /// Create an empty view-model . Note: This method does not wire up the view-model to this controller and only instantiates an associated view-model.
     /// </summary>
     /// <returns>A new View-Model or the view-model found in the context with the same identifier.</returns>
-    protected virtual ViewModel CreateEmpty()
+    public virtual ViewModel CreateEmpty()
     {
         throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
     }

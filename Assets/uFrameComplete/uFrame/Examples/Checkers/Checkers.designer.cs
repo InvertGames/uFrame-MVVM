@@ -10,6 +10,8 @@ public partial class CheckerBoardViewModel : ViewModel {
     
     public readonly ModelCollection<CheckerPlateViewModel> _PlatesProperty = new ModelCollection<CheckerPlateViewModel>();
     
+    private CheckersGameViewModel _ParentCheckersGame;
+    
     public CheckerBoardViewModel() : 
             base() {
     }
@@ -39,6 +41,15 @@ public partial class CheckerBoardViewModel : ViewModel {
         }
     }
     
+    public virtual CheckersGameViewModel ParentCheckersGame {
+        get {
+            return this._ParentCheckersGame;
+        }
+        set {
+            _ParentCheckersGame = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
     }
     
@@ -58,6 +69,8 @@ public partial class CheckerBoardViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class CheckerMoveViewModel : ViewModel {
     
+    private CheckersGameViewModel _ParentCheckersGame;
+    
     public CheckerMoveViewModel() : 
             base() {
     }
@@ -65,6 +78,15 @@ public partial class CheckerMoveViewModel : ViewModel {
     public CheckerMoveViewModel(CheckerMoveControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual CheckersGameViewModel ParentCheckersGame {
+        get {
+            return this._ParentCheckersGame;
+        }
+        set {
+            _ParentCheckersGame = value;
+        }
     }
     
     protected override void WireCommands(Controller controller) {
@@ -89,6 +111,8 @@ public partial class CheckerPlateViewModel : ViewModel {
     public readonly P<System.Boolean> _IsEvenProperty;
     
     private ICommand _SelectCommand;
+    
+    private CheckerBoardViewModel _ParentCheckerBoard;
     
     public CheckerPlateViewModel() : 
             base() {
@@ -138,6 +162,15 @@ public partial class CheckerPlateViewModel : ViewModel {
         }
     }
     
+    public virtual CheckerBoardViewModel ParentCheckerBoard {
+        get {
+            return this._ParentCheckerBoard;
+        }
+        set {
+            _ParentCheckerBoard = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         var checkerPlate = controller as CheckerPlateControllerBase;
         this.SelectCommand = new CommandWithSender<CheckerPlateViewModel>(this, checkerPlate.SelectCommand);
@@ -163,13 +196,13 @@ public partial class CheckersGameViewModel : ViewModel {
     
     public readonly P<System.Int32> _BlackScoreProperty;
     
+    public readonly P<System.Int32> _RedScoreProperty;
+    
     public readonly P<CheckerBoardViewModel> _BoardProperty;
     
     public readonly P<CheckerViewModel> _CurrentCheckerProperty;
     
     public readonly P<CheckerType> _CurrentPlayerProperty;
-    
-    public readonly P<System.Int32> _RedScoreProperty;
     
     public readonly ModelCollection<CheckerMoveViewModel> _AllowedMovesProperty = new ModelCollection<CheckerMoveViewModel>();
     
@@ -178,10 +211,10 @@ public partial class CheckersGameViewModel : ViewModel {
     public CheckersGameViewModel() : 
             base() {
         _BlackScoreProperty = new P<int>(this, "BlackScore");
+        _RedScoreProperty = new P<int>(this, "RedScore");
         _BoardProperty = new P<CheckerBoardViewModel>(this, "Board");
         _CurrentCheckerProperty = new P<CheckerViewModel>(this, "CurrentChecker");
         _CurrentPlayerProperty = new P<CheckerType>(this, "CurrentPlayer");
-        _RedScoreProperty = new P<int>(this, "RedScore");
     }
     
     public CheckersGameViewModel(CheckersGameControllerBase controller) : 
@@ -198,12 +231,22 @@ public partial class CheckersGameViewModel : ViewModel {
         }
     }
     
+    public virtual int RedScore {
+        get {
+            return _RedScoreProperty.Value;
+        }
+        set {
+            _RedScoreProperty.Value = value;
+        }
+    }
+    
     public virtual CheckerBoardViewModel Board {
         get {
             return _BoardProperty.Value;
         }
         set {
             _BoardProperty.Value = value;
+            value.ParentCheckersGame = this;
         }
     }
     
@@ -213,6 +256,7 @@ public partial class CheckersGameViewModel : ViewModel {
         }
         set {
             _CurrentCheckerProperty.Value = value;
+            value.ParentCheckersGame = this;
         }
     }
     
@@ -222,15 +266,6 @@ public partial class CheckersGameViewModel : ViewModel {
         }
         set {
             _CurrentPlayerProperty.Value = value;
-        }
-    }
-    
-    public virtual int RedScore {
-        get {
-            return _RedScoreProperty.Value;
-        }
-        set {
-            _RedScoreProperty.Value = value;
         }
     }
     
@@ -261,20 +296,20 @@ public partial class CheckersGameViewModel : ViewModel {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("BlackScore", this.BlackScore);
+		stream.SerializeInt("RedScore", this.RedScore);
 		stream.SerializeObject("Board", this.Board);
 		stream.SerializeObject("CurrentChecker", this.CurrentChecker);
 		stream.SerializeInt("CurrentPlayer", (int)this.CurrentPlayer);
-		stream.SerializeInt("RedScore", this.RedScore);
 		stream.SerializeArray("AllowedMoves", this.AllowedMoves);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		this.BlackScore = stream.DeserializeInt("BlackScore");
+		this.RedScore = stream.DeserializeInt("RedScore");
 		this.Board = stream.DeserializeObject<CheckerBoardViewModel>("Board");
 		this.CurrentChecker = stream.DeserializeObject<CheckerViewModel>("CurrentChecker");
 		this.CurrentPlayer = (CheckerType)stream.DeserializeInt("CurrentPlayer");
-		this.RedScore = stream.DeserializeInt("RedScore");
 		this.AllowedMoves = stream.DeserializeObjectArray<CheckerMoveViewModel>("AllowedMoves").ToList();
     }
 }
@@ -291,6 +326,10 @@ public partial class CheckerViewModel : ViewModel {
     public readonly P<CheckerType> _TypeProperty;
     
     private ICommand _SelectCommand;
+    
+    private CheckerBoardViewModel _ParentCheckerBoard;
+    
+    private CheckersGameViewModel _ParentCheckersGame;
     
     public CheckerViewModel() : 
             base() {
@@ -347,6 +386,24 @@ public partial class CheckerViewModel : ViewModel {
         }
         set {
             _SelectCommand = value;
+        }
+    }
+    
+    public virtual CheckerBoardViewModel ParentCheckerBoard {
+        get {
+            return this._ParentCheckerBoard;
+        }
+        set {
+            _ParentCheckerBoard = value;
+        }
+    }
+    
+    public virtual CheckersGameViewModel ParentCheckersGame {
+        get {
+            return this._ParentCheckersGame;
+        }
+        set {
+            _ParentCheckersGame = value;
         }
     }
     
