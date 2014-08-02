@@ -238,6 +238,11 @@ public class ViewModelGenerator : CodeGenerator
 
         property.SetStatements.Add(new CodeSnippetExpression(string.Format("{0}.Value = value", itemData.FieldName)));
 
+        if (typeViewModel != null)
+        {
+            
+        }
+
         return property;
     }
 
