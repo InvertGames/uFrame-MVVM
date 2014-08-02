@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-public class SceneContext : GameContainer
+/// <summary>
+/// The scene context keeps track of view-models based on their identifiers when a view has checked "Save & Load"
+/// </summary>
+public class SceneContext
 {
     private IGameContainer _container;
     private Dictionary<string, ViewModel> _viewModels;
+    private Dictionary<string, ViewModel> _persitantViewModels;
 
     public ViewModel this[Type type]
     {
@@ -44,16 +47,26 @@ public class SceneContext : GameContainer
     {
         get
         {
-            return this;
+            //return this;
             return _container;
         }
         set { _container = value; }
     }
 
+    /// <summary>
+    /// The dictionary of ViewModels currently loaded in the scene that have been marked as persistant.
+    /// </summary>
     public Dictionary<string, ViewModel> ViewModels
     {
         get { return _viewModels ?? (_viewModels = new Dictionary<string, ViewModel>()); }
         set { _viewModels = value; }
+    }
+
+
+    public Dictionary<string, ViewModel> PersitantViewModels
+    {
+        get { return _persitantViewModels ?? (_persitantViewModels = new Dictionary<string, ViewModel>()); }
+        set { _persitantViewModels = value; }
     }
 
     public SceneContext()
@@ -82,6 +95,11 @@ public class SceneContext : GameContainer
         return (TViewModel)contextViewModel;
     }
 
+    /// <summary>
+    /// Load's a set of view-models from a storage medium based on a stream.
+    /// </summary>
+    /// <param name="storage">This is for loading the stream from a persistant medium. e.g. File, String..etc</param>
+    /// <param name="stream">The type of stream to serialize as. eg. Json,Xml,Binary</param>
     public void Load(ISerializerStorage storage, ISerializerStream stream)
     {
         stream.DependencyContainer = Container;
@@ -90,21 +108,14 @@ public class SceneContext : GameContainer
         var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();
     }
 
-    public override void RegisterInstance(Type baseType, object instance = null, string name = null, bool injectNow = true)
-    {
-        //if (typeof(ViewModel).IsAssignableFrom(baseType))
-        //{
-        //    if (name != null)
-        //    {
-        //        this[name] = instance as ViewModel;
-        //    }
-        //}
-        base.RegisterInstance(baseType, instance, name, injectNow);
-    }
-
+    /// <summary>
+    /// Saves 
+    /// </summary>
+    /// <param name="storage"></param>
+    /// <param name="stream"></param>
     public void Save(ISerializerStorage storage, ISerializerStream stream)
     {
-        stream.SerializeArray("ViewModels", ViewModels.Values);
+        stream.SerializeArray("ViewModels", PersitantViewModels.Values);
         storage.Save(stream);
     }
 }

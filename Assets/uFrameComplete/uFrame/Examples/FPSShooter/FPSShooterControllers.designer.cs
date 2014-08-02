@@ -244,7 +244,7 @@ public class FPSMainMenuManagerBase : SceneManager {
     }
     
     public virtual void Play() {
-        GameManager.SwitchGameAndLevel<WavesFPSGameManager>((container) =>{container._WavesFPSGameManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
+        GameManager.TransitionLevel<WavesFPSGameManager>((container) =>{container._WavesFPSGameManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
     }
 }
 
@@ -313,10 +313,10 @@ public class WavesFPSGameManagerBase : SceneManager {
     }
     
     public virtual void MainMenu() {
-        GameManager.SwitchGameAndLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _MainMenuTransition; }, this._MainMenuTransition._Scenes);
+        GameManager.TransitionLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _MainMenuTransition; }, this._MainMenuTransition._Scenes);
     }
     
     public virtual void QuitGame() {
-        GameManager.SwitchGameAndLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _QuitGameTransition; }, this._QuitGameTransition._Scenes);
+        GameManager.TransitionLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _QuitGameTransition; }, this._QuitGameTransition._Scenes);
     }
 }

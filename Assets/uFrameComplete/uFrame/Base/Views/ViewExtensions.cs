@@ -129,15 +129,16 @@ public static class ViewExtensions
             Object.Destroy(viewObject);
             throw new Exception(string.Format("View Object does not have a 'View<{0}>' component.", model.GetType().Name));
         }
-
+        view.Identifier = identifier ?? model.Identifier;
         view.transform.parent = parent;
         view.ParentView = parent.GetView();
         view.ViewName = name;
 
         if (model != null)
         {
-            view.Identifier = identifier ?? model.Identifier;
-            model.Identifier = view.Identifier;
+
+           
+            model.Identifier = identifier ?? model.Identifier;
             view.OverrideViewModel = false;
             view.ForceResolveViewModel = false;
             

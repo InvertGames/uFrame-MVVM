@@ -88,9 +88,9 @@ public class LevelLoaderController : Controller
             };
 
         // Now that the main level with the controller is loaded we can grab the controller
-        var controller = GameManager.Instance.Games.Find(p => p.GetType() == Settings.StartControllerType);
+        var controller = GameManager.Instance.SceneManagers.Find(p => p.GetType() == Settings.StartManagerType);
 
-        yield return GameManager.SwitchGame(controller, Settings.InvokeControllerSetup, new UpdateProgressDelegate(progressUpdateWithFactor));
+        yield return GameManager.Transition(controller, Settings.InvokeControllerSetup, new UpdateProgressDelegate(progressUpdateWithFactor));
 
         ProgressUpdated("Complete", 1f);
 

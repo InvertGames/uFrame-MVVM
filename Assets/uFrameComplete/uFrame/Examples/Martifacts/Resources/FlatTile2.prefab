@@ -24,8 +24,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: -.70710665, z: 0, w: -.707106948}
-  m_LocalPosition: {x: -10, y: 0, z: 20}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 4.99999987e-06}
+  m_LocalPosition: {x: -9.99964046, y: 0, z: 149.999771}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -39,8 +39,8 @@ Renderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_LightmapIndex: 27
-  m_LightmapTilingOffset: {x: .538085938, y: .538085938, z: 0, w: 0}
+  m_LightmapIndex: 26
+  m_LightmapTilingOffset: {x: .572265625, y: .572265625, z: 0, w: 0}
   m_Materials:
   - {fileID: 2100000, guid: 0738b9da140e8f9498b0ac90d61f15e7, type: 2}
   m_SubsetIndices: 
@@ -68,11 +68,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3682e1cdf41317409e7754ae5084ded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 1
   _resolveName: 
-  _identifier: 3615c758-6926-409b-a680-8e3489b78d49
+  _UseHashcodeAsIdentifier: 0
   _BindTileX: 0
   _BindTileY: 0
   _TileX: 0

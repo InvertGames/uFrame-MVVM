@@ -110,7 +110,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
 
                 var switchGameAndLevelCall =
                     new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(GameManager)),
-                        String.Format("SwitchGameAndLevel<{0}>", transitionItem.NameAsSceneManager));
+                        String.Format("TransitionLevel<{0}>", transitionItem.NameAsSceneManager));
 
                 switchGameAndLevelCall.Parameters.Add(
                     new CodeSnippetExpression(string.Format("(container) =>{{container.{0} = {1}; }}",

@@ -164,30 +164,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ed389338bd40e4199be13947bc8ca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _AmbientLight:
-    r: .200000003
-    g: .200000003
-    b: .200000003
-    a: 1
+  _AmbientLight: {r: .200000003, g: .200000003, b: .200000003, a: 1}
   _FlareStrength: 1
   _Fog: 0
-  _FogColor:
-    r: .5
-    g: .5
-    b: .5
-    a: 1
+  _FogColor: {r: .5, g: .5, b: .5, a: 1}
   _FogDensity: .00999999978
   _FogMode: 3
   _HaloStrength: .5
   _LinearFogEnd: 300
   _LinearFogStart: 0
-  _LoadingLevel: 4c6f6164696e67
+  _LoadingLevel: Loading
   _SkyboxMaterial: {fileID: 0}
   _Start: {fileID: 838971184}
   _StartupScene: 
   _ViewModelScriptsPath: 40456c656d656e74506174682f
   _ViewPrefabsPath: 40456c656d656e74506174682f5265736f75726365732f
   _ViewsScriptsPath: 40456c656d656e74506174682f
+  _DontUseAsyncLoading: 0
 --- !u!4 &808738251
 Transform:
   m_ObjectHideFlags: 0

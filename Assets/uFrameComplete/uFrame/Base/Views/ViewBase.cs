@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using UnityEngine;
@@ -10,7 +11,11 @@ using UnityEngine;
 /// </summary>
 public abstract class ViewBase : ViewContainer,IViewModelObserver
 {
-    
+    [SerializeField,HideInInspector]
+    private bool _Save = false;
+
+    [SerializeField,HideInInspector]
+    private bool _InjectView = false;
 
     /// <summary>
     /// The View Event delegate that takes a string for the event name.
@@ -157,7 +162,10 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
 
     public abstract Type ViewModelType { get; }
 
-
+    /// <summary>
+    /// This is the default identifier to use when "ResolveName" is not specified and it's a single instance.
+    /// This field is automatically overriden by the uFrame designer.
+    /// </summary>
     public virtual string DefaultIdentifier
     {
         get
@@ -170,50 +178,46 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     /// </summary>
     public string ViewName { get; set; }
 
-    //public void AddBinding(IBinding binding)
-    //{
-
-    //    base.AddBinding(binding);
-    //    // If this view has already been binded invoke the bind method
-    //    if (_bound)
-    //    {
-    //        binding.Bind();
-    //    }
-    //}
-
+    /// <summary>
+    /// This method is invoked right after it has been bound
+    /// </summary>
     public virtual void AfterBind()
     {
     }
 
+
     public virtual void Awake()
     {
-        if (GameManager.ActiveSceneManager != null)
-            GameManager.ActiveSceneManager.RegisterRootView(this);
+        
     }
-
+    /// <summary>
+    /// This method is called immediately before "Bind".  This method is used
+    /// by uFrames designer generated code to set-up defined bindings.
+    /// </summary>
     protected virtual void PreBind()
     {
         
     }
+
+    /// <summary>
+    /// This method is called in order to subscribe to properties, commands, and collections.
+    /// </summary>
     public abstract void Bind();
 
+    /// <summary>
+    /// This method is called in order to create a model for this view.  In a uFrame Designer generated
+    /// view it will implement this method and call the "RequestViewModel" on the scene manager.
+    /// </summary>
+    /// <returns>A view model for this view to bind to</returns>
     public abstract ViewModel CreateModel();
 
     /// <summary>
-    /// Invoke a .NET event on this view.  This is a convinience method for Event Bindings.
+    /// All of the designer generated "Execute{CommandName}" ultimately use this method.  So when
+    /// need to execute a command on an outside view-model(meaning not the view-model of this view) this
+    /// method can be used. e.g. ExecuteCommand(command, argument)
     /// </summary>
-    /// <param name="eventname">The name of the event that occured</param>
-    public virtual void Event(string eventname)
-    {
-        if (_LogEvents)
-        {
-            Debug.Log(string.Format("Event: {0} occured.", eventname), this.gameObject);
-        }
-        ViewEvent handler = EventTriggered;
-        if (handler != null)
-            handler(eventname);
-    }
-
+    /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
+    /// <param name="argument">The argument to pass along if needed.</param>
     public void ExecuteCommand(ICommand command, object argument)
     {
         if (command == null) return;
@@ -227,7 +231,12 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         if (enumerator != null)
             StartCoroutine(enumerator);
     }
-
+    /// <summary>
+    /// All of the designer generated "Execute{CommandName}" ultimately use this method.  So when
+    /// need to execute a command on an outside view-model(meaning not the view-model of this view) this
+    /// method can be used. e.g. ExecuteCommand(MyGameViewModel.MainMenuCommand)
+    /// </summary>
+    /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
     public virtual void ExecuteCommand(ICommand command)
     {
         if (command == null) return;
@@ -240,6 +249,13 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             StartCoroutine(enumerator);
     }
 
+    /// <summary>
+    /// Executes a command of type ICommand.
+    /// </summary>
+    /// <typeparam name="TArgument"></typeparam>
+    /// <param name="command">The command instance to execute.</param>
+    /// <param name="sender">The sender of the command.</param>
+    /// <param name="argument">The argument required by the command.</param>
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, ViewModel sender, TArgument argument)
     {
         if (command == null) return;
@@ -253,6 +269,12 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             StartCoroutine(enumerator);
     }
 
+    /// <summary>
+    /// Executes a command of type ICommand.
+    /// </summary>
+    /// <typeparam name="TArgument"></typeparam>
+    /// <param name="command">The command instance to execute.</param>
+    /// <param name="argument">The argument required by the command.</param>
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
         if (command == null) return;
@@ -266,12 +288,19 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             StartCoroutine(enumerator);
     }
 
+    /// <summary>
+    /// A wrapper for "InitializeViewModel".
+    /// </summary>
+    /// <param name="model"></param>
     public void InitializeData(ViewModel model)
     {
         InitializeViewModel(model);
         model.Dirty = false;
     }
-
+    /// <summary>
+    /// When this view is destroy it will decrememnt the ViewModel's reference count.  If the reference count reaches 0
+    /// it will call "Unbind" on the viewmodel properly unbinding anything subscribed to it.
+    /// </summary>
     public virtual void OnDestroy()
     {
         if (ViewModelObject != null)
@@ -288,33 +317,11 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         {
             pv.ChildViews.Remove(this);
         }
-        Unbind();
+        //Unbind();
    
         //Bindings.Clear();
     }
 
-    //                return vm;
-    //            }
-    //            catch (TargetException)
-    //            {
-    //                Debug.LogError(string.Format("ViewModel can't be created.  You need to add the {0} controller to the scene in order to properly invoke its {1} method. ", _ViewModelControllerType, _ViewModelControllerMethod), this.gameObject);
-    //                return null;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError(string.Format("The controller method {0} on type {1} was not found either it was renamed or removed. Please fix the view model from property", _ViewModelControllerMethod, _ViewModelControllerType), this.gameObject);
-    //            return null;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError(string.Format("The controller type {0} was not found either it was renamed or removed. Please fix the view model from property", _ViewModelControllerType), this.gameObject);
-    //        return null;
-    //    }
-    //}
-    //return Activator.CreateInstance(ViewModelType) as ViewModel;
-    //}
     public virtual void OnDisable()
     {
         //var pv = ParentView;
@@ -378,7 +385,9 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         AfterBind();
     }
 
-    //{
+    /// <summary>
+    /// The start method approparitely initializes the "ChildViews" collection.
+    /// </summary>
     public virtual void Start()
     {
         var pv = ParentView;
@@ -397,7 +406,10 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             SetupBindings();
         }
     }
-
+    /// <summary>
+    /// A wrapper for this view's viewmodel bindings.  It is a wrapper
+    /// for ViewModel.Bindings[gameObject.GetInstanceId()]
+    /// </summary>
     public List<IBinding> Bindings
     {
         get
@@ -410,7 +422,9 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             return ViewModelObject.Bindings[InstanceId];
         }
     }
-
+    /// <summary>
+    /// A lazy loaded property for "GetInstanceId" on the game-object.
+    /// </summary>
     public int InstanceId
     {
         get
@@ -422,6 +436,11 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             return _instanceId;
         }
     }
+
+    /// <summary>
+    /// Adds a binding to the view-model's binding dictionary for this view.
+    /// </summary>
+    /// <param name="binding"></param>
     public void AddBinding(IBinding binding)
     {
         Bindings.Add(binding);
@@ -431,7 +450,10 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         }
         
     }
-
+    /// <summary>
+    /// Removes a binding from the view-models binding dictionary for this view.
+    /// </summary>
+    /// <param name="binding"></param>
     public void RemoveBinding(IBinding binding)
     {
         Bindings.Remove(binding);
@@ -443,7 +465,10 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     public virtual void Unbind()
     {
         //base.Unbind();
-
+        //foreach (var binding in Bindings)
+        //{
+        //    binding.Unbind();
+        //}
         // Loop through and binding providers and let them add bindings
         foreach (var bindingProvider in BindingProviders)
             bindingProvider.Unbind(this);
@@ -458,25 +483,42 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     /// <param name="model">The model to initialize.</param>
     protected abstract void InitializeViewModel(ViewModel model);
 
+    /// <summary>
+    /// Just calls the apply method.
+    /// </summary>
     protected virtual void LateUpdate()
     {
         Apply();
     }
 
+    /// <summary>
+    /// Overriden by the the uFrame designer to apply any two-way/reverse properties.
+    /// </summary>
     protected virtual void Apply()
     {
         
     }
-    [SerializeField, HideInInspector]
-    private string _identifier;
+    [ HideInInspector]
+    private string _id;
 
     private int _instanceId;
     
-
+    /// <summary>
+    /// The identifier used for requesting a view-model.
+    /// Implementation Details:
+    /// -If its not a multiinstance viewmodel and the "ResolveName" is empty it will use "DefaultIdentifier" property otherwise it will use
+    /// the resolve name.
+    /// - If it's a multiinstance viewmodel and the resolvename is specified it will use that.
+    /// - If the Use Hashcode as identifier is checked it will use this views hashcode.
+    /// 
+    /// Note: If using a prefab that is placed in the Unity editor in various places around a scene and it still needs to be unique every
+    /// scene load (for scene loading and saving) you will want to override this property and supply a identifier that makes it unique.
+    /// </summary>
     public virtual string Identifier
     {
         get
         {
+           
             if (IsMultiInstance && ForceResolveViewModel)
             {
                 return _resolveName;
@@ -488,19 +530,17 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             {
                 return DefaultIdentifier;
             }
-
-            //if (!IsMultiInstance)
-            //{
-            //    return string.Empty;
-            //}
-            if (string.IsNullOrEmpty(_identifier))
+            if (string.IsNullOrEmpty(_id))
             {
-                _identifier = Guid.NewGuid().ToString();
+                _id = (this.transform.position.GetHashCode()).ToString();
             }
-            return _identifier;
+            return _id;
         }
-        set { _identifier = value; }
+        set { _id = value; }
     }
+
+    [SerializeField,HideInInspector]
+    private bool _UseHashcodeAsIdentifier = false;
 
     public SceneManager SceneManager
     {
@@ -512,66 +552,22 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         get { return _bound; }
         set { _bound = value; }
     }
+    /// <summary>
+    /// Should this view be saved in the "SceneContext"
+    /// </summary>
+    public bool Save
+    {
+        get { return _Save; }
+        set { _Save = value; }
+    }
 
+    /// <summary>
+    /// Request a view-model with a given controller.
+    /// </summary>
+    /// <param name="controller"></param>
+    /// <returns></returns>
     protected ViewModel RequestViewModel(Controller controller)
     {
         return SceneManager.RequestViewModel(this, controller, Identifier);
-        //if (OverrideViewModel)
-        //{
-        //    if (!IsMultiInstance && string.IsNullOrEmpty(_resolveName))
-        //    {
-        //        return controller.GetByType(ViewModelType);
-        //    }
-        //    var result = controller.Create(Identifier, InitializeViewModel);
-        //    return result;
-        //}
-        //else
-        //{
-        //    if (!IsMultiInstance && string.IsNullOrEmpty(_resolveName))
-        //        return controller.GetByType(ViewModelType);
-
-        //    return controller.Create(Identifier);
-        //}
-
-        //controller.Create(Identifier, InitializeViewModel);
-        //if (ForceResolveViewModel || !IsMultiInstance)
-        //{
-        //    if (string.IsNullOrEmpty(_resolveName))
-        //    {
-        //        if (OverrideViewModel)
-        //            return controller.GetByType(Identifier, ViewModelType, true, InitializeViewModel);
-
-        //        return controller.GetByType(Identifier, ViewModelType, false);
-        //    }
-        //    if (OverrideViewModel)
-        //        return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
-        //    else
-        //        return controller.Create(Identifier); //controller.Create(InitializeViewModel);
-        //    if (OverrideViewModel)
-        //        return controller.GetByName(_resolveName, true, InitializeViewModel);
-
-        //    return controller.GetByName(_resolveName, false);
-        //}
-
-        //if (IsMultiInstance)
-        //{
-        //    //if (ForceResolveViewModel)
-        //    //{
-        //    //    return controller.GetByType(Identifier, ViewModelType, OverrideViewModel, InitializeViewModel);
-        //    //}
-        //    if (OverrideViewModel)
-        //        return controller.Create(Identifier, InitializeViewModel); //controller.Create(InitializeViewModel);
-        //    else
-        //        return controller.Create(Identifier); //controller.Create(InitializeViewModel);
-        //}
-        //return controller.Create(Identifier);
-    }
-
-    protected ViewModel ResolveViewModel(Controller controller = null)
-    {
-        var vm = !string.IsNullOrEmpty(_resolveName) ?
-              GameManager.Container.Resolve<ViewModel>(_resolveName) :
-              GameManager.Container.Resolve(ViewModelType) as ViewModel;
-        return vm;
     }
 }

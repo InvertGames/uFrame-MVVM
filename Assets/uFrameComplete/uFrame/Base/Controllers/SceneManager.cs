@@ -18,6 +18,9 @@ public abstract class SceneManager : ViewContainer
     private SceneContext _context;
     private bool _InjectViews = true;
 
+    /// <summary>
+    /// The Dependency container for this scene.  If unset then it will use "GameManager.Container".
+    /// </summary>
     public IGameContainer Container
     {
         get
@@ -30,6 +33,9 @@ public abstract class SceneManager : ViewContainer
         }
     }
 
+    /// <summary>
+    /// The scene context for the current running scene.  Used for Saving and loading a scenes state.
+    /// </summary>
     public SceneContext Context
     {
         get { return _context ?? (_context = new SceneContext(Container)); }
@@ -48,20 +54,18 @@ public abstract class SceneManager : ViewContainer
     }
 
     /// <summary>
-    /// This method is called when this controller has started loading
+    /// This method is called when the load function has completed
     /// </summary>
     public virtual void OnLoaded()
     {
     }
 
     /// <summary>
-    /// This method is called when the load function has completed
+    /// This method is called when this controller has started loading
     /// </summary>
     public virtual void OnLoading()
     {
     }
-
-
 
     /// <summary>
     /// This method simply starts the load method as a coroutine and should be overriden
@@ -70,35 +74,48 @@ public abstract class SceneManager : ViewContainer
     public virtual void Reload()
     {
         
-        GameManager.SwitchGame(this);
+        GameManager.Transition(this);
     }
-
+    /// <summary>
+    /// This method is called by the GameManager in order to register any dependencies.  It is one of the first things 
+    /// to be invoked.  This method is called before the "Load" method.
+    /// </summary>
     public virtual void Setup()
     {
     }
 
+    /// <summary>
+    /// This method should be used to property unload a scene when transitioning to another scene.
+    /// </summary>
     public virtual void Unload()
     {
         StopAllCoroutines();
     }
+
+    /// <summary>
+    /// The awake method of this scenemanager simply registers itself with the GameManager
+    /// </summary>
     protected virtual void Awake()
     {
         if (GameManager.Instance != null)
-            GameManager.Instance.AddGame(this);
+            GameManager.Instance.RegisterSceneManager(this);
     }
 
+    /// <summary>
+    /// When this scene manager is destroy it is removed from the gamemanager.
+    /// </summary>
     protected virtual void OnDestroy()
     {
         // Keep the controllers OnDestroy method from being invoked
         //base.OnDestroy();
         if (GameManager.Instance != null)
-            GameManager.Instance.RemoveGame(this);
+            GameManager.Instance.UnRegisterSceneManager(this);
     }
 
 
 
     /// <summary>
-    /// The settings at which the level will be loaded
+    /// The settings at which the level will be loaded with.  Used for transitioning from one scene to another.
     /// </summary>
     /// <value>The settings.</value>
     public static ISwitchLevelSettings Settings
@@ -109,17 +126,14 @@ public abstract class SceneManager : ViewContainer
         }
     }
 
-    public void RegisterRootView(ViewBase viewBase)
-    {
-        RootViews.Add(viewBase);
-    }
-
-    public List<ViewBase> RootViews
-    {
-        get { return _rootViews ?? (_rootViews = new List<ViewBase>()); }
-        set { _rootViews = value; }
-    }
-
+    /// <summary>
+    /// Used by the SceneManager when creating an instance before the scene loads.  This allows a view-model instance to be ready
+    /// before a view-initializes it.
+    /// </summary>
+    /// <typeparam name="TViewModel">The type of view-model to creat.</typeparam>
+    /// <param name="controller">The controller that the view-model should be initialized with</param>
+    /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
+    /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
     {
        
@@ -132,10 +146,21 @@ public abstract class SceneManager : ViewContainer
         }
         return (TViewModel)contextViewModel;
     }
+
+    /// <summary>
+    /// This is method is called by each view in order to get it's view-model as well as place it in
+    /// the SceneContext if the "Save & Load" option is checked in it's inspector
+    /// </summary>
+    /// <param name="viewBase">The view that is requesting it's view-model.</param>
+    /// <param name="controller">The controller that should be assigned to the view-model if any.</param>
+    /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
+    /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller, string identifier)
     {
+        
         if (_InjectViews)
-        Container.Inject(viewBase);
+            Container.Inject(viewBase);
+
         var contextViewModel = Context[identifier];
         if (contextViewModel == null)
         {
@@ -146,7 +171,9 @@ public abstract class SceneManager : ViewContainer
                 if (contextViewModel == null)
                 {
                     contextViewModel = controller.CreateEmpty(identifier);
-                    Context[identifier] = contextViewModel;
+                
+                        Context[identifier] = contextViewModel;
+
                     if (!viewBase.IsMultiInstance || viewBase.ForceResolveViewModel)
                     {
                         Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
@@ -154,7 +181,8 @@ public abstract class SceneManager : ViewContainer
                     }
                 }
             }
-            Context[identifier] = contextViewModel;
+          
+                Context[identifier] = contextViewModel;
         }
         if (contextViewModel != null)
         {
@@ -170,6 +198,16 @@ public abstract class SceneManager : ViewContainer
                 viewBase.InitializeData(contextViewModel);
                 controller.Initialize(contextViewModel);
             }
+            if (viewBase.Save)
+            {
+                if (identifier != null)
+                {
+                    //if (viewBase.Instantiated && !Context.PersitantViewModels.ContainsKey(identifier))
+                    Context.PersitantViewModels.Add(identifier,contextViewModel);
+
+
+                }
+            }
            
         }
 
@@ -177,8 +215,31 @@ public abstract class SceneManager : ViewContainer
     }
 }
 
-[Obsolete("GameType has been renamed to SceneManager.  Please rename.")]
-public class GameType
-{
-    
-}
+//public abstract class SceneStatePersistance : MonoBehaviour
+//{
+//    public abstract ISerializerStorage Storage { get; set; }
+//}
+//public class SceneStatePersistance<TStorage,TStream> : MonoBehaviour where TStorage : ISerializerStorage, new() where TStream : ISerializerStream, new()
+//{
+//    public ISerializerStorage Storage
+//    {
+//        get { return GetStorage(); }
+//    }
+//    public virtual TStorage GetStorage()
+//    {
+//        return new TStorage() {};
+//    }
+
+//    public TStream CreateStream(IGameContainer container,ITypeResolver typeResolver = null)
+//    {
+//        return new TStream() { DependencyContainer = container,TypeResolver = typeResolver ?? new DefaultTypeResolver()};
+//    }
+//}
+//public class JsonFileSceneStateLoader:SceneStatePersistance<FileSerializerStorage,JsonStream>
+//{
+//    public override ISerializerStorage GetStorage()
+//    {
+//        var result = base.GetStorage();
+        
+//    }
+//}

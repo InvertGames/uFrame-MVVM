@@ -320,22 +320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f88e5feb68896c43848edcfc817a4d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 1
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 1
   _resolveName: 
-  _identifier: 
-  _BindBlackScore: 0
-  _BindBoard: 0
-  _BoardPrefab: {fileID: 0}
-  _BindCurrentChecker: 0
-  _CurrentCheckerPrefab: {fileID: 0}
-  _BindCurrentPlayer: 0
-  _BindRedScore: 0
-  _BindAllowedMoves: 0
-  _AllowedMovesList: []
-  _AllowedMovesSceneFirst: 0
-  _AllowedMovesContainer: {fileID: 0}
+  _UseHashcodeAsIdentifier: 0
   _BlackScore: 0
   _Board: {fileID: 658728028}
   _CurrentChecker: {fileID: 0}
@@ -369,11 +360,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e196decb5ef75344b5faeba5b7550f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 1
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 1
   _resolveName: 
-  _identifier: 
+  _UseHashcodeAsIdentifier: 0
   _NewViewComponent: {fileID: 0}
   _BindCheckers: 1
   _CheckersList: []
@@ -436,6 +429,14 @@ Prefab:
     - target: {fileID: 400002, guid: 6af146e8008b4a046ae2b3d7cb772588, type: 2}
       propertyPath: m_RootMapOrder
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 6af146e8008b4a046ae2b3d7cb772588, type: 2}
+      propertyPath: _Save
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 6af146e8008b4a046ae2b3d7cb772588, type: 2}
+      propertyPath: _InjectView
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6af146e8008b4a046ae2b3d7cb772588, type: 2}
@@ -536,22 +537,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d419857f221fddd4e8f15886088caf65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 1
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 0
   _resolveName: 
-  _identifier: 
-  _BindBlackScore: 0
-  _BindBoard: 0
-  _BoardPrefab: {fileID: 0}
-  _BindCurrentChecker: 0
-  _CurrentCheckerPrefab: {fileID: 0}
-  _BindCurrentPlayer: 0
-  _BindRedScore: 0
-  _BindAllowedMoves: 0
-  _AllowedMovesList: []
-  _AllowedMovesSceneFirst: 0
-  _AllowedMovesContainer: {fileID: 0}
+  _UseHashcodeAsIdentifier: 0
   _BlackScore: 0
   _Board: {fileID: 0}
   _CurrentChecker: {fileID: 0}

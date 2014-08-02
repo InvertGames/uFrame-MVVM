@@ -203,7 +203,7 @@ public class CheckersMenuSceneManagerBase : SceneManager {
     }
     
     public virtual void Play() {
-        GameManager.SwitchGameAndLevel<CheckersSceneManager>((container) =>{container._CheckersSceneManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
+        GameManager.TransitionLevel<CheckersSceneManager>((container) =>{container._CheckersSceneManagerSettings = _PlayTransition; }, this._PlayTransition._Scenes);
     }
 }
 
@@ -263,6 +263,6 @@ public class CheckersSceneManagerBase : SceneManager {
     }
     
     public virtual void GameOver() {
-        GameManager.SwitchGameAndLevel<CheckersMenuSceneManager>((container) =>{container._CheckersMenuSceneManagerSettings = _GameOverTransition; }, this._GameOverTransition._Scenes);
+        GameManager.TransitionLevel<CheckersMenuSceneManager>((container) =>{container._CheckersMenuSceneManagerSettings = _GameOverTransition; }, this._GameOverTransition._Scenes);
     }
 }

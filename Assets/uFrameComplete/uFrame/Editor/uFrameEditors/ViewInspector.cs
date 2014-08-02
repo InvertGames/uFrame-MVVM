@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Invert.Common;
+using Invert.Common.UI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -30,7 +31,17 @@ public class ViewInspector : uFrameInspector
     {
         ShowInfoLabels = !ShowInfoLabels;
     }
-
+    public bool ShowIdentifierSettings
+    {
+        get
+        {
+            return EditorPrefs.GetBool("UFRAME_ShowIdentifierSettings", true);
+        }
+        set
+        {
+            EditorPrefs.SetBool("UFRAME_ShowIdentifierSettings", value);
+        }
+    }
     public bool ShowDefaultSettings
     {
         get
@@ -75,11 +86,11 @@ public class ViewInspector : uFrameInspector
         var titleSize = ElementDesignerStyles.ViewBarTitleStyle.CalcSize(titleContent);
         var subTitleSize = ElementDesignerStyles.ViewBarSubTitleStyle.CalcSize(subTitleContent);
         var maxTextWidth = Mathf.Max(titleSize.x, subTitleSize.x);
-        var barWidth = (padding*4f) + maxTextWidth + (36 * 1);
+        var barWidth = (padding * 4f) + maxTextWidth + (36 * 1);
         var rect = new Rect(15f, 15f, barWidth, 48f);
         ElementDesignerStyles.DrawExpandableBox(rect, ElementDesignerStyles.SceneViewBar, "");
         GUILayout.BeginArea(rect);
-        
+
         GUILayout.BeginHorizontal();
         GUILayout.Space(padding);
         if (GUILayout.Button(new GUIContent("", "View " + subTitleContent.text + " in Element Designer"), ElementDesignerStyles.EyeBall))
@@ -96,7 +107,7 @@ public class ViewInspector : uFrameInspector
         //GUILayout.Space(padding);
         //if (GUILayout.Button(new GUIContent("", "Move to the previous " + subTitleContent.text), ElementDesignerStyles.NavigatePreviousStyle))
         //{
-            
+
         //    uFrameEditorSceneManager.NavigatePrevious();
         //}
         //if (GUILayout.Button(new GUIContent("","Move to the next " + subTitleContent.text), ElementDesignerStyles.NavigateNextStyle))
@@ -112,20 +123,19 @@ public class ViewInspector : uFrameInspector
     public void Info(string message)
     {
         if (!ShowInfoLabels) return;
-        EditorGUILayout.HelpBox(message,MessageType.Info);
+        EditorGUILayout.HelpBox(message, MessageType.Info);
     }
     public void Warning(string message)
     {
-        
+
         EditorGUILayout.HelpBox(message, MessageType.Warning);
     }
     public override void OnInspectorGUI()
     {
         UBEditor.IsGlobals = false;
         var t = target as ViewBase;
-      
-    
-        
+
+
 
         if (EditorApplication.isPlaying)
         {
@@ -136,9 +146,140 @@ public class ViewInspector : uFrameInspector
 
             base.OnInspectorGUI();
             DrawPlayModeGui(t);
-            serializedObject.ApplyModifiedProperties();
             return;
         }
+
+        ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
+        if (ShowDefaultSettings)
+        {
+
+            base.OnInspectorGUI();
+
+        }
+
+        serializedObject.Update();
+        ShowIdentifierSettings = Toggle("Initialization", ShowIdentifierSettings);
+        if (ShowIdentifierSettings)
+        {
+            DoInitializationSection(t);
+        }
+
+        if (_groupFields == null)
+            GetFieldInformation(t);
+
+        if (_groupFields != null)
+        {
+
+            foreach (var groupField in _groupFields)
+            {
+                if (_toggleGroups.ContainsKey(groupField.Key)) continue;
+
+                EditorPrefs.SetBool(groupField.Key, Toggle(groupField.Key, EditorPrefs.GetBool(groupField.Key, false)));
+
+
+                DoGroupField(groupField, t);
+            }
+            EditorPrefs.SetBool("UFRAME_BindingsOpen", Toggle("Bindings", EditorPrefs.GetBool("UFRAME_BindingsOpen", false)));
+
+            if (EditorPrefs.GetBool("UFRAME_BindingsOpen", false))
+            {
+
+                DoBindingsSection();
+            }
+
+            var btnContent = new GUIContent("Show In Designer");
+            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
+            {
+                uFrameEditorSceneManager.NavigateBack(target as ViewBase);
+            }
+        }
+
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private void DoGroupField(KeyValuePair<string, List<FieldInfo>> groupField, ViewBase t)
+    {
+        if (EditorPrefs.GetBool(groupField.Key, false))
+        {
+            if (groupField.Key == "View Model Properties")
+            {
+                Info(
+                    "This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
+                var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
+                EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));
+            }
+            if (groupField.Key == "View Model Properties" &&
+                !(t.OverrideViewModel)) return;
+            foreach (var field in groupField.Value)
+            {
+                try
+                {
+                    // serializedObject.GetIterator().Reset();
+                    var property = serializedObject.FindProperty(field.Name);
+                    if (property == null) continue;
+                    if (property.propertyType == SerializedPropertyType.Vector2)
+                    {
+                        var newValue = EditorGUILayout.Vector2Field(property.name, property.vector2Value);
+                        if (newValue != property.vector2Value)
+                        {
+                            property.vector2Value = newValue;
+                        }
+                    }
+                    else if (property.propertyType == SerializedPropertyType.Vector3)
+                    {
+                        var newValue = EditorGUILayout.Vector3Field(property.name, property.vector3Value);
+                        if (newValue != property.vector3Value)
+                        {
+                            property.vector2Value = newValue;
+                        }
+                    }
+                    else
+                    {
+                        EditorGUILayout.PropertyField(property);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log(field.Name + ex.Message);
+                }
+            }
+        }
+    }
+
+    private void DoBindingsSection()
+    {
+        foreach (var group in _toggleGroups)
+        {
+            var property = serializedObject.FindProperty(@group.Value.Name);
+            EditorGUILayout.PropertyField(property, new GUIContent(property.name.Replace("_", "").Replace("Bind", "")));
+            if (property.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                if (_groupFields != null)
+                {
+                    if (_groupFields.ContainsKey(@group.Key))
+                    {
+                        foreach (var groupField in _groupFields[@group.Key])
+                        {
+                            var subProperty = serializedObject.FindProperty(groupField.Name);
+
+                            if (subProperty != null)
+                            {
+                                EditorGUILayout.PropertyField(subProperty,
+                                    new GUIContent(subProperty.name.Replace(@group.Key, "").Replace("_", "")));
+                            }
+                        }
+                    }
+                }
+                EditorGUI.indentLevel--;
+            }
+            property.Reset();
+        }
+    }
+
+    private void DoInitializationSection(ViewBase t)
+    {
         EditorGUILayout.Space();
         if (t.IsMultiInstance)
         {
@@ -146,7 +287,8 @@ public class ViewInspector : uFrameInspector
             var resolveProperty = serializedObject.FindProperty("_forceResolveViewModel");
             EditorGUILayout.PropertyField(resolveProperty, new GUIContent("Force Resolve"));
         }
-
+        Info(
+            "The Identifier is used for persisting this view and should be unique.  This identifier should always be the same each time the scene loads.  If instantiating prefabs you'll want to override the 'Identifier' property and make it unique.");
         if (t != null)
             EditorGUILayout.LabelField("Id", t.Identifier);
 
@@ -160,127 +302,26 @@ public class ViewInspector : uFrameInspector
                 Warning(
                     "When using a 'ResolveName' on a single instance element, the element must be initialized manually in the scene manager's setup method.");
             }
-            
         }
-        ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
-        serializedObject.Update();
-        if (ShowDefaultSettings)
-        {
-          
-            base.OnInspectorGUI();
-            
-        }
-    
-        if (_groupFields == null)
-            GetFieldInformation(t);
-        
-        if (_groupFields != null)
-        {
-         
-            foreach (var groupField in _groupFields)
-            {
-                if (_toggleGroups.ContainsKey(groupField.Key)) continue;
-            
-                EditorPrefs.SetBool(groupField.Key, Toggle(groupField.Key, EditorPrefs.GetBool(groupField.Key, false)));
-            
+        var saveProperty = serializedObject.FindProperty("_Save");
+        Info(
+            "Should this field be saved and loaded when saving a scene's in-game state. e.g. GameManager.ActiveSceneManager.Load(...); GameManger.ActiveSceneManager.Save(...);");
+        EditorGUILayout.PropertyField(saveProperty, new GUIContent("Save & Load"));
 
-                if (EditorPrefs.GetBool(groupField.Key, false))
-                {
-                    if (groupField.Key == "View Model Properties")
-                    {
-                        Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
-                        var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
-                        EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));
-                    }
-                    if (groupField.Key == "View Model Properties" &&
-                       !(t.OverrideViewModel)) continue;
-                    foreach (var field in groupField.Value)
-                    {
-                        try
-                        {
+        var injectProperty = serializedObject.FindProperty("_InjectView");
+        Info(
+            "Should this view be injected with Dependencies defined in the GameContainer.  e.g.GameManager.Resolve<MyViewModel>(ResolveName);");
+        EditorGUILayout.PropertyField(injectProperty, new GUIContent("Inject This View"));
 
-                           // serializedObject.GetIterator().Reset();
-                            var property = serializedObject.FindProperty(field.Name);
-                            if (property == null) continue;
-                            if (property.propertyType == SerializedPropertyType.Vector2)
-                            {
-
-                                var newValue = EditorGUILayout.Vector2Field(property.name, property.vector2Value);
-                                if (newValue != property.vector2Value)
-                                {
-                                    property.vector2Value = newValue;
-                                }
-
-                            }
-                            else if (property.propertyType == SerializedPropertyType.Vector3)
-                            {
-                                var newValue = EditorGUILayout.Vector3Field(property.name, property.vector3Value);
-                                if (newValue != property.vector3Value)
-                                {
-                                    property.vector2Value = newValue;
-                                }
-                            }
-                            else
-                            {
-                                EditorGUILayout.PropertyField(property);
-                            }
-                           
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.Log(field.Name + ex.Message);
-                        }
-                    }
-                }
-            }
-            EditorPrefs.SetBool("UFRAME_BindingsOpen", Toggle("Bindings", EditorPrefs.GetBool("UFRAME_BindingsOpen", false)));
-
-            if (EditorPrefs.GetBool("UFRAME_BindingsOpen", false))
-            {
-               
-                foreach (var group in _toggleGroups)
-                {
-                    var property = serializedObject.FindProperty(@group.Value.Name);
-                    EditorGUILayout.PropertyField(property, new GUIContent(property.name.Replace("_", "").Replace("Bind", "")));
-                    if (property.boolValue)
-                    {
-                        EditorGUI.indentLevel++;
-                        if (_groupFields != null)
-                        {
-                            if (_groupFields.ContainsKey(@group.Key))
-                            {
-                                foreach (var groupField in _groupFields[@group.Key])
-                                {
-                                    var subProperty = serializedObject.FindProperty(groupField.Name);
-                                    
-                                    if (subProperty != null)
-                                    {
-
-                                        EditorGUILayout.PropertyField(subProperty, new GUIContent(subProperty.name.Replace(@group.Key, "").Replace("_", "")));
-                                    }
-                                }
-                            }
-                        }
-                        EditorGUI.indentLevel--;
-                    }
-                    property.Reset();
-                }
-            }
-           
-            var btnContent = new GUIContent("Show In Designer");
-            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
-            {
-                uFrameEditorSceneManager.NavigateBack(target as ViewBase);
-            }
-        }
-
-
-        serializedObject.ApplyModifiedProperties();
+        //var useHashCode = serializedObject.FindProperty("_UseHashcodeAsIdentifier");
+        //Info(
+        //    "Should this view use it's hash code as it's unique identifier.  Use if this is a prefab that will be place in a scene through the editor.");
+        //EditorGUILayout.PropertyField(useHashCode, new GUIContent("Use Hash As Identifier"));
     }
 
     public ViewBase Target
     {
-        get { return (ViewBase) target; }
+        get { return (ViewBase)target; }
     }
     public Dictionary<string, ICommand> Commands
     {
@@ -327,6 +368,27 @@ public class ViewInspector : uFrameInspector
                     {
                         Target.ExecuteCommand(command.Value);
                     }
+                }
+            }
+            if (t.ViewModelObject != null)
+            {
+                foreach (var item in t.ViewModelObject.Bindings)
+                {
+                    GUIHelpers.DoToolbar(item.Key == -1 ? "Controller" : item.Key.ToString());
+
+                    foreach (var binding in item.Value)
+                    {
+
+                        if (GUIHelpers.DoTriggerButton(new UFStyle()
+                        {
+                            Label = binding.GetType().Name + ": " + binding.ModelMemberName,
+                            //IconStyle = bi
+                        }))
+                        {
+
+                        }
+                    }
+
                 }
             }
         }

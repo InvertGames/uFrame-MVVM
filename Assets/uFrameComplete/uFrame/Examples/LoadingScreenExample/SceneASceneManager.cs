@@ -25,7 +25,7 @@ public class SceneASceneManager : SceneManager
     {
         if (Input.GetKeyDown(KeyCode.S) || Input.GetMouseButtonDown(0))
         {
-            GameManager.SwitchGameAndLevel<SceneBSceneManager>(
+            GameManager.TransitionLevel<SceneBSceneManager>(
                 (sceneBGame)=>{ /* Initialize the game if needed. */ }, 
                 "SceneB" // The Unity Level Name
                 );

@@ -6,12 +6,7 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel
 {
     public FPSWeaponViewModel CurrentWeapon
     {
-        get { return _WeaponsProperty.Value[CurrentWeaponIndex]; }
+        get { return _WeaponsProperty[CurrentWeaponIndex]; }
     }
-    public virtual IEnumerable<ModelPropertyBase> GetProperties()
-    {
-        yield return _CurrentWeaponIndexProperty;
-        yield return _WeaponsProperty;
-
-    }
+ 
 }

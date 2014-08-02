@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
 
     private static LevelLoadViewModel _loadingViewModel;
 
-    private List<SceneManager> _games = new List<SceneManager>();
+    private List<SceneManager> _sceneManagers = new List<SceneManager>();
 
     /// <summary>
     /// The current running game
@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
         {
             if (_container == null)
             {
-                _container = new SceneContext();
+                _container = new GameContainer();
                 _container.RegisterInstance(Progress);
             }
             return _container;
@@ -124,16 +124,16 @@ public class GameManager : MonoBehaviour
     /// A list of all the game in the scene.
     /// Each game registers itself with this manager and is added to this list.
     /// </summary>
-    public List<SceneManager> Games
+    public List<SceneManager> SceneManagers
     {
-        get { return _games; }
-        set { _games = value; }
+        get { return _sceneManagers; }
+        set { _sceneManagers = value; }
     }
 
-    public static Coroutine SwitchGame<T>(Action<T> setup, UpdateProgressDelegate progress = null) where T : SceneManager
+    public static Coroutine Transition<T>(Action<T> setup, UpdateProgressDelegate progress = null) where T : SceneManager
     {
 
-        return SwitchGame(Instance.Games.OfType<T>().First());
+        return Transition(Instance.SceneManagers.OfType<T>().First());
     }
 
     /// <summary>
@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
     /// <param name="setup"></param>
     /// <param name="controller"></param>
     /// <returns></returns>
-    public static Coroutine SwitchGame<TGame>(TGame controller, Action<TGame> setup = null, UpdateProgressDelegate progress = null) where TGame : SceneManager
+    public static Coroutine Transition<TGame>(TGame controller, Action<TGame> setup = null, UpdateProgressDelegate progress = null) where TGame : SceneManager
     {
         if (controller == null)
         {
@@ -173,16 +173,15 @@ public class GameManager : MonoBehaviour
             setup(controller);
         }
         ActiveSceneManager.OnLoading();
-        return Instance.StartCoroutine(InitializeController(progress ?? DefaultUpdateProgress));
+        return Instance.StartCoroutine(LoadSceneManager(progress ?? DefaultUpdateProgress));
     }
 
     /// <summary>
-    /// Loads the other levels asynchronously and then switches the
+    /// Transitions to another scene and loads additional scene if specified.
     /// game assuming that it will exist in the scene after loading is finished.
     /// </summary>
-    /// <typeparam name="T">The type of game</typeparam>
-    /// <returns></returns>
-    public static void SwitchGameAndLevel<T>(SwitchLevelSettings<T> settings) where T : SceneManager
+    /// <typeparam name="T">The SceneManager type that will exist in the first scene specified.</typeparam>
+    public static void TransitionLevel<T>(SwitchLevelSettings<T> settings) where T : SceneManager
     {
         if (ActiveSceneManager != null)
         {
@@ -198,14 +197,13 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads the other levels asynchronously and then switches the
+    /// Transitions to another scene and loads additional scene if specified.
     /// game assuming that it will exist in the scene after loading is finished.
     /// </summary>
-    /// <typeparam name="T">The type of the Game to switch to</typeparam>
-    /// <param name="setup">Setup the Game?</param>
-    /// <param name="levels">Load these levels additively?</param>
-    /// <returns></returns>
-    public static void SwitchGameAndLevel<T>(Action<T> setup, params string[] levels) where T : SceneManager
+    /// <typeparam name="T">The SceneManager type that will exist in the first scene specified.</typeparam>
+    /// <param name="setup">Perform additonal setup when the scene has transitioned.</param>
+    /// <param name="levels">The SceneManager type that will exist in the first scene specified.</param>
+    public static void TransitionLevel<T>(Action<T> setup, params string[] levels) where T : SceneManager
     {
         if (levels.Length < 1)
         {
@@ -216,24 +214,26 @@ public class GameManager : MonoBehaviour
             Setup = setup,
             Levels = levels
         };
-        SwitchGameAndLevel(settings);
+        TransitionLevel(settings);
     }
 
     /// <summary>
-    /// Adds a controler to the list of registered controllers.
-    /// You shouldn't have to use this method directly.  It is used by a game to register itself.
+    /// Registers a SceneManger with this game manager.  This will invoke setup on the manager as well as disable it.
     /// </summary>
-    /// <param name="sceneManager">The game being added.</param>
-    public virtual void AddGame(SceneManager sceneManager)
+    /// <param name="sceneManager">The scene manager to register.</param>
+    public virtual void RegisterSceneManager(SceneManager sceneManager)
     {
-        if (Games.Contains(sceneManager)) return;
+        if (SceneManagers.Contains(sceneManager)) return;
         sceneManager.Container = Container;
         sceneManager.Setup();
-        Games.Add(sceneManager);
+        SceneManagers.Add(sceneManager);
         sceneManager.enabled = false;
         sceneManager.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Applies the render settings specified in the inspector.
+    /// </summary>
     public void ApplyRenderSettings()
     {
         RenderSettings.fog = _Fog;
@@ -252,10 +252,14 @@ public class GameManager : MonoBehaviour
         RenderSettings.flareStrength = _FlareStrength;
     }
 
-    public void OnEnable()
+    public virtual void OnEnable()
     {
+
     }
 
+    /// <summary>
+    /// On awake will apply the render settings and will begin startup which will "boot" the scenemanager.
+    /// </summary>
     public void Awake()
     {
         ApplyRenderSettings();
@@ -277,7 +281,10 @@ public class GameManager : MonoBehaviour
             //_Start.Container;
         }
     }
-
+    /// <summary>
+    /// Checks if the gamemanager has already been loaded.  If so it will copy necessary info and destroy
+    /// itself.  This also calls "Transition" in order to load the "Start" scene manager of the scene.
+    /// </summary>
     public void Start()
     {
         if (Instance != null && Instance != this)
@@ -289,16 +296,21 @@ public class GameManager : MonoBehaviour
         else
         {
             if (_Start != null)
-                SwitchGame(_Start);
+                Transition(_Start);
         }
     }
 
+    /// <summary>
+    /// Startup will register every scenemanager in the scene. As well as set the "ActiveSceneManager' to the specified
+    /// 'Start' scene manager specified in the inspector.
+    /// </summary>
     public virtual void Startup()
     {
+        SceneManagers.Clear();
         var games = FindObjectsOfType<SceneManager>();
         foreach (var game in games)
         {
-            AddGame(game);
+            RegisterSceneManager(game);
         }
         if (_Start == null)
         {
@@ -309,13 +321,9 @@ public class GameManager : MonoBehaviour
         ActiveSceneManager = _Start;
     }
 
-
-
-    public string GetPath(string elementPath, string path)
-    {
-        return Regex.Replace(path, "@ElementPath", elementPath);
-    }
-
+    /// <summary>
+    /// Loads the current render settings of a scene.
+    /// </summary>
     public void LoadRenderSettings()
     {
         _Fog = RenderSettings.fog;
@@ -334,6 +342,11 @@ public class GameManager : MonoBehaviour
         _FlareStrength = RenderSettings.flareStrength;
     }
 
+    
+    /// <summary>
+    /// When this is destroyed check if we are the "current instance" and set "Instance" to null.
+    /// Note: This should really never happen.  But in some test cases is necessary.
+    /// </summary>
     public void OnDestroy()
     {
         if (Instance == this)
@@ -344,34 +357,48 @@ public class GameManager : MonoBehaviour
     /// Removes the Scene Manager from this manager.  This will only happen if a Game is destroyed
     /// </summary>
     /// <param name="sceneManager"></param>
-    public virtual void RemoveGame(SceneManager sceneManager)
+    public virtual void UnRegisterSceneManager(SceneManager sceneManager)
     {
-        Games.Remove(sceneManager);
+        SceneManagers.Remove(sceneManager);
     }
+
 
     protected static void DefaultUpdateProgress(string message, float progress)
     {
         Debug.Log(String.Format("Loading: {0}% - {1}", progress * 100f, message));
     }
 
-    private static IEnumerator InitializeController(UpdateProgressDelegate progress)
+    /// <summary>
+    /// Begins the the "Load" coroutine of the scenemanger passing the appropriate progress delegate.
+    /// </summary>
+    /// <param name="progress"></param>
+    /// <returns></returns>
+    private static IEnumerator LoadSceneManager(UpdateProgressDelegate progress)
     {
         // yield return new WaitForEndOfFrame();
         yield return Instance.StartCoroutine(ActiveSceneManager.Load(progress));
         ActiveSceneManager.OnLoaded();
     }
 
+    /// <summary>
+    /// Is this a pro license?
+    /// </summary>
     public static bool IsPro
     {
         get
         {
-
             return Application.HasProLicense();
         }
     }
-
+    /// <summary>
+    /// Do not use async loading on "TransitionLevel"
+    /// </summary>
     public bool _DontUseAsyncLoading = false;
 
+    /// <summary>
+    /// The uFrame Boot loader that willbegin the startup process
+    /// </summary>
+    /// <returns></returns>
     public static IEnumerator Load()
     {
 
@@ -428,14 +455,13 @@ public class GameManager : MonoBehaviour
                 ProgressUpdated(s, progressValue);
             };
 
-        // Now that the main level with the controller is loaded we can grab the Scene Manager
-        var controller = Instance.Games.Find(p => p.GetType() == SceneManager.Settings.StartControllerType);
-        while (controller == null)
+        var sceneManager = Instance.SceneManagers.Find(p => p.GetType() == SceneManager.Settings.StartManagerType);
+        while (sceneManager == null)
         {
             yield return new WaitForSeconds(0.1f);
-            controller = Instance.Games.Find(p => p.GetType() == SceneManager.Settings.StartControllerType);
+            sceneManager = Instance.SceneManagers.Find(p => p.GetType() == SceneManager.Settings.StartManagerType);
         }
-        yield return SwitchGame(controller, SceneManager.Settings.InvokeControllerSetup, new UpdateProgressDelegate(progressUpdateWithFactor));
+        yield return Transition(sceneManager, SceneManager.Settings.InvokeControllerSetup, new UpdateProgressDelegate(progressUpdateWithFactor));
         foreach (var t in list)
         {
             Destroy(t.gameObject);

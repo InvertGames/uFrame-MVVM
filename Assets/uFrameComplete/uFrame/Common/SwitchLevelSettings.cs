@@ -17,7 +17,7 @@ public class SwitchLevelSettings<T> : ISwitchLevelSettings where T : SceneManage
         set;
     }
 
-    public Type StartControllerType
+    public Type StartManagerType
     {
         get
         {

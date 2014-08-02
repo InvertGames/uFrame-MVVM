@@ -25,7 +25,7 @@ public class SceneBSceneManager : SceneManager
     {
         if (Input.GetKeyDown(KeyCode.S) || Input.GetMouseButtonDown(0))
         {
-            GameManager.SwitchGameAndLevel<SceneASceneManager>(null, "SceneA");
+            GameManager.TransitionLevel<SceneASceneManager>(null, "SceneA");
         }
     }
 }

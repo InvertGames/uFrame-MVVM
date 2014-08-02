@@ -356,11 +356,13 @@ MonoBehaviour:
   m_Script: {fileID: 1716694287}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 0
   _resolveName: 
-  _identifier: 
+  _UseHashcodeAsIdentifier: 0
   _State: 0
   _CurrentPlayer: {fileID: 0}
   _Score: 0
@@ -728,11 +730,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b6136f9bca7ea47a5fc4a04af98273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 0
   _resolveName: 
-  _identifier: 
+  _UseHashcodeAsIdentifier: 0
   _State: 0
   _CurrentPlayer: {fileID: 0}
   _Score: 0
@@ -832,11 +836,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c725c153896552949b6406b247e6deef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
   _overrideViewModel: 1
   _resolveName: LocalPlayer
-  _identifier: 29c80d8b-52cb-467c-a90e-f8f8fff87adc
+  _UseHashcodeAsIdentifier: 0
   _Health: 1
   _State: 0
   _CurrentWeaponIndex: 1
@@ -1102,7 +1108,7 @@ MonoBehaviour:
   _WavesFPSGameManagerSettings:
     _Scenes: []
     FPSGameTypes: 1
-  _SceneState: {fileID: 4900000, guid: 354687cfbc1c92f48ba5aaf7f79cf755, type: 3}
+  _SceneState: {fileID: 0}
 --- !u!1 &1071219177
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,11 +1204,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8d8f9457f6a6174e91b264a779210d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
   _overrideViewModel: 1
   _resolveName: 
-  _identifier: 
+  _UseHashcodeAsIdentifier: 0
   _State: 0
   _CurrentPlayer: {fileID: 887022875}
   _Score: 0
@@ -1488,11 +1496,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247b2466323d2a94fbe668060d23baef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
   _overrideViewModel: 0
   _resolveName: LocalPlayer
-  _identifier: 5a9f743a-9061-46d9-aed1-68e4ab49a09e
+  _UseHashcodeAsIdentifier: 0
   _Health: 0
   _State: 0
   _CurrentWeaponIndex: 0

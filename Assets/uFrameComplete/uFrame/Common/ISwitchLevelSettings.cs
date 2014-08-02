@@ -6,7 +6,7 @@ public interface ISwitchLevelSettings
 
     Action<LevelLoadProgress> ProgressUpdated { get; set; }
 
-    Type StartControllerType { get; }
+    Type StartManagerType { get; }
 
     void InvokeControllerSetup(SceneManager sceneManager);
 }

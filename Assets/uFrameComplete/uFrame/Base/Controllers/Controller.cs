@@ -127,7 +127,12 @@ public abstract class Controller
 #if !TESTS
     public void ExecuteCommand(ICommand command, object argument)
     {
-        if (command == null) return;
+
+        if (command == null)
+        {
+            throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
+            return;
+        }
         command.Parameter = argument;
         if (command.Parameter == null)
         {
@@ -140,7 +145,12 @@ public abstract class Controller
 
     public virtual void ExecuteCommand(ICommand command)
     {
-        if (command == null) return;
+
+        if (command == null)
+        {
+            throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
+            return;
+        }
         //command.Sender = null;
         command.Parameter = null;
 
@@ -151,7 +161,11 @@ public abstract class Controller
 
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        if (command == null) return;
+        if (command == null)
+        {
+            throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
+            return;
+        }
         command.Parameter = argument;
 
         IEnumerator enumerator = command.Execute();
