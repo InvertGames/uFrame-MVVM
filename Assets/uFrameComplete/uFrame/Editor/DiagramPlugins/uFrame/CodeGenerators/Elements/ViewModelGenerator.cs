@@ -240,7 +240,7 @@ public class ViewModelGenerator : CodeGenerator
 
         if (typeViewModel != null)
         {
-            
+            property.SetStatements.Add(new CodeSnippetExpression(string.Format("{0}.{0} = value", itemData.FieldName)));    
         }
 
         return property;

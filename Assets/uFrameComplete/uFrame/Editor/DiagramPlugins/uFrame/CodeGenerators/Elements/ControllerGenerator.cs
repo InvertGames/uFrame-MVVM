@@ -171,7 +171,7 @@ public class ControllerGenerator : CodeGenerator
                 };
                 property.GetStatements.Add(
                     new CodeMethodReturnStatement(
-                        new CodeSnippetExpression(string.Format("Container.Resolve<{0}>()", data.NameAsViewModel))));
+                        new CodeSnippetExpression(string.Format("Container.Resolve<{0}>(\"{1}\")", data.NameAsViewModel,data.RootElement.Name))));
 
                 
                 tDecleration.Members.Add(property);

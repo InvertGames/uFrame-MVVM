@@ -142,7 +142,6 @@ public abstract class SceneManager : ViewContainer
         {
             contextViewModel = new TViewModel {Controller = controller,Identifier = identifier};
             Context[identifier] = contextViewModel;
-            
         }
         return (TViewModel)contextViewModel;
     }
@@ -178,6 +177,13 @@ public abstract class SceneManager : ViewContainer
                     {
                         Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
                             string.IsNullOrEmpty(identifier) ? null : identifier);
+
+                        if (!viewBase.IsMultiInstance)
+                        {
+                            Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
+                                string.IsNullOrEmpty(identifier) ? null : identifier);    
+                        }
+                        
                     }
                 }
             }
@@ -204,8 +210,6 @@ public abstract class SceneManager : ViewContainer
                 {
                     //if (viewBase.Instantiated && !Context.PersitantViewModels.ContainsKey(identifier))
                     Context.PersitantViewModels.Add(identifier,contextViewModel);
-
-
                 }
             }
            
