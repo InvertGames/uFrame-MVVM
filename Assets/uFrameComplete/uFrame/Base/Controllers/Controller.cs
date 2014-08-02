@@ -124,6 +124,13 @@ public abstract class Controller
     }
      
     public abstract void Initialize(ViewModel viewModel);
+
+    [Obsolete("WireCommands no longer lives in the controller. Regenerate your diagram.")]
+    public virtual void WireCommands(ViewModel viewModel)
+    {
+        
+    }
+
 #if !TESTS
     public void ExecuteCommand(ICommand command, object argument)
     {

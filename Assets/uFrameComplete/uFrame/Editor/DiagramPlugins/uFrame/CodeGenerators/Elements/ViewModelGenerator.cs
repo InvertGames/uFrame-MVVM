@@ -94,6 +94,7 @@ public class ViewModelGenerator : CodeGenerator
                 Decleration.Members.Add(ToCommandCodeMemberField(viewModelPropertyData));
                 Decleration.Members.Add(ToCommandCodeMemberProperty(viewModelPropertyData));
             }
+            
             AddWriteMethod(data);
         }
         Namespace.Types.Add(Decleration);
@@ -216,11 +217,9 @@ public class ViewModelGenerator : CodeGenerator
 
     public virtual CodeMemberProperty ToCodeMemberProperty(ViewModelPropertyData itemData)
     {
-        var property = new CodeMemberProperty();
-        property.Name = itemData.Name;
-        property.Attributes = MemberAttributes.Public;
+        var property = new CodeMemberProperty {Name = itemData.Name, Attributes = MemberAttributes.Public};
 
-        var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
+        var typeViewModel = itemData.RelatedNode() as ElementData;
 
         if (typeViewModel == null)
         {
@@ -229,6 +228,10 @@ public class ViewModelGenerator : CodeGenerator
         else
         {
             property.Type = new CodeTypeReference(typeViewModel.NameAsViewModel);
+            
+            
+            
+
         }
         property.GetStatements.Add(
             new CodeMethodReturnStatement(new CodeSnippetExpression(string.Format("{0}.Value", itemData.FieldName))));
