@@ -302,3 +302,13 @@ public class PipeViewViewBase : PipeViewBase {
 
 public partial class PipeView : PipeViewViewBase {
 }
+
+public class GroundViewViewBase : AngryFlappersGameViewBase {
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class GroundView : GroundViewViewBase {
+}
