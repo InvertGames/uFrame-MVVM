@@ -299,7 +299,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         Namespace.Types.Add(Decleration);
     }
 
-    private void AddInitializeViewModelMethod(ElementData data)
+    protected void AddInitializeViewModelMethod(ElementData data)
     {
         var initializeViewModelMethod = new CodeMemberMethod
         {

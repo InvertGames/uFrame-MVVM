@@ -153,11 +153,13 @@ public class ViewViewBaseGenerator : ViewClassGenerator
 
         AddBindingMembers();
 
+        
+
         GenerateBindMethod(Decleration, View);
         // Make sure we only generate a view model property for whats needed
         if (View.BaseView != null)
         AddViewModelProperty(View.ViewForElement);
-
+        AddInitializeViewModelMethod(View.ViewForElement);
         Namespace.Types.Add(Decleration);
     }
 
