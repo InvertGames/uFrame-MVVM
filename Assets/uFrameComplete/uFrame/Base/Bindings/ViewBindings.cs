@@ -148,6 +148,28 @@ public static class ViewBindings
         view.AddBinding(binding);
         return binding;
     }
+    /// <summary>
+    /// The binding class that allows chaining extra options.
+    /// </summary>
+    /// <typeparam name="TBindingType">The type of the model property to bind to.</typeparam>
+    /// <param name="t">The view that owns the binding</param>
+    /// <param name="sourceProperty">The ViewModel property to bind to. Ex. ()=>Model.MyViewModelProperty</param>
+    /// <param name="targetSetter">Should set the value of the target.</param>
+    /// <returns>The binding class that allows chaining extra options.</returns>
+    public static ModelPropertyBinding BindProperty<TBindingType>(this ViewModel t, Func<P<TBindingType>> sourceProperty, Action<TBindingType> targetSetter)
+    {
+        var binding = new ModelPropertyBinding()
+        {
+          
+            SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
+            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty(),
+            TwoWay = false
+        };
+
+        t.AddBinding(binding);
+
+        return binding;
+    }
 
     /// <summary>
     /// The binding class that allows chaining extra options.

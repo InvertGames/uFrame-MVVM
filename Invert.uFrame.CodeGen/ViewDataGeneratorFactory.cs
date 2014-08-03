@@ -6,6 +6,13 @@ public class ViewDataGeneratorFactory : DesignerGeneratorFactory<ViewData>
 {
     public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, ViewData item)
     {
+        yield return new ViewViewBaseGenerator()
+        {
+            IsDesignerFile = true,
+            View = item,
+            DiagramData = diagramData,
+            Filename = pathStrategy.GetViewsFileName(diagramData.Name),
+        };
         yield return CreateEditableGenerator(pathStrategy, diagramData, item);
         yield return CreateDesignerGenerator(pathStrategy, diagramData, item);
     }

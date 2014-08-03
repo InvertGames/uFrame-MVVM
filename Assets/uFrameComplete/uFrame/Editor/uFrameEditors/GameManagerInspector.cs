@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Invert.Common;
+using Invert.Common.UI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -24,30 +25,33 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
 
         if (Application.isPlaying)
         {
-            Toggle("Game Container - Instances", _RenderSettingsOpen,false);
+            Toggle("Dependency Container - Instances", _RenderSettingsOpen,false);
             foreach (var instance in GameManager.Container.Instances)
             {
-                if (UBEditor.DoTriggerButton(new UBTriggerContent(instance.GetHashCode().ToString() + ": " + (instance.Name ?? instance.Base.Name),
-                    UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
-                    TextAnchor.MiddleCenter) {SubLabel = instance.Instance.GetType().Name}))
+                if (GUIHelpers.DoTriggerButton(new UFStyle()
+                {
+                    Label =
+                        string.Format("'{0}': {1}->{2}", instance.Name, instance.Base.Name,
+                            instance.Instance.GetType().Name)
+                }))
                 {
                     Debug.Log(instance.Instance);
                 }
+                
+                
 
             }
-            Toggle("Game Container - Mappings", _RenderSettingsOpen,false);
+            Toggle("Dependency Container - Mappings", _RenderSettingsOpen, false);
             foreach (var instance in GameManager.Container.Mappings)
             {
-                if (UBEditor.DoTriggerButton(new UBTriggerContent(instance.From.Name,
-                    UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
-                    TextAnchor.MiddleCenter) {SubLabel = instance.To.GetType().Name}))
+                if (GUIHelpers.DoTriggerButton(new UFStyle()
                 {
-
+                    Label= string.Format("{0}: {1}->{2}", instance.Name, instance.From.Name, instance.To.Name)
+                }))
+                {
+                  
                 }
-
             }
-            
-
         }
         else
         {

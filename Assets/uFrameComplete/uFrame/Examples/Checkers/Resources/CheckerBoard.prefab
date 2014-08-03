@@ -165,10 +165,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e196decb5ef75344b5faeba5b7550f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 1
+  _InjectView: 0
   _LogEvents: 0
-  _overrideViewModel: 1
   _forceResolveViewModel: 0
+  _overrideViewModel: 1
   _resolveName: 
+  _UseHashcodeAsIdentifier: 0
   _NewViewComponent: {fileID: 0}
   _BindCheckers: 1
   _CheckersList: []

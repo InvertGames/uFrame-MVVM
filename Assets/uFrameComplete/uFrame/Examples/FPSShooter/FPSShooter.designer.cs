@@ -143,8 +143,23 @@ public partial class FPSGameViewModel : ViewModel {
         _CurrentPlayerProperty = new P<FPSPlayerViewModel>(this, "CurrentPlayer");
         _ScoreProperty = new P<int>(this, "Score");
         _KillsProperty = new P<int>(this, "Kills");
+
+        //_EnemiesProperty.CollectionChangedWith += EnemeiesCollectionChanged;
     }
-    
+
+    //private void EnemeiesCollectionChanged(ModelCollectionChangeEventWith<FPSEnemyViewModel> args)
+    //{
+    //    foreach (var item in args.NewItemsOfT) EnemiesAdded(item);
+    //    foreach (var item in args.OldItemsOfT) EnemiesRemoved(item);
+    //}
+
+
+    //public override void Unbind()
+    //{
+    //    base.Unbind();
+        
+    //}
+
     public FPSGameViewModel(FPSGameControllerBase controller) : 
             this() {
         this.Controller = controller;

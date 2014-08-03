@@ -6,7 +6,6 @@ using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-
 /// <summary>
 /// The main entry point for a game that is managed and accessible via GameManager. Only one will
 /// available at a time.  This class when derived form should setup the container and load anything needed to properly
@@ -128,9 +127,9 @@ public abstract class SceneManager : ViewContainer
 
     /// <summary>
     /// Used by the SceneManager when creating an instance before the scene loads.  This allows a view-model instance to be ready
-    /// before a view-initializes it.
+    /// before a view-initializes it. This is used by the uFrame generators to initialize single isntance view-models.
     /// </summary>
-    /// <typeparam name="TViewModel">The type of view-model to creat.</typeparam>
+    /// <typeparam name="TViewModel">The type of view-model to create.</typeparam>
     /// <param name="controller">The controller that the view-model should be initialized with</param>
     /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
@@ -143,6 +142,8 @@ public abstract class SceneManager : ViewContainer
             contextViewModel = new TViewModel {Controller = controller,Identifier = identifier};
             Context[identifier] = contextViewModel;
         }
+        Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel,identifier);
+        Container.RegisterInstance<TViewModel>(contextViewModel as TViewModel,identifier);
         return (TViewModel)contextViewModel;
     }
 
@@ -208,7 +209,7 @@ public abstract class SceneManager : ViewContainer
             {
                 if (identifier != null)
                 {
-                    //if (viewBase.Instantiated && !Context.PersitantViewModels.ContainsKey(identifier))
+                    if (!Context.PersitantViewModels.ContainsKey(identifier))
                     Context.PersitantViewModels.Add(identifier,contextViewModel);
                 }
             }

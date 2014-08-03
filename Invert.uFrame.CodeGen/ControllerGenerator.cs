@@ -35,13 +35,13 @@ public class ControllerGenerator : CodeGenerator
             {
                 if (element.IsMultiInstance)
                 {
-                    var commandWithType = new CodeTypeReference(typeof(CommandWithSender<>));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.CommandWithSenderT);
                     commandWithType.TypeArguments.Add(senderType);
                     return commandWithType;
                 }
                 else
                 {
-                    var commandWithType = new CodeTypeReference(typeof(Command));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.Command);
                     return commandWithType;
                 }
 
@@ -50,7 +50,7 @@ public class ControllerGenerator : CodeGenerator
             {
                 if (element.IsMultiInstance)
                 {
-                    var commandWithType = new CodeTypeReference(typeof(CommandWithSenderAndArgument<,>));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.CommandWithSenderAndArgument);
                     commandWithType.TypeArguments.Add(senderType);
                     var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
                     if (typeViewModel == null)
@@ -66,7 +66,7 @@ public class ControllerGenerator : CodeGenerator
                 }
                 else
                 {
-                    var commandWithType = new CodeTypeReference(typeof(CommandWith<>));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.CommandWith);
 
                     var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
                     if (typeViewModel == null)
@@ -90,13 +90,13 @@ public class ControllerGenerator : CodeGenerator
             {
                 if (element.IsMultiInstance)
                 {
-                    var commandWithType = new CodeTypeReference(typeof(YieldCommandWithSender<>));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.YieldCommandWithSenderT);
                     commandWithType.TypeArguments.Add(senderType);
                     return commandWithType;
                 }
                 else
                 {
-                    var commandWithType = new CodeTypeReference(typeof(YieldCommand));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.YieldCommand);
 
                     return commandWithType;
                 }
@@ -106,7 +106,7 @@ public class ControllerGenerator : CodeGenerator
             {
                 if (element.IsMultiInstance)
                 {
-                    var commandWithType = new CodeTypeReference(typeof(YieldCommandWithSenderAndArgument<,>));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.YieldCommandWithSenderAndArgument);
                     commandWithType.TypeArguments.Add(senderType);
                     var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
                     if (typeViewModel == null)
@@ -121,7 +121,7 @@ public class ControllerGenerator : CodeGenerator
                 }
                 else
                 {
-                    var commandWithType = new CodeTypeReference(typeof(YieldCommandWith<>));
+                    var commandWithType = new CodeTypeReference(uFrameEditor.uFrameTypes.YieldCommandWith);
                     var typeViewModel = DiagramData.GetViewModel(itemData.RelatedTypeName);
                     if (typeViewModel == null)
                     {
@@ -156,7 +156,7 @@ public class ControllerGenerator : CodeGenerator
             }
             else
             {
-                tDecleration.BaseTypes.Add(new CodeTypeReference(typeof(Controller)));
+                tDecleration.BaseTypes.Add(new CodeTypeReference(uFrameEditor.uFrameTypes.Controller));
             }
 
             if (!data.IsMultiInstance)
@@ -171,7 +171,7 @@ public class ControllerGenerator : CodeGenerator
                 };
                 property.GetStatements.Add(
                     new CodeMethodReturnStatement(
-                        new CodeSnippetExpression(string.Format("Container.Resolve<{0}>(\"{1}\")", data.NameAsViewModel,data.RootElement.Name))));
+                        new CodeSnippetExpression(string.Format("Container.Resolve<{0}>()", data.NameAsViewModel))));//,data.RootElement.Name))));
 
                 
                 tDecleration.Members.Add(property);
@@ -191,7 +191,7 @@ public class ControllerGenerator : CodeGenerator
         {
             initializeTypedMethod.Attributes = MemberAttributes.Abstract | MemberAttributes.Public;
 
-            AddWireCommandsMethod(data, tDecleration, viewModelTypeReference);
+            //AddWireCommandsMethod(data, tDecleration, viewModelTypeReference);
             AddCreateMethod(data, viewModelTypeReference, initializeTypedMethod, tDecleration);
         }
         else
@@ -206,7 +206,7 @@ public class ControllerGenerator : CodeGenerator
                 Attributes = MemberAttributes.Public | MemberAttributes.Override
             };
             tDecleration.Members.Add(initializeOverrideMethod);
-            initializeOverrideMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)), "viewModel"));
+            initializeOverrideMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(uFrameEditor.uFrameTypes.ViewModel), "viewModel"));
 
             if (data.BaseElement != null)
             {
@@ -277,7 +277,7 @@ public class ControllerGenerator : CodeGenerator
             {
                 Name = "CreateEmpty",
                 Attributes = MemberAttributes.Public | MemberAttributes.Override,
-                ReturnType = new CodeTypeReference(typeof(ViewModel))
+                ReturnType = new CodeTypeReference(uFrameEditor.uFrameTypes.ViewModel)
             };
             //createOverrideMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof (Action<ViewModel>),
             //    "preInitializer = null") {});
@@ -292,46 +292,46 @@ public class ControllerGenerator : CodeGenerator
         tDecleration.Members.Add(createMethod);
     }
 
-    private void AddWireCommandsMethod(ElementData data, CodeTypeDeclaration tDecleration,
-        CodeTypeReference viewModelTypeReference)
-    {
-        return;
-        var wireMethod = new CodeMemberMethod { Name = string.Format("WireCommands") };
-        tDecleration.Members.Add(wireMethod);
-        wireMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(typeof(ViewModel)),
-            "viewModel"));
-        if (data.IsDerived)
-        {
-            wireMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
-            var callBase = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), wireMethod.Name,
-                new CodeVariableReferenceExpression("viewModel"));
-            wireMethod.Statements.Add(callBase);
-        }
-        else
-        {
-            wireMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
-        }
-        if (data.Commands.Count > 0)
-        {
-            wireMethod.Statements.Add(
-                new CodeSnippetExpression(string.Format("var {0} = viewModel as {1}", data.NameAsVariable, data.NameAsViewModel)));
-        }
+    //private void AddWireCommandsMethod(ElementData data, CodeTypeDeclaration tDecleration,
+    //    CodeTypeReference viewModelTypeReference)
+    //{
+    //    return;
+    //    var wireMethod = new CodeMemberMethod { Name = string.Format("WireCommands") };
+    //    tDecleration.Members.Add(wireMethod);
+    //    wireMethod.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference(uFrameEditor.uFrameTypes.ViewModel),
+    //        "viewModel"));
+    //    if (data.IsDerived)
+    //    {
+    //        wireMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+    //        var callBase = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), wireMethod.Name,
+    //            new CodeVariableReferenceExpression("viewModel"));
+    //        wireMethod.Statements.Add(callBase);
+    //    }
+    //    else
+    //    {
+    //        wireMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+    //    }
+    //    if (data.Commands.Count > 0)
+    //    {
+    //        wireMethod.Statements.Add(
+    //            new CodeSnippetExpression(string.Format("var {0} = viewModel as {1}", data.NameAsVariable, data.NameAsViewModel)));
+    //    }
 
-        foreach (var command in data.Commands)
-        {
-            var assigner = new CodeAssignStatement();
-            assigner.Left = new CodeFieldReferenceExpression(new CodeSnippetExpression(data.NameAsVariable), command.Name);
-            var commandWithType = GetCommandTypeReference(command, viewModelTypeReference, data);
-            var commandWith = new CodeObjectCreateExpression(commandWithType);
-            if (data.IsMultiInstance)
-            {
-                commandWith.Parameters.Add(new CodeVariableReferenceExpression(data.NameAsVariable));
-            }
-            commandWith.Parameters.Add(new CodeMethodReferenceExpression() { MethodName = command.Name });
-            assigner.Right = commandWith;
-            wireMethod.Statements.Add(assigner);
-        }
-    }
+    //    foreach (var command in data.Commands)
+    //    {
+    //        var assigner = new CodeAssignStatement();
+    //        assigner.Left = new CodeFieldReferenceExpression(new CodeSnippetExpression(data.NameAsVariable), command.Name);
+    //        var commandWithType = GetCommandTypeReference(command, viewModelTypeReference, data);
+    //        var commandWith = new CodeObjectCreateExpression(commandWithType);
+    //        if (data.IsMultiInstance)
+    //        {
+    //            commandWith.Parameters.Add(new CodeVariableReferenceExpression(data.NameAsVariable));
+    //        }
+    //        commandWith.Parameters.Add(new CodeMethodReferenceExpression() { MethodName = command.Name });
+    //        assigner.Right = commandWith;
+    //        wireMethod.Statements.Add(assigner);
+    //    }
+    //}
 
     private void AddCommandMethods(ElementData data, CodeTypeReference viewModelTypeReference,
         CodeTypeDeclaration tDecleration)

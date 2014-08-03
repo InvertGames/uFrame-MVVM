@@ -139,12 +139,13 @@ public class ViewInspector : uFrameInspector
 
         if (EditorApplication.isPlaying)
         {
-            if (t != null)
-                EditorGUILayout.LabelField("Id", t.ViewModelObject.Identifier);
-            if (t != null)
-                EditorGUILayout.LabelField("# References", t.ViewModelObject.References.ToString());
 
-            base.OnInspectorGUI();
+            ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
+            if (ShowDefaultSettings)
+            {
+                EditorGUILayout.Space();
+                base.OnInspectorGUI();
+            }
             DrawPlayModeGui(t);
             return;
         }
@@ -341,56 +342,83 @@ public class ViewInspector : uFrameInspector
     {
         if (EditorApplication.isPlaying)
         {
+
             if (t != null && t.ViewModelObject != null)
-                foreach (var p in t.ViewModelObject.Properties)
-                {
-                    var serialized = p.Value.Serialize().ToString();
-                    if (serialized.Length > 100)
-                    {
-                        serialized = serialized.Substring(0, 100);
-                    }
-                    EditorGUILayout.LabelField(p.Key.Replace("_", "").Replace("Property", ""), serialized);
-                    //if (p.Value.ValueType.IsPrimitive)
-                    //{
-                    //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
-                    //}
-                    //else
-                    //{
-                    //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
-                    //}
-                }
-
-            if (Commands != null)
             {
-                foreach (var command in Commands)
+                if (GUIHelpers.DoToolbarEx("View Model Properties"))
                 {
-                    if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), command.Key, ElementDesignerStyles.ButtonStyle))
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("Id", t.ViewModelObject.Identifier);
+                    EditorGUILayout.LabelField("# References", t.ViewModelObject.References.ToString());
+
+
+                    foreach (var p in t.ViewModelObject.Properties)
                     {
-                        Target.ExecuteCommand(command.Value);
+                        var serialized = p.Value.Serialize().ToString();
+                        if (serialized.Length > 100)
+                        {
+                            serialized = serialized.Substring(0, 100);
+                        }
+                        EditorGUILayout.LabelField(p.Key.Replace("_", "").Replace("Property", ""), serialized);
+                        //if (p.Value.ValueType.IsPrimitive)
+                        //{
+                        //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
+                        //}
+                        //else
+                        //{
+                        //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
+                        //}
                     }
                 }
-            }
-            if (t.ViewModelObject != null)
-            {
-                foreach (var item in t.ViewModelObject.Bindings)
+               
+                if (Commands != null)
                 {
-                    GUIHelpers.DoToolbar(item.Key == -1 ? "Controller" : item.Key.ToString());
-
-                    foreach (var binding in item.Value)
+                    if (GUIHelpers.DoToolbarEx("Commands"))
                     {
+                        foreach (var command in Commands)
+                        {
+                            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), command.Key,
+                                ElementDesignerStyles.ButtonStyle))
+                            {
+                                Target.ExecuteCommand(command.Value);
+                            }
+                        }    
+                    }
 
-                        if (GUIHelpers.DoTriggerButton(new UFStyle()
+                    
+                }
+                if (t.ViewModelObject != null)
+                {
+                    foreach (var item in t.ViewModelObject.Bindings)
+                    {
+                        if (GUIHelpers.DoToolbarEx(item.Key == -1
+                            ? "Controller"
+                            : EditorUtility.InstanceIDToObject(item.Key).name))
                         {
-                            Label = binding.GetType().Name + ": " + binding.ModelMemberName,
-                            //IconStyle = bi
-                        }))
-                        {
+                            foreach (var binding in item.Value)
+                            {
+
+                                if (GUIHelpers.DoTriggerButton(new UFStyle()
+                                {
+                                    Label = binding.GetType().Name + ": " + binding.ModelMemberName,
+                                    //IconStyle = bi
+                                }))
+                                {
+
+                                }
+                            }
 
                         }
-                    }
 
+                      
+                    }
                 }
             }
+            else
+            {
+                EditorGUILayout.HelpBox("View Model not initialized yet.", MessageType.Info);
+            }
+
         }
         Repaint();
         return;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public delegate void UpdateProgressDelegate(string message, float progress);
+
 
 /// <summary>
 /// A [u]Frame built-in controller to manage loading a level via GameManager

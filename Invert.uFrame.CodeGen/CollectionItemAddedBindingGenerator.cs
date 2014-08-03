@@ -36,7 +36,7 @@ namespace Invert.uFrame.Code.Bindings
         {
             base.CreateMembers(collection);
             var addHandlerMethod = CreateMethodSignature(null, new CodeParameterDeclarationExpression(ParameterTypeName, VarName));
-            if (GenerateDefaultImplementation)
+            if (GenerateDefaultImplementation && RelatedElement != null)
             {
                 addHandlerMethod.Statements.Add(new CodeMethodInvokeExpression(
                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), NameAsListField), "Add",

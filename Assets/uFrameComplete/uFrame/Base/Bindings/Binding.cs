@@ -35,7 +35,13 @@ public abstract class Binding : IBinding
     /// <summary>
     /// The source ViewModel member name that is being bound to.
     /// </summary>
-    public string ModelMemberName { get; set; }
+    public string ModelMemberName {
+        get { return ModelProperty.PropertyName; }
+        set
+        {
+            
+        }
+    }
 
     /// <summary>
     /// The Model Property that is being bound to. Will call the ModelPropertySelector if null.

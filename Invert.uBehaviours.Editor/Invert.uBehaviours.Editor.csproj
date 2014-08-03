@@ -125,6 +125,10 @@
       <Project>{a0448e5c-c0a6-40ca-8c82-bdd4472b5e62}</Project>
       <Name>Invert.uBehaviours</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Invert.uFrame.Editor\Invert.uFrame.Editor.csproj">
+      <Project>{93FAEB5C-683E-4093-89CE-6082890A331E}</Project>
+      <Name>Invert.uFrame.Editor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,4 +1,5 @@
 using System.CodeDom;
+using Invert.uFrame.Editor;
 
 namespace Invert.uFrame.Code.Bindings
 {
@@ -24,19 +25,21 @@ namespace Invert.uFrame.Code.Bindings
 
         public override void CreateMembers(CodeTypeMemberCollection collection)
         {
-            var createHandlerMethod = CreateMethodSignature(new CodeTypeReference(typeof(ViewBase)),
+            var createHandlerMethod = CreateMethodSignature(new CodeTypeReference(uFrameEditor.uFrameTypes.ViewBase),
                 new CodeParameterDeclarationExpression(VarTypeName, VarName));
 
             if (GenerateDefaultImplementation)
             {
+                createHandlerMethod.Statements.Clear();
                 createHandlerMethod.Statements.Add(
                     new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(),
                         "InstantiateView", new CodeVariableReferenceExpression(VarName))));
             }
-            else
+            else if (!IsOverride)
             {
+
                 createHandlerMethod.Statements.Add(
-                    new CodeMethodReturnStatement(new CodeSnippetExpression("null")));
+                   new CodeMethodReturnStatement(new CodeSnippetExpression("null")));
             }
             collection.Add(createHandlerMethod);
         }

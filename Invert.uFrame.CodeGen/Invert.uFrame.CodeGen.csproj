@@ -38,6 +38,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEditor">
+      <HintPath>..\Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingGenerator.cs" />
@@ -58,7 +64,6 @@
     <Compile Include="SceneManagerDataGeneratorFactory.cs" />
     <Compile Include="SceneManagerGenerator.cs" />
     <Compile Include="SceneManagerSettingsGenerator.cs" />
-    <Compile Include="UFrameEditorPlugin.cs" />
     <Compile Include="ViewBaseGenerator.cs" />
     <Compile Include="ViewBindingExtender.cs" />
     <Compile Include="ViewClassGenerator.cs" />
@@ -68,7 +73,17 @@
     <Compile Include="ViewGenerator.cs" />
     <Compile Include="ViewModelGenerator.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Invert.uFrame.Editor\Invert.uFrame.Editor.csproj">
+      <Project>{93faeb5c-683e-4093-89ce-6082890a331e}</Project>
+      <Name>Invert.uFrame.Editor</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
+IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

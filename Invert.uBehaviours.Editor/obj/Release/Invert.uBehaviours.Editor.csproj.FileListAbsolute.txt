@@ -14,3 +14,6 @@ D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\obj\Release\Invert.uBehaviours.Ed
 D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\obj\Release\Invert.uBehaviours.Editor.dll
 D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\bin\Release\UnityEditor.xml
 D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\bin\Release\UnityEngine.xml
+D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\bin\Release\Invert.Common.dll
+D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\bin\Release\Invert.uFrame.Editor.dll
+D:\Invert\Git\uFrame\Invert.uBehaviours.Editor\bin\Release\Invert.Common.pdb

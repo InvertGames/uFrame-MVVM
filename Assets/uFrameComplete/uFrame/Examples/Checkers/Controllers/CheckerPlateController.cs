@@ -12,6 +12,7 @@ public class CheckerPlateController : CheckerPlateControllerBase {
     
     public override void SelectCommand(CheckerPlateViewModel checkerPlate) {
         CheckerBoardController.SelectPlate(checkerPlate);
+        
     }
 
 }

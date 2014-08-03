@@ -1,6 +1,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.uFrame.Editor;
 using UnityEngine;
 
 namespace Invert.uFrame.Code.Bindings
@@ -23,6 +24,8 @@ namespace Invert.uFrame.Code.Bindings
         {
             get { return CollectionProperty != null; }
         }
+
+        public bool IsViewModelBinding { get; set; }
 
         public ViewModelCollectionData CollectionProperty
         {
@@ -50,7 +53,7 @@ namespace Invert.uFrame.Code.Bindings
             {
                 if (!HasField(collection, NameAsListField))
                 {
-                    var listField = CreateBindingField(typeof(List<ViewModel>).FullName.Replace("ViewModel", RelatedElement.NameAsViewBase), CollectionProperty.Name, "List", true);
+                    var listField = CreateBindingField(uFrameEditor.uFrameTypes.ListOfViewModel.FullName.Replace("ViewModel", RelatedElement.NameAsViewBase), CollectionProperty.Name, "List", true);
                     collection.Add(listField);
                 }
 
@@ -66,9 +69,7 @@ namespace Invert.uFrame.Code.Bindings
                         "Container");
                     collection.Add(containerField);
                 }
-            }
-            if (RelatedElement != null && GenerateDefaultImplementation)
-            {
+
                 bindingCondition.TrueStatements.Add(
                     new CodeSnippetExpression(string.Format("var binding = this.BindToViewCollection(() => {0}.{1})", ElementData.Name, CollectionProperty.FieldName)));
 

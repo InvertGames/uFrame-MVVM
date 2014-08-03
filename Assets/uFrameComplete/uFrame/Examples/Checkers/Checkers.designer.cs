@@ -14,6 +14,8 @@ public partial class CheckerBoardViewModel : ViewModel {
     
     public CheckerBoardViewModel() : 
             base() {
+        _CheckersProperty.CollectionChangedWith += CheckersCollectionChanged;
+        _PlatesProperty.CollectionChangedWith += PlatesCollectionChanged;
     }
     
     public CheckerBoardViewModel(CheckerBoardControllerBase controller) : 
@@ -53,6 +55,22 @@ public partial class CheckerBoardViewModel : ViewModel {
     protected override void WireCommands(Controller controller) {
     }
     
+    public override void Unbind() {
+        base.Unbind();
+        _CheckersProperty.CollectionChangedWith -= CheckersCollectionChanged;
+        _PlatesProperty.CollectionChangedWith -= PlatesCollectionChanged;
+    }
+    
+    private void CheckersCollectionChanged(ModelCollectionChangeEventWith<CheckerViewModel> args) {
+        foreach (var item in args.OldItemsOfT) item.ParentCheckerBoard = null;;
+        foreach (var item in args.NewItemsOfT) item.ParentCheckerBoard = this;;
+    }
+    
+    private void PlatesCollectionChanged(ModelCollectionChangeEventWith<CheckerPlateViewModel> args) {
+        foreach (var item in args.OldItemsOfT) item.ParentCheckerBoard = null;;
+        foreach (var item in args.NewItemsOfT) item.ParentCheckerBoard = this;;
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeArray("Checkers", this.Checkers);
@@ -90,6 +108,10 @@ public partial class CheckerMoveViewModel : ViewModel {
     }
     
     protected override void WireCommands(Controller controller) {
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
     }
     
     public override void Write(ISerializerStream stream) {
@@ -176,6 +198,10 @@ public partial class CheckerPlateViewModel : ViewModel {
         this.SelectCommand = new CommandWithSender<CheckerPlateViewModel>(this, checkerPlate.SelectCommand);
     }
     
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeBool("CanMoveTo", this.CanMoveTo);
@@ -215,6 +241,7 @@ public partial class CheckersGameViewModel : ViewModel {
         _BoardProperty = new P<CheckerBoardViewModel>(this, "Board");
         _CurrentCheckerProperty = new P<CheckerViewModel>(this, "CurrentChecker");
         _CurrentPlayerProperty = new P<CheckerType>(this, "CurrentPlayer");
+        _AllowedMovesProperty.CollectionChangedWith += AllowedMovesCollectionChanged;
     }
     
     public CheckersGameViewModel(CheckersGameControllerBase controller) : 
@@ -246,7 +273,7 @@ public partial class CheckersGameViewModel : ViewModel {
         }
         set {
             _BoardProperty.Value = value;
-            value.ParentCheckersGame = this;
+            if (value != null) value.ParentCheckersGame = this;
         }
     }
     
@@ -256,7 +283,7 @@ public partial class CheckersGameViewModel : ViewModel {
         }
         set {
             _CurrentCheckerProperty.Value = value;
-            value.ParentCheckersGame = this;
+            if (value != null) value.ParentCheckersGame = this;
         }
     }
     
@@ -291,6 +318,16 @@ public partial class CheckersGameViewModel : ViewModel {
     protected override void WireCommands(Controller controller) {
         var checkersGame = controller as CheckersGameControllerBase;
         this.GameOver = new Command(checkersGame.GameOver);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+        _AllowedMovesProperty.CollectionChangedWith -= AllowedMovesCollectionChanged;
+    }
+    
+    private void AllowedMovesCollectionChanged(ModelCollectionChangeEventWith<CheckerMoveViewModel> args) {
+        foreach (var item in args.OldItemsOfT) item.ParentCheckersGame = null;;
+        foreach (var item in args.NewItemsOfT) item.ParentCheckersGame = this;;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -412,6 +449,10 @@ public partial class CheckerViewModel : ViewModel {
         this.SelectCommand = new CommandWithSender<CheckerViewModel>(this, checker.SelectCommand);
     }
     
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeBool("IsKingMe", this.IsKingMe);
@@ -443,6 +484,10 @@ public partial class AICheckersGameViewModel : CheckersGameViewModel {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
     }
     
     public override void Write(ISerializerStream stream) {
@@ -480,6 +525,10 @@ public partial class MainMenuViewModel : ViewModel {
     protected override void WireCommands(Controller controller) {
         var mainMenu = controller as MainMenuControllerBase;
         this.Play = new Command(mainMenu.Play);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
     }
     
     public override void Write(ISerializerStream stream) {

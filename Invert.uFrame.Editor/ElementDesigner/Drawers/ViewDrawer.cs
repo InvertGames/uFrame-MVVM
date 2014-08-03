@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Invert.Common;
 using Invert.uFrame;
+using Invert.uFrame.Code.Bindings;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
@@ -77,6 +79,20 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
         set { _propertiesHeader = value; }
     }
 
+    protected override void DrawSelectedItemLabel(IDiagramNodeItem nodeItem)
+    {
+        //var  bindingDiagramItem = nodeItem as BindingDiagramItem;
+        //if (bindingDiagramItem != null)
+        //{
+        //    DrawItemLabel(bindingDiagramItem);
+        //}
+        //else
+        //{
+            base.DrawSelectedItemLabel(nodeItem);
+        //}
+        
+    }
+
     protected override IEnumerable<DiagramSubItemGroup> GetItemGroups()
     {
     
@@ -94,9 +110,9 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
             if (vForElement != null)
             {
                 var existing =
-                    Data.BindingMethods.Select(p => (IDiagramNodeItem)(new BindingDiagramItem(p.Name)));
+                    Data.BindingMethods.Select(p => (IDiagramNodeItem)(new BindingDiagramItem(p.Name) {View = Data,MethodInfo = p}));
                 var adding =
-                    Data.NewBindings.Select(p => (IDiagramNodeItem)(new BindingDiagramItem("[Added] " + p.MethodName)));
+                    Data.NewBindings.Select(p => (IDiagramNodeItem)(new BindingDiagramItem("[Added] " + p.MethodName){View =Data,Generator = p}));
 
                 yield return new DiagramSubItemGroup()
                 {
@@ -134,6 +150,9 @@ public class ViewDrawer : DiagramNodeDrawer<ViewData>
 
 public class BindingDiagramItem : DiagramNodeItem
 {
+    public ViewData View { get; set; }
+    public IBindingGenerator Generator { get; set; }
+    public MethodInfo MethodInfo { get; set; }
     public BindingDiagramItem(string methodName)
     {
         MethodName = methodName;
@@ -150,6 +169,11 @@ public class BindingDiagramItem : DiagramNodeItem
         get { return MethodName; }
     }
 
+    public override string Name
+    {
+        get { return MethodName; }
+    }
+
     public override bool CanCreateLink(IDrawable target)
     {
         return false;
@@ -162,7 +186,9 @@ public class BindingDiagramItem : DiagramNodeItem
 
     public override void Remove(IDiagramNode diagramNode)
     {
-
+        Debug.Log("YUPYUPYUP");
+        View.BindingMethods.Remove(MethodInfo);
+        View.NewBindings.Remove(Generator);
     }
 
     public override void RemoveLink(IDiagramNode target)

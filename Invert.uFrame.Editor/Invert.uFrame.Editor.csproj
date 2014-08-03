@@ -97,6 +97,7 @@
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="ITypeGeneratorPostProcessor.cs" />
     <Compile Include="TypeGeneratorPostProcessor.cs" />
+    <Compile Include="uFrameStringTypeProvider.cs" />
     <Compile Include="UI\ContextMenuUI.cs" />
     <Compile Include="DesignerGeneratorFactory.cs" />
     <Compile Include="ElementDesigner\Commands\Diagram\AddNewCommand.cs" />

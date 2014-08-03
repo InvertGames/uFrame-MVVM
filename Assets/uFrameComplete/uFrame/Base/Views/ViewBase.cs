@@ -570,4 +570,20 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     {
         return SceneManager.RequestViewModel(this, controller, Identifier);
     }
+
+    protected virtual ViewBase ReplaceView(ViewBase current, ViewModel value, GameObject prefab) 
+    {
+        if (value == null && current != null && current.gameObject != null)
+        {
+            Destroy(current.gameObject);
+        }
+        if (prefab == null)
+        {
+            return ((this.InstantiateView(value)));
+        }
+        else
+        {
+            return ((this.InstantiateView(prefab, value)));
+        }
+    }
 }

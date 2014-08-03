@@ -165,7 +165,7 @@ public class AddBindingWindow : SearchableScrollWindow
     {
         if (_ViewData == null) return;
         _MemberMethods = _ViewData.BindingMethods.ToArray();
-        Generators = uFrameEditor.GetBindingGeneratorsFor(_ViewData.ViewForElement);
+        Generators = uFrameEditor.GetBindingGeneratorsFor(_ViewData.ViewForElement,true,false,true);
         
         //Where(p => _MemberMethods.FirstOrDefault(x => x.Name == p.MethodName) != null)
         Items = Generators.Select(p => new UFStyle()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class FPSGameViewModel : ViewModel
+public partial class FPSGameViewModel
 {
 
     //protected override void WireCommands(Controller controller)

@@ -4,6 +4,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Invert.uFrame.Editor;
 using Microsoft.CSharp;
 using UnityEngine;
 
@@ -45,7 +46,7 @@ namespace Invert.uFrame.Code.Bindings
                     "_" + propertyName + name) { Attributes = MemberAttributes.Public };
             if (!keepHidden)
             {
-                memberField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)),
+                memberField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(uFrameEditor.uFrameTypes.UFGroup),
                     new CodeAttributeArgument(new CodePrimitiveExpression(propertyName))));
             }
 

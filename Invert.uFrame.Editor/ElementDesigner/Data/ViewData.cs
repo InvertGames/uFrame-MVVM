@@ -48,7 +48,10 @@ public class ViewData : DiagramNode, ISubSystemType
     public string BaseViewIdentifier
     {
         get { return _baseViewIdentifier; }
-        set { _baseViewIdentifier = value; }
+        set { _baseViewIdentifier = value;
+            _bindingMethods = null;
+            _newBindings = new List<IBindingGenerator>();
+        }
     }
 
     public List<ViewPropertyData> Properties
@@ -136,7 +139,7 @@ public class ViewData : DiagramNode, ISubSystemType
         get { return _forAssemblyQualifiedName; }
         set { _forAssemblyQualifiedName = value; }
     }
-    public IEnumerable<MethodInfo> BindingMethods
+    public List<MethodInfo> BindingMethods
     {
         get
         {
@@ -313,7 +316,7 @@ public class ViewData : DiagramNode, ISubSystemType
             };
         }
 
-        SetBindingMethods();
+        //SetBindingMethods();
     }
 
     private void SetBindingMethods()
@@ -327,7 +330,7 @@ public class ViewData : DiagramNode, ISubSystemType
             {
                 return;
             }
-            var methods = vmType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methods = vmType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
             var bindingMethodNames = uFrameEditor.GetBindingGeneratorsFor(element).Select(p => p.MethodName).ToArray();
             foreach (var method in methods)
@@ -340,7 +343,12 @@ public class ViewData : DiagramNode, ISubSystemType
             _bindingMethods = list;
         }
     }
+    public override void RefactorApplied()
+    {
+        base.RefactorApplied();
+        NewBindings.Clear();
 
+    }
     public override void RemoveFromDiagram()
     {
         base.RemoveFromDiagram();

@@ -113,9 +113,10 @@ public class SceneContext
     /// </summary>
     /// <param name="storage"></param>
     /// <param name="stream"></param>
-    public void Save(ISerializerStorage storage, ISerializerStream stream)
+    /// <param name="viewModels"></param>
+    public void Save(ISerializerStorage storage, ISerializerStream stream, IEnumerable<ViewModel> viewModels = null)
     {
-        stream.SerializeArray("ViewModels", PersitantViewModels.Values);
+        stream.SerializeArray("ViewModels",viewModels ?? PersitantViewModels.Values);
         storage.Save(stream);
     }
 }

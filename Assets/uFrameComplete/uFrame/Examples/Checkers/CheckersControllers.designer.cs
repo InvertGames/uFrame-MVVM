@@ -20,7 +20,7 @@ public abstract class CheckerBoardControllerBase : Controller {
     [Inject] public CheckersGameController CheckersGameController {get;set;}
     public virtual CheckerBoardViewModel CheckerBoard {
         get {
-            return Container.Resolve<CheckerBoardViewModel>("CheckerBoard");
+            return Container.Resolve<CheckerBoardViewModel>();
         }
     }
     
@@ -85,7 +85,7 @@ public abstract class CheckersGameControllerBase : Controller {
     [Inject] public CheckerMoveController CheckerMoveController {get;set;}
     public virtual CheckersGameViewModel CheckersGame {
         get {
-            return Container.Resolve<CheckersGameViewModel>("CheckersGame");
+            return Container.Resolve<CheckersGameViewModel>();
         }
     }
     
@@ -134,7 +134,7 @@ public abstract class AICheckersGameControllerBase : CheckersGameController {
     
     public virtual AICheckersGameViewModel AICheckersGame {
         get {
-            return Container.Resolve<AICheckersGameViewModel>("CheckersGame");
+            return Container.Resolve<AICheckersGameViewModel>();
         }
     }
     
@@ -158,7 +158,7 @@ public abstract class MainMenuControllerBase : Controller {
     
     public virtual MainMenuViewModel MainMenu {
         get {
-            return Container.Resolve<MainMenuViewModel>("MainMenu");
+            return Container.Resolve<MainMenuViewModel>();
         }
     }
     

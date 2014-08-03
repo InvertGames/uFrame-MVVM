@@ -40,7 +40,7 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModel
         Bindings[-1].Remove(binding);
     }
 
-    public void Unbind()
+    public virtual void Unbind()
     {
         foreach (var binding in Bindings)
         {

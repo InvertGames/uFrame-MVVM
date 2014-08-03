@@ -73,6 +73,15 @@ namespace Invert.Common.UI
         {
             return DoToolbar(label, true, add, leftButton, paste);
         }
+        public static bool DoToolbarEx(string label, Action add = null, Action leftButton = null, Action paste = null)
+        {
+            var tBar = DoToolbar(label, EditorPrefs.GetBool(label, true), add, leftButton, paste);
+            if (tBar)
+            {
+                EditorPrefs.SetBool(label,!EditorPrefs.GetBool(label));
+            }
+            return EditorPrefs.GetBool(label);
+        }
         public static bool DoTriggerButton(UFStyle ubTriggerContent)
         {
             var hasSubLabel = !String.IsNullOrEmpty(ubTriggerContent.SubLabel);
