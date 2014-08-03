@@ -181,6 +181,8 @@ public partial class BirdViewModel : ViewModel {
     
     private ICommand _Flapped;
     
+    private ICommand _Hit;
+    
     private AngryFlappersGameViewModel _ParentAngryFlappersGame;
     
     public BirdViewModel() : 
@@ -250,6 +252,15 @@ public partial class BirdViewModel : ViewModel {
         }
     }
     
+    public virtual ICommand Hit {
+        get {
+            return _Hit;
+        }
+        set {
+            _Hit = value;
+        }
+    }
+    
     public virtual AngryFlappersGameViewModel ParentAngryFlappersGame {
         get {
             return this._ParentAngryFlappersGame;
@@ -262,6 +273,7 @@ public partial class BirdViewModel : ViewModel {
     protected override void WireCommands(Controller controller) {
         var bird = controller as BirdControllerBase;
         this.Flapped = new Command(bird.Flapped);
+        this.Hit = new Command(bird.Hit);
     }
     
     public override void Unbind() {
@@ -279,6 +291,7 @@ public partial class BirdViewModel : ViewModel {
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
         list.Add(new ViewModelCommandInfo("Flapped", Flapped));
+        list.Add(new ViewModelCommandInfo("Hit", Hit));
     }
     
     public override void Write(ISerializerStream stream) {

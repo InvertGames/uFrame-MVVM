@@ -148,6 +148,10 @@ public abstract class BirdViewBase : ViewBase {
     public virtual void ExecuteFlapped() {
         this.ExecuteCommand(Bird.Flapped);
     }
+    
+    public virtual void ExecuteHit() {
+        this.ExecuteCommand(Bird.Hit);
+    }
 }
 
 [DiagramInfoAttribute("AngryFlappers")]

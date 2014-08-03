@@ -116,11 +116,11 @@ namespace Invert.uFrame.Code.Bindings
                     .Skip(14)
                     .Reverse()
                     .Skip(2)
-                    .Reverse().ToArray();
-            if (!CallBase)
-            {
-                adjusted[1] = "//" + adjusted[1];
-            }
+                    .Reverse().Concat(new[] { "\t\t// Comment out the base invoke to skip default bindings. "}).ToArray();
+            //if (!CallBase)
+            //{
+            //    adjusted[1] = "//" + adjusted[1];
+            //}
             
             return string.Join("\r\n", adjusted);
         }
@@ -151,8 +151,8 @@ namespace Invert.uFrame.Code.Bindings
             {
                 createHandlerMethod.Attributes |= MemberAttributes.Override;
 
-                if (CallBase)
-                {
+                //if (CallBase)
+                //{
                     var baseInvoker = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
                         createHandlerMethod.Name);
                     foreach (var item in vars)
@@ -167,7 +167,7 @@ namespace Invert.uFrame.Code.Bindings
                     {
                         createHandlerMethod.Statements.Add(baseInvoker);
                     }
-                }
+                //}
                 
           
 

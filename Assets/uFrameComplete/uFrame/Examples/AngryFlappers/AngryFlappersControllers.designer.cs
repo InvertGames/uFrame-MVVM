@@ -70,6 +70,9 @@ public abstract class BirdControllerBase : Controller {
     
     public virtual void Flapped() {
     }
+    
+    public virtual void Hit() {
+    }
 }
 
 public abstract class PipeControllerBase : Controller {
