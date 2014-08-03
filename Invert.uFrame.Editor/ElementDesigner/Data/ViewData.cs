@@ -164,6 +164,7 @@ public class ViewData : DiagramNode, ISubSystemType
             var sb = new StringBuilder();
             foreach (var addedGenerator in NewBindings)
             {
+                addedGenerator.CallBase = false;
                 sb.AppendLine(addedGenerator.ToString());
             }
             return new InsertMethodRefactorer()

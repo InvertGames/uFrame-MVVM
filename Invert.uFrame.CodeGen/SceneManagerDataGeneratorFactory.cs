@@ -6,6 +6,7 @@ public class SceneManagerDataGeneratorFactory : DesignerGeneratorFactory<SceneMa
 {
     public override IEnumerable<CodeGenerator> CreateGenerators(ICodePathStrategy pathStrategy, IElementDesignerData diagramData, SceneManagerData item)
     {
+        if (item.SubSystem == null) yield break;
         yield return new SceneManagerGenerator()
         {
             Filename = pathStrategy.GetControllersFileName(diagramData.Name),

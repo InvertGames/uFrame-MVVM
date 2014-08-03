@@ -33,6 +33,10 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 {
     public delegate void ModelCollectionChangedWith(ModelCollectionChangeEventWith<T> changeArgs);
 
+    public ModelCollection(List<T> value) : base(value)
+    {
+    }
+
     public event ModelCollectionChanged CollectionChanged;
 
     public event ModelCollectionChangedWith CollectionChangedWith;
@@ -55,9 +59,6 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 
     public bool IsReadOnly { get { return false; } }
 
-    public Action<T> OnAdd { get; set; }
-
-    public Action<T> OnRemove { get; set; }
 
     public override Type ValueType
     {
@@ -82,6 +83,22 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
         Remove((T) item);
     }
 
+    public ModelCollection(ViewModel owner, string propertyName) : base(owner, propertyName)
+    {
+        Value = new List<T>();
+    }
+
+    public ModelCollection(ViewModel owner, string propertyName, IEnumerable<T> enumerable)
+        : base(owner, propertyName)
+    {
+        if (enumerable != null)
+            Value = enumerable.ToList();
+        else
+        {
+            Value = new List<T>();
+        }
+    }
+
     public ModelCollection()
     {
         Value = new List<T>();
@@ -91,6 +108,10 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
     {
         if (enumerable != null)
             Value = enumerable.ToList();
+        else
+        {
+            Value = new List<T>();
+        }
     }
 
    

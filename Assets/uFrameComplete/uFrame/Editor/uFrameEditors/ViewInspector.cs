@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -350,25 +351,25 @@ public class ViewInspector : uFrameInspector
                     EditorGUILayout.Space();
                     EditorGUILayout.LabelField("Id", t.ViewModelObject.Identifier);
                     EditorGUILayout.LabelField("# References", t.ViewModelObject.References.ToString());
+                    DoViewModelGUI(t.ViewModelObject);
 
-
-                    foreach (var p in t.ViewModelObject.Properties)
-                    {
-                        var serialized = p.Value.Serialize().ToString();
-                        if (serialized.Length > 100)
-                        {
-                            serialized = serialized.Substring(0, 100);
-                        }
-                        EditorGUILayout.LabelField(p.Key.Replace("_", "").Replace("Property", ""), serialized);
-                        //if (p.Value.ValueType.IsPrimitive)
-                        //{
-                        //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
-                        //}
-                        //else
-                        //{
-                        //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
-                        //}
-                    }
+                    //foreach (var p in t.ViewModelObject.Properties)
+                    //{
+                    //    var serialized = p.Value.Serialize().ToString();
+                    //    if (serialized.Length > 100)
+                    //    {
+                    //        serialized = serialized.Substring(0, 100);
+                    //    }
+                    //    EditorGUILayout.LabelField(p.Key.Replace("_", "").Replace("Property", ""), serialized);
+                    //    //if (p.Value.ValueType.IsPrimitive)
+                    //    //{
+                    //    //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
+                    //    //}
+                    //    //else
+                    //    //{
+                    //    //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
+                    //    //}
+                    //}
                 }
                
                 if (Commands != null)
@@ -387,32 +388,32 @@ public class ViewInspector : uFrameInspector
 
                     
                 }
-                if (t.ViewModelObject != null)
-                {
-                    foreach (var item in t.ViewModelObject.Bindings)
-                    {
-                        if (GUIHelpers.DoToolbarEx(item.Key == -1
-                            ? "Controller"
-                            : EditorUtility.InstanceIDToObject(item.Key).name))
-                        {
-                            foreach (var binding in item.Value)
-                            {
+                //if (t.ViewModelObject != null)
+                //{
+                //    foreach (var item in t.ViewModelObject.Bindings)
+                //    {
+                //        if (GUIHelpers.DoToolbarEx(item.Key == -1
+                //            ? "Controller"
+                //            : EditorUtility.InstanceIDToObject(item.Key).name))
+                //        {
+                //            foreach (var binding in item.Value)
+                //            {
 
-                                if (GUIHelpers.DoTriggerButton(new UFStyle()
-                                {
-                                    Label = binding.GetType().Name + ": " + binding.ModelMemberName,
-                                    //IconStyle = bi
-                                }))
-                                {
+                //                if (GUIHelpers.DoTriggerButton(new UFStyle()
+                //                {
+                //                    Label = binding.GetType().Name + ": " + binding.ModelMemberName,
+                //                    //IconStyle = bi
+                //                }))
+                //                {
 
-                                }
-                            }
+                //                }
+                //            }
 
-                        }
+                //        }
 
                       
-                    }
-                }
+                //    }
+                //}
             }
             else
             {
@@ -422,5 +423,86 @@ public class ViewInspector : uFrameInspector
         }
         Repaint();
         return;
+    }
+
+    private static void DoViewModelGUI(ViewModel t)
+    {
+        if (t == null) return;
+
+        var properties = t.GetViewModelProperties();
+        foreach (var property in properties)
+        {
+            var type = property.Property.ValueType;
+            DoViewModelProperty(type, property);
+        }
+    }
+
+    private static void DoViewModelProperty(Type type, ViewModelPropertyInfo property)
+    {
+      
+        if (property.IsCollectionProperty)
+        {
+            EditorGUILayout.LabelField(property.Property.PropertyName,((IList)property.Property.ObjectValue).Count.ToString());
+            return;
+        }
+
+        EditorGUI.BeginChangeCheck();
+        object newValue = null;
+        if (type == typeof (int))
+        {
+            newValue = EditorGUILayout.IntField(property.Property.PropertyName,
+                (int) property.Property.ObjectValue);
+           
+        }
+        else if (type == typeof (bool))
+        {
+            newValue = EditorGUILayout.Toggle(property.Property.PropertyName,
+              (bool)property.Property.ObjectValue);
+        }
+        else if (type == typeof(string))
+        {
+            newValue = EditorGUILayout.TextField(property.Property.PropertyName,
+              (string)property.Property.ObjectValue);
+        }
+        else if (type == typeof(float))
+        {
+            newValue = EditorGUILayout.FloatField(property.Property.PropertyName,
+              (float)property.Property.ObjectValue);
+        }   
+        else if (type == typeof(Vector2))
+        {
+            newValue = EditorGUILayout.Vector2Field(property.Property.PropertyName,
+              (Vector2)property.Property.ObjectValue);
+        }
+        else if (type == typeof(Vector3))
+        {
+            newValue = EditorGUILayout.Vector3Field(property.Property.PropertyName,
+              (Vector3)property.Property.ObjectValue);
+        }
+        else if (type == typeof(Rect))
+        {
+            newValue = EditorGUILayout.RectField(property.Property.PropertyName,
+              (Rect)property.Property.ObjectValue);
+        }
+        else if (type == typeof(Color))
+        {
+            newValue = EditorGUILayout.ColorField(property.Property.PropertyName,
+              (Color)property.Property.ObjectValue);
+        }
+        else if (property.IsEnum)
+        {
+            newValue = EditorGUILayout.EnumPopup(property.Property.PropertyName,
+              (Enum)property.Property.ObjectValue);
+        }
+        else if (property.IsElementProperty)
+        {
+            GUIHelpers.DoToolbarEx(property.Property.PropertyName);
+            DoViewModelGUI(property.Property.ObjectValue as ViewModel);
+        }
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            property.Property.ObjectValue = newValue;
+        }
     }
 }

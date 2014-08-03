@@ -360,19 +360,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c725c153896552949b6406b247e6deef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Save: 0
+  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
   _overrideViewModel: 1
   _resolveName: LocalPlayer
-  _identifier: 29c80d8b-52cb-467c-a90e-f8f8fff87adc
+  _UseHashcodeAsIdentifier: 0
   _Health: 1
   _State: 0
-  _WeaponsList: []
-  _WeaponsSceneFirst: 1
-  _WeaponsContainer: {fileID: 400006}
   _CurrentWeaponIndex: 1
   _BindCurrentWeaponIndex: 1
   _BindWeapons: 1
+  _WeaponsList: []
+  _WeaponsSceneFirst: 1
+  _WeaponsContainer: {fileID: 400006}
+  _BindHealth: 0
+  _BindState: 0
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

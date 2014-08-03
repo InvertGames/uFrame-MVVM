@@ -43,7 +43,7 @@ public class ViewModelGenerator : CodeGenerator
     public virtual void AddViewModel(ElementData data)
     {
         Decleration = new CodeTypeDeclaration(data.NameAsViewModel);
-
+        
         if (IsDesignerFile)
         {
             Decleration.BaseTypes.Add(string.Format("{0}ViewModel", data.BaseTypeShortName.Replace("ViewModel", "")));
@@ -86,11 +86,52 @@ public class ViewModelGenerator : CodeGenerator
             };
             unBindMethod.Statements.Add(new CodeSnippetExpression("base.Unbind()"));
             Decleration.Members.Add(unBindMethod);
+            var fillPropertiesMethod = new CodeMemberMethod()
+            {
+                Name = "FillProperties",
+                Attributes = MemberAttributes.Family | MemberAttributes.Override
+
+            };
+            fillPropertiesMethod.Parameters.Add(
+                new CodeParameterDeclarationExpression(new CodeTypeReference("List<ViewModelPropertyInfo>"), "list"));
+            fillPropertiesMethod.Statements.Add(new CodeSnippetExpression("base.FillProperties(list);"));
+            Decleration.Members.Add(fillPropertiesMethod);
+
+            var fillCommandsMethod = new CodeMemberMethod()
+            {
+                Name = "FillCommands",
+                Attributes = MemberAttributes.Family | MemberAttributes.Override
+
+            };
+            fillCommandsMethod.Parameters.Add(
+                new CodeParameterDeclarationExpression(new CodeTypeReference("List<ViewModelCommandInfo>"), "list"));
+            fillCommandsMethod.Statements.Add(new CodeSnippetExpression("base.FillCommands(list);"));
+
+            Decleration.Members.Add(fillCommandsMethod);
             // Now Generator code here
             foreach (var viewModelPropertyData in data.Properties)
             {
                 Decleration.Members.Add(ToCodeMemberField(viewModelPropertyData, constructor));
                 Decleration.Members.Add(ToCodeMemberProperty(viewModelPropertyData));
+
+                if (viewModelPropertyData.RelatedNode() is ElementData)
+                {
+                    fillPropertiesMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelPropertyInfo({0}, true, false, false))", viewModelPropertyData.FieldName)));
+                }
+                else if (viewModelPropertyData.RelatedNode() is EnumData)
+                {
+                    fillPropertiesMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelPropertyInfo({0}, false, false, true))", viewModelPropertyData.FieldName)));
+                }
+                else
+                {
+                    fillPropertiesMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelPropertyInfo({0}, false, false, false))", viewModelPropertyData.FieldName)));
+                }
             }
 
             
@@ -131,13 +172,37 @@ public class ViewModelGenerator : CodeGenerator
                    
                     Decleration.Members.Add(collectionChangedMethod);
                 }
+
+                if (relatedElement != null)
+                {
+                    fillPropertiesMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelPropertyInfo({0}, true, true, false))", viewModelPropertyData.FieldName)));
+                }
+                else if (viewModelPropertyData.RelatedNode() is EnumData)
+                {
+                    fillPropertiesMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelPropertyInfo({0}, false, true, true))", viewModelPropertyData.FieldName)));
+                }
+                else
+                {
+                    fillPropertiesMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelPropertyInfo({0}, false, true, false))", viewModelPropertyData.FieldName)));
+                }
            
             }
             foreach (var viewModelPropertyData in data.Commands)
             {
                 Decleration.Members.Add(ToCommandCodeMemberField(viewModelPropertyData));
                 Decleration.Members.Add(ToCommandCodeMemberProperty(viewModelPropertyData));
+
+                fillCommandsMethod.Statements.Add(
+                        new CodeSnippetExpression(string.Format(
+                            "list.Add(new ViewModelCommandInfo(\"{0}\", {1}))", viewModelPropertyData.Name, viewModelPropertyData.Name)));
             }
+
             foreach (var parentElement in data.ParentElements)
             {
                 var parentField = new CodeMemberField(parentElement.NameAsViewModel, "_Parent" + parentElement.Name);
@@ -329,8 +394,10 @@ public class ViewModelGenerator : CodeGenerator
 
         var t = new CodeTypeReference(uFrameEditor.uFrameTypes.ModelCollection);
         t.TypeArguments.Add(new CodeTypeReference(relatedType));
-        field.InitExpression = new CodeObjectCreateExpression(t);
-
+        var initExpr = new CodeObjectCreateExpression(t);
+        initExpr.Parameters.Add(new CodeThisReferenceExpression());
+        initExpr.Parameters.Add(new CodePrimitiveExpression(itemData.Name));
+        constructor.Statements.Add(new CodeAssignStatement(new CodeSnippetExpression(field.Name), initExpr));
         return field;
     }
 

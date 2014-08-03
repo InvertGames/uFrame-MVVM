@@ -12,6 +12,8 @@ namespace Invert.uFrame.Code.Bindings
 {
     public abstract class BindingGenerator : IBindingGenerator
     {
+        public bool CallBase { get; set; }
+
         public virtual string BindingConditionFieldName
         {
             get { return "_Bind" + Item.Name; }
@@ -115,7 +117,11 @@ namespace Invert.uFrame.Code.Bindings
                     .Reverse()
                     .Skip(2)
                     .Reverse().ToArray();
-
+            if (!CallBase)
+            {
+                adjusted[1] = "//" + adjusted[1];
+            }
+            
             return string.Join("\r\n", adjusted);
         }
 
@@ -145,20 +151,25 @@ namespace Invert.uFrame.Code.Bindings
             {
                 createHandlerMethod.Attributes |= MemberAttributes.Override;
 
-                var baseInvoker = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
-                    createHandlerMethod.Name);
-                foreach (var item in vars)
+                if (CallBase)
                 {
-                    baseInvoker.Parameters.Add(new CodeVariableReferenceExpression(item.Name));
+                    var baseInvoker = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
+                        createHandlerMethod.Name);
+                    foreach (var item in vars)
+                    {
+                        baseInvoker.Parameters.Add(new CodeVariableReferenceExpression(item.Name));
+                    }
+                    if (returnType != null)
+                    {
+                        createHandlerMethod.Statements.Add(new CodeMethodReturnStatement(baseInvoker));
+                    }
+                    else
+                    {
+                        createHandlerMethod.Statements.Add(baseInvoker);
+                    }
                 }
-                if (returnType != null)
-                {
-                    createHandlerMethod.Statements.Add(new CodeMethodReturnStatement(baseInvoker));
-                }
-                else
-                {
-                    createHandlerMethod.Statements.Add(baseInvoker);
-                }
+                
+          
 
             }
             return createHandlerMethod;

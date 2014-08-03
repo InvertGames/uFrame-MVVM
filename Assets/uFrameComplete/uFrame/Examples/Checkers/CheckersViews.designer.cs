@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -318,6 +319,10 @@ public abstract class CheckerViewBase : ViewBase {
 [DiagramInfoAttribute("Checkers")]
 public abstract class AICheckersGameViewBase : CheckersGameViewBase {
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public string _String1;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(AICheckersGameViewModel);
@@ -345,6 +350,8 @@ public abstract class AICheckersGameViewBase : CheckersGameViewBase {
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        AICheckersGameViewModel aICheckersGame = ((AICheckersGameViewModel)(viewModel));
+        aICheckersGame.String1 = this._String1;
     }
 }
 
@@ -407,9 +414,6 @@ public class CheckerPlateViewViewBase : CheckerPlateViewBase {
     [UFRequireInstanceMethod("IsEvenChanged")]
     public bool _BindIsEven = true;
     
-    public override void Bind() {
-    }
-    
     public virtual void CanMoveToChanged(bool value) {
     }
     
@@ -419,8 +423,8 @@ public class CheckerPlateViewViewBase : CheckerPlateViewBase {
     public virtual void IsEvenChanged(bool value) {
     }
     
-    protected override void PreBind() {
-        base.PreBind();
+    public override void Bind() {
+        base.Bind();
         if (this._BindCanMoveTo) {
             this.BindProperty(()=>CheckerPlate._CanMoveToProperty, this.CanMoveToChanged);
         }
@@ -468,9 +472,6 @@ public class CheckerBoardViewViewBase : CheckerBoardViewBase {
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _PlatesContainer;
     
-    public override void Bind() {
-    }
-    
     public virtual void CheckersAdded(CheckerViewBase item) {
         this._CheckersList.Add(item);
     }
@@ -497,8 +498,8 @@ public class CheckerBoardViewViewBase : CheckerBoardViewBase {
         return this.InstantiateView(value);
     }
     
-    protected override void PreBind() {
-        base.PreBind();
+    public override void Bind() {
+        base.Bind();
         if (this._BindCheckers) {
             var binding = this.BindToViewCollection(() => CheckerBoard._CheckersProperty);
             if ((_CheckersContainer == null)) {
@@ -555,9 +556,6 @@ public class CheckerViewViewBase : CheckerViewBase {
     [UFRequireInstanceMethod("TypeChanged")]
     public bool _BindType = true;
     
-    public override void Bind() {
-    }
-    
     public virtual void IsKingMeChanged(bool value) {
     }
     
@@ -570,8 +568,8 @@ public class CheckerViewViewBase : CheckerViewBase {
     public virtual void TypeChanged(CheckerType value) {
     }
     
-    protected override void PreBind() {
-        base.PreBind();
+    public override void Bind() {
+        base.Bind();
         if (this._BindIsKingMe) {
             this.BindProperty(()=>Checker._IsKingMeProperty, this.IsKingMeChanged);
         }
@@ -638,9 +636,6 @@ public class CheckersGameViewViewBase : CheckersGameViewBase {
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _AllowedMovesContainer;
     
-    public override void Bind() {
-    }
-    
     public virtual void BlackScoreChanged(int value) {
     }
     
@@ -687,8 +682,8 @@ public class CheckersGameViewViewBase : CheckersGameViewBase {
         return this.InstantiateView(value);
     }
     
-    protected override void PreBind() {
-        base.PreBind();
+    public override void Bind() {
+        base.Bind();
         if (this._BindBlackScore) {
             this.BindProperty(()=>CheckersGame._BlackScoreProperty, this.BlackScoreChanged);
         }
@@ -736,44 +731,10 @@ public class CheckersHudViewViewBase : CheckersGameViewBase {
     [UFRequireInstanceMethod("RedScoreChanged")]
     public bool _BindRedScore = true;
     
-    [UFToggleGroup("Board")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindBoard = true;
-    
-    [UFGroup("Board")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.GameObject _BoardPrefab;
-    
-    [UFToggleGroup("CurrentChecker")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindCurrentChecker = true;
-    
-    [UFGroup("CurrentChecker")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.GameObject _CurrentCheckerPrefab;
-    
     [UFToggleGroup("CurrentPlayer")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("CurrentPlayerChanged")]
     public bool _BindCurrentPlayer = true;
-    
-    [UFToggleGroup("AllowedMoves")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindAllowedMoves = true;
-    
-    [UnityEngine.HideInInspector()]
-    public System.Collections.Generic.List<CheckerMoveViewBase> _AllowedMovesList;
-    
-    [UFGroup("AllowedMoves")]
-    [UnityEngine.HideInInspector()]
-    public bool _AllowedMovesSceneFirst;
-    
-    [UFGroup("AllowedMoves")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.Transform _AllowedMovesContainer;
-    
-    public override void Bind() {
-    }
     
     public virtual void BlackScoreChanged(int value) {
     }
@@ -781,76 +742,19 @@ public class CheckersHudViewViewBase : CheckersGameViewBase {
     public virtual void RedScoreChanged(int value) {
     }
     
-    public virtual void BoardChanged(CheckerBoardViewModel value) {
-        if (value == null && _Board != null && _Board.gameObject != null) {
-            Destroy(_Board.gameObject);
-        }
-        if (_BoardPrefab == null ) {
-            this._Board = ((CheckerBoardViewBase)(this.InstantiateView(value)));
-        }
-        else {
-            this._Board = ((CheckerBoardViewBase)(this.InstantiateView(this._BoardPrefab, value)));
-        }
-    }
-    
-    public virtual void CurrentCheckerChanged(CheckerViewModel value) {
-        if (value == null && _CurrentChecker != null && _CurrentChecker.gameObject != null) {
-            Destroy(_CurrentChecker.gameObject);
-        }
-        if (_CurrentCheckerPrefab == null ) {
-            this._CurrentChecker = ((CheckerViewBase)(this.InstantiateView(value)));
-        }
-        else {
-            this._CurrentChecker = ((CheckerViewBase)(this.InstantiateView(this._CurrentCheckerPrefab, value)));
-        }
-    }
-    
     public virtual void CurrentPlayerChanged(CheckerType value) {
     }
     
-    public virtual void AllowedMovesAdded(CheckerMoveViewBase item) {
-        this._AllowedMovesList.Add(item);
-    }
-    
-    public virtual void AllowedMovesRemoved(CheckerMoveViewBase item) {
-        this._AllowedMovesList.Remove(item);
-        if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject);
-    }
-    
-    public virtual ViewBase CreateAllowedMovesView(CheckerMoveViewModel value) {
-        return this.InstantiateView(value);
-    }
-    
-    protected override void PreBind() {
-        base.PreBind();
+    public override void Bind() {
+        base.Bind();
         if (this._BindBlackScore) {
             this.BindProperty(()=>CheckersGame._BlackScoreProperty, this.BlackScoreChanged);
         }
         if (this._BindRedScore) {
             this.BindProperty(()=>CheckersGame._RedScoreProperty, this.RedScoreChanged);
         }
-        if (this._BindBoard) {
-            this.BindProperty(()=>CheckersGame._BoardProperty, this.BoardChanged);
-        }
-        if (this._BindCurrentChecker) {
-            this.BindProperty(()=>CheckersGame._CurrentCheckerProperty, this.CurrentCheckerChanged);
-        }
         if (this._BindCurrentPlayer) {
             this.BindProperty(()=>CheckersGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
-        }
-        if (this._BindAllowedMoves) {
-            var binding = this.BindToViewCollection(() => CheckersGame._AllowedMovesProperty);
-            if ((_AllowedMovesContainer == null)) {
-            }
-            else {
-                binding.SetParent(_AllowedMovesContainer);
-            }
-            if (_AllowedMovesSceneFirst) {
-                binding.ViewFirst();
-            }
-            binding.SetAddHandler(item=>AllowedMovesAdded(item as CheckerMoveViewBase));
-            binding.SetRemoveHandler(item=>AllowedMovesRemoved(item as CheckerMoveViewBase));
-            binding.SetCreateHandler(viewModel=>{ return CreateAllowedMovesView(viewModel as CheckerMoveViewModel); }); ;
         }
     }
 }
@@ -861,14 +765,40 @@ public partial class CheckersHudView : CheckersHudViewViewBase {
 public class MainMenuViewViewBase : MainMenuViewBase {
     
     public override void Bind() {
-    }
-    
-    protected override void PreBind() {
-        base.PreBind();
+        base.Bind();
     }
 }
 
 public partial class MainMenuView : MainMenuViewViewBase {
+}
+
+public class AICheckersViewViewBase : CheckersGameView {
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public string _String1;
+    
+    public AICheckersGameViewModel AICheckersGame {
+        get {
+            return ((AICheckersGameViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        base.InitializeViewModel(viewModel);
+        AICheckersGameViewModel aICheckersGame = ((AICheckersGameViewModel)(viewModel));
+        aICheckersGame.String1 = this._String1;
+    }
+}
+
+public partial class AICheckersView : AICheckersViewViewBase {
 }
 
 public partial class NewViewComponent : ViewComponent {

@@ -289,7 +289,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         AddInitializeViewModelMethod(data);
 
         AddExecuteMethods(data, Decleration);
-  
+
 
         foreach (var viewBindingExtender in BindingExtenders)
         {
@@ -343,12 +343,12 @@ public abstract class ViewClassGenerator : CodeGenerator
             if (relatedViewModel == null) // Non ViewModel Properties
             {
                 var field = new CodeMemberField(new CodeTypeReference(property.RelatedTypeName),
-                    property.ViewFieldName) {Attributes = MemberAttributes.Public};
+                    property.ViewFieldName) { Attributes = MemberAttributes.Public };
                 field.CustomAttributes.Add(
                     new CodeAttributeDeclaration(new CodeTypeReference(uFrameEditor.uFrameTypes.UFGroup),
                         new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
                 field.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof (HideInInspector))));
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
                 Decleration.Members.Add(field);
 
                 initializeViewModelMethod.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
@@ -358,13 +358,13 @@ public abstract class ViewClassGenerator : CodeGenerator
             else // ViewModel Properties
             {
                 var field = new CodeMemberField(new CodeTypeReference(uFrameEditor.uFrameTypes.ViewBase),
-                    property.ViewFieldName) {Attributes = MemberAttributes.Public};
+                    property.ViewFieldName) { Attributes = MemberAttributes.Public };
 
                 field.CustomAttributes.Add(
                     new CodeAttributeDeclaration(new CodeTypeReference(uFrameEditor.uFrameTypes.UFGroup),
                         new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
                 field.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof (HideInInspector))));
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
                 Decleration.Members.Add(field);
                 initializeViewModelMethod.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
                     new CodeVariableReferenceExpression(data.NameAsVariable), property.Name),
@@ -418,7 +418,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         var multiInstanceProperty = new CodeMemberProperty
         {
             Attributes = MemberAttributes.Override | MemberAttributes.Public,
-            Type = new CodeTypeReference(typeof (bool)),
+            Type = new CodeTypeReference(typeof(bool)),
             Name = "IsMultiInstance",
             HasSet = false,
             HasGet = true
@@ -434,7 +434,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         var viewModelTypeProperty = new CodeMemberProperty
         {
             Attributes = MemberAttributes.Override | MemberAttributes.Public,
-            Type = new CodeTypeReference(typeof (Type)),
+            Type = new CodeTypeReference(typeof(Type)),
             Name = "ViewModelType"
         };
         viewModelTypeProperty.HasSet = false;
@@ -679,9 +679,9 @@ public abstract class ViewClassGenerator : CodeGenerator
         set { _bindingConditionStatements = value; }
     }
 
-    protected void GenerateBindingMembers(CodeTypeDeclaration decl,ElementData data,bool isOverride = false)
+    protected void GenerateBindingMembers(CodeTypeDeclaration decl, ElementData data, bool isOverride = false)
     {
-        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data, isOverride, false).ToArray();
+        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data, isOverride: isOverride, generateDefaultBindings: false).ToArray();
         foreach (var bindingGenerator in bindingGenerators)
         {
             bindingGenerator.CreateMembers(decl.Members);
@@ -703,15 +703,13 @@ public abstract class ViewClassGenerator : CodeGenerator
 
         var preBindMethod = new CodeMemberMethod
         {
-            Name = "PreBind",
-            Attributes = MemberAttributes.Family | MemberAttributes.Override
+            Name = "Bind",
+            Attributes = MemberAttributes.Public | MemberAttributes.Override
         };
 
-        //if (data.ViewForElement.IsDerived)
-        //{
-            preBindMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "PreBind"));
-        //}
-        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data.ViewForElement,false, DiagramData.Settings.GenerateDefaultBindings,data.BaseView == null).ToArray();
+        preBindMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "Bind"));
+
+        var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(data.ViewForElement, isOverride: false, generateDefaultBindings: DiagramData.Settings.GenerateDefaultBindings, includeBaseItems: data.BaseView == null).ToArray();
 
         foreach (var bindingGenerator in bindingGenerators)
         {

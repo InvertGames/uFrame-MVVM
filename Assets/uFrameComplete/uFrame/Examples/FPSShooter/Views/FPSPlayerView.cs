@@ -1,19 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class FPSPlayerView : FPSPlayerViewBase
+public partial class FPSPlayerView 
 { 
-    public override void WeaponsRemoved(FPSWeaponViewBase item) {
-        base.WeaponsRemoved(item);
-        this._WeaponsList.Remove(item);
-        if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject);
-    }
-    public override void WeaponsAdded(FPSWeaponViewBase item) {
-        base.WeaponsAdded(item);
-        this._WeaponsList.Add(item);
-    }
- 
-    
     //public Transform _GunsTransform;
     //public List<ViewBase> _Weapons = new List<ViewBase>();
     public override void Awake()

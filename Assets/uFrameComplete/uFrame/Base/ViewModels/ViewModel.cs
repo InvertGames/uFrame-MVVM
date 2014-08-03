@@ -255,9 +255,64 @@ public abstract class ViewModel : IJsonSerializable, IUFSerializable, IViewModel
     }
     public bool Dirty { get; set; }
 
-    public virtual void SetParent(ViewModel model)
+    public List<ViewModelPropertyInfo> GetViewModelProperties()
+    {
+        var list = new List<ViewModelPropertyInfo>();
+        FillProperties(list);
+        return list;
+    }
+    public List<ViewModelCommandInfo> GetViewModelCommands()
+    {
+        var list = new List<ViewModelCommandInfo>();
+        FillCommands(list);
+        return list;
+    }
+
+    protected virtual void FillProperties(List<ViewModelPropertyInfo> list)
     {
         
     }
 
+    protected virtual void FillCommands(List<ViewModelCommandInfo> list)
+    {
+
+    }
+
+}
+public class ViewModelPropertyInfo
+
+{
+    public ViewModelPropertyInfo(ModelPropertyBase property, bool isElementProperty, bool isCollectionProperty, bool isEnum)
+    {
+        Property = property;
+        IsElementProperty = isElementProperty;
+        IsCollectionProperty = isCollectionProperty;
+        IsEnum = isEnum;
+    }
+
+    public bool IsEnum { get; set; }
+
+    public ModelPropertyBase Property { get; set; }
+
+    public bool IsElementProperty { get; set; }
+    public bool IsCollectionProperty { get; set; }
+}
+
+public class ViewModelCommandInfo
+{
+    public ViewModelCommandInfo( string name, ICommand command)
+    {
+  
+        Name = name;
+        Command = command;
+    }
+    public ViewModelCommandInfo(Type parameterType, string name, ICommand command)
+    {
+        ParameterType = parameterType;
+        Name = name;
+        Command = command;
+    }
+    public Type ParameterType { get; set; }
+    public string Name { get; set; }
+    public ICommand Command { get; set; }
 }

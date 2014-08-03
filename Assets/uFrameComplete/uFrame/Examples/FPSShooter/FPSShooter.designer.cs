@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -55,6 +56,21 @@ public partial class FPSDamageableViewModel : ViewModel {
         this.ApplyDamage = new CommandWithSenderAndArgument<FPSDamageableViewModel, int>(this, fPSDamageable.ApplyDamage);
     }
     
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_HealthProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_StateProperty, false, false, true));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("ApplyDamage", ApplyDamage));
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeFloat("Health", this.Health);
@@ -74,6 +90,8 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     private UnityEngine.Vector3 _position;
     
     public readonly P<System.Single> _SpeedProperty;
+    
+    private FPSGameViewModel _ParentFPSGame;
     
     public FPSEnemyViewModel() : 
             base() {
@@ -103,8 +121,30 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
         }
     }
     
+    public virtual FPSGameViewModel ParentFPSGame {
+        get {
+            return this._ParentFPSGame;
+        }
+        set {
+            _ParentFPSGame = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_SpeedProperty, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -131,7 +171,7 @@ public partial class FPSGameViewModel : ViewModel {
     
     public readonly P<System.Int32> _KillsProperty;
     
-    public readonly ModelCollection<FPSEnemyViewModel> _EnemiesProperty = new ModelCollection<FPSEnemyViewModel>();
+    public readonly ModelCollection<FPSEnemyViewModel> _EnemiesProperty;
     
     private ICommand _MainMenu;
     
@@ -143,23 +183,10 @@ public partial class FPSGameViewModel : ViewModel {
         _CurrentPlayerProperty = new P<FPSPlayerViewModel>(this, "CurrentPlayer");
         _ScoreProperty = new P<int>(this, "Score");
         _KillsProperty = new P<int>(this, "Kills");
-
-        //_EnemiesProperty.CollectionChangedWith += EnemeiesCollectionChanged;
+        _EnemiesProperty = new ModelCollection<FPSEnemyViewModel>(this, "Enemies");
+        _EnemiesProperty.CollectionChangedWith += EnemiesCollectionChanged;
     }
-
-    //private void EnemeiesCollectionChanged(ModelCollectionChangeEventWith<FPSEnemyViewModel> args)
-    //{
-    //    foreach (var item in args.NewItemsOfT) EnemiesAdded(item);
-    //    foreach (var item in args.OldItemsOfT) EnemiesRemoved(item);
-    //}
-
-
-    //public override void Unbind()
-    //{
-    //    base.Unbind();
-        
-    //}
-
+    
     public FPSGameViewModel(FPSGameControllerBase controller) : 
             this() {
         this.Controller = controller;
@@ -180,6 +207,7 @@ public partial class FPSGameViewModel : ViewModel {
         }
         set {
             _CurrentPlayerProperty.Value = value;
+            if (value != null) value.ParentFPSGame = this;
         }
     }
     
@@ -206,7 +234,8 @@ public partial class FPSGameViewModel : ViewModel {
             return _EnemiesProperty;
         }
         set {
-            _EnemiesProperty.Value = value.ToList();
+            _EnemiesProperty.Clear();
+            _EnemiesProperty.AddRange(value);
         }
     }
     
@@ -232,6 +261,31 @@ public partial class FPSGameViewModel : ViewModel {
         var fPSGame = controller as FPSGameControllerBase;
         this.MainMenu = new Command(fPSGame.MainMenu);
         this.QuitGame = new Command(fPSGame.QuitGame);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+        _EnemiesProperty.CollectionChangedWith -= EnemiesCollectionChanged;
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_StateProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_CurrentPlayerProperty, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_ScoreProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_KillsProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_EnemiesProperty, true, true, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("MainMenu", MainMenu));
+        list.Add(new ViewModelCommandInfo("QuitGame", QuitGame));
+    }
+    
+    private void EnemiesCollectionChanged(ModelCollectionChangeEventWith<FPSEnemyViewModel> args) {
+        foreach (var item in args.OldItemsOfT) item.ParentFPSGame = null;;
+        foreach (var item in args.NewItemsOfT) item.ParentFPSGame = this;;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -260,7 +314,7 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     
     public readonly P<System.Int32> _CurrentWeaponIndexProperty;
     
-    public readonly ModelCollection<FPSWeaponViewModel> _WeaponsProperty = new ModelCollection<FPSWeaponViewModel>();
+    public readonly ModelCollection<FPSWeaponViewModel> _WeaponsProperty;
     
     private ICommand _PreviousWeapon;
     
@@ -270,9 +324,13 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     
     private ICommand _SelectWeapon;
     
+    private FPSGameViewModel _ParentFPSGame;
+    
     public FPSPlayerViewModel() : 
             base() {
         _CurrentWeaponIndexProperty = new P<int>(this, "CurrentWeaponIndex");
+        _WeaponsProperty = new ModelCollection<FPSWeaponViewModel>(this, "Weapons");
+        _WeaponsProperty.CollectionChangedWith += WeaponsCollectionChanged;
     }
     
     public FPSPlayerViewModel(FPSPlayerControllerBase controller) : 
@@ -303,7 +361,8 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
             return _WeaponsProperty;
         }
         set {
-            _WeaponsProperty.Value = value.ToList();
+            _WeaponsProperty.Clear();
+            _WeaponsProperty.AddRange(value);
         }
     }
     
@@ -343,6 +402,15 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
         }
     }
     
+    public virtual FPSGameViewModel ParentFPSGame {
+        get {
+            return this._ParentFPSGame;
+        }
+        set {
+            _ParentFPSGame = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
         var fPSPlayer = controller as FPSPlayerControllerBase;
@@ -350,6 +418,30 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
         this.NextWeapon = new CommandWithSender<FPSPlayerViewModel>(this, fPSPlayer.NextWeapon);
         this.PickupWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, FPSWeaponViewModel>(this, fPSPlayer.PickupWeapon);
         this.SelectWeapon = new CommandWithSenderAndArgument<FPSPlayerViewModel, int>(this, fPSPlayer.SelectWeapon);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+        _WeaponsProperty.CollectionChangedWith -= WeaponsCollectionChanged;
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_CurrentWeaponIndexProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_WeaponsProperty, true, true, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("PreviousWeapon", PreviousWeapon));
+        list.Add(new ViewModelCommandInfo("NextWeapon", NextWeapon));
+        list.Add(new ViewModelCommandInfo("PickupWeapon", PickupWeapon));
+        list.Add(new ViewModelCommandInfo("SelectWeapon", SelectWeapon));
+    }
+    
+    private void WeaponsCollectionChanged(ModelCollectionChangeEventWith<FPSWeaponViewModel> args) {
+        foreach (var item in args.OldItemsOfT) item.ParentFPSPlayer = null;;
+        foreach (var item in args.NewItemsOfT) item.ParentFPSPlayer = this;;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -405,6 +497,8 @@ public partial class FPSWeaponViewModel : ViewModel {
     private ICommand _EndFire;
     
     private ICommand _BulletFired;
+    
+    private FPSPlayerViewModel _ParentFPSPlayer;
     
     public FPSWeaponViewModel() : 
             base() {
@@ -590,6 +684,15 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual FPSPlayerViewModel ParentFPSPlayer {
+        get {
+            return this._ParentFPSPlayer;
+        }
+        set {
+            _ParentFPSPlayer = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         var fPSWeapon = controller as FPSWeaponControllerBase;
         this.BeginFire = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.BeginFire);
@@ -597,6 +700,36 @@ public partial class FPSWeaponViewModel : ViewModel {
         this.Reload = new YieldCommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.Reload);
         this.EndFire = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.EndFire);
         this.BulletFired = new CommandWithSender<FPSWeaponViewModel>(this, fPSWeapon.BulletFired);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_AmmoProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_StateProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_ZoomIndexProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_MaxZoomsProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_WeaponTypeProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_ReloadTimeProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_RoundSizeProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_MinSpreadProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_BurstSizeProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_RecoilSpeedProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_FireSpeedProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_BurstSpeedProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_SpreadMultiplierProperty, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("BeginFire", BeginFire));
+        list.Add(new ViewModelCommandInfo("NextZoom", NextZoom));
+        list.Add(new ViewModelCommandInfo("Reload", Reload));
+        list.Add(new ViewModelCommandInfo("EndFire", EndFire));
+        list.Add(new ViewModelCommandInfo("BulletFired", BulletFired));
     }
     
     public override void Write(ISerializerStream stream) {
@@ -686,6 +819,21 @@ public partial class WavesFPSGameViewModel : FPSGameViewModel {
         base.WireCommands(controller);
     }
     
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_KillsToNextWaveProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_WaveKillsProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_CurrentWaveProperty, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeInt("KillsToNextWave", this.KillsToNextWave);
@@ -729,6 +877,19 @@ public partial class FPSMenuViewModel : ViewModel {
         this.Play = new Command(fPSMenu.Play);
     }
     
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("Play", Play));
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
     }
@@ -752,6 +913,18 @@ public partial class DeathMatchGameViewModel : FPSGameViewModel {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
     }
     
     public override void Write(ISerializerStream stream) {

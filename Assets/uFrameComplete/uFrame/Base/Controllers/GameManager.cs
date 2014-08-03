@@ -226,6 +226,7 @@ public class GameManager : MonoBehaviour
         if (SceneManagers.Contains(sceneManager)) return;
         sceneManager.Container = Container;
         sceneManager.Setup();
+        Container.Inject(sceneManager);
         SceneManagers.Add(sceneManager);
         sceneManager.enabled = false;
         sceneManager.gameObject.SetActive(false);

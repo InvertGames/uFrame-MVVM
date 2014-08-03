@@ -57,6 +57,7 @@ public class ElementItemTypesWindow : SearchableScrollWindow
         if (_triggerGroups == null) return;
         foreach (var group in Enumerable.OrderBy<IGrouping<string, ElementItemType>, string>(_triggerGroups, p => p.Key))
         {
+   
             var numberItems = 0;
             var filteredItems = @group.Where(p => _labelSelector(p).ToUpper().Contains(_upperSearchText)).OrderBy(p => _labelSelector(p)).ToArray();
             if (filteredItems.Length < 1) continue;
@@ -75,9 +76,13 @@ public class ElementItemTypesWindow : SearchableScrollWindow
                 if (numberItems >= _limit)
                 {
 
-                    EditorGUILayout.EndScrollView();
-                    return;
+                    break;
                 }
+            }
+            if (numberItems >= _limit)
+            {
+
+                break;
             }
         }
     }

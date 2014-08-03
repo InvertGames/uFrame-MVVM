@@ -151,7 +151,7 @@ namespace Invert.uFrame.Editor
 
         private static IBindingGenerator[] BindingGenerators { get; set; }
 
-        public static IEnumerable<IBindingGenerator> GetBindingGeneratorsFor(ElementData element, bool isOverride = true, bool generateDefaultBindings = true,bool includeBaseItems = true)
+        public static IEnumerable<IBindingGenerator> GetBindingGeneratorsFor(ElementData element, bool isOverride = true, bool generateDefaultBindings = true, bool includeBaseItems = true, bool callBase = true)
         {
             IEnumerable<IViewModelItem> items = element.ViewModelItems;
             if (includeBaseItems)

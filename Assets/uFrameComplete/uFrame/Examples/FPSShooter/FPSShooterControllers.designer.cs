@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -33,7 +34,7 @@ public abstract class FPSEnemyControllerBase : FPSDamageableController {
     
     [Inject] public FPSGameController FPSGameController {get;set;}
     public abstract void InitializeFPSEnemy(FPSEnemyViewModel fPSEnemy);
-
+    
     public override ViewModel CreateEmpty() {
         return new FPSEnemyViewModel();
     }
@@ -59,7 +60,7 @@ public abstract class FPSGameControllerBase : Controller {
     }
     
     public abstract void InitializeFPSGame(FPSGameViewModel fPSGame);
-
+    
     public override ViewModel CreateEmpty() {
         return new FPSGameViewModel();
     }
@@ -86,7 +87,7 @@ public abstract class FPSPlayerControllerBase : FPSDamageableController {
     [Inject] public FPSGameController FPSGameController {get;set;}
     [Inject] public FPSWeaponController FPSWeaponController {get;set;}
     public abstract void InitializeFPSPlayer(FPSPlayerViewModel fPSPlayer);
-
+    
     public override ViewModel CreateEmpty() {
         return new FPSPlayerViewModel();
     }
@@ -117,7 +118,7 @@ public abstract class FPSWeaponControllerBase : Controller {
     
     [Inject] public FPSPlayerController FPSPlayerController {get;set;}
     public abstract void InitializeFPSWeapon(FPSWeaponViewModel fPSWeapon);
-
+    
     public override ViewModel CreateEmpty() {
         return new FPSWeaponViewModel();
     }
@@ -156,7 +157,7 @@ public abstract class WavesFPSGameControllerBase : FPSGameController {
     }
     
     public abstract void InitializeWavesFPSGame(WavesFPSGameViewModel wavesFPSGame);
-
+    
     public override ViewModel CreateEmpty() {
         return new WavesFPSGameViewModel();
     }
@@ -180,7 +181,7 @@ public abstract class FPSMenuControllerBase : Controller {
     }
     
     public abstract void InitializeFPSMenu(FPSMenuViewModel fPSMenu);
-
+    
     public override ViewModel CreateEmpty() {
         return new FPSMenuViewModel();
     }
@@ -207,7 +208,7 @@ public abstract class DeathMatchGameControllerBase : FPSGameController {
     }
     
     public abstract void InitializeDeathMatchGame(DeathMatchGameViewModel deathMatchGame);
-
+    
     public override ViewModel CreateEmpty() {
         return new DeathMatchGameViewModel();
     }

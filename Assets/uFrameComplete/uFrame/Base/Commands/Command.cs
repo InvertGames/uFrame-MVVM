@@ -16,6 +16,8 @@ public class Command : ICommand
 
     protected Action Delegate { get; set; }
 
+
+
     public Command(Action @delegate)
     {
         Delegate = @delegate;

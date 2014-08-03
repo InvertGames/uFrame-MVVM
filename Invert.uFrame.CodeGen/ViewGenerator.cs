@@ -41,7 +41,7 @@ public class ViewGenerator : ViewClassGenerator
         }
         else
         {
-            var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(View.ViewForElement, true, DiagramData.Settings.GenerateDefaultBindings).ToArray();
+            var bindingGenerators = uFrameEditor.GetBindingGeneratorsFor(View.ViewForElement, isOverride: true, generateDefaultBindings: DiagramData.Settings.GenerateDefaultBindings).ToArray();
 
             foreach (var bindingGenerator in bindingGenerators)
             {
@@ -144,29 +144,30 @@ public class ViewViewBaseGenerator : ViewClassGenerator
         Decleration.BaseTypes.Add(View.BaseViewName);
 
         // implement abstract method bind defined in the viewbase class
-        var bindMethod = new CodeMemberMethod()
-        {
-            Name = "Bind",
-            Attributes = MemberAttributes.Override | MemberAttributes.Public
-        };
-        Decleration.Members.Add(bindMethod);
+        //var bindMethod = new CodeMemberMethod()
+        //{
+        //    Name = "Bind",
+        //    Attributes = MemberAttributes.Override | MemberAttributes.Public
+        //};
+        //Decleration.Members.Add(bindMethod);
 
         AddBindingMembers();
-
-        
 
         GenerateBindMethod(Decleration, View);
         // Make sure we only generate a view model property for whats needed
         if (View.BaseView != null)
-        AddViewModelProperty(View.ViewForElement);
-        AddInitializeViewModelMethod(View.ViewForElement);
+        {
+            AddViewModelProperty(View.ViewForElement);
+            AddInitializeViewModelMethod(View.ViewForElement);
+        }
+        
         Namespace.Types.Add(Decleration);
     }
 
     private void AddBindingMembers()
     {
         var bindingGenerators =
-            uFrameEditor.GetBindingGeneratorsFor(View.ViewForElement, false, DiagramData.Settings.GenerateDefaultBindings,View.BaseView == null)
+            uFrameEditor.GetBindingGeneratorsFor(View.ViewForElement, isOverride: false, generateDefaultBindings: DiagramData.Settings.GenerateDefaultBindings,includeBaseItems: View.BaseView == null)
                 .ToArray();
 
         foreach (var bindingGenerator in bindingGenerators)

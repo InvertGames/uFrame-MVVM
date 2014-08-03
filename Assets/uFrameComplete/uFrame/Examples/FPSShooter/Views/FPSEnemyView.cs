@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public partial class FPSEnemyView : FPSEnemyViewBase
+public partial class FPSEnemyView
 {
     public NavMeshAgent _NavAgent;
     public FPSPlayerViewBase _TargetPlayer;

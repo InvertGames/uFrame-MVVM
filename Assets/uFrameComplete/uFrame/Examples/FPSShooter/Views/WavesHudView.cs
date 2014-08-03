@@ -7,8 +7,6 @@ using UnityEngine;
 
 public partial class WavesHUDView  {
     
-    public override void Bind() {
-    } 
     public GUIText _KillsRemainingLabel;
 
     public GUIText _WaveStartLabel;

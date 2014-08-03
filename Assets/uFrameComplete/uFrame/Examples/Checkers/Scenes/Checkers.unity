@@ -332,6 +332,17 @@ MonoBehaviour:
   _Board: {fileID: 658728028}
   _CurrentChecker: {fileID: 0}
   _CurrentPlayer: 0
+  _BindBlackScore: 0
+  _BindRedScore: 0
+  _BindBoard: 1
+  _BoardPrefab: {fileID: 0}
+  _BindCurrentChecker: 0
+  _CurrentCheckerPrefab: {fileID: 0}
+  _BindCurrentPlayer: 0
+  _BindAllowedMoves: 1
+  _AllowedMovesList: []
+  _AllowedMovesSceneFirst: 0
+  _AllowedMovesContainer: {fileID: 0}
 --- !u!1 &658728027
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d419857f221fddd4e8f15886088caf65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Save: 1
+  _Save: 0
   _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 0
@@ -497,6 +508,9 @@ MonoBehaviour:
   _Board: {fileID: 0}
   _CurrentChecker: {fileID: 0}
   _CurrentPlayer: 0
+  _BindBlackScore: 0
+  _BindRedScore: 0
+  _BindCurrentPlayer: 0
 --- !u!114 &1646927045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -657,7 +671,7 @@ MonoBehaviour:
   _CheckersSceneManagerSettings:
     _Scenes: []
     CheckersGameTypes: 1
-  _SceneState: {fileID: 4900000, guid: 20ebedfaa3b9ab24bb8cc7fa7b077dc6, type: 3}
+  _SceneState: {fileID: 0}
 --- !u!1 &1916944861
 GameObject:
   m_ObjectHideFlags: 0

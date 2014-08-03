@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -61,6 +62,16 @@ public partial class CheckerBoardViewModel : ViewModel {
         _PlatesProperty.CollectionChangedWith -= PlatesCollectionChanged;
     }
     
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_CheckersProperty, true, true, false));
+        list.Add(new ViewModelPropertyInfo(_PlatesProperty, true, true, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+    }
+    
     private void CheckersCollectionChanged(ModelCollectionChangeEventWith<CheckerViewModel> args) {
         foreach (var item in args.OldItemsOfT) item.ParentCheckerBoard = null;;
         foreach (var item in args.NewItemsOfT) item.ParentCheckerBoard = this;;
@@ -112,6 +123,14 @@ public partial class CheckerMoveViewModel : ViewModel {
     
     public override void Unbind() {
         base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -200,6 +219,18 @@ public partial class CheckerPlateViewModel : ViewModel {
     
     public override void Unbind() {
         base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_CanMoveToProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_PositionProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_IsEvenProperty, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("SelectCommand", SelectCommand));
     }
     
     public override void Write(ISerializerStream stream) {
@@ -323,6 +354,21 @@ public partial class CheckersGameViewModel : ViewModel {
     public override void Unbind() {
         base.Unbind();
         _AllowedMovesProperty.CollectionChangedWith -= AllowedMovesCollectionChanged;
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_BlackScoreProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_RedScoreProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_BoardProperty, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_CurrentCheckerProperty, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_CurrentPlayerProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_AllowedMovesProperty, true, true, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("GameOver", GameOver));
     }
     
     private void AllowedMovesCollectionChanged(ModelCollectionChangeEventWith<CheckerMoveViewModel> args) {
@@ -453,6 +499,19 @@ public partial class CheckerViewModel : ViewModel {
         base.Unbind();
     }
     
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_IsKingMeProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_PositionProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_SelectedProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_TypeProperty, false, false, true));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("SelectCommand", SelectCommand));
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeBool("IsKingMe", this.IsKingMe);
@@ -473,13 +532,25 @@ public partial class CheckerViewModel : ViewModel {
 [DiagramInfoAttribute("Checkers")]
 public partial class AICheckersGameViewModel : CheckersGameViewModel {
     
+    public readonly P<System.String> _String1Property;
+    
     public AICheckersGameViewModel() : 
             base() {
+        _String1Property = new P<string>(this, "String1");
     }
     
     public AICheckersGameViewModel(AICheckersGameControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual string String1 {
+        get {
+            return _String1Property.Value;
+        }
+        set {
+            _String1Property.Value = value;
+        }
     }
     
     protected override void WireCommands(Controller controller) {
@@ -490,12 +561,23 @@ public partial class AICheckersGameViewModel : CheckersGameViewModel {
         base.Unbind();
     }
     
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_String1Property, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+    }
+    
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
+		stream.SerializeString("String1", this.String1);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
+		this.String1 = stream.DeserializeString("String1");
     }
 }
 
@@ -529,6 +611,15 @@ public partial class MainMenuViewModel : ViewModel {
     
     public override void Unbind() {
         base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("Play", Play));
     }
     
     public override void Write(ISerializerStream stream) {

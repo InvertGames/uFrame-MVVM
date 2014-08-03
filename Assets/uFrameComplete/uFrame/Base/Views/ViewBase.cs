@@ -202,7 +202,10 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     /// <summary>
     /// This method is called in order to subscribe to properties, commands, and collections.
     /// </summary>
-    public abstract void Bind();
+    public virtual void Bind()
+    {
+        
+    }
 
     /// <summary>
     /// This method is called in order to create a model for this view.  In a uFrame Designer generated

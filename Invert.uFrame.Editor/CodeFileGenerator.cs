@@ -36,6 +36,7 @@ namespace Invert.uFrame.Editor
         {
             Namespace.Imports.Add(new CodeNamespaceImport("System"));
             Namespace.Imports.Add(new CodeNamespaceImport("System.Collections"));
+            Namespace.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
             Namespace.Imports.Add(new CodeNamespaceImport("System.Linq"));
         }
 
