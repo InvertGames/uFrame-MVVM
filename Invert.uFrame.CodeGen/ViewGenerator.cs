@@ -153,10 +153,10 @@ public class ViewViewBaseGenerator : ViewClassGenerator
 
         AddBindingMembers();
 
-        foreach (var viewBindingExtender in BindingExtenders)
-        {
-            viewBindingExtender.ExtendViewBase(Decleration, View);
-        }
+        //foreach (var viewBindingExtender in BindingExtenders)
+        //{
+        //    viewBindingExtender.ExtendViewBase(Decleration, View);
+        //}
 
         GenerateBindMethod(Decleration, View);
         // Make sure we only generate a view model property for whats needed
