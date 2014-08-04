@@ -11,7 +11,7 @@ public class AngryFlappersGameController : AngryFlappersGameControllerBase {
 
     public override void InitializeAngryFlappersGame(AngryFlappersGameViewModel angryFlappersGame)
     {
-        angryFlappersGame.Play = PlayGameCommand;
+        AngryFlappersGame.Play = PlayGameCommand;
     }
 
 

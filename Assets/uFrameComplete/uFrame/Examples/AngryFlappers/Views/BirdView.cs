@@ -12,7 +12,8 @@ public partial class BirdView
 
     public override void StateChanged(BirdState value)
     {
-
+        if (value == BirdState.Idle)
+            this.transform.position = Vector3.zero;
     }
 
     public void FixedUpdate()
@@ -31,6 +32,11 @@ public partial class BirdView
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        
+        ExecuteHit();
+    }
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))

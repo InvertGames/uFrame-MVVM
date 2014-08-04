@@ -135,6 +135,23 @@ public class GameManager : MonoBehaviour
 
         return Transition(Instance.SceneManagers.OfType<T>().First());
     }
+    [Obsolete("The method SwitchGame is obsolete.  Use Transition<T> or 'Save & Compile' your diagram.")]
+    public static Coroutine SwitchGame<T>(Action<T> setup, UpdateProgressDelegate progress = null) where T : SceneManager
+    {
+        return null;
+    }
+
+    [Obsolete("The method SwitchGame is obsolete.  Use TransitionLevel<T> or 'Save & Compile' your diagram.")]
+    public static Coroutine SwitchGameAndLevel<TGame>(TGame controller, Action<TGame> setup = null,
+        UpdateProgressDelegate progress = null) where TGame : SceneManager
+    {
+        return null;
+    }
+     [Obsolete("The method SwitchGame is obsolete.  Use TransitionLevel<T> or 'Save & Compile' your diagram.")]
+    public static void SwitchGameAndLevel<T>(SwitchLevelSettings<T> settings) where T : SceneManager
+    {
+        
+    }
 
     /// <summary>
     /// This switches the game from one to the other invoking a sequence of actions

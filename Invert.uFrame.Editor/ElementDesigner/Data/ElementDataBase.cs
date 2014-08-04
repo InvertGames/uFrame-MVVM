@@ -38,7 +38,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
         }
     }
 
-    public ElementDataBase BaseElement { get { return Data.GetAllElements().FirstOrDefault(p => p.Name == BaseTypeShortName); } }
+    public ElementData BaseElement { get { return Data.GetAllElements().FirstOrDefault(p => p.Name == BaseTypeShortName); } }
 
     public abstract string BaseTypeName { get; set; }
 

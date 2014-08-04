@@ -24,12 +24,17 @@ public class AngryFlappersManager : AngryFlappersManagerBase {
 
     public IEnumerator SpawnPipes()
     {
-        
-        while (true)
+        Game.Pipes.Clear();
+        Game.Bird.State = BirdState.Idle;
+        Game.Bird.State = BirdState.Alive;
+        Game.State = AngryFlappersGameState.Playing;
+
+        while (Game.State == AngryFlappersGameState.Playing)
         {
-            Game.Bird.State = BirdState.Alive;
             Game.Pipes.Add(new PipeViewModel(PipeController) { ScrollSpeed = Game.ScrollSpeed });
             yield return new WaitForSeconds(Game.PipeSpawnSpeed);
         }
+       
+       
     }
 }

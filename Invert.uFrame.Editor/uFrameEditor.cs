@@ -433,11 +433,11 @@ namespace Invert.uFrame.Editor
             KeyBindings = Container.ResolveAll<IKeyBinding>().ToArray();
             BindingGenerators = Container.ResolveAll<IBindingGenerator>().ToArray();
             uFrameTypes = Container.Resolve<IUFrameTypeProvider>();
-
 #if DEBUG
             Debug.Log(uFrameTypes.ToString());
 #endif
             uFrameTypes = new uFrameStringTypeProvider();
+
         }
 
 

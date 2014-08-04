@@ -14,4 +14,11 @@ public class BirdController : BirdControllerBase {
         base.Flapped();
   
     }
+
+    public override void Hit()
+    {
+        base.Hit();
+        Bird.State = BirdState.Dead;
+        Bird.ParentAngryFlappersGame.State = AngryFlappersGameState.GameOver;
+    }
 }

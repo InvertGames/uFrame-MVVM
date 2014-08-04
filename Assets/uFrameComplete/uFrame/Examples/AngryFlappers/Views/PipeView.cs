@@ -15,7 +15,8 @@ public partial class PipeView {
 
     public void Update()
     {
-        this.transform.position -= Vector3.right*Pipe.ScrollSpeed*Time.deltaTime;
+        if (Pipe.ParentAngryFlappersGame.State == AngryFlappersGameState.Playing)
+        this.transform.position -= Vector3.right*Pipe.ParentAngryFlappersGame.ScrollSpeed*Time.deltaTime;
 
     }
 }

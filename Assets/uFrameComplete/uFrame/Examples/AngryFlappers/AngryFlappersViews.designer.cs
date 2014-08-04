@@ -231,15 +231,6 @@ public class AngryFlappersGameViewViewBase : AngryFlappersGameViewBase {
     public virtual void ScoreChanged(int value) {
     }
     
-    public virtual void PipesAdded(PipeViewBase item) {
-        this._PipesList.Add(item);
-    }
-    
-    public virtual void PipesRemoved(PipeViewBase item) {
-        this._PipesList.Remove(item);
-        if (item != null && item.gameObject != null) UnityEngine.Object.Destroy(item.gameObject);
-    }
-    
     public virtual ViewBase CreatePipesView(PipeViewModel value) {
         return this.InstantiateView(value);
     }
@@ -262,8 +253,6 @@ public class AngryFlappersGameViewViewBase : AngryFlappersGameViewBase {
             if (_PipesSceneFirst) {
                 binding.ViewFirst();
             }
-            binding.SetAddHandler(item=>PipesAdded(item as PipeViewBase));
-            binding.SetRemoveHandler(item=>PipesRemoved(item as PipeViewBase));
             binding.SetCreateHandler(viewModel=>{ return CreatePipesView(viewModel as PipeViewModel); }); ;
         }
     }

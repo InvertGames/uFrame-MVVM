@@ -150,7 +150,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
                 registerInstance.Parameters.Add(new CodeSnippetExpression("false"));
                 setupMethod.Statements.Add(registerInstance);
 
-                if (element.BaseElement == null && !element.IsMultiInstance && !element.IsTemplate)
+                if ((element.BaseElement == null || element.BaseElement.IsTemplate) && !element.IsMultiInstance && !element.IsTemplate)
                 {
                     if (AddTypeEnum(element, sceneManager, elements) == null)
                     {
