@@ -47,6 +47,8 @@ namespace Invert.uFrame.Code.Bindings
         {
             //if (!asTwoWay)
             //{
+
+
             var setterMethod = CreateMethodSignature(null, new CodeParameterDeclarationExpression(
                 new CodeTypeReference(RelatedElement == null
                     ? PropertyData.RelatedTypeName

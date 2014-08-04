@@ -291,10 +291,6 @@ public abstract class ViewClassGenerator : CodeGenerator
         AddExecuteMethods(data, Decleration);
 
 
-        foreach (var viewBindingExtender in BindingExtenders)
-        {
-            viewBindingExtender.ExtendViewBase(Decleration, data);
-        }
 
         Namespace.Types.Add(Decleration);
     }
