@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: AngryFlappers
   m_EditorClassIdentifier: 
   _jsonData: '{"Name":"AngryFlappers", "Version":"", "Identifier":"a2b0a315-f665-46fe-ab12-d0453e43ca33",
-    "FilterState":{"_CLRType":"FilterState", "FilterStack":[ "Game", "Bird" ]}, "Settings":{"_CLRType":"ElementDiagramSettings",
+    "FilterState":{"_CLRType":"FilterState", "FilterStack":[ "Game", "Pipe" ]}, "Settings":{"_CLRType":"ElementDiagramSettings",
     "SnapSize":"10", "CodePathStrategyName":"Default", "GridLinesColor":{"r":"0.337",
     "g":"0.337", "b":"0.337", "a":"1"}, "GridLinesColorSecondary":{"r":"0.3", "g":"0.3",
     "b":"0.3", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1", "b":"1", "a":"1"},
@@ -57,7 +57,7 @@ MonoBehaviour:
     "Identifier":"908e8c89-8214-4c19-b363-9f44ba0b75d0", "Items":[  ], "Flags":{"_CLRType":"true"},
     "ForAssemblyQualifiedName":"AngryFlappersGame, Assembly-CSharp, Version=0.0.0.0,
     Culture=neutral, PublicKeyToken=null", "BaseViewIdentifier":"", "ComponentIdentifiers":[  ]},
-    {"_CLRType":"ElementData", "Name":"Bird", "IsCollapsed":"false", "Identifier":"4281e782-ca2a-4bcd-9a18-b631ece127f0",
+    {"_CLRType":"ElementData", "Name":"Bird", "IsCollapsed":"true", "Identifier":"4281e782-ca2a-4bcd-9a18-b631ece127f0",
     "Items":[ {"_CLRType":"ViewModelPropertyData", "Name":"State", "Identifier":"",
     "ItemType":"BirdState, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "IsRealTime":"false"}, {"_CLRType":"ViewModelPropertyData", "Name":"Gravity",
@@ -88,7 +88,8 @@ MonoBehaviour:
     {"_CLRType":"ElementData", "Name":"Pipe", "IsCollapsed":"false", "Identifier":"2a0777eb-b49b-4f0b-a8a2-c284539c734a",
     "Items":[ {"_CLRType":"ViewModelPropertyData", "Name":"ScrollSpeed", "Identifier":"",
     "ItemType":"System.Single, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-    "IsRealTime":"false"} ], "Locations":{"2a0777eb-b49b-4f0b-a8a2-c284539c734a":{"x":"390",
+    "IsRealTime":"false"}, {"_CLRType":"ViewModelCommandData", "Name":"Passed", "Identifier":"dae108a0-3c73-4eb9-bf02-872648383dc8",
+    "ItemType":"", "IsYield":"false"} ], "Locations":{"2a0777eb-b49b-4f0b-a8a2-c284539c734a":{"x":"390",
     "y":"270"}, "58e1cc41-952d-4d3e-937a-8d97644453ed":{"x":"570", "y":"250"}}, "CollapsedValues":{},
     "Flags":{"_CLRType":"true"}, "IsTemplate":"false", "BaseType":"", "IsMultiInstance":"false"},
     {"_CLRType":"ViewData", "Name":"PipeView", "IsCollapsed":"false", "Identifier":"58e1cc41-952d-4d3e-937a-8d97644453ed",

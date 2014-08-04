@@ -25,7 +25,7 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
     //{
     //    Debug.Log(BaseTypeName + ": " +string.Join(Environment.NewLine, AllBaseTypes.Select(p => p.Name).ToArray()));
     //}
-    public IEnumerable<ElementDataBase> AllBaseTypes
+    public IEnumerable<ElementData> AllBaseTypes
     {
         get
         {
@@ -208,11 +208,14 @@ public abstract class ElementDataBase : DiagramNode, ISubSystemType
 
     public abstract ICollection<ViewModelPropertyData> Properties { get; set; }
 
-    public ElementDataBase RootElement
+    public ElementData RootAbstractElement
     {
-        get { return AllBaseTypes.LastOrDefault() ?? this; }
+        get { return AllBaseTypes.LastOrDefault() ?? this as ElementData; }
     }
-
+    public ElementData RootElement
+    {
+        get { return AllBaseTypes.LastOrDefault(p => !p.IsTemplate) ?? this as ElementData; }
+    }
     public virtual string ViewModelAssemblyQualifiedName
     {
         get

@@ -318,6 +318,8 @@ public partial class PipeViewModel : ViewModel {
     
     public readonly P<System.Single> _ScrollSpeedProperty;
     
+    private ICommand _Passed;
+    
     private AngryFlappersGameViewModel _ParentAngryFlappersGame;
     
     public PipeViewModel() : 
@@ -339,6 +341,15 @@ public partial class PipeViewModel : ViewModel {
         }
     }
     
+    public virtual ICommand Passed {
+        get {
+            return _Passed;
+        }
+        set {
+            _Passed = value;
+        }
+    }
+    
     public virtual AngryFlappersGameViewModel ParentAngryFlappersGame {
         get {
             return this._ParentAngryFlappersGame;
@@ -349,6 +360,8 @@ public partial class PipeViewModel : ViewModel {
     }
     
     protected override void WireCommands(Controller controller) {
+        var pipe = controller as PipeControllerBase;
+        this.Passed = new CommandWithSender<PipeViewModel>(this, pipe.Passed);
     }
     
     public override void Unbind() {
@@ -362,6 +375,7 @@ public partial class PipeViewModel : ViewModel {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("Passed", Passed));
     }
     
     public override void Write(ISerializerStream stream) {

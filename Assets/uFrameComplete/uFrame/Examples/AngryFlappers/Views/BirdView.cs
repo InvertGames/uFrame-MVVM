@@ -34,8 +34,11 @@ public partial class BirdView
 
     public void OnTriggerEnter2D(Collider2D other)
     {
+        if (!other.gameObject.IsView<PipeView>())
+        {
+            ExecuteHit();
+        }
         
-        ExecuteHit();
     }
     public void Update()
     {

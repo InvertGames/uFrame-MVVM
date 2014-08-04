@@ -40,7 +40,11 @@ public class uFramePluginsWindow : EditorWindow
             if (
                 GUIHelpers.DoTriggerButton(new UFStyle("     " + plugin.Title, UBStyles.EventButtonStyle,
                     null,
-                    plugin.Enabled ? UBStyles.TriggerActiveButtonStyle : UBStyles.TriggerInActiveButtonStyle, () => { }, false, TextAnchor.MiddleCenter)))
+                    plugin.Enabled ? UBStyles.TriggerActiveButtonStyle : UBStyles.TriggerInActiveButtonStyle, () => { }, false, TextAnchor.MiddleCenter)
+                {
+                    IsWindow = true,
+                    FullWidth = true
+                }))
             {
                 plugin.Enabled = !plugin.Enabled;
                 uFrameEditor.Container = null;

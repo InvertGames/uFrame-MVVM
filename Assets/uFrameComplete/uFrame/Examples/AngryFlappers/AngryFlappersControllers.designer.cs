@@ -39,6 +39,7 @@ public abstract class AngryFlappersGameControllerBase : Controller {
     }
     
     public virtual void GameOver() {
+
     }
     
     public virtual void Play() {
@@ -90,6 +91,9 @@ public abstract class PipeControllerBase : Controller {
     
     public override void Initialize(ViewModel viewModel) {
         this.InitializePipe(((PipeViewModel)(viewModel)));
+    }
+    
+    public virtual void Passed(PipeViewModel pipe) {
     }
 }
 

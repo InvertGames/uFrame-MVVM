@@ -19,6 +19,7 @@ public class BirdController : BirdControllerBase {
     {
         base.Hit();
         Bird.State = BirdState.Dead;
-        Bird.ParentAngryFlappersGame.State = AngryFlappersGameState.GameOver;
+        AngryFlappersGameController.GameOver();
+       
     }
 }

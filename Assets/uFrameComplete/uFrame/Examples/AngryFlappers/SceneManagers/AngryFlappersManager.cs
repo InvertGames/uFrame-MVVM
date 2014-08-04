@@ -25,6 +25,7 @@ public class AngryFlappersManager : AngryFlappersManagerBase {
     public IEnumerator SpawnPipes()
     {
         Game.Pipes.Clear();
+        Game.Score = 0;
         Game.Bird.State = BirdState.Idle;
         Game.Bird.State = BirdState.Alive;
         Game.State = AngryFlappersGameState.Playing;

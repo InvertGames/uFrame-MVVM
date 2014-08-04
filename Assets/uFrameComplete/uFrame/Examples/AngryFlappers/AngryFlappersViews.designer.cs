@@ -196,6 +196,10 @@ public abstract class PipeViewBase : ViewBase {
         PipeViewModel pipe = ((PipeViewModel)(viewModel));
         pipe.ScrollSpeed = this._ScrollSpeed;
     }
+    
+    public virtual void ExecutePassed() {
+        this.ExecuteCommand(Pipe.Passed);
+    }
 }
 
 public class AngryFlappersGameViewViewBase : AngryFlappersGameViewBase {

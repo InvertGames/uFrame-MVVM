@@ -13,6 +13,11 @@ public partial class PipeView {
         this.transform.position = new Vector3(17.96289f, UnityEngine.Random.Range(-2.3f, 4.11f));
     }
 
+    public void OnTriggerExit2D(Collider2D other)
+    {
+        ExecutePassed();
+    }
+
     public void Update()
     {
         if (Pipe.ParentAngryFlappersGame.State == AngryFlappersGameState.Playing)
