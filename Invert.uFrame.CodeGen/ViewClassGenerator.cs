@@ -370,7 +370,7 @@ public abstract class ViewClassGenerator : CodeGenerator
         }
     }
 
-    private void AddCreateModelMethod(ElementData data)
+    public void AddCreateModelMethod(ElementData data)
     {
         var createModelMethod = new CodeMemberMethod()
         {

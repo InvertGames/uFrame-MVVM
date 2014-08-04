@@ -30,7 +30,7 @@ public class SceneContext
             if (!ViewModels.ContainsKey(identifier))
             {
                 return Container.Resolve<ViewModel>(identifier);
-            };
+            }
             return ViewModels[identifier];
         }
         set
@@ -78,11 +78,6 @@ public class SceneContext
         Container = gameContainer;
     }
 
-    public SceneContext(IGameContainer container, ISerializerStorage storage, ISerializerStream stream)
-    {
-        Container = container;
-    }
-
     public TViewModel CreateViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
     {
         var contextViewModel = this[identifier];
@@ -105,7 +100,12 @@ public class SceneContext
         stream.DependencyContainer = Container;
         storage.Load(stream);
         stream.TypeResolver = new StateLoaderResolver(this);
-        var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();
+        // ReSharper disable once UnusedVariable
+        var vms = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();
+        foreach (var vm in vms)
+        {
+            this[vm.Identifier] = vm;
+        }
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class SceneContext
     /// <param name="viewModels"></param>
     public void Save(ISerializerStorage storage, ISerializerStream stream, IEnumerable<ViewModel> viewModels = null)
     {
-        stream.SerializeArray("ViewModels",viewModels ?? PersitantViewModels.Values);
+        stream.SerializeArray("ViewModels", viewModels ?? PersitantViewModels.Values);
         storage.Save(stream);
     }
 }

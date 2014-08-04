@@ -33,7 +33,8 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 {
     public delegate void ModelCollectionChangedWith(ModelCollectionChangeEventWith<T> changeArgs);
 
-    public ModelCollection(List<T> value) : base(value)
+    public ModelCollection(List<T> value)
+        : base(value)
     {
     }
 
@@ -70,7 +71,7 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 
     public Type ItemType
     {
-        get { return typeof (T); }
+        get { return typeof(T); }
     }
 
     public void AddObject(object item)
@@ -80,10 +81,11 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
 
     public void RemoveObject(object item)
     {
-        Remove((T) item);
+        Remove((T)item);
     }
 
-    public ModelCollection(ViewModel owner, string propertyName) : base(owner, propertyName)
+    public ModelCollection(ViewModel owner, string propertyName)
+        : base(owner, propertyName)
     {
         Value = new List<T>();
     }
@@ -114,7 +116,7 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
         }
     }
 
-   
+
     public virtual void Add(T item)
     {
 
@@ -133,13 +135,13 @@ public class ModelCollection<T> : P<List<T>>, ICollection<T>, IModelCollection, 
         base.CanSetValue(value);
         if (value == null) return false;
 
-        var changed = new ModelCollectionChangeEventWith<T>()
-        {
-            Action = ModelCollectionAction.Reset,
-            NewItemsOfT = value.ToArray(),
-            OldItemsOfT = ObjectValue == null ? null : Value.ToArray()
-        };
-        
+        //var changed = new ModelCollectionChangeEventWith<T>()
+        //{
+        //    Action = ModelCollectionAction.Reset,
+        //    NewItemsOfT = value.ToArray(),
+        //    OldItemsOfT = ObjectValue == null ? null : Value.ToArray()
+        //};
+
         //OnChangedWith(changed);
         return true;
     }

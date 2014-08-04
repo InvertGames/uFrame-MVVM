@@ -43,7 +43,7 @@ public abstract class SceneManagerClassGenerator : CodeGenerator
             return;
         }
 
-        var elements = DiagramData.GetAllElements().ToArray();
+        var elements = subSystem.GetIncludedElements().ToArray();
 
         var decl = new CodeTypeDeclaration(IsDesignerFile ? sceneManager.NameAsSceneManagerBase : sceneManager.NameAsSceneManager);
         if (IsDesignerFile)

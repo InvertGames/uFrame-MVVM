@@ -10,13 +10,14 @@ public abstract class Controller
 {
 
     private SceneContext _context;
-    
+
 #if TESTS
+
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
     public IGameContainer Container { get; set; }
-        /// <summary>
+    /// <summary>
     /// The scene context that contains the View-Models for the current scene.
     /// </summary>
     public SceneContext Context
@@ -26,7 +27,7 @@ public abstract class Controller
         {
             _context = value;
             if (value != null)
-            Container = value.Container;
+                Container = value.Container;
         }
     }
 
@@ -49,7 +50,7 @@ public abstract class Controller
     /// </summary>
     public SceneContext Context
     {
-        get { return GameManager.ActiveSceneManager.Context; }
+        get { return _context ?? GameManager.ActiveSceneManager.Context; }
         set
         {
             _context = value;
@@ -122,13 +123,13 @@ public abstract class Controller
     {
         throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
     }
-     
+
     public abstract void Initialize(ViewModel viewModel);
 
     [Obsolete("WireCommands no longer lives in the controller. Regenerate your diagram.")]
     public virtual void WireCommands(ViewModel viewModel)
     {
-        
+
     }
 
 #if !TESTS
@@ -138,7 +139,6 @@ public abstract class Controller
         if (command == null)
         {
             throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
-            return;
         }
         command.Parameter = argument;
         if (command.Parameter == null)
@@ -156,7 +156,6 @@ public abstract class Controller
         if (command == null)
         {
             throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
-            return;
         }
         //command.Sender = null;
         command.Parameter = null;
@@ -171,7 +170,6 @@ public abstract class Controller
         if (command == null)
         {
             throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
-            return;
         }
         command.Parameter = argument;
 

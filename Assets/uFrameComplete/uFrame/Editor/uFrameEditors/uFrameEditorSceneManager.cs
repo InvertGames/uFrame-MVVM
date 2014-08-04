@@ -147,14 +147,15 @@ public class uFrameEditorSceneManager
                 }
                 catch (Exception ex)
                 {
-                    
+                    Supress(ex);
                 }
             }
-                
+
             // Draw the texture if it's a light (e.g.)
             //GUI.Label(r, textureView);
         }
     }
+    public static void Supress(Exception ex) { }
 
     #endregion
 

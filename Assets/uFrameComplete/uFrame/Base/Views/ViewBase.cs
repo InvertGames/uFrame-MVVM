@@ -9,12 +9,12 @@ using UnityEngine;
 /// <summary>
 /// The base class for a View that binds to a ViewModel
 /// </summary>
-public abstract class ViewBase : ViewContainer,IViewModelObserver
+public abstract class ViewBase : ViewContainer, IViewModelObserver
 {
-    [SerializeField,HideInInspector]
+    [SerializeField, HideInInspector]
     private bool _Save = false;
 
-    [SerializeField,HideInInspector]
+    [SerializeField, HideInInspector]
     private bool _InjectView = false;
 
     /// <summary>
@@ -188,7 +188,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
 
     public virtual void Awake()
     {
-        
+
     }
     /// <summary>
     /// This method is called immediately before "Bind".  This method is used
@@ -196,7 +196,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     /// </summary>
     protected virtual void PreBind()
     {
-        
+
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     /// </summary>
     public virtual void Bind()
     {
-        
+
     }
 
     /// <summary>
@@ -321,7 +321,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
             pv.ChildViews.Remove(this);
         }
         //Unbind();
-   
+
         //Bindings.Clear();
     }
 
@@ -451,7 +451,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         {
             binding.Bind();
         }
-        
+
     }
     /// <summary>
     /// Removes a binding from the view-models binding dictionary for this view.
@@ -499,13 +499,13 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     /// </summary>
     protected virtual void Apply()
     {
-        
+
     }
-    [ HideInInspector]
+    [HideInInspector]
     private string _id;
 
     private int _instanceId;
-    
+
     /// <summary>
     /// The identifier used for requesting a view-model.
     /// Implementation Details:
@@ -521,11 +521,12 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
     {
         get
         {
-           
+
             if (IsMultiInstance && ForceResolveViewModel)
             {
                 return _resolveName;
-            } else if (!IsMultiInstance && !string.IsNullOrEmpty(_resolveName))
+            }
+            else if (!IsMultiInstance && !string.IsNullOrEmpty(_resolveName))
             {
                 return _resolveName;
             }
@@ -541,9 +542,6 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         }
         set { _id = value; }
     }
-
-    [SerializeField,HideInInspector]
-    private bool _UseHashcodeAsIdentifier = false;
 
     public SceneManager SceneManager
     {
@@ -564,6 +562,12 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         set { _Save = value; }
     }
 
+    public bool InjectView
+    {
+        get { return _InjectView; }
+        set { _InjectView = value; }
+    }
+
     /// <summary>
     /// Request a view-model with a given controller.
     /// </summary>
@@ -574,7 +578,7 @@ public abstract class ViewBase : ViewContainer,IViewModelObserver
         return SceneManager.RequestViewModel(this, controller, Identifier);
     }
 
-    protected virtual ViewBase ReplaceView(ViewBase current, ViewModel value, GameObject prefab) 
+    protected virtual ViewBase ReplaceView(ViewBase current, ViewModel value, GameObject prefab)
     {
         if (value == null && current != null && current.gameObject != null)
         {

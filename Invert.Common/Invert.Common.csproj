@@ -55,6 +55,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y
+copy $(TargetPath) C:\Users\micah\Documents\uFrame1GettingStarted\Assets\uFrameComplete\uFrame\Editor\ /Y
 IF EXIST $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $(SolutionDir)Assets\uFrameComplete\uFrame\Editor\ /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

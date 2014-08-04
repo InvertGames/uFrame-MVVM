@@ -143,6 +143,8 @@ public class ViewViewBaseGenerator : ViewClassGenerator
 
         Decleration.BaseTypes.Add(View.BaseViewName);
 
+        AddCreateModelMethod(forElement);
+
         // implement abstract method bind defined in the viewbase class
         //var bindMethod = new CodeMemberMethod()
         //{
@@ -152,7 +154,7 @@ public class ViewViewBaseGenerator : ViewClassGenerator
         //Decleration.Members.Add(bindMethod);
 
         AddBindingMembers();
-
+        
         //foreach (var viewBindingExtender in BindingExtenders)
         //{
         //    viewBindingExtender.ExtendViewBase(Decleration, View);
@@ -164,6 +166,7 @@ public class ViewViewBaseGenerator : ViewClassGenerator
         {
             AddViewModelProperty(View.ViewForElement);
             AddInitializeViewModelMethod(View.ViewForElement);
+            AddExecuteMethods(forElement, Decleration);
         }
         
         Namespace.Types.Add(Decleration);

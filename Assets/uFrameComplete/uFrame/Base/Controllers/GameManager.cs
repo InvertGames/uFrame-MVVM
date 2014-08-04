@@ -152,7 +152,11 @@ public class GameManager : MonoBehaviour
     {
         
     }
+     [Obsolete("The method SwitchGame is obsolete.  Use TransitionLevel<T> or 'Save & Compile' your diagram.")]
+     public static void SwitchGameAndLevel<T>(Action<T> setup, params string[] levels) where T : SceneManager
+     {
 
+     }
     /// <summary>
     /// This switches the game from one to the other invoking a sequence of actions
     /// SwitchGame

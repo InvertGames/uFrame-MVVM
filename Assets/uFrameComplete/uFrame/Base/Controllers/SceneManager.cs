@@ -28,7 +28,7 @@ public abstract class SceneManager : ViewContainer
         }
         set
         {
-            
+
         }
     }
 
@@ -72,7 +72,7 @@ public abstract class SceneManager : ViewContainer
     /// </summary>
     public virtual void Reload()
     {
-        
+
         GameManager.Transition(this);
     }
     /// <summary>
@@ -135,15 +135,15 @@ public abstract class SceneManager : ViewContainer
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
     {
-       
+
         var contextViewModel = Context[identifier];
         if (contextViewModel == null)
         {
-            contextViewModel = new TViewModel {Controller = controller,Identifier = identifier};
+            contextViewModel = new TViewModel { Controller = controller, Identifier = identifier };
             Context[identifier] = contextViewModel;
         }
-        Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel,identifier);
-        Container.RegisterInstance<TViewModel>(contextViewModel as TViewModel,identifier);
+        Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);
+        Container.RegisterInstance<TViewModel>(contextViewModel as TViewModel, identifier);
         return (TViewModel)contextViewModel;
     }
 
@@ -157,8 +157,8 @@ public abstract class SceneManager : ViewContainer
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller, string identifier)
     {
-        
-        if (_InjectViews)
+
+        if (viewBase.InjectView)
             Container.Inject(viewBase);
 
         var contextViewModel = Context[identifier];
@@ -171,8 +171,8 @@ public abstract class SceneManager : ViewContainer
                 if (contextViewModel == null)
                 {
                     contextViewModel = controller.CreateEmpty(identifier);
-                
-                        Context[identifier] = contextViewModel;
+
+                    Context[identifier] = contextViewModel;
 
                     if (!viewBase.IsMultiInstance || viewBase.ForceResolveViewModel)
                     {
@@ -182,14 +182,14 @@ public abstract class SceneManager : ViewContainer
                         if (!viewBase.IsMultiInstance)
                         {
                             Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
-                                string.IsNullOrEmpty(identifier) ? null : identifier);    
+                                string.IsNullOrEmpty(identifier) ? null : identifier);
                         }
-                        
+
                     }
                 }
             }
-          
-                Context[identifier] = contextViewModel;
+
+            Context[identifier] = contextViewModel;
         }
         if (contextViewModel != null)
         {
@@ -210,10 +210,10 @@ public abstract class SceneManager : ViewContainer
                 if (identifier != null)
                 {
                     if (!Context.PersitantViewModels.ContainsKey(identifier))
-                    Context.PersitantViewModels.Add(identifier,contextViewModel);
+                        Context.PersitantViewModels.Add(identifier, contextViewModel);
                 }
             }
-           
+
         }
 
         return contextViewModel;
@@ -245,6 +245,6 @@ public abstract class SceneManager : ViewContainer
 //    public override ISerializerStorage GetStorage()
 //    {
 //        var result = base.GetStorage();
-        
+
 //    }
 //}
