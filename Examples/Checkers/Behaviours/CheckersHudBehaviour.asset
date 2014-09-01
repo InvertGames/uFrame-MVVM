@@ -1,0 +1,216 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff145337a8918384bb828b11f00e5972, type: 3}
+  m_Name: CheckersHudBehaviour
+  m_EditorClassIdentifier: 
+  _declares:
+  - _ValueFromVariableName: 
+    _valueFrom: 0
+    _varName: 
+    _Expanded: 0
+    _Expose: 1
+    _GUID: b52fa237-b53f-4321-8930-a841032ea23b
+    _NormalMode: 0
+    _objectValueType: UnityEngine.GUIText, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _animationValue: {fileID: 0}
+    _boolValue: 0
+    _colorValue: {r: 0, g: 0, b: 0, a: 0}
+    _enumType: 
+    _enumValue: 0
+    _floatValue: 0
+    _gameobjectValue: {fileID: 0}
+    _intValue: 0
+    _materialValue: {fileID: 0}
+    _name: BlackScoreLabel
+    _objectValue: {fileID: 0}
+    _quaternionValue: {x: 0, y: 0, z: 0, w: 0}
+    _rectValue:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    _stringValue: 
+    _textureValue: {fileID: 0}
+    _transformValue: {fileID: 0}
+    _varType: 11
+    _vector2Value: {x: 0, y: 0}
+    _vector3Value: {x: 0, y: 0, z: 0}
+  - _ValueFromVariableName: 
+    _valueFrom: 0
+    _varName: 
+    _Expanded: 0
+    _Expose: 1
+    _GUID: 82a6b930-04ed-43f4-aa7a-1a5b7458cd8a
+    _NormalMode: 0
+    _objectValueType: UnityEngine.GUIText, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _animationValue: {fileID: 0}
+    _boolValue: 0
+    _colorValue: {r: 0, g: 0, b: 0, a: 0}
+    _enumType: UnityEngine.AnimationPlayMode, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _enumValue: 0
+    _floatValue: 0
+    _gameobjectValue: {fileID: 0}
+    _intValue: 0
+    _materialValue: {fileID: 0}
+    _name: RedScoreLabel
+    _objectValue: {fileID: 0}
+    _quaternionValue: {x: 0, y: 0, z: 0, w: 0}
+    _rectValue:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    _stringValue: 
+    _textureValue: {fileID: 0}
+    _transformValue: {fileID: 0}
+    _varType: 11
+    _vector2Value: {x: 0, y: 0}
+    _vector3Value: {x: 0, y: 0, z: 0}
+  - _ValueFromVariableName: 
+    _valueFrom: 0
+    _varName: 
+    _Expanded: 0
+    _Expose: 1
+    _GUID: a804993c-0a20-4391-aff8-7df4f519496f
+    _NormalMode: 0
+    _objectValueType: UnityEngine.GUIText, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _animationValue: {fileID: 0}
+    _boolValue: 0
+    _colorValue: {r: 0, g: 0, b: 0, a: 0}
+    _enumType: UnityEngine.AnimationPlayMode, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _enumValue: 0
+    _floatValue: 0
+    _gameobjectValue: {fileID: 0}
+    _intValue: 0
+    _materialValue: {fileID: 0}
+    _name: CurrentPlayerLabel
+    _objectValue: {fileID: 0}
+    _quaternionValue: {x: 0, y: 0, z: 0, w: 0}
+    _rectValue:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    _stringValue: 
+    _textureValue: {fileID: 0}
+    _transformValue: {fileID: 0}
+    _varType: 11
+    _vector2Value: {x: 0, y: 0}
+    _vector3Value: {x: 0, y: 0, z: 0}
+  - _ValueFromVariableName: 
+    _valueFrom: 0
+    _varName: 
+    _Expanded: 0
+    _Expose: 0
+    _GUID: f16cd54c-e9db-475f-9e0b-cae470d2ecb0
+    _NormalMode: 0
+    _objectValueType: UnityEngine.Object, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _animationValue: {fileID: 0}
+    _boolValue: 0
+    _colorValue: {r: 0, g: 0, b: 0, a: 0}
+    _enumType: UnityEngine.AnimationPlayMode, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _enumValue: 0
+    _floatValue: 0
+    _gameobjectValue: {fileID: 0}
+    _intValue: 0
+    _materialValue: {fileID: 0}
+    _name: StringFormat_Result
+    _objectValue: {fileID: 0}
+    _quaternionValue: {x: 0, y: 0, z: 0, w: 0}
+    _rectValue:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    _stringValue: 
+    _textureValue: {fileID: 0}
+    _transformValue: {fileID: 0}
+    _varType: 1
+    _vector2Value: {x: 0, y: 0}
+    _vector3Value: {x: 0, y: 0, z: 0}
+  _globals: {fileID: 0}
+  _includes: []
+  _sheets: []
+  _triggers:
+  - _data: _BlackScoreProperty
+    _displayName: BlackScore Changed
+    _guid: d88f099c-ccd2-48a0-b711-8ccef7643069
+    _isStatic: 1
+    _sheet:
+      _ByteData: 03000000010000050000005f41726773550000005542537472696e675b5d2c20496e766572742e754265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c01000000010000000a000000426c61636b53636f7265070000005f466f726d61745a00000053797374656d2e537472696e672c206d73636f726c69622c2056657273696f6e3d322e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d623737613563353631393334653038390a000000426c61636b3a207b307d070000005f526573756c74530000005542537472696e672c20496e766572742e754265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000066313663643534632d653964622d343735662d396530622d63616534373064326563623002000000010000080000005f475549546578745300000055424f626a6563742c20496e766572742e754265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000062353266613233372d623533662d343332312d383933302d613834313033326561323362060000005f56616c7565530000005542537472696e672c20496e766572742e754265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000066313663643534632d653964622d343735662d396530622d636165343730643265636230
+      _ActionIndexes: 0000000084010000a7020000
+      _FieldStartIndexes: 070000007f000000f6000000840100008b0100001a020000a7020000
+      _FieldTypes: []
+      _ItemTypes:
+      - StringFormat
+      - SetGUITextText
+      _ObjectReferences: []
+      _ForwardToId: 
+      _guid: 03836679-a846-4c5b-87e6-2a7c3de4cbef
+      _Name: _BlackScoreProperty
+      _TriggerType: 
+    _triggerTypeName: ViewModelPropertyTrigger, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - _data: _RedScoreProperty
+    _displayName: RedScore Changed
+    _guid: ec864a39-f8b5-4f92-ae36-0e8e5f876722
+    _isStatic: 1
+    _sheet:
+      _ByteData: 03000000010001050000005f417267734e0000005542537472696e675b5d2c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c01000000010000000800000052656453636f7265070000005f466f726d61745a00000053797374656d2e537472696e672c206d73636f726c69622c2056657273696f6e3d322e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d62373761356335363139333465303839080000005265643a207b307d070000005f526573756c744c0000005542537472696e672c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000066313663643534632d653964622d343735662d396530622d63616534373064326563623002000000010001080000005f475549546578744c00000055424f626a6563742c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000038326136623933302d303465642d343366342d616137612d316135623734353863643861060000005f56616c75654c0000005542537472696e672c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000066313663643534632d653964622d343735662d396530622d636165343730643265636230
+      _ActionIndexes: 000000007201000087020000
+      _FieldStartIndexes: 0700000076000000eb00000072010000790100000102000087020000
+      _FieldTypes: []
+      _ItemTypes:
+      - StringFormat
+      - SetGUITextText
+      _ObjectReferences: []
+      _ForwardToId: 
+      _guid: 654a8733-97fb-44df-9d7b-2b4248c4340a
+      _Name: _RedScoreProperty
+      _TriggerType: 
+    _triggerTypeName: ViewModelPropertyTrigger, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - _data: _CurrentPlayerProperty
+    _displayName: CurrentPlayer Changed
+    _guid: 0fe952b6-2450-4b5d-aa17-16851159a9be
+    _isStatic: 1
+    _sheet:
+      _ByteData: 03000000010001050000005f417267734e0000005542537472696e675b5d2c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c01000000010000000d00000043757272656e74506c61796572070000005f466f726d61745a00000053797374656d2e537472696e672c206d73636f726c69622c2056657273696f6e3d322e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d623737613563353631393334653038390b000000506c617965723a207b307d070000005f526573756c744c0000005542537472696e672c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000066313663643534632d653964622d343735662d396530622d63616534373064326563623002000000010001080000005f475549546578744c00000055424f626a6563742c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000061383034393933632d306132302d343339312d616666382d376466346635313934393666060000005f56616c75654c0000005542537472696e672c20554265686176696f7572732c2056657273696f6e3d312e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c010000002400000066313663643534632d653964622d343735662d396530622d636165343730643265636230
+      _ActionIndexes: 000000007a0100008f020000
+      _FieldStartIndexes: 070000007b000000f30000007a01000081010000090200008f020000
+      _FieldTypes: []
+      _ItemTypes:
+      - StringFormat
+      - SetGUITextText
+      _ObjectReferences: []
+      _ForwardToId: 
+      _guid: 875b4c32-5bc1-4569-bf9e-29a006ffba21
+      _Name: _CurrentPlayerProperty
+      _TriggerType: 
+    _triggerTypeName: ViewModelPropertyTrigger, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _triggerTemplates: []
+  _settings: []
+  _ViewModelType: CheckersGameViewModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  _commandActionSheets: []
+  _propertyActionSheets: []
