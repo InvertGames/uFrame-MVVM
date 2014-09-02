@@ -36,7 +36,7 @@ public class ImportCommand : ElementsDiagramToolbarCommand
                     diagram.Data.CurrentFilter.Locations[result] = new Vector2(15f, 15f);
                 }
             }
-            diagram.Refresh(true);
+            diagram.Refresh();
         });
     }
 
