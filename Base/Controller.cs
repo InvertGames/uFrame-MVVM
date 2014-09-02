@@ -135,10 +135,7 @@ public abstract class Controller : ICommandHandler
         throw new NotImplementedException("You propably need to resave you're diagram. Or you need to not call create on an abstract controller.");
     }
 
-    public virtual void Map(IElementModel model, ViewModel viewModel)
-    {
-        
-    }
+
 
     public abstract void Initialize(ViewModel viewModel);
 

@@ -176,9 +176,9 @@ public class GameContainer : IGameContainer
         /// </summary>
         /// <typeparam name="T">The type of instance to resolve</typeparam>
         /// <returns>The/An instance of 'instanceType'</returns>
-        public T Resolve<T>(string name = null, bool requireInstance = false) where T : class
+        public T Resolve<T>(string name = null, bool requireInstance = false, params object[] args) where T : class
         {
-            return (T)Resolve(typeof(T), name, requireInstance);
+            return (T)Resolve(typeof(T), name, requireInstance,args);
         }
 
         /// <summary>

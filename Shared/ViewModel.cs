@@ -111,21 +111,7 @@ public abstract class ViewModel
 #if !DLL
     public ICommandHandler CommandHandler { get; set; }
 
-    private IElementModel _data = null;
 
-    public IElementModel Data
-    {
-        get { return _data; }
-        set
-        {
-            _data = value;
-            if (_data != null)
-            {
-                if (Controller != null)
-                    Controller.Map(_data, this);
-            }
-        }
-    }
 #endif
     /// <summary>
     /// Grabs all the commands available for a viewmodel type

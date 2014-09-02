@@ -7,23 +7,23 @@ using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
-public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
+public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
 {
     public bool AllowNone { get; set; }
     public bool PrimitiveOnly { get; set; }
 
-    public override void Perform(ElementsDiagram node)
+    public override void Perform(DiagramViewModel node)
     {
-        var typesList = GetRelatedTypes(node.Data);
+        var typesList = GetRelatedTypes(node);
 
-        var viewModelItem = node.SelectedItem.NodeItem as IViewModelItem;
+        var viewModelItem = node.SelectedNodeItem as ElementItemViewModel;
         if (viewModelItem == null)
         {
             return;
         }
         ElementItemTypesWindow.InitTypeListWindow("Choose Type", typesList.ToArray(), (selected) =>
         {
-            node.ExecuteCommand((diagram) =>
+            uFrameEditor.ExecuteCommand((diagram) =>
             {
                 viewModelItem.RelatedType = selected.AssemblyQualifiedName;
             });
@@ -31,7 +31,7 @@ public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
         });
     }
 
-    public virtual IEnumerable<ElementItemType> GetRelatedTypes(IElementDesignerData diagramData)
+    public virtual IEnumerable<ElementItemType> GetRelatedTypes(DiagramViewModel diagramData)
     {
         if (AllowNone)
         {
@@ -40,13 +40,13 @@ public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
 
         if (!PrimitiveOnly)
         {
-            foreach (var viewModel in diagramData.GetElements())
+            foreach (var viewModel in diagramData.Data.GetElements())
             {
                 yield return new ElementItemType()
                 {
                     AssemblyQualifiedName = viewModel.AssemblyQualifiedName,
                     Label = viewModel.Name,
-                    Group = diagramData.Name
+                    Group = diagramData.Title
                 };
             }
         }
@@ -73,12 +73,12 @@ public class SelectItemTypeCommand : EditorCommand<ElementsDiagram>
         }
     }
 
-    public override string CanPerform(ElementsDiagram node)
+    public override string CanPerform(DiagramViewModel node)
     {
         
         if (node == null) return "No element data.";
-        if (node.SelectedItem == null) return "No selection";
-        if (node.SelectedItem.NodeItem as IViewModelItem == null) return "Must be an element item";
+        if (node.SelectedNode == null) return "No selection";
+        if (node.SelectedNodeItem as ElementItemViewModel == null) return "Must be an element item";
         return null;
     }
 }

@@ -73,7 +73,7 @@ public interface IGameContainer
         /// </summary>
         /// <typeparam name="T">The type of instance to resolve</typeparam>
         /// <returns>The/An instance of 'instanceType'</returns>
-        T Resolve<T>(string name = null, bool requireInstance = false) where T : class;
+        T Resolve<T>(string name = null, bool requireInstance = false, params object[] args) where T : class;
 
         TBase ResolveRelation<TBase>(Type tfor, params object[] arg);
 
