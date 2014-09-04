@@ -467,12 +467,12 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
     public virtual void Unbind()
     {
 
-        if (ViewModelObject != null)
+        if (_Model != null)
         {
-            ViewModelObject.References--;
-            if (ViewModelObject.References < 1)
+            _Model.References--;
+            if (_Model.References < 1)
             {
-                ViewModelObject.Unbind();
+                _Model.Unbind();
             }
             else
             {

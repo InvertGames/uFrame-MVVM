@@ -204,17 +204,17 @@ public abstract class Controller : ICommandHandler
 
     public UnityEngine.Coroutine StartCoroutine(IEnumerator routine)
     {
-        return GameManager.ActiveSceneManager.StartCoroutine(routine);
+        return GameManager.Instance.StartCoroutine(routine);
     }
 
     public void StopAllCoroutines()
     {
-        GameManager.ActiveSceneManager.StopAllCoroutines();
+        GameManager.Instance.StopAllCoroutines();
     }
 
     public void StopCoroutine(string name)
     {
-        GameManager.ActiveSceneManager.StopCoroutine(name);
+        GameManager.Instance.StopCoroutine(name);
     }
 
     public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction) where TViewModel : ViewModel
@@ -294,8 +294,6 @@ public abstract class Controller : ICommandHandler
             method.Invoke(sceneManager, additionalParameters);
         }
     }
-
-
 #endif
 
 

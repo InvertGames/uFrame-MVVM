@@ -1,4 +1,5 @@
 using System;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UnityEditor;
@@ -26,7 +27,7 @@ public class AddManagerToSceneSelectionCommand : EditorCommand<IDiagramNode>, ID
         var sceneManagerData = node as SceneManagerData;
         if (sceneManagerData == null)
             return;
-        var sceneManagerAssemblyName = UFrameAssetManager.DesignerVMAssemblyName.Replace("ViewModel",
+        var sceneManagerAssemblyName = uFrameEditor.uFrameTypes.ViewModel.AssemblyQualifiedName.Replace("ViewModel",
             sceneManagerData.NameAsSceneManager);
         var type = Type.GetType(sceneManagerAssemblyName);
         if (type == null)
