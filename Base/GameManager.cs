@@ -440,15 +440,13 @@ public class GameManager : MonoBehaviour
         // Grab the game manager instance transform so we can ignore it
         var gameTransform = Instance.transform;
         // Grab the root objects in the scene to destroy them later
-        var list = new List<Transform>();
+        var list = new List<LoadingScreenObject>();
         // The loading screen should be small
-        foreach (Transform p in FindObjectsOfType(typeof(Transform)))
+        foreach (LoadingScreenObject p in FindObjectsOfType(typeof(LoadingScreenObject)))
         {
             if (p == gameTransform)
                 continue;
-
-            if (p.parent == null)
-                list.Add(p);
+            list.Add(p);
         }
         // For progress tracking
         var progressValue = 0f;
@@ -502,4 +500,6 @@ public class GameManager : MonoBehaviour
         }
         ProgressUpdated("Complete", 1f);
     }
+
+   
 }
