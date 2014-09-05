@@ -214,7 +214,8 @@ public class GameContainer : IGameContainer
         {
             if (constructorArgs != null && constructorArgs .Length > 0)
             {
-                return Activator.CreateInstance(type, constructorArgs);
+                //return Activator.CreateInstance(type,BindingFlags.Public | BindingFlags.Instance,Type.DefaultBinder, constructorArgs,CultureInfo.CurrentCulture);
+                return Activator.CreateInstance(type,constructorArgs);
             }
             ConstructorInfo[] constructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
        
