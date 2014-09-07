@@ -221,7 +221,7 @@ public class Computed<T> : ModelPropertyBase
         Value = default(T);
     }
 
-
+    
     //private readonly ModelPropertyBase[] _dependantProperties;
     public Computed(ViewModel owner, string propertyName,
        params ModelPropertyBase[] dependantProperties)

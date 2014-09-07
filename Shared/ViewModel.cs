@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-
-
 #if DLL
+using Invert.MVVM;
 using Invert.uFrame.Editor;
 namespace Invert.MVVM
 {
@@ -30,7 +29,7 @@ public abstract class ViewModel
     private Dictionary<string, ModelPropertyBase> _modelProperties;
     private string _identifier;
     //private List<IBinding> _bindings;
-
+    
     /// <summary>
     ///Access a model property via string.  This is optimized using a compiled delegate to
     ///access derived classes properties so use as needed
@@ -356,3 +355,17 @@ public class ViewModelPropertyInfo
 #if DLL
 }
 #endif
+
+public static class ViewModelExtensions
+{
+    public static void AsComputed<T>(this P<T> targetProperty, Func<T> calculate, params ModelPropertyBase[] dependantProperties)
+    {
+        foreach (var property in dependantProperties)
+        {
+            property.ValueChanged += value =>
+            {
+                targetProperty.Value = calculate();
+            };
+        }
+    }
+}

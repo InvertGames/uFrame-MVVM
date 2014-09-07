@@ -57,7 +57,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.Register<IBindingGenerator, CollectionItemCreateBindingGenerator>("Create");
 
 
-
+        
         //container.RegisterInstance<IBindingGenerator>(new PropertyBindingGenerator(){},"PropertyBinding");
         //container.RegisterInstance<IBindingGenerator>(new CollectionItemAddedBindingGenerator() { IsViewModelBinding = true }, "AddedVMBinding");
         //container.RegisterInstance<IBindingGenerator>(new CollectionItemRemovedBindingGenerator() { IsViewModelBinding = true }, "RemovedVMBinding");
@@ -76,6 +76,7 @@ public class UFrameEditorPlugin : DiagramPlugin
 
     public class uFrameTypeProvider : IUFrameTypeProvider
     {
+
         public Type ViewModel
         {
             get { return typeof (ViewModel); }
