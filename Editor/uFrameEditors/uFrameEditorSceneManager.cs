@@ -165,7 +165,7 @@ public class uFrameEditorSceneManager
         var attribute = view.GetType().GetCustomAttributes(typeof(DiagramInfoAttribute), true).FirstOrDefault() as DiagramInfoAttribute;
 
         if (attribute == null) return;
-        designerWindow.LoadDiagramByName(attribute.DiagramName);
+      //  designerWindow.LoadDiagramByName(attribute.DiagramName);
         //designerWindow.Diagram.Data.PushFilter();
     }
 

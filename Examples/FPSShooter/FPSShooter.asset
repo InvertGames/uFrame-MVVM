@@ -21,4 +21,9 @@ MonoBehaviour:
     "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5", "a":"1"}, "TransitionLinkColor":{"r":"1",
     "g":"0.9215686", "b":"0.01568628", "a":"1"}, "ViewLinkColor":{"r":"0", "g":"0",
     "b":"1", "a":"1"}, "GemerateDefaultBindings":"true", "RootNamespace":""}, "SceneFlow":{"_CLRType":"SceneFlowFilter",
-    "Locations":{}, "CollapsedValues":{}}, "Nodes":[  ]}'
+    "Locations":{"39a0b59a-acb1-4e24-8405-bfc34e4fc9f4":{"x":"227", "y":"166"}, "f6a68b1a-8e69-4cb7-b467-c28161ae5c58":{"x":"205",
+    "y":"236"}, "bcdc48da-9c38-4191-9e52-f057c563564d":{"x":"60", "y":"213"}}, "CollapsedValues":{"39a0b59a-acb1-4e24-8405-bfc34e4fc9f4":"true",
+    "f6a68b1a-8e69-4cb7-b467-c28161ae5c58":"true", "bcdc48da-9c38-4191-9e52-f057c563564d":"true"}},
+    "Nodes":[ {"_CLRType":"SceneManagerData", "Name":"AddSceneManager", "IsCollapsed":"true",
+    "Identifier":"bcdc48da-9c38-4191-9e52-f057c563564d", "Items":[  ], "Flags":{"_CLRType":"true"},
+    "DataBag":{"_CLRType":"DataBag"}, "SubSystemIdentifier":""} ]}'

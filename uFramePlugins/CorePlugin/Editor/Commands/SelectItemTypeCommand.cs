@@ -44,7 +44,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
             {
                 yield return new ElementItemType()
                 {
-                    AssemblyQualifiedName = viewModel.AssemblyQualifiedName,
+                    AssemblyQualifiedName = viewModel.Identifier,
                     Label = viewModel.Name,
                     Group = diagramData.Title
                 };

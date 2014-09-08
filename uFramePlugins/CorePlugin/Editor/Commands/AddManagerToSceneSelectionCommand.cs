@@ -27,7 +27,7 @@ public class AddManagerToSceneSelectionCommand : EditorCommand<IDiagramNode>, ID
         var sceneManagerData = node as SceneManagerData;
         if (sceneManagerData == null)
             return;
-        var sceneManagerAssemblyName = uFrameEditor.uFrameTypes.ViewModel.AssemblyQualifiedName.Replace("ViewModel",
+        var sceneManagerAssemblyName = uFrameEditor.UFrameTypes.ViewModel.AssemblyQualifiedName.Replace("ViewModel",
             sceneManagerData.NameAsSceneManager);
         var type = Type.GetType(sceneManagerAssemblyName);
         if (type == null)

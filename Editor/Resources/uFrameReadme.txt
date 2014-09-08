@@ -1,6 +1,7 @@
 [u]Frame Release Notes
 Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, notifications, and cool info.
 1.41 ---
+Important Note: Element Inheritance,Property Types,Collections Types, Command Types and View links may be broken.  Double-check that they are correctly wired together.
 Added: Computed properties on view-models and controllers. Right-Click and choose "Computed By->{PropertyName}" on a Element Property.
 
 
