@@ -59,15 +59,15 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         yield return new ElementItemType() { Type = typeof(DateTime), Group = "", Label = "date" };
         yield return new ElementItemType() { Type = typeof(Vector2), Group = "", Label = "Vector2" };
         yield return new ElementItemType() { Type = typeof(Vector3), Group = "", Label = "Vector3" };
-        yield return new ElementItemType() { Type = typeof(FPSPlayerController), Group = "", Label = "FPSPlayerController" };
 
         if (PrimitiveOnly) yield break;
 
         var projectAssembly = typeof(ViewModel).Assembly;
         foreach (var type in projectAssembly.GetTypes())
         {
-            if (typeof(ViewModel).IsAssignableFrom(type) || typeof(ICommand).IsAssignableFrom(type))
+            if (!typeof(Component).IsAssignableFrom(type) && type.IsClass && !type.Name.Contains("<") && !typeof(ViewModel).IsAssignableFrom(type) && !typeof(Controller).IsAssignableFrom(type) && !typeof(ViewBase).IsAssignableFrom(type))
             {
+                if (!type.ContainsGenericParameters)
                 yield return new ElementItemType() { Type = type, Group = "Project", Label = type.Name };
             }
         }
