@@ -168,7 +168,7 @@ public abstract class SceneManager : ViewContainer
                 contextViewModel = Container.Resolve<ViewModel>(identifier);
                 if (contextViewModel == null)
                 {
-                    contextViewModel = controller.CreateEmpty(identifier);
+                    contextViewModel = controller == null ? Activator.CreateInstance(viewBase.ViewModelType) as ViewModel : controller.CreateEmpty(identifier);
 
                     Context[identifier] = contextViewModel;
 
@@ -193,6 +193,7 @@ public abstract class SceneManager : ViewContainer
         {
 
             // Make sure its wired to the controller
+            if (controller != null)
             contextViewModel.Controller = controller;
 
 
@@ -201,6 +202,7 @@ public abstract class SceneManager : ViewContainer
             {
 
                 viewBase.InitializeData(contextViewModel);
+                if (controller != null)
                 controller.Initialize(contextViewModel);
             }
 
