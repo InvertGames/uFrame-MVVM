@@ -156,7 +156,10 @@ public abstract class ViewModel
         Bindings[-1].Add(binding);
         binding.Bind();
     }
-
+    public void AddBinding(Action bind, Action unbind)
+    {
+        AddBinding(new GenericBinding(bind,unbind));
+    }
     public virtual void Deserialize(JSONNode node)
     {
         CacheReflectedModelProperties();
@@ -360,12 +363,20 @@ public static class ViewModelExtensions
 {
     public static void AsComputed<T>(this P<T> targetProperty, Func<T> calculate, params ModelPropertyBase[] dependantProperties)
     {
-        foreach (var property in dependantProperties)
+        ModelPropertyBase.PropertyChangedHandler handler = delegate(object value) {  targetProperty.Value = calculate(); };
+        targetProperty.Owner.AddBinding(() =>
         {
-            property.ValueChanged += value =>
+            foreach (var property in dependantProperties)
             {
-                targetProperty.Value = calculate();
-            };
-        }
+                property.ValueChanged += handler;
+            }
+        }, () =>
+        {
+            foreach (var property in dependantProperties)
+            {
+                property.ValueChanged -= handler;
+            }
+        });
+        
     }
 }

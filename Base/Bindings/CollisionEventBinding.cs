@@ -16,7 +16,6 @@ public class CollisionEventBinding : ComponentCommandBinding
     {
         return new ModelCollisionEventBinding()
         {
-            ModelMemberName = _ModelMemberName,
             Source = _SourceView.ViewModelObject,
             CollisionEvent = _CollisionEvent,
         };

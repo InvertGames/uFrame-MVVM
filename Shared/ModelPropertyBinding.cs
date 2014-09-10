@@ -19,8 +19,6 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
     public override void Bind()
     {
         base.Bind();
-        if (TwoWay)
-            _lastValue = GetTargetValueDelegate();
 
         ModelProperty.ValueChanged += PropertyChanged;
         if (IsImmediate)

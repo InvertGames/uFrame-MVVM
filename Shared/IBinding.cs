@@ -2,12 +2,13 @@
 namespace Invert.MVVM
 {
 #endif
+using System;
+
 /// <summary>
 /// Interface for all bindings
 /// </summary>
 public interface IBinding
 {
-    bool CanTwoWayBind { get; }
 
     bool IsComponent { get; set; }
 
@@ -21,6 +22,39 @@ public interface IBinding
 
     void Unbind();
 }
+
+public class GenericBinding : IBinding
+{
+    public bool IsComponent { get; set; }
+    public string ModelMemberName { get; set; }
+    public bool TwoWay { get; set; }
+
+    public Action BindAction { get; set; }
+    public Action UnbindAction { get; set; }
+
+    public GenericBinding(Action bindAction, Action unbindAction)
+    {
+        BindAction = bindAction;
+        UnbindAction = unbindAction;
+    }
+
+    public void Bind()
+    {
+        if (BindAction != null)
+        {
+            BindAction();
+        }
+    }
+
+    public void Unbind()
+    {
+        if (UnbindAction != null)
+        {
+            UnbindAction();
+        }
+    }
+}
+
 #if DLL
 }
 #endif
