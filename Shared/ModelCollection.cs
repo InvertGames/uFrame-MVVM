@@ -129,6 +129,7 @@ namespace Invert.MVVM
             };
 
             OnChangedWith(value);
+            OnPropertyChanged(value);
         }
 
         public override bool CanSetValue(List<T> value)
