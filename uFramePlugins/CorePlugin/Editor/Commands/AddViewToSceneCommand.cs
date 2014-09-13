@@ -28,7 +28,7 @@ public class AddViewToSceneCommand : EditorCommand<ViewNodeViewModel>, IDiagramN
         var view = viewNode.GraphItem;
         if (view == null) return;
 
-        if (view.CurrentViewType == null)
+        if (view.CurrentType == null)
         {
             EditorUtility.DisplayDialog("Can't add to scene", "The diagram must be saved and have no compiler errors.",
                 "OK");
@@ -36,7 +36,7 @@ public class AddViewToSceneCommand : EditorCommand<ViewNodeViewModel>, IDiagramN
         }
 
         GameObject obj = new GameObject(view.Name);
-        obj.AddComponent(view.CurrentViewType);
+        obj.AddComponent(view.CurrentType);
     }
 
     public override bool ShowAsDiabled

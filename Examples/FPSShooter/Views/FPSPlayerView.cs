@@ -23,7 +23,7 @@ public partial class FPSPlayerView
     {
         
         base.Bind();
-      
+        
 
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha1).SetParameter(0);
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha2).SetParameter(1);

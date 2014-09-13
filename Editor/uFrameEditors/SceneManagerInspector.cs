@@ -1,6 +1,7 @@
 using System.IO;
 using System.Text;
 using Invert.Common;
+using Invert.Common.UI;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ public class SceneManagerInspector : uFrameInspector
         {
             foreach (var instance in GameManager.ActiveSceneManager.Context.ViewModels)
             {
-                if (UBEditor.DoTriggerButton(new UBTriggerContent(instance.Value.GetHashCode() +": " + instance.Key,
+                if (GUIHelpers.DoTriggerButton(new UFStyle(instance.Value.GetHashCode() +": " + instance.Key,
                     UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
                     TextAnchor.MiddleCenter) { SubLabel = instance.Value.GetType().Name }))
                 {
@@ -30,7 +31,7 @@ public class SceneManagerInspector : uFrameInspector
 
             }
 
-            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), "To Json", ElementDesignerStyles.ButtonStyle))
+            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "To Json", ElementDesignerStyles.ButtonStyle))
             {
                 var fileStorage = new TextAssetStorage();
                 var stringStorage = new StringSerializerStorage();

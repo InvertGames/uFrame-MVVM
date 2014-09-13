@@ -11,12 +11,12 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
 {
     public bool AllowNone { get; set; }
     public bool PrimitiveOnly { get; set; }
-
+    public bool IncludeUnityEngine { get; set; }
     public override void Perform(DiagramViewModel node)
     {
         var typesList = GetRelatedTypes(node);
 
-        var viewModelItem = node.SelectedNodeItem as ElementItemViewModel;
+        var viewModelItem = node.SelectedNodeItem as TypedItemViewModel;
         if (viewModelItem == null)
         {
             return;
@@ -61,10 +61,21 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         yield return new ElementItemType() { Type = typeof(Vector3), Group = "", Label = "Vector3" };
 
         if (PrimitiveOnly) yield break;
+        //if (IncludeUnityEngine)
+        //{
+        //    yield return new ElementItemType() { Type = typeof(UnityEngine.MonoBehaviour), Group = "UnityEngine", Label = "MonoBehaviour" };
+        //    yield return new ElementItemType() { Type = typeof(UnityEngine.Component), Group = "UnityEngine", Label = "Component" };
 
+
+        //}
         var projectAssembly = typeof(ViewModel).Assembly;
         foreach (var type in projectAssembly.GetTypes())
         {
+            if (IncludeUnityEngine && typeof (UnityEngine.Object).IsAssignableFrom(type))
+            {
+                yield return new ElementItemType() { Type = type, Group = "Components", Label = type.Name };;
+                continue;
+            }
             if (!typeof(Component).IsAssignableFrom(type) && type.IsClass && !type.Name.Contains("<") && !typeof(ViewModel).IsAssignableFrom(type) && !typeof(Controller).IsAssignableFrom(type) && !typeof(ViewBase).IsAssignableFrom(type))
             {
                 if (!type.ContainsGenericParameters)
@@ -78,7 +89,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         
         if (node == null) return "No element data.";
         if (node.SelectedNode == null) return "No selection";
-        if (node.SelectedNodeItem as ElementItemViewModel == null) return "Must be an element item";
+        if (node.SelectedNodeItem as TypedItemViewModel == null) return "Must be an element item";
         return null;
     }
 }

@@ -131,11 +131,8 @@ public class ViewInspector : uFrameInspector
     }
     public override void OnInspectorGUI()
     {
-        UBEditor.IsGlobals = false;
+        
         var t = target as ViewBase;
-
-
-
         if (EditorApplication.isPlaying)
         {
 
@@ -188,7 +185,7 @@ public class ViewInspector : uFrameInspector
             }
 
             var btnContent = new GUIContent("Show In Designer");
-            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
+            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
             {
                 uFrameEditorSceneManager.NavigateBack(target as ViewBase);
             }
@@ -375,7 +372,7 @@ public class ViewInspector : uFrameInspector
                     {
                         foreach (var command in Commands)
                         {
-                            if (GUI.Button(UBEditor.GetRect(ElementDesignerStyles.ButtonStyle), command.Key,
+                            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), command.Key,
                                 ElementDesignerStyles.ButtonStyle))
                             {
                                 Target.ExecuteCommand(command.Value);

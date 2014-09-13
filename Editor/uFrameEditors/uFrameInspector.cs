@@ -147,7 +147,7 @@ public class uFrameInspector : Editor
 
     public void Section(string text)
     {
-        var rect = UBEditor.GetRect(UBStyles.SubHeaderStyle);
+        var rect = GUIHelpers.GetRect(UBStyles.SubHeaderStyle);
         GUI.Toggle(rect, true, text, UBStyles.SubHeaderStyle);
         EditorGUILayout.Space();
         EditorGUI.indentLevel++;
