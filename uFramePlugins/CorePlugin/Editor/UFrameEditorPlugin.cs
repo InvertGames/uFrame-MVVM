@@ -34,6 +34,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = true, PrimitiveOnly = false }, "ViewModelCommandTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() {AllowNone = false,PrimitiveOnly = false}, "ViewModelCollectionTypeSelection");
+        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ComputedPropertyTypeSelection");
 
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");

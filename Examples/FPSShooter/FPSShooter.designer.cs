@@ -92,12 +92,32 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     public readonly P<System.Single> _SpeedProperty;
     
     private FPSGameViewModel _ParentFPSGame;
-    
-    public FPSEnemyViewModel() : 
-            base() {
-        _SpeedProperty = new P<float>(this, "Speed");
+
+    public FPSEnemyAIStateMachine _EnemyAIProperty = new FPSEnemyAIStateMachine();
+
+    public FPSEnemyAIStateMachine EnemyAI
+    {
+        get
+        {
+            return _EnemyAIProperty;
+        }
     }
-    
+
+    public float DistanceToPlayer
+    {
+        get { return _DistanceToPlayerProperty.Value; }
+        set { _DistanceToPlayerProperty.Value = value; }
+    }
+
+    public FPSEnemyViewModel() : 
+            base()
+    {
+        _DistanceToPlayerProperty = new P<float>(this,"DistanceToPlyer");
+        _SpeedProperty = new P<float>(this, "Speed");
+
+        _DistanceToPlayerProperty.Subscribe((v) => _EnemyAIProperty.CurrentFpsEnemyAiState.DistanceToPlayerChanged(v));
+    }
+
     public FPSEnemyViewModel(FPSEnemyControllerBase controller) : 
             this() {
         this.Controller = controller;

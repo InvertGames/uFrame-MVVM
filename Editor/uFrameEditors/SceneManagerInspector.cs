@@ -39,7 +39,8 @@ public class SceneManagerInspector : uFrameInspector
                 Debug.Log(stringStorage);
             }
         }
-        
+        Toggle("GameRoot",true);
+
     }
 }
 public class TextAssetStorage : ISerializerStorage

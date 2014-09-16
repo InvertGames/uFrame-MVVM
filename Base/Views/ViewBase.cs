@@ -17,6 +17,8 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
     [SerializeField, HideInInspector]
     private bool _InjectView = false;
 
+
+    
     /// <summary>
     /// The View Event delegate that takes a string for the event name.
     /// </summary>
@@ -94,13 +96,13 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
 
     public bool Instantiated { get; set; }
 
-    public virtual bool IsMultiInstance
-    {
-        get
-        {
-            return true;
-        }
-    }
+    //public virtual bool IsMultiInstance
+    //{
+    //    get
+    //    {
+    //        return true;
+    //    }
+    //}
 
     public bool OverrideViewModel
     {
@@ -502,7 +504,7 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
     protected virtual void LateUpdate()
     {
         if (IsBound)
-        Apply();
+            Apply();
     }
 
     /// <summary>
@@ -516,7 +518,11 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
     private string _id;
 
     private int _instanceId;
-
+    [Obsolete]
+    public virtual bool IsMultiInstance
+    {
+        get { return true; }
+    }
     /// <summary>
     /// The identifier used for requesting a view-model.
     /// Implementation Details:
@@ -532,24 +538,7 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
     {
         get
         {
-
-            if (IsMultiInstance && ForceResolveViewModel)
-            {
-                return _resolveName;
-            }
-            else if (!IsMultiInstance && !string.IsNullOrEmpty(_resolveName))
-            {
-                return _resolveName;
-            }
-            else if (!IsMultiInstance)
-            {
-                return DefaultIdentifier;
-            }
-            if (string.IsNullOrEmpty(_id))
-            {
-                _id = (this.transform.position.GetHashCode()).ToString() + this.ViewModelType.Name;
-            }
-            return _id;
+            return _id = (this.transform.position.GetHashCode()).ToString() + this.ViewModelType.Name;
         }
         set { _id = value; }
     }

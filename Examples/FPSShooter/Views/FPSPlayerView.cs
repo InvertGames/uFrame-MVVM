@@ -23,14 +23,12 @@ public partial class FPSPlayerView
     {
         
         base.Bind();
-        
+
+        //this.BindCollision(() => FPSPlayer.NextWeapon, CollisionEventType.OnCollisionEnter);
 
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha1).SetParameter(0);
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha2).SetParameter(1);
         this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha3).SetParameter(2);
-        //this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha4).SetParameter(3);
-        //this.BindKey(() => FPSPlayer.SelectWeapon, KeyCode.Alpha5).SetParameter(4);
-
         this.BindKey(() => FPSPlayer.NextWeapon, KeyCode.RightArrow);
         this.BindKey(() => FPSPlayer.PreviousWeapon, KeyCode.LeftArrow);
        

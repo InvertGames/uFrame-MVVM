@@ -185,7 +185,7 @@ public abstract class ModelPropertyBase
         _value = value;
     }
 
-    protected void OnPropertyChanged(object value)
+    protected virtual void OnPropertyChanged(object value)
     {
         PropertyChangedHandler handler = ValueChanged;
         if (handler != null)

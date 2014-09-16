@@ -7,9 +7,12 @@ using System.Text.RegularExpressions;
 using Invert.Common;
 using Invert.Common.UI;
 using Invert.uFrame.Editor;
+using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using State = Invert.StateMachine.State;
 
 [CustomEditor(typeof(ViewBase), true)]
 public class ViewInspector : uFrameInspector
@@ -444,6 +447,47 @@ public class ViewInspector : uFrameInspector
             EditorGUILayout.LabelField(property.Property.PropertyName, property.Property.ObjectValue.ToString());
             return;
         }
+        else if (property.Property.ValueType == typeof(State))
+        {
+            EditorGUILayout.LabelField(property.Property.PropertyName, property.Property.ObjectValue.ToString());
+            var _designerWidnow = uFrameEditor.DesignerWindow;
+            if (_designerWidnow != null && _designerWidnow.DiagramDrawer != null)
+            {
+                var items = _designerWidnow.DiagramDrawer.DiagramViewModel.GraphItems;
+                
+                var objectValue = property.Property.ObjectValue as State;
+                if (objectValue != null)
+                {
+                    var stateMachine = objectValue.StateMachine;
+
+                    foreach (var item in items)
+                    {
+                        var stateNode = item as StateMachineStateNodeViewModel;
+                        if (stateNode != null)
+                        {
+                            stateNode.IsCurrentState = item.Name == objectValue.Name;
+                        }
+                        else if (stateMachine.LastTransition != null)
+                        {
+                            var connectionNode = item as ConnectionViewModel;
+                            if (connectionNode != null)
+                            {
+                            
+                                connectionNode.IsActive = stateMachine.LastTransition.Name ==
+                                                          connectionNode.ConnectorA.ConnectorFor.Name;
+                            }
+                        }
+                        
+                        
+                    }
+                }
+                    
+                
+                _designerWidnow.Repaint();
+            }
+            
+            return;
+        }
         EditorGUI.BeginChangeCheck();
         object newValue = null;
         if (type == typeof(int))
@@ -496,7 +540,7 @@ public class ViewInspector : uFrameInspector
         {
             GUIHelpers.DoToolbarEx(property.Property.PropertyName);
             DoViewModelGUI(property.Property.ObjectValue as ViewModel);
-        }
+        } 
 
         if (EditorGUI.EndChangeCheck())
         {

@@ -17,15 +17,23 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         var typesList = GetRelatedTypes(node);
 
         var viewModelItem = node.SelectedNodeItem as TypedItemViewModel;
+        ITypeDiagramItem viewModelItemData;
         if (viewModelItem == null)
         {
-            return;
+
+            viewModelItemData = node.SelectedNode.DataObject as ITypeDiagramItem;
+            if (viewModelItemData == null)
+                return;
+        }
+        else
+        {
+            viewModelItemData = viewModelItem.Data;
         }
         ElementItemTypesWindow.InitTypeListWindow("Choose Type", typesList.ToArray(), (selected) =>
         {
             uFrameEditor.ExecuteCommand((diagram) =>
             {
-                viewModelItem.RelatedType = selected.AssemblyQualifiedName;
+                viewModelItemData.RelatedType = selected.AssemblyQualifiedName;
             });
             EditorWindow.GetWindow<ElementItemTypesWindow>().Close();
         });
@@ -89,7 +97,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         
         if (node == null) return "No element data.";
         if (node.SelectedNode == null) return "No selection";
-        if (node.SelectedNodeItem as TypedItemViewModel == null) return "Must be an element item";
+        //if (node.SelectedNodeItem as TypedItemViewModel == null) return "Must be an element item";
         return null;
     }
 }

@@ -329,11 +329,6 @@ public abstract class AICheckersGameViewBase : CheckersGameViewBase {
         }
     }
     
-    public override bool IsMultiInstance {
-        get {
-            return false;
-        }
-    }
     
     public AICheckersGameViewModel AICheckersGame {
         get {
@@ -367,12 +362,6 @@ public abstract class MainMenuViewBase : ViewBase {
     public override System.Type ViewModelType {
         get {
             return typeof(MainMenuViewModel);
-        }
-    }
-    
-    public override bool IsMultiInstance {
-        get {
-            return false;
         }
     }
     

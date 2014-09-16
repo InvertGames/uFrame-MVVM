@@ -46,7 +46,13 @@ public class P<T> : ModelPropertyBase
 
     public T LastValue
     {
-        get { return (T) LastValueObject; }
+        get
+        {
+            if (LastValueObject == null)
+                return default(T);
+
+            return (T) LastValueObject;
+        }
     }
    
     /// <summary>
@@ -282,7 +288,7 @@ public class Computed<T> : ModelPropertyBase
         if (Calculator != null)
         this.ObjectValue = Calculator(Owner);
     }
-
+    
     //public ModelPropertyBase[] DependantProperties
     //{
     //    get { return _dependantProperties; }
@@ -291,13 +297,15 @@ public class Computed<T> : ModelPropertyBase
     /// The binding class that allows chaining extra options.
     /// </summary>
     /// <param name="listener">Should set the value of the target.</param>
+    /// <param name="immediate">Should the listener be invoked immediately (defaults to true).</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public ModelPropertyBinding Subscribe(Action<T> listener)
+    public ModelPropertyBinding Subscribe(Action<T> listener, bool immediate = true)
     {
         var binding = new ModelPropertyBinding()
         {
             SetTargetValueDelegate = (o) => listener((T)o),
             ModelPropertySelector = () => this,
+            IsImmediate =  immediate,
             TwoWay = false
         };
         Owner.AddBinding(binding);
