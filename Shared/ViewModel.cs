@@ -343,9 +343,9 @@ public class ViewModelPropertyInfo
 
     public bool IsEnum { get; set; }
 
-    public ModelPropertyBase Property { get; set; }
+    public IObservableObject Property { get; set; }
 
-    public ViewModelPropertyInfo(ModelPropertyBase property, bool isElementProperty, bool isCollectionProperty, bool isEnum,bool isComputed = false)
+    public ViewModelPropertyInfo(IObservableObject property, bool isElementProperty, bool isCollectionProperty, bool isEnum, bool isComputed = false)
     {
         Property = property;
         IsElementProperty = isElementProperty;

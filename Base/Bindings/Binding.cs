@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 using UnityEngine;
 
 /// <summary>
@@ -6,8 +7,8 @@ using UnityEngine;
 /// </summary>
 public abstract class Binding : IBinding
 {
-    private ModelPropertyBase _modelProperty;
-    private Func<ModelPropertyBase> _modelPropertySelector;
+    private IObservableObject _modelProperty;
+    private Func<IObservableObject> _modelPropertySelector;
 
     /// <summary>
     /// Does this instance type implement ITwoWayBinding?
@@ -46,7 +47,7 @@ public abstract class Binding : IBinding
     /// <summary>
     /// The Model Property that is being bound to. Will call the ModelPropertySelector if null.
     /// </summary>
-    public ModelPropertyBase ModelProperty
+    public IObservableObject ModelProperty
     {
         get
         {
@@ -64,20 +65,9 @@ public abstract class Binding : IBinding
     /// A selector that will select the model property.
     /// This should be set manually if reflection shouldn't be used.
     /// </summary>
-    public Func<ModelPropertyBase> ModelPropertySelector
+    public Func<IObservableObject> ModelPropertySelector
     {
-        get
-        {
-            return _modelPropertySelector ?? (_modelPropertySelector =
-                delegate
-                {
-                    var @base = Source;
-                    if (@base != null)
-                        return Source[ModelMemberName];
-
-                    throw new Exception("Binding could not determine the property to be selected  Try setting the 'ModelPropertySelector' manually.");
-                });
-        }
+        get { return _modelPropertySelector; }
         set { _modelPropertySelector = value; }
     }
 

@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -69,13 +72,10 @@ public class ModelCollectionBinding<TCollectionType> : Binding
 
     private void BindNow()
     {
-        CollectionOnChanged(new ModelCollectionChangeEvent()
-        {
-            NewItems = Collection.Cast<object>().ToArray()
-        });
+        CollectionOnChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Collection.Cast<object>().ToArray()));
     }
 
-    private void CollectionOnChanged(ModelCollectionChangeEvent changeArgs)
+    private void CollectionOnChanged(NotifyCollectionChangedEventArgs changeArgs)
     {
         if (changeArgs.NewItems != null)
             foreach (var newItem in changeArgs.NewItems)
@@ -102,11 +102,11 @@ public class ModelViewModelCollectionBinding : Binding
     private Dictionary<int, GameObject> _gameObjectLookup = new Dictionary<int, GameObject>();
     private Dictionary<ViewModel, int> _objectIdLookup;
 
-    public IModelCollection Collection
+    public ObservableCollection<ViewModel> Collection
     {
         get
         {
-            return ModelProperty as IModelCollection;
+            return ModelProperty as ObservableCollection<ViewModel>;
         }
     }
 
@@ -242,7 +242,7 @@ public class ModelViewModelCollectionBinding : Binding
                         {
                             view.ViewModelObject = view.CreateModel();
                         }
-                        Collection.AddObject(view.ViewModelObject);
+                        Collection.Add(view.ViewModelObject);
                         AddLookup(view.gameObject, view.ViewModelObject);
 
                         if (OnAddView != null)
@@ -254,17 +254,13 @@ public class ModelViewModelCollectionBinding : Binding
         Collection.CollectionChanged += CollectionOnChanged;
         if (!_viewFirst && IsImmediate)
         {
-            CollectionOnChanged(new ModelCollectionChangeEvent
-            {
-                Action = ModelCollectionAction.Reset,
-                NewItems = Collection.Value.ToArray()
-            });
+            CollectionOnChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset,Collection.ToArray()));
         }
     }
 
     public ViewBase SourceView { get; set; }
 
-    private void CollectionOnChanged(ModelCollectionChangeEvent changeArgs)
+    private void CollectionOnChanged(NotifyCollectionChangedEventArgs changeArgs)
     {
         var targetTransform = Parent ?? SourceView.transform;
         if (changeArgs.NewItems != null)
@@ -293,7 +289,7 @@ public class ModelViewModelCollectionBinding : Binding
             }
 
         if (changeArgs.OldItems != null &&
-            changeArgs.OldItems.Length > 0)
+            changeArgs.OldItems.Count > 0)
         {
             foreach (var oldItem in changeArgs.OldItems)
             {

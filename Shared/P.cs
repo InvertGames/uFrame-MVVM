@@ -10,185 +10,185 @@ namespace Invert.MVVM
 /// A typed ViewModel Property Class
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class P<T> : ModelPropertyBase
-{
+//public class P<T> : ModelPropertyBase
+//{
  
 
-    /// <summary>
-    /// Gets or sets the value.
-    /// </summary>
-    /// <value>The value.</value>
-    public T Value
-    {
-        get
-        {
-            if (ObjectValue == null)
-                return default(T);
+//    /// <summary>
+//    /// Gets or sets the value.
+//    /// </summary>
+//    /// <value>The value.</value>
+//    public T Value
+//    {
+//        get
+//        {
+//            if (ObjectValue == null)
+//                return default(T);
 
-            try
-            {
-                return (T)ObjectValue;
-            }
-            catch
-            {
-                //UnityEngine.Debug.LogError(ObjectValue.GetType().FullName + " TO " + typeof(T).FullName + " : " + ex.Message);
-                return default(T);
-            }
-        }
-        set
-        {
-            if (CanSetValue(value))
-            {
-                ObjectValue = value;
-            }
-        }
-    }
+//            try
+//            {
+//                return (T)ObjectValue;
+//            }
+//            catch
+//            {
+//                //UnityEngine.Debug.LogError(ObjectValue.GetType().FullName + " TO " + typeof(T).FullName + " : " + ex.Message);
+//                return default(T);
+//            }
+//        }
+//        set
+//        {
+//            if (CanSetValue(value))
+//            {
+//                ObjectValue = value;
+//            }
+//        }
+//    }
 
-    public T LastValue
-    {
-        get
-        {
-            if (LastValueObject == null)
-                return default(T);
+//    public T LastValue
+//    {
+//        get
+//        {
+//            if (LastValueObject == null)
+//                return default(T);
 
-            return (T) LastValueObject;
-        }
-    }
+//            return (T) LastValueObject;
+//        }
+//    }
    
-    /// <summary>
-    /// Gets the type of the value.
-    /// </summary>
-    /// <value>The type of the value.</value>
-    public override Type ValueType
-    {
-        get
-        {
-            return typeof(T);
-        }
-    }
+//    /// <summary>
+//    /// Gets the type of the value.
+//    /// </summary>
+//    /// <value>The type of the value.</value>
+//    public override Type ValueType
+//    {
+//        get
+//        {
+//            return typeof(T);
+//        }
+//    }
 
-    public P()
-    {
-        Value = default(T);
-    }
+//    public P()
+//    {
+//        Value = default(T);
+//    }
 
-    public P(ViewModel owner, string propertyName) : base(owner, propertyName)
-    {
+//    public P(ViewModel owner, string propertyName) : base(owner, propertyName)
+//    {
 
-    }
-    public P(ViewModel owner, string propertyName,T value)
-        : base(owner, propertyName)
-    {
-        Value = value;
-    }
-    public P(T value)
-    {
-        Value = value;
-    }
+//    }
+//    public P(ViewModel owner, string propertyName,T value)
+//        : base(owner, propertyName)
+//    {
+//        Value = value;
+//    }
+//    public P(T value)
+//    {
+//        Value = value;
+//    }
 
-    /// <summary>
-    /// The binding class that allows chaining extra options.
-    /// </summary>
-    /// <param name="listener">Should set the value of the target.</param>
-    /// <returns>The binding class that allows chaining extra options.</returns>
-    public ModelPropertyBinding Subscribe(Action<T> listener)
-    {
-        var binding = new ModelPropertyBinding()
-        {
+//    /// <summary>
+//    /// The binding class that allows chaining extra options.
+//    /// </summary>
+//    /// <param name="listener">Should set the value of the target.</param>
+//    /// <returns>The binding class that allows chaining extra options.</returns>
+//    public ModelPropertyBinding Subscribe(Action<T> listener)
+//    {
+//        var binding = new ModelPropertyBinding()
+//        {
 
-            SetTargetValueDelegate = (o) => listener((T)o),
-            ModelPropertySelector = () => this,
-            TwoWay = false
-        };
-        Owner.AddBinding(binding);
-        return binding;
-    }
+//            SetTargetValueDelegate = (o) => listener((T)o),
+//            ModelPropertySelector = () => this,
+//            TwoWay = false
+//        };
+//        Owner.AddBinding(binding);
+//        return binding;
+//    }
 
 
-    public virtual bool CanSetValue(T value)
-    {
-        return true;
-    }
+//    public virtual bool CanSetValue(T value)
+//    {
+//        return true;
+//    }
 
-    /// <summary>
-    /// Deserialize the specified node into `Value`.
-    /// </summary>
-    /// <param name="node">Node.</param>
-    public override void Deserialize(JSONNode node)
-    {
-        this.ObjectValue = DeserializeObject(ValueType, node);
-    }
+//    /// <summary>
+//    /// Deserialize the specified node into `Value`.
+//    /// </summary>
+//    /// <param name="node">Node.</param>
+//    public override void Deserialize(JSONNode node)
+//    {
+//        this.ObjectValue = DeserializeObject(ValueType, node);
+//    }
 
-    //public override int GetHashCode()
-    //{
-    //    return Value.GetHashCode();
-    //}
+//    //public override int GetHashCode()
+//    //{
+//    //    return Value.GetHashCode();
+//    //}
 
-    #region Operator Overloads
+//    #region Operator Overloads
 
-    public override bool Equals(object obj)
-    {
-        if (obj is P<T>)
-        {
-            var tObj = (P<T>)obj;
-            return Value.Equals(tObj.Value);
-        }
-        return Value.Equals(obj);
-    }
+//    public override bool Equals(object obj)
+//    {
+//        if (obj is P<T>)
+//        {
+//            var tObj = (P<T>)obj;
+//            return Value.Equals(tObj.Value);
+//        }
+//        return Value.Equals(obj);
+//    }
 
-    public override int GetHashCode()
-    {
-        return Value.GetHashCode();
-    }
+//    public override int GetHashCode()
+//    {
+//        return Value.GetHashCode();
+//    }
 
-    //public static bool operator ==(P<T> a, P<T> b)
-    //{
-    //    return a.Value.Equals(b.Value);
-    //}
+//    //public static bool operator ==(P<T> a, P<T> b)
+//    //{
+//    //    return a.Value.Equals(b.Value);
+//    //}
 
-    //public static bool operator !=(P<T> a, P<T> b)
-    //{
-    //    if (a == null || b == null)
-    //    {
-    //        return !(a == null && b == null);
-    //    }
-    //    return !(a.Value.Equals(b.Value));
-    //}
+//    //public static bool operator !=(P<T> a, P<T> b)
+//    //{
+//    //    if (a == null || b == null)
+//    //    {
+//    //        return !(a == null && b == null);
+//    //    }
+//    //    return !(a.Value.Equals(b.Value));
+//    //}
 
-    //public static bool operator ==(P<T> a, T b)
-    //{
-    //    return a.Value.Equals(b);
-    //}
+//    //public static bool operator ==(P<T> a, T b)
+//    //{
+//    //    return a.Value.Equals(b);
+//    //}
 
-    //public static bool operator !=(P<T> a, T b)
-    //{
-    //    return !(a.Value.Equals(b));
-    //}
+//    //public static bool operator !=(P<T> a, T b)
+//    //{
+//    //    return !(a.Value.Equals(b));
+//    //}
 
-    //public static implicit operator P<T>(T d)
-    //{
-    //    return new P<T> { Value = d };
-    //}
+//    //public static implicit operator P<T>(T d)
+//    //{
+//    //    return new P<T> { Value = d };
+//    //}
 
-    ////  User-defined conversion from double to Digit
-    //public static implicit operator T(P<T> d)
-    //{
-    //    return d.Value;
-    //}
+//    ////  User-defined conversion from double to Digit
+//    //public static implicit operator T(P<T> d)
+//    //{
+//    //    return d.Value;
+//    //}
 
-    #endregion Operator Overloads
+//    #endregion Operator Overloads
 
-    /// <summary>
-    /// Serializes this object
-    /// </summary>
-    public override JSONNode Serialize()
-    {
-        var value = ObjectValue;
-        return SerializeObject(ValueType, value);
-    }
-}
+//    /// <summary>
+//    /// Serializes this object
+//    /// </summary>
+//    public override JSONNode Serialize()
+//    {
+//        var value = ObjectValue;
+//        return SerializeObject(ValueType, value);
+//    }
+//}
 
-public class Computed<T> : ModelPropertyBase
+public class Computed<T> : P<T>
 {
     private Func<ViewModel, T> _calculator;
 
@@ -205,27 +205,27 @@ public class Computed<T> : ModelPropertyBase
         }
     }
 
-    public T LastValue
-    {
-        get { return (T) LastValueObject; }
-    }
+    //public T LastValue
+    //{
+    //    get { return (T) LastValueObject; }
+    //}
    
     /// <summary>
     /// Gets the type of the value.
     /// </summary>
     /// <value>The type of the value.</value>
-    public override Type ValueType
-    {
-        get
-        {
-            return typeof(T);
-        }
-    }
+    //public override Type ValueType
+    //{
+    //    get
+    //    {
+    //        return typeof(T);
+    //    }
+    //}
 
-    public Computed()
-    {
-        Value = default(T);
-    }
+    //public Computed()
+    //{
+    //    Value = default(T);
+    //}
 
     
     //private readonly ModelPropertyBase[] _dependantProperties;
@@ -252,31 +252,31 @@ public class Computed<T> : ModelPropertyBase
     
     }
 
-    public T Value
-    {
-        get
-        {
-            if (ObjectValue == null)
-                return default(T);
+    //public T Value
+    //{
+    //    get
+    //    {
+    //        if (ObjectValue == null)
+    //            return default(T);
 
-            try
-            {
-                return (T)ObjectValue;
-            }
-            catch
-            {
-                //UnityEngine.Debug.LogError(ObjectValue.GetType().FullName + " TO " + typeof(T).FullName + " : " + ex.Message);
-                return default(T);
-            }
-        }
-        set
-        {
-            if (CanSetValue(value))
-            {
-                ObjectValue = value;
-            }
-        }
-    }
+    //        try
+    //        {
+    //            return (T)ObjectValue;
+    //        }
+    //        catch
+    //        {
+    //            //UnityEngine.Debug.LogError(ObjectValue.GetType().FullName + " TO " + typeof(T).FullName + " : " + ex.Message);
+    //            return default(T);
+    //        }
+    //    }
+    //    set
+    //    {
+    //        if (CanSetValue(value))
+    //        {
+    //            ObjectValue = value;
+    //        }
+    //    }
+    //}
 
     public virtual bool CanSetValue(T value)
     {
@@ -286,7 +286,7 @@ public class Computed<T> : ModelPropertyBase
     private void DependantPropertyOnValueChanged(object value)
     {
         if (Calculator != null)
-        this.ObjectValue = Calculator(Owner);
+        this.Value = Calculator(Owner);
     }
     
     //public ModelPropertyBase[] DependantProperties
@@ -326,15 +326,7 @@ public class Computed<T> : ModelPropertyBase
         return Value.GetHashCode();
     }
 
-    public override void Deserialize(JSONNode node)
-    {
-        
-    }
 
-    public override JSONNode Serialize()
-    {
-        return null;
-    }
 }
 #if DLL
 }

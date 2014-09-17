@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
 
@@ -17,9 +18,9 @@ public partial class CheckerBoardViewModel : ViewModel {
     public CheckerBoardViewModel() : 
             base() {
         _CheckersProperty = new ModelCollection<CheckerViewModel>(this, "Checkers");
-        _CheckersProperty.CollectionChangedWith += CheckersCollectionChanged;
+
         _PlatesProperty = new ModelCollection<CheckerPlateViewModel>(this, "Plates");
-        _PlatesProperty.CollectionChangedWith += PlatesCollectionChanged;
+
     }
     
     public CheckerBoardViewModel(CheckerBoardControllerBase controller) : 
@@ -33,7 +34,11 @@ public partial class CheckerBoardViewModel : ViewModel {
         }
         set {
             _CheckersProperty.Clear();
-            _CheckersProperty.AddRange(value);
+            foreach (var item in value)
+            {
+                _CheckersProperty.Add(item);    
+            }
+            
         }
     }
     
@@ -43,7 +48,12 @@ public partial class CheckerBoardViewModel : ViewModel {
         }
         set {
             _PlatesProperty.Clear();
-            _PlatesProperty.AddRange(value);
+            foreach (var item in value)
+            {
+                _PlatesProperty.Add(item);
+            }
+            
+            
         }
     }
     
@@ -61,8 +71,7 @@ public partial class CheckerBoardViewModel : ViewModel {
     
     public override void Unbind() {
         base.Unbind();
-        _CheckersProperty.CollectionChangedWith -= CheckersCollectionChanged;
-        _PlatesProperty.CollectionChangedWith -= PlatesCollectionChanged;
+
     }
     
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
@@ -75,14 +84,15 @@ public partial class CheckerBoardViewModel : ViewModel {
         base.FillCommands(list);;
     }
     
-    private void CheckersCollectionChanged(ModelCollectionChangeEventWith<CheckerViewModel> args) {
-        foreach (var item in args.OldItemsOfT) item.ParentCheckerBoard = null;;
-        foreach (var item in args.NewItemsOfT) item.ParentCheckerBoard = this;;
+    private void CheckersCollectionChanged(object sender, NotifyCollectionChangedEventArgs args) {
+        foreach (var item in args.OldItems.OfType<CheckerViewModel>()) item.ParentCheckerBoard = null;;
+        foreach (var item in args.NewItems.OfType<CheckerViewModel>()) item.ParentCheckerBoard = this;;
     }
-    
-    private void PlatesCollectionChanged(ModelCollectionChangeEventWith<CheckerPlateViewModel> args) {
-        foreach (var item in args.OldItemsOfT) item.ParentCheckerBoard = null;;
-        foreach (var item in args.NewItemsOfT) item.ParentCheckerBoard = this;;
+
+    private void PlatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        foreach (var item in args.OldItems.OfType<CheckerPlateViewModel>()) item.ParentCheckerBoard = null;;
+        foreach (var item in args.NewItems.OfType<CheckerPlateViewModel>()) item.ParentCheckerBoard = this;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -270,7 +280,7 @@ public partial class CheckersGameViewModel : ViewModel {
         _CurrentCheckerProperty = new P<CheckerViewModel>(this, "CurrentChecker");
         _CurrentPlayerProperty = new P<CheckerType>(this, "CurrentPlayer");
         _AllowedMovesProperty = new ModelCollection<CheckerMoveViewModel>(this, "AllowedMoves");
-        _AllowedMovesProperty.CollectionChangedWith += AllowedMovesCollectionChanged;
+
     }
     
     public CheckersGameViewModel(CheckersGameControllerBase controller) : 
@@ -331,7 +341,7 @@ public partial class CheckersGameViewModel : ViewModel {
         }
         set {
             _AllowedMovesProperty.Clear();
-            _AllowedMovesProperty.AddRange(value);
+           
         }
     }
     
@@ -351,7 +361,7 @@ public partial class CheckersGameViewModel : ViewModel {
     
     public override void Unbind() {
         base.Unbind();
-        _AllowedMovesProperty.CollectionChangedWith -= AllowedMovesCollectionChanged;
+
     }
     
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
@@ -369,11 +379,7 @@ public partial class CheckersGameViewModel : ViewModel {
         list.Add(new ViewModelCommandInfo("GameOver", GameOver));
     }
     
-    private void AllowedMovesCollectionChanged(ModelCollectionChangeEventWith<CheckerMoveViewModel> args) {
-        foreach (var item in args.OldItemsOfT) item.ParentCheckersGame = null;;
-        foreach (var item in args.NewItemsOfT) item.ParentCheckersGame = this;;
-    }
-    
+
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		stream.SerializeObject("Board", this.Board);

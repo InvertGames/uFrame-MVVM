@@ -95,11 +95,6 @@ namespace Invert.StateMachine
         private List<State> _states;
  
 
-        public StateMachine()
-        {
-            Compose();
-        }
-
         public StateMachine(ViewModel owner, string propertyName) : base(owner, propertyName)
         {
             Compose();
@@ -112,7 +107,7 @@ namespace Invert.StateMachine
             Compose(_states);
             Transitions = _states.SelectMany(p => p.Transitions).ToArray();
             CurrentState = StartState;
-            QuietlySetValue(StartState);
+            Value = StartState;
         }
         public List<State> States
         {
@@ -129,10 +124,10 @@ namespace Invert.StateMachine
             get { return States.FirstOrDefault(); }
         }
 
-        protected override void OnPropertyChanged(object value)
+        protected override void OnPropertyChanged(string value)
         {
             if (LastValue != null)
-                LastValue.OnExit(value as State);
+                LastValue.OnExit(CurrentState);
 
             base.OnPropertyChanged(value);
             
@@ -193,26 +188,7 @@ namespace Invert.StateMachine
         }
 
         public StateTransition LastTransition { get; set; }
-
-        public override void Deserialize(JSONNode node)
-        {
-            
-        }
-
-        public override JSONNode Serialize()
-        {
-            return null;
-        }
     }
-
-
-    //public abstract class StateAction
-    //{
-    //    public IEnumerator Execute()
-    //    {
-    //        return null;
-    //    }
-    //}
 
     public class StateTransition
     {

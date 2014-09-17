@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using Boo.Lang;
+using UniRx;
 using UnityEngine;
 
 #if DLL
@@ -201,3 +201,88 @@ public abstract class ModelPropertyBase
 #if DLL
 }
 #endif
+
+public interface IObservableObject
+{
+    object ObjectValue { get; set; }
+    string PropertyName { get; }
+    ViewModel Owner { get; set; }
+}
+
+public class P<T> : IObservable<T>, INotifyPropertyChanged, IObservableObject
+{
+    private T _value;
+    private T _lastValue;
+    public string PropertyName { get; set; }
+
+    public P(ViewModel owner, string propertyName)
+    {
+        Owner = owner;
+        PropertyName = propertyName;
+    }
+
+    public ViewModel Owner { get; set; }
+
+    public Type ValueType
+    {
+        get { return typeof(T); }
+    }
+
+    public T LastValue
+    {
+        get { return _lastValue; }
+        set { _lastValue = value; }
+    }
+
+    public T Value
+    {
+        get
+        {
+            return _value;
+        }
+        set
+        {
+            _lastValue = value;
+            _value = value;
+            OnPropertyChanged(PropertyName);
+            Owner.OnPropertyChanged(PropertyName);
+        }
+    }
+
+    public IDisposable Subscribe(IObserver<T> observer)
+    {
+        PropertyChangedEventHandler evt = delegate { observer.OnNext(Value); };
+        PropertyChanged += evt;
+        return new SimpleDisposable(() => PropertyChanged -= evt);
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChangedEventHandler handler = PropertyChanged;
+        if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public object ObjectValue
+    {
+        get { return Value; }
+        set { Value = (T)value; }
+    }
+}
+
+public class SimpleDisposable : IDisposable
+{
+    public Action DisposeAction;
+
+    public SimpleDisposable(Action disposeAction)
+    {
+        DisposeAction = disposeAction;
+    }
+
+    public void Dispose()
+    {
+        if (DisposeAction != null)
+            DisposeAction();
+    }
+}

@@ -204,7 +204,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty(),
+            ModelPropertySelector = () => (IObservableObject)sourceProperty(),
             TwoWay = false
         };
 
@@ -227,7 +227,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty(),
+            ModelPropertySelector = () => (IObservableObject)sourceProperty(),
             TwoWay = false
         };
 
@@ -251,7 +251,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (ModelPropertyBase)sourceProperty(),
+            ModelPropertySelector = () => (IObservableObject)sourceProperty(),
             TwoWay = twoWayGetter != null
         };
         if (twoWayGetter != null)
@@ -285,7 +285,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SourceView = t,
-            ModelPropertySelector = () => sourceViewModelCollection() as ModelPropertyBase
+            ModelPropertySelector = () => sourceViewModelCollection() as IObservableObject
         }
         .SetAddHandler(v => viewCollection.Add(v as TView))
         .SetRemoveHandler(v => viewCollection.Remove(v as TView));
@@ -314,7 +314,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SourceView = t,
-            ModelPropertySelector = () => (ModelPropertyBase)sourceViewModelSelector(),
+            ModelPropertySelector = () => (IObservableObject)sourceViewModelSelector(),
             TwoWay = false
         };
         if (getLocal != null)
@@ -355,32 +355,32 @@ public static class ViewBindings
         return binding;
     }
 
-    /// <summary>
-    /// Subscribes to the property and returns an action to unsubscribe.
-    /// </summary>
-    /// <typeparam name="TBindingType"></typeparam>
-    /// <param name="modelProperty">The ViewModel Property to bind to.</param>
-    /// <param name="onChange">When the property has changed.</param>
-    /// <returns>An action to will unsubsribe.</returns>
-    public static Action Subscribe<TBindingType>(this IViewModelObserver behaviour, P<TBindingType> modelProperty, Action<TBindingType> onChange)
-    {
-        var action = new ModelPropertyBase.PropertyChangedHandler(value => onChange((TBindingType)value));
-        modelProperty.ValueChanged += action;
-        return () => modelProperty.ValueChanged -= action;
-    }
+    ///// <summary>
+    ///// Subscribes to the property and returns an action to unsubscribe.
+    ///// </summary>
+    ///// <typeparam name="TBindingType"></typeparam>
+    ///// <param name="modelProperty">The ViewModel Property to bind to.</param>
+    ///// <param name="onChange">When the property has changed.</param>
+    ///// <returns>An action to will unsubsribe.</returns>
+    //public static Action Subscribe<TBindingType>(this IViewModelObserver behaviour, P<TBindingType> modelProperty, Action<TBindingType> onChange)
+    //{
+    //    var action = new ModelPropertyBase.PropertyChangedHandler(value => onChange((TBindingType)value));
+    //    modelProperty.ValueChanged += action;
+    //    return () => modelProperty.ValueChanged -= action;
+    //}
 
-    /// <summary>
-    /// Subscribes to a command execution.
-    /// </summary>
-    /// <param name="view">The view.</param>
-    /// <param name="command">The command to subscribe to.</param>
-    /// <param name="executed">When the command is executed then this will be executed.</param>
-    /// <returns>An action that will unsubscribe</returns>
-    public static Action Subscribe(this IViewModelObserver view, Func<ICommand> command, Action executed)
-    {
-        var c = command();
-        var e = new CommandEvent(executed);
-        c.OnCommandExecuting += e;
-        return () => c.OnCommandExecuted -= e;
-    }
+    ///// <summary>
+    ///// Subscribes to a command execution.
+    ///// </summary>
+    ///// <param name="view">The view.</param>
+    ///// <param name="command">The command to subscribe to.</param>
+    ///// <param name="executed">When the command is executed then this will be executed.</param>
+    ///// <returns>An action that will unsubscribe</returns>
+    //public static Action Subscribe(this IViewModelObserver view, Func<ICommand> command, Action executed)
+    //{
+    //    var c = command();
+    //    var e = new CommandEvent(executed);
+    //    c.OnCommandExecuting += e;
+    //    return () => c.OnCommandExecuted -= e;
+    //}
 }
