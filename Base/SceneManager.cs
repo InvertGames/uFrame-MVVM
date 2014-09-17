@@ -142,9 +142,6 @@ public abstract class SceneManager : ViewContainer
             Context[identifier] = contextViewModel;
         }
         Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);
-        Container.RegisterInstance<TViewModel>(contextViewModel as TViewModel, identifier);
-        Container.RegisterInstance<TViewModel>(contextViewModel as TViewModel, null);
-
         return (TViewModel)contextViewModel;
     }
     public ISerializerStorage LoadingStream { get; set; }
@@ -172,16 +169,11 @@ public abstract class SceneManager : ViewContainer
 
                     Context[identifier] = contextViewModel;
 
-                    if (!viewBase.IsMultiInstance || viewBase.ForceResolveViewModel)
+                    if (viewBase.ForceResolveViewModel)
                     {
+                        
                         Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
                             string.IsNullOrEmpty(identifier) ? null : identifier);
-
-                        if (!viewBase.IsMultiInstance)
-                        {
-                            Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
-                                string.IsNullOrEmpty(identifier) ? null : identifier);
-                        }
 
                     }
                 }

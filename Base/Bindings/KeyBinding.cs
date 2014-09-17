@@ -32,7 +32,8 @@ public class KeyBinding : ComponentCommandBinding
             Alt = _Alt,
             Control = _Control,
             Shift = _Shift,
-            Source = _SourceView.ViewModelObject,
+            Source = SourceView.ViewModelObject,
+            
             ModelMemberName = _ModelMemberName,
         };
     }

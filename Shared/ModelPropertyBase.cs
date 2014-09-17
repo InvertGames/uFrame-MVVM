@@ -1,6 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.Globalization;
-
+using Boo.Lang;
 using UnityEngine;
 
 #if DLL
@@ -14,9 +15,10 @@ using UnityEngine;
 /// A base class for model properties.
 /// </summary>
 [Serializable]
-public abstract class ModelPropertyBase 
+public abstract class ModelPropertyBase
 {
     public ViewModel Owner { get; set; }
+
     public string PropertyName { get; set; }
 
     protected ModelPropertyBase()
@@ -55,7 +57,7 @@ public abstract class ModelPropertyBase
         }
         set
         {
-            var changed = !object.Equals(_value,value);
+            var changed = !object.Equals(_value, value);
             LastValueObject = _value;
             _value = value;
             if (changed)

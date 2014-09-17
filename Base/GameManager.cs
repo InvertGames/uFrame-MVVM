@@ -13,30 +13,14 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public Color _AmbientLight = new Color(0.2f, 0.2f, 0.2f, 1.0f);
 
-    public float _FlareStrength = 1.0f;
-
-    public bool _Fog;
-
-    public Color _FogColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
-
-    public float _FogDensity = 0.01f;
-
-    public FogMode _FogMode = FogMode.ExponentialSquared;
-
-    public float _HaloStrength = 0.5f;
-
-    public float _LinearFogEnd = 300.0f;
-
-    public float _LinearFogStart = 0.0f;
-
+    
+    public bool _ShowLogs = false;
     /// <summary>
     /// A level that displays a progress bar and message
     /// </summary>
     public string _LoadingLevel;
 
-    public Material _SkyboxMaterial;
 
     /// <summary>
     /// Set this to the game that will load when the game starts
@@ -184,17 +168,19 @@ public class GameManager : MonoBehaviour
             ActiveSceneManager.Unload();
             ActiveSceneManager.enabled = false;
             ActiveSceneManager.gameObject.SetActive(false);
+            Log("Deactivated old scene manager.");
         }
 
         ActiveSceneManager = controller;
         ActiveSceneManager.gameObject.SetActive(true);
         ActiveSceneManager.enabled = true;
-
+        Log("Scene Manager Enabled");
         if (setup != null)
         {
             setup(controller);
         }
         ActiveSceneManager.OnLoading();
+        Log("Beginning Scene Manager Loading");
         return Instance.StartCoroutine(LoadSceneManager(progress ?? DefaultUpdateProgress));
     }
 
@@ -248,54 +234,66 @@ public class GameManager : MonoBehaviour
     /// <param name="sceneManager">The scene manager to register.</param>
     public virtual void RegisterSceneManager(SceneManager sceneManager)
     {
+
         if (SceneManagers.Contains(sceneManager)) return;
+        Log(string.Format("Scene Manager {0} was registered", sceneManager.gameObject.name));
         sceneManager.Container = Container;
 
         if (SwitchLevelSettings != null)
         {
             SwitchLevelSettings.InvokeControllerSetup(sceneManager);
         }
-
-        sceneManager.Setup();
-
         Container.Inject(sceneManager);
+        sceneManager.Setup();
         SceneManagers.Add(sceneManager);
         sceneManager.enabled = false;
         sceneManager.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Applies the render settings specified in the inspector.
-    /// </summary>
-    public void ApplyRenderSettings()
-    {
-        RenderSettings.fog = _Fog;
-        RenderSettings.fogColor = _FogColor;
-        RenderSettings.fogMode = _FogMode;
-        RenderSettings.fogDensity = _FogDensity;
+    ///// <summary>
+    ///// Applies the render settings specified in the inspector.
+    ///// </summary>
+    //public void ApplyRenderSettings()
+    //{
+    //    RenderSettings.fog = _Fog;
+    //    RenderSettings.fogColor = _FogColor;
+    //    RenderSettings.fogMode = _FogMode;
+    //    RenderSettings.fogDensity = _FogDensity;
 
-        RenderSettings.fogStartDistance = _LinearFogStart;
-        RenderSettings.fogEndDistance = _LinearFogEnd;
+    //    RenderSettings.fogStartDistance = _LinearFogStart;
+    //    RenderSettings.fogEndDistance = _LinearFogEnd;
 
-        RenderSettings.ambientLight = _AmbientLight;
-        RenderSettings.skybox = _SkyboxMaterial;
+    //    RenderSettings.ambientLight = _AmbientLight;
+    //    RenderSettings.skybox = _SkyboxMaterial;
 
-        RenderSettings.haloStrength = _HaloStrength;
+    //    RenderSettings.haloStrength = _HaloStrength;
 
-        RenderSettings.flareStrength = _FlareStrength;
-    }
+    //    RenderSettings.flareStrength = _FlareStrength;
+    //}
 
     public virtual void OnEnable()
     {
 
     }
 
+    public static void Log(string message, UnityEngine.Object obj = null)
+    {
+        if (!Instance._ShowLogs) return;
+        if (obj == null)
+        {
+            UnityEngine.Debug.Log(message);
+        }
+        else
+        {
+            UnityEngine.Debug.Log(message,obj);
+        }
+    }
     /// <summary>
     /// On awake will apply the render settings and will begin startup which will "boot" the scenemanager.
     /// </summary>
     public void Awake()
     {
-        ApplyRenderSettings();
+//        ApplyRenderSettings();
 
         if (Instance != null)
         {
@@ -354,26 +352,26 @@ public class GameManager : MonoBehaviour
         ActiveSceneManager = _Start;
     }
 
-    /// <summary>
-    /// Loads the current render settings of a scene.
-    /// </summary>
-    public void LoadRenderSettings()
-    {
-        _Fog = RenderSettings.fog;
-        _FogColor = RenderSettings.fogColor;
-        _FogMode = RenderSettings.fogMode;
-        _FogDensity = RenderSettings.fogDensity;
+    ///// <summary>
+    ///// Loads the current render settings of a scene.
+    ///// </summary>
+    //public void LoadRenderSettings()
+    //{
+    //    _Fog = RenderSettings.fog;
+    //    _FogColor = RenderSettings.fogColor;
+    //    _FogMode = RenderSettings.fogMode;
+    //    _FogDensity = RenderSettings.fogDensity;
 
-        _LinearFogStart = RenderSettings.fogStartDistance;
-        _LinearFogEnd = RenderSettings.fogEndDistance;
+    //    _LinearFogStart = RenderSettings.fogStartDistance;
+    //    _LinearFogEnd = RenderSettings.fogEndDistance;
 
-        _AmbientLight = RenderSettings.ambientLight;
-        _SkyboxMaterial = RenderSettings.skybox;
+    //    _AmbientLight = RenderSettings.ambientLight;
+    //    _SkyboxMaterial = RenderSettings.skybox;
 
-        _HaloStrength = RenderSettings.haloStrength;
+    //    _HaloStrength = RenderSettings.haloStrength;
 
-        _FlareStrength = RenderSettings.flareStrength;
-    }
+    //    _FlareStrength = RenderSettings.flareStrength;
+    //}
 
     
     /// <summary>
@@ -409,7 +407,9 @@ public class GameManager : MonoBehaviour
     private static IEnumerator LoadSceneManager(UpdateProgressDelegate progress)
     {
         // yield return new WaitForEndOfFrame();
+        
         yield return Instance.StartCoroutine(ActiveSceneManager.Load(progress));
+        Log("Scene Manager Loading Complete");
         ActiveSceneManager.OnLoaded();
     }
 
@@ -428,15 +428,15 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public bool _DontUseAsyncLoading = false;
 
-    /// <summary>
-    /// The uFrame Boot loader that willbegin the startup process
-    /// </summary>
+    /// <summary>The uFrame Boot loader that will begin the startup process</summary>
     /// <returns></returns>
+
     public static IEnumerator Load()
     {
 
         // Wait till all other things have processed in the scene before loading.
         yield return new WaitForEndOfFrame();
+        Log("Load Begin");
         // Grab the game manager instance transform so we can ignore it
         var gameTransform = Instance.transform;
         // Grab the root objects in the scene to destroy them later
@@ -460,6 +460,7 @@ public class GameManager : MonoBehaviour
                 var level = SceneManager.Settings.Levels[index];
                 if (IsPro && Instance != null && !Instance._DontUseAsyncLoading)
                 {
+                    Log("Loading Level Additively Async: " + level);
                     AsyncOperation asyncOperation;
                     asyncOperation = Application.LoadLevelAdditiveAsync(level);
                     while (!asyncOperation.isDone)
@@ -467,12 +468,14 @@ public class GameManager : MonoBehaviour
                         progressValue = (asyncOperation.progress + progressBase) / progressFactor;
                         ProgressUpdated(String.Format("Loading '{0}'", level), progressValue);
                         yield return new WaitForSeconds(0.1f);
+                        Log("Loaded Level Async: " + level);
                     }
                 }
                 else
                 {
                     ProgressUpdated(String.Format("Loading '{0}'", level), numberOfLevelsToLoad);
                     Application.LoadLevelAdditive(level);
+                    Log("Loaded Level Additevely: " + level);
                 }
 
                 progressBase += 1f;
@@ -489,15 +492,19 @@ public class GameManager : MonoBehaviour
         var sceneManager = Instance.SceneManagers.Find(p => p.GetType() == SceneManager.Settings.StartManagerType);
         while (sceneManager == null)
         {
+            Log("Waiting on scene manager");
             yield return new WaitForSeconds(0.1f);
             sceneManager = Instance.SceneManagers.Find(p => p.GetType() == SceneManager.Settings.StartManagerType);
         }
+        Log("Transitioning to scene manager " + sceneManager.GetType().Name);
         yield return Transition(sceneManager, null, new UpdateProgressDelegate(progressUpdateWithFactor));
+        Log("Destroying LoadingLevelObject's");
         SwitchLevelSettings = null;
         foreach (var t in list)
         {
             Destroy(t.gameObject);
         }
+        Log("Load complete");
         ProgressUpdated("Complete", 1f);
     }
 

@@ -16,7 +16,7 @@ public class CollisionEventBinding : ComponentCommandBinding
     {
         return new ModelCollisionEventBinding()
         {
-            Source = _SourceView.ViewModelObject,
+            Source = SourceView.ViewModelObject,
             CollisionEvent = _CollisionEvent,
         };
     }
@@ -57,7 +57,7 @@ public class CollisionEventBinding : ComponentCommandBinding
         if (binding == null) return;
         if (eventType != binding.CollisionEvent) return;
         if (binding.Source == null) return;
-//        if (!binding.Source.enabled) return;
+       // if (!binding.Source.enabled) return;
 
         binding.Argument = c;
         binding.ExecuteCommand();

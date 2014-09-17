@@ -12,7 +12,7 @@ public class ViewModelCollectionBinding : ComponentBinding
         return new ModelViewModelCollectionBinding()
         {
             ModelMemberName = _ModelMemberName,
-            Source = _SourceView.ViewModelObject,
+            Source = SourceView.ViewModelObject,
             Parent = _Parent,
             IsImmediate = _Immediate,
             ViewName = _ViewName,

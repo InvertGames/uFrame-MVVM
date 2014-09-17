@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Invert.StateMachine;
 using Invert.uFrame;
 using Invert.uFrame.Code.Bindings;
 using Invert.uFrame.Editor;
@@ -35,6 +36,8 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = true, PrimitiveOnly = false }, "ViewModelCommandTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() {AllowNone = false,PrimitiveOnly = false}, "ViewModelCollectionTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ComputedPropertyTypeSelection");
+        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false, IncludeUnityEngine = true }, "StateMachineVariableTypeSelection");
+
 
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");
@@ -207,6 +210,17 @@ public class UFrameEditorPlugin : DiagramPlugin
         {
             get { return typeof (Computed<>); }
         }
+
+        public Type State
+        {
+            get { return typeof (State); }
+        }
+
+        public Type StateMachine
+        {
+            get { return typeof (StateMachine); }
+        }
+
 
         public override string ToString()
         {

@@ -57,11 +57,11 @@ public static class ViewBindings
             throw new ArgumentNullException("commandSelector");
 
         var kb = t.gameObject.AddComponent<CollisionEventBinding>();
-        kb._SourceView = t;
+        kb.SourceView = t;
         kb._CollisionEvent = eventType;
         kb.hideFlags = HideFlags.HideInInspector;
-        var binding = kb.Binding as ModelCollisionEventBinding;
 
+        var binding = kb.Binding as ModelCollisionEventBinding;
         binding.Source = t.ViewModelObject;
         binding.CommandDelegate = commandSelector;
         binding.Component = kb;
@@ -101,6 +101,7 @@ public static class ViewBindings
         if (commandSelector == null) throw new ArgumentNullException("commandSelector");
         var kb = t.gameObject.AddComponent<InputBinding>();
         kb._ButtonName = buttonName;
+        kb.SourceView = t;
         kb._EventType = buttonEventType;
         kb.hideFlags = HideFlags.HideInInspector;
         var binding = kb.Binding as ModelInputButtonBinding;
@@ -125,13 +126,13 @@ public static class ViewBindings
         if (commandSelector == null) throw new ArgumentNullException("commandSelector");
         var kb = t.gameObject.AddComponent<KeyBinding>();
         kb._Key = key;
+        kb.SourceView = t;
         kb.hideFlags = HideFlags.HideInInspector;
         var binding = kb.Binding as ModelKeyBinding;
 
         binding.Source = t.ViewModelObject;
         binding.CommandDelegate = commandSelector;
         binding.Component = kb;
-        
         if (parameter != null)
         {
             binding.SetParameter(parameter);
@@ -153,7 +154,7 @@ public static class ViewBindings
         if (commandSelector == null) throw new ArgumentNullException("commandSelector");
         var kb = view.gameObject.AddComponent<MouseEventBinding>();
         kb._EventType = eventType;
-        kb._SourceView = view;
+        kb.SourceView = view;
         kb.hideFlags = HideFlags.HideInInspector;
         var binding = kb.Binding as ModelMouseEventBinding;
 
@@ -343,6 +344,7 @@ public static class ViewBindings
         var binding = new ModelViewModelCollectionBinding()
         {
             Source = t.ViewModelObject,
+            SourceView = t,
             ModelPropertySelector = () => viewModelCollection()
         };
         if (viewFirst)

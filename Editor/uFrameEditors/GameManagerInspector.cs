@@ -68,45 +68,46 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
             EditorGUILayout.HelpBox("Pro Users: Will use non asynchronous loading.", MessageType.None);
             p = serializedObject.FindProperty("_DontUseAsyncLoading");
             EditorGUILayout.PropertyField(p);
+            p = serializedObject.FindProperty("_ShowLogs");
+            EditorGUILayout.PropertyField(p);
 
-
-            EditorGUILayout.HelpBox("The render settings that will apply when the scene loads.", MessageType.None);
-            _RenderSettingsOpen = Toggle("Render Settings", _RenderSettingsOpen);
-            if (_RenderSettingsOpen)
-            {
-                p = serializedObject.FindProperty("_Fog");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_FogColor");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_FogMode");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_FogDensity");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_LinearFogStart");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_LinearFogEnd");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_AmbientLight");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_SkyboxMaterial");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_HaloStrength");
-                EditorGUILayout.PropertyField(p);
-                p = serializedObject.FindProperty("_FlareStrength");
-                EditorGUILayout.PropertyField(p);
-                if (GUILayout.Button("Load From Scene"))
-                {
-                    var t = Target as GameManager;
-                    t.LoadRenderSettings();
-                }
-            }
+            //EditorGUILayout.HelpBox("The render settings that will apply when the scene loads.", MessageType.None);
+            //_RenderSettingsOpen = Toggle("Render Settings", _RenderSettingsOpen);
+            //if (_RenderSettingsOpen)
+            //{
+            //    p = serializedObject.FindProperty("_Fog");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_FogColor");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_FogMode");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_FogDensity");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_LinearFogStart");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_LinearFogEnd");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_AmbientLight");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_SkyboxMaterial");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_HaloStrength");
+            //    EditorGUILayout.PropertyField(p);
+            //    p = serializedObject.FindProperty("_FlareStrength");
+            //    EditorGUILayout.PropertyField(p);
+            //    if (GUILayout.Button("Load From Scene"))
+            //    {
+            //        var t = Target as GameManager;
+            //        t.LoadRenderSettings();
+            //    }
+            //}
             
         }
 
         if (serializedObject.ApplyModifiedProperties())
         {
-            var t = Target as GameManager;
-            t.ApplyRenderSettings();
+            //var t = Target as GameManager;
+            //t.ApplyRenderSettings();
         }
     }
 

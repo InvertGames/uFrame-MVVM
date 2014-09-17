@@ -538,6 +538,11 @@ public abstract class ViewBase : ViewContainer, IViewModelObserver, ICommandHand
     {
         get
         {
+            if (ForceResolveViewModel)
+            {
+                if (string.IsNullOrEmpty(_resolveName)) return null;
+                return _resolveName;
+            }
             return _id = (this.transform.position.GetHashCode()).ToString() + this.ViewModelType.Name;
         }
         set { _id = value; }

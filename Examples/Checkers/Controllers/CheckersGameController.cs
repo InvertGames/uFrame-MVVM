@@ -119,7 +119,7 @@ public class CheckersGameController : CheckersGameControllerBase
         this.SubscribeToProperty(checkersGame, checkersGame._CurrentPlayerProperty, CurrentPlayerChanged);
     }
 
-    public override void GameOver()
+    public override void GameOver(CheckersGameViewModel checkersGame)
     {
         
     }

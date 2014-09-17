@@ -40,7 +40,7 @@ public class InputBinding : ComponentCommandBinding
         return new ModelInputButtonBinding()
         {
             ButtonName = _ButtonName,
-            Source = _SourceView.ViewModelObject,
+            Source = SourceView.ViewModelObject,
             ModelMemberName = _ModelMemberName,
             EventType = _EventType
         };
@@ -55,7 +55,7 @@ public class MouseEventBinding : ComponentCommandBinding
     {
         return new ModelMouseEventBinding()
         {
-            Source = _SourceView.ViewModelObject,
+            Source = SourceView.ViewModelObject,
             ModelMemberName = _ModelMemberName,
             EventType = _EventType
         };

@@ -80,7 +80,7 @@ public class UFPropertyBinding : ComponentBinding
             GetTargetValueDelegate = () => TargetProperty.Value,
             SetTargetValueDelegate = (v) => TargetProperty.Value = v,
             ModelMemberName = _ModelMemberName,
-            Source = _SourceView.ViewModelObject
+            Source = SourceView.ViewModelObject
         };
     }
 }

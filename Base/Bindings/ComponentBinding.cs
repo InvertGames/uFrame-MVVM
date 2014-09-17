@@ -7,7 +7,7 @@ using UnityEngine;
 public abstract class ComponentBinding : MonoBehaviour
 {
     public string _ModelMemberName;
-    public ViewBase _SourceView;
+    private ViewBase _SourceView;
     private IBinding _binding;
 
     /// <summary>
@@ -17,6 +17,12 @@ public abstract class ComponentBinding : MonoBehaviour
     {
         get { return _binding ?? (_binding = GetBinding()); }
         set { _binding = value; }
+    }
+
+    public ViewBase SourceView
+    {
+        get { return _SourceView; }
+        set { _SourceView = value; }
     }
 
     /// <summary>
