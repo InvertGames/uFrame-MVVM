@@ -124,15 +124,19 @@ namespace Invert.StateMachine
             get { return States.FirstOrDefault(); }
         }
 
+        public State LastState
+        {
+            get { return LastValue as State; }
+        }
         protected override void OnPropertyChanged(string value)
         {
             if (LastValue != null)
-                LastValue.OnExit(CurrentState);
+                LastState.OnExit(CurrentState);
 
             base.OnPropertyChanged(value);
             
             if (Value != null)
-                Value.OnEnter(LastValue);
+                Value.OnEnter(LastValue as State);
         }
 
         public State CurrentState

@@ -1,7 +1,8 @@
 using System;
+using UniRx;
 using UnityEngine;
 
-public class ModelViewPropertyBinding : Binding
+public class ModelViewPropertyBinding : Binding,IDisposable
 {
     public Transform Parent { get; set; }
 
@@ -15,10 +16,11 @@ public class ModelViewPropertyBinding : Binding
     {
         base.Bind();
 
-        ModelProperty.ValueChanged += PropertyChanged;
-
+        Disposer = ModelProperty.SubscribeInternal(PropertyChanged);
         PropertyChanged(ModelProperty.ObjectValue);
     }
+
+    public IDisposable Disposer { get; set; }
 
     private void PropertyChanged(object objectValue)
     {
@@ -54,7 +56,7 @@ public class ModelViewPropertyBinding : Binding
 
             // Parent it defaulting to the view
             view.transform.parent = Parent ?? view.transform;
-        } 
+        }
     }
 
     public ModelViewPropertyBinding SetView(string viewName)
@@ -71,7 +73,12 @@ public class ModelViewPropertyBinding : Binding
 
     public override void Unbind()
     {
-        ModelProperty.ValueChanged -= PropertyChanged;
+        Disposer.Dispose();
         base.Unbind();
+    }
+
+    public void Dispose()
+    {
+        Unbind();
     }
 }

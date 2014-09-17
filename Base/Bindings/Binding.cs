@@ -7,8 +7,8 @@ using UnityEngine;
 /// </summary>
 public abstract class Binding : IBinding
 {
-    private IObservableObject _modelProperty;
-    private Func<IObservableObject> _modelPropertySelector;
+    private IObservableProperty _modelProperty;
+    private Func<IObservableProperty> _modelPropertySelector;
 
     /// <summary>
     /// Does this instance type implement ITwoWayBinding?
@@ -47,7 +47,7 @@ public abstract class Binding : IBinding
     /// <summary>
     /// The Model Property that is being bound to. Will call the ModelPropertySelector if null.
     /// </summary>
-    public IObservableObject ModelProperty
+    public IObservableProperty ModelProperty
     {
         get
         {
@@ -65,7 +65,7 @@ public abstract class Binding : IBinding
     /// A selector that will select the model property.
     /// This should be set manually if reflection shouldn't be used.
     /// </summary>
-    public Func<IObservableObject> ModelPropertySelector
+    public Func<IObservableProperty> ModelPropertySelector
     {
         get { return _modelPropertySelector; }
         set { _modelPropertySelector = value; }

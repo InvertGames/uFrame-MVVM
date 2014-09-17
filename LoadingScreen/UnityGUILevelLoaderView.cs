@@ -1,5 +1,6 @@
+using UniRx.UI;
 using UnityEngine;
-
+using UniRx;
 public class UnityGUILevelLoaderView : LevelLoaderView
 {
     public Texture progressBackground;
@@ -14,10 +15,15 @@ public class UnityGUILevelLoaderView : LevelLoaderView
     public override void Bind()
     {
         base.Bind();
-        Model._Progress.ValueChanged += _Progress_PropertyChanged;
+         
+        Model._Progress.Subscribe(_Progress_PropertyChanged);
+        //Model._Progress.Subscribe((v) =>
+        //{
+
+        //})
     }
 
-    void _Progress_PropertyChanged(object value)
+    void _Progress_PropertyChanged(float value)
     {
         if ((float)value == 1 && Camera.main != null)
         {

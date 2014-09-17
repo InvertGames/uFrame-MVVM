@@ -102,12 +102,17 @@ public class ModelViewModelCollectionBinding : Binding
     private Dictionary<int, GameObject> _gameObjectLookup = new Dictionary<int, GameObject>();
     private Dictionary<ViewModel, int> _objectIdLookup;
 
-    public ObservableCollection<ViewModel> Collection
+    public INotifyCollectionChanged Collection
     {
         get
         {
-            return ModelProperty as ObservableCollection<ViewModel>;
+            return ModelProperty as INotifyCollectionChanged;
         }
+    }
+
+    public IList List
+    {
+        get { return Collection as IList; }
     }
 
     public bool IsImmediate
@@ -242,7 +247,7 @@ public class ModelViewModelCollectionBinding : Binding
                         {
                             view.ViewModelObject = view.CreateModel();
                         }
-                        Collection.Add(view.ViewModelObject);
+                        List.Add(view.ViewModelObject);
                         AddLookup(view.gameObject, view.ViewModelObject);
 
                         if (OnAddView != null)
@@ -254,7 +259,7 @@ public class ModelViewModelCollectionBinding : Binding
         Collection.CollectionChanged += CollectionOnChanged;
         if (!_viewFirst && IsImmediate)
         {
-            CollectionOnChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset,Collection.ToArray()));
+            CollectionOnChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset,List));
         }
     }
 

@@ -29,10 +29,19 @@ using System.ComponentModel;
 
 namespace System.Collections.ObjectModel
 {
+#if DLL
+    [Serializable]
+    public class ModelCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged
+    {
+#else
     [Serializable]
     public class ObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
-
+#endif
+        public Type ValueType
+        {
+            get { return typeof (ICollection<T>); }
+        }
         private class Reentrant : IDisposable
         {
             private int count = 0;
@@ -58,7 +67,7 @@ namespace System.Collections.ObjectModel
         }
 
         private Reentrant reentrant = new Reentrant();
-
+#if !DLL
         public ObservableCollection()
         {
         }
@@ -72,7 +81,7 @@ namespace System.Collections.ObjectModel
             : base(list)
         {
         }
-
+#endif
         public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
         protected virtual event PropertyChangedEventHandler PropertyChanged;
 
@@ -146,7 +155,7 @@ namespace System.Collections.ObjectModel
                 // Otherwise there's a chance of data corruption.
                 using (BlockReentrancy())
                 {
-                    eh(this, e);
+                    eh(e);
                 }
             }
         }
@@ -183,5 +192,21 @@ namespace System.Collections.ObjectModel
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
             OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
         }
+
+   
+
+
+        //public IDisposable SubscribeInternal(Action<object> propertyChanged)
+        //{
+        //    return this.Subscribe((v) => propertyChanged(v));
+        //}
+
+        //public IDisposable Subscribe(IObserver<NotifyCollectionChangedEventArgs> observer)
+        //{
+        //    NotifyCollectionChangedEventHandler evt =
+        //        delegate(NotifyCollectionChangedEventArgs changeArgs) { observer.OnNext(changeArgs); };
+        //    CollectionChanged += evt;
+        //    return new SimpleDisposable(() => CollectionChanged -= evt);
+        //}
     }
 }

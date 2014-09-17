@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 using UniRx;
 using UnityEngine;
 
@@ -202,56 +203,49 @@ public abstract class ModelPropertyBase
 }
 #endif
 
-public interface IObservableObject
-{
-    object ObjectValue { get; set; }
-    string PropertyName { get; }
-    ViewModel Owner { get; set; }
-}
 
-public class P<T> : IObservable<T>, INotifyPropertyChanged, IObservableObject
+public class P<T> : IObservable<T>, IObservableProperty
 {
-    private T _value;
-    private T _lastValue;
+    private object _objectValue;
+    private object _lastValue;
+
+    public object ObjectValue
+    {
+        get
+        {
+            return _objectValue;
+        }
+        set
+        {
+            _lastValue = value;
+            _objectValue = value;
+            OnPropertyChanged(PropertyName);
+            Owner.OnPropertyChanged(PropertyName);
+        }
+    }
     public string PropertyName { get; set; }
-
-    public P(ViewModel owner, string propertyName)
-    {
-        Owner = owner;
-        PropertyName = propertyName;
-    }
-
+#if !DLL
     public ViewModel Owner { get; set; }
-
-    public Type ValueType
+#endif
+    public IDisposable SubscribeInternal(Action<object> propertyChanged)
     {
-        get { return typeof(T); }
+        return this.Subscribe((v) => propertyChanged(v));
     }
 
-    public T LastValue
+    //public IDisposable SubscribeInternal(Action<object> obj)
+    //{
+    //    this.Subscribe(obj);
+    //}
+
+    public object LastValue
     {
         get { return _lastValue; }
         set { _lastValue = value; }
     }
 
-    public T Value
+    public IDisposable Subscribe(IObserver<object> observer)
     {
-        get
-        {
-            return _value;
-        }
-        set
-        {
-            _lastValue = value;
-            _value = value;
-            OnPropertyChanged(PropertyName);
-            Owner.OnPropertyChanged(PropertyName);
-        }
-    }
-
-    public IDisposable Subscribe(IObserver<T> observer)
-    {
-        PropertyChangedEventHandler evt = delegate { observer.OnNext(Value); };
+        PropertyChangedEventHandler evt = delegate { observer.OnNext(ObjectValue); };
         PropertyChanged += evt;
         return new SimpleDisposable(() => PropertyChanged -= evt);
     }
@@ -264,11 +258,39 @@ public class P<T> : IObservable<T>, INotifyPropertyChanged, IObservableObject
         if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public object ObjectValue
+
+    public P(T value)
     {
-        get { return Value; }
-        set { Value = (T)value; }
+        _objectValue = value;
     }
+#if !DLL
+    public P(ViewModel owner, string propertyName)
+    {
+        Owner = owner;
+        PropertyName = propertyName;
+
+    }
+#endif
+    public Type ValueType
+    {
+        get { return typeof(T); }
+    }
+
+    public IDisposable Subscribe(IObserver<T> observer)
+    {
+        
+        PropertyChangedEventHandler evt = delegate { observer.OnNext(Value); };
+        PropertyChanged += evt;
+        return new SimpleDisposable(() => PropertyChanged -= evt);
+    }
+
+
+    public T Value
+    {
+        get { return (T)ObjectValue; }
+        set { ObjectValue = (T)value; }
+    }
+
 }
 
 public class SimpleDisposable : IDisposable

@@ -204,7 +204,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (IObservableObject)sourceProperty(),
+            ModelPropertySelector = () => (IObservableProperty)sourceProperty(),
             TwoWay = false
         };
 
@@ -227,7 +227,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (IObservableObject)sourceProperty(),
+            ModelPropertySelector = () => (IObservableProperty)sourceProperty(),
             TwoWay = false
         };
 
@@ -251,7 +251,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-            ModelPropertySelector = () => (IObservableObject)sourceProperty(),
+            ModelPropertySelector = () => (IObservableProperty)sourceProperty(),
             TwoWay = twoWayGetter != null
         };
         if (twoWayGetter != null)
@@ -285,7 +285,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SourceView = t,
-            ModelPropertySelector = () => sourceViewModelCollection() as IObservableObject
+            ModelPropertySelector = () => sourceViewModelCollection() as IObservableProperty
         }
         .SetAddHandler(v => viewCollection.Add(v as TView))
         .SetRemoveHandler(v => viewCollection.Remove(v as TView));
@@ -314,7 +314,7 @@ public static class ViewBindings
         {
             Source = t.ViewModelObject,
             SourceView = t,
-            ModelPropertySelector = () => (IObservableObject)sourceViewModelSelector(),
+            ModelPropertySelector = () => (IObservableProperty)sourceViewModelSelector(),
             TwoWay = false
         };
         if (getLocal != null)

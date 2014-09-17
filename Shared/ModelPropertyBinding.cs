@@ -2,6 +2,8 @@
 namespace Invert.MVVM
 {
 #endif
+using System;
+
 /// <summary>
 /// A class that contains a binding from a ViewModel to a Target
 /// </summary>
@@ -19,11 +21,13 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
     public override void Bind()
     {
         base.Bind();
-
-        ModelProperty.ValueChanged += PropertyChanged;
+        Disposer = ModelProperty.SubscribeInternal(PropertyChanged);
+       // ModelProperty.ValueChanged += PropertyChanged;
         if (IsImmediate)
         PropertyChanged(ModelProperty.ObjectValue);
     }
+
+    public IDisposable Disposer { get; set; }
 
     /// <summary>
     /// If the value has changed apply the value to the property without reinvoking the SetTargetDelegate.
@@ -33,17 +37,7 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
     /// </summary>
     public void BindReverse()
     {
-        var currentValue = GetTargetValueDelegate();
 
-        if (_lastValue != currentValue)
-        {
-            // Remove this property change event for a moment while updating the value so it doesn't do it again
-            ModelProperty.ValueChanged -= PropertyChanged;
-            ModelProperty.ObjectValue = currentValue;
-            ModelProperty.ValueChanged += PropertyChanged;
-            // Store the last value
-            _lastValue = currentValue;
-        }
     }
 
     /// <summary>
@@ -52,7 +46,7 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
     /// </summary>
     public override void Unbind()
     {
-        ModelProperty.ValueChanged -= PropertyChanged;
+        Disposer.Dispose();
         base.Unbind();
     }
 

@@ -10,22 +10,26 @@ using Invert.uFrame.Editor;
 namespace Invert.MVVM
 {
 #else 
-using UniRx;
+
 #endif
+using UniRx;
 
-
-public class ModelCollection<T> : ObservableCollection<T>, IObservable<NotifyCollectionChangedEventArgs>,IObservableObject
+public class ModelCollection<T> : ObservableCollection<T>
+#if !DLL
+    , IObservable<NotifyCollectionChangedEventArgs>,IObservableProperty
+#endif
 {
+#if !DLL
     public ModelCollection(ViewModel owner, string propertyName)
     {
         Owner = owner;
         PropertyName = propertyName;
     }
-
+#endif
     public IDisposable Subscribe(IObserver<NotifyCollectionChangedEventArgs> observer)
     {
-        NotifyCollectionChangedEventHandler evt =
-            (sender, e) => observer.OnNext(e);
+        NotifyCollectionChangedEventHandler evt = args => observer.OnNext(args);
+            
         CollectionChanged += evt;
         return new SimpleDisposable(() => CollectionChanged -= evt);
     }
@@ -38,6 +42,10 @@ public class ModelCollection<T> : ObservableCollection<T>, IObservable<NotifyCol
 
     public string PropertyName { get; set; }
     public ViewModel Owner { get; set; }
+    public IDisposable SubscribeInternal(Action<object> propertyChanged)
+    {
+        return this.Subscribe((v) => { propertyChanged(v); });
+    }
 }
 
     //public enum ModelCollectionAction
