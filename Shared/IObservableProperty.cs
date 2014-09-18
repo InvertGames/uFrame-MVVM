@@ -10,3 +10,11 @@ public interface IObservableProperty
     Type ValueType { get; }
     IDisposable SubscribeInternal(Action<object> propertyChanged);
 }
+
+public static class ObservablePropertyExtensions
+{
+    public static P<T> AsP<T>(this IObservableProperty property)
+    {
+        return property as P<T>;
+    }
+}

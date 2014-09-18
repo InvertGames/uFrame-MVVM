@@ -17,7 +17,7 @@ public class UFPropertyBinding : ComponentBinding
     public bool _TwoWay = false;
     protected MemberInfo _targetPropertyInfo;
     protected object _targetPropertyObject;
-    private ModelPropertyBase _modelProperty;
+    private IObservableProperty _modelProperty;
     private BindableProperty _targetBindable;
 
     public BindableProperty TargetProperty

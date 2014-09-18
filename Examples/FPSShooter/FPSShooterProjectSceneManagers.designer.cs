@@ -26,7 +26,21 @@ public class FPSMainMenuManagerBase : SceneManager {
     
     private FPSMenuViewModel _FPSMenu;
     
+    private FPSPlayerViewModel _LocalPlayer;
+    
+    private FPSGameViewModel _FPSGame;
+    
     private FPSMenuController _FPSMenuController;
+    
+    private FPSDamageableController _FPSDamageableController;
+    
+    private FPSEnemyController _FPSEnemyController;
+    
+    private FPSGameController _FPSGameController;
+    
+    private FPSPlayerController _FPSPlayerController;
+    
+    private FPSWeaponController _FPSWeaponController;
     
     public FPSMainMenuManagerSettings _FPSMainMenuManagerSettings = new FPSMainMenuManagerSettings();
     
@@ -43,6 +57,32 @@ public class FPSMainMenuManagerBase : SceneManager {
         }
     }
     
+    [Inject("LocalPlayer")]
+    public virtual FPSPlayerViewModel LocalPlayer {
+        get {
+            if ((this._LocalPlayer == null)) {
+                this._LocalPlayer = SetupViewModel<FPSPlayerViewModel>(FPSPlayerController, "LocalPlayer");
+            }
+            return this._LocalPlayer;
+        }
+        set {
+            _LocalPlayer = value;
+        }
+    }
+    
+    [Inject("FPSGame")]
+    public virtual FPSGameViewModel FPSGame {
+        get {
+            if ((this._FPSGame == null)) {
+                this._FPSGame = SetupViewModel<FPSGameViewModel>(FPSGameController, "FPSGame");
+            }
+            return this._FPSGame;
+        }
+        set {
+            _FPSGame = value;
+        }
+    }
+    
     [Inject()]
     public virtual FPSMenuController FPSMenuController {
         get {
@@ -56,10 +96,82 @@ public class FPSMainMenuManagerBase : SceneManager {
         }
     }
     
+    [Inject()]
+    public virtual FPSDamageableController FPSDamageableController {
+        get {
+            if ((this._FPSDamageableController == null)) {
+                this._FPSDamageableController = new FPSDamageableController() { Container = Container, Context = Context };
+            }
+            return this._FPSDamageableController;
+        }
+        set {
+            _FPSDamageableController = value;
+        }
+    }
+    
+    [Inject()]
+    public virtual FPSEnemyController FPSEnemyController {
+        get {
+            if ((this._FPSEnemyController == null)) {
+                this._FPSEnemyController = new FPSEnemyController() { Container = Container, Context = Context };
+            }
+            return this._FPSEnemyController;
+        }
+        set {
+            _FPSEnemyController = value;
+        }
+    }
+    
+    [Inject()]
+    public virtual FPSGameController FPSGameController {
+        get {
+            if ((this._FPSGameController == null)) {
+                this._FPSGameController = new FPSGameController() { Container = Container, Context = Context };
+            }
+            return this._FPSGameController;
+        }
+        set {
+            _FPSGameController = value;
+        }
+    }
+    
+    [Inject()]
+    public virtual FPSPlayerController FPSPlayerController {
+        get {
+            if ((this._FPSPlayerController == null)) {
+                this._FPSPlayerController = new FPSPlayerController() { Container = Container, Context = Context };
+            }
+            return this._FPSPlayerController;
+        }
+        set {
+            _FPSPlayerController = value;
+        }
+    }
+    
+    [Inject()]
+    public virtual FPSWeaponController FPSWeaponController {
+        get {
+            if ((this._FPSWeaponController == null)) {
+                this._FPSWeaponController = new FPSWeaponController() { Container = Container, Context = Context };
+            }
+            return this._FPSWeaponController;
+        }
+        set {
+            _FPSWeaponController = value;
+        }
+    }
+    
     public override void Setup() {
         base.Setup();
         Container.RegisterInstance<FPSMenuViewModel>(FPSMenu,"FPSMenu");
+        Container.RegisterInstance<FPSPlayerViewModel>(LocalPlayer,"LocalPlayer");
+        Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance(FPSMenuController,false);
+        Container.RegisterInstance(FPSDamageableController,false);
+        Container.RegisterInstance(FPSEnemyController,false);
+        Container.RegisterInstance(FPSGameController,false);
+        Container.RegisterInstance(FPSPlayerController,false);
+        Container.RegisterInstance(FPSWeaponController,false);
         this.Container.InjectAll();
     }
     

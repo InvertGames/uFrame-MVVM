@@ -10,13 +10,15 @@ using Invert.uFrame.Editor;
 namespace Invert.MVVM
 {
 #endif
+using UniRx;
+
 /// <summary>
 ///  A data structure that contains information/data needed for a 'View'
 /// </summary>
 [Serializable]
-public abstract class ViewModel 
+public abstract class ViewModel
 #if !DLL
-    : IJsonSerializable, IUFSerializable, IViewModelObserver, INotifyPropertyChanged
+    :  IUFSerializable, IViewModelObserver, INotifyPropertyChanged , IObservable<IObservableProperty>
 #else
  : INotifyPropertyChanged
 #endif
@@ -26,7 +28,7 @@ public abstract class ViewModel
     private Dictionary<int, List<IBinding>> _bindings;
     private Dictionary<string, ICommand> _commands;
     private Controller _controller;
-    private Dictionary<string, ModelPropertyBase> _modelProperties;
+    private Dictionary<string, IObservableProperty> _modelProperties;
     private string _identifier;
     //private List<IBinding> _bindings;
     
@@ -36,7 +38,7 @@ public abstract class ViewModel
     /// </summary>
     /// <param name="bindingPropertyName">The name of the property/field to access</param>
     /// <returns>ModelPropertyBase The Model Property class.  Use value to get the value of the property</returns>
-    public ModelPropertyBase this[string bindingPropertyName]
+    public IObservableProperty this[string bindingPropertyName]
     {
         get
         {
@@ -97,7 +99,7 @@ public abstract class ViewModel
         set { _identifier = value; }
     }
 
-    public Dictionary<string, ModelPropertyBase> Properties
+    public Dictionary<string, IObservableProperty> Properties
     {
         get
         {
@@ -160,27 +162,11 @@ public abstract class ViewModel
     {
         AddBinding(new GenericBinding(bind,unbind));
     }
-    public virtual void Deserialize(JSONNode node)
-    {
-        CacheReflectedModelProperties();
-        if (node["Identifier"] != null)
-        {
-            Identifier = node["Identifier"].Value;
-        }
-        foreach (var property in _modelProperties)
-        {
-            if (property.Value == null) continue;
-            var val = node[property.Key];
-            if (val == null) continue;
-            property.Value.Deserialize(val);
-        }
-    }
-
     /// <summary>
     /// Override this method to skip using reflection.  This can drastically improve performance especially IOS
     /// </summary>
     /// <returns></returns>
-    public virtual IEnumerable<ModelPropertyBase> GetProperties()
+    public virtual IEnumerable<IObservableProperty> GetProperties()
     {
         CacheReflectedModelProperties();
         return _modelProperties.Values.ToArray();
@@ -217,6 +203,16 @@ public abstract class ViewModel
         if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    /// <summary>
+    /// Implementation of Microsoft's INotifyPropertyChanged
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="propertyName"></param>
+    public virtual void OnPropertyChanged(object sender, string propertyName)
+    {
+        PropertyChangedEventHandler handler = PropertyChanged;
+        if (handler != null) handler(sender, new PropertyChangedEventArgs(propertyName));
+    }
 
 #if !DLL
     public virtual void Read(ISerializerStream stream)
@@ -252,27 +248,28 @@ public abstract class ViewModel
 #endif
     public void RemoveBinding(IBinding binding)
     {
+        
         Bindings[-1].Remove(binding);
     }
 
-    public virtual JSONNode Serialize()
-    {
-        CacheReflectedModelProperties();
 
-        var node = new JSONClass();
-        node.Add("TypeName", GetType().FullName);
-        node.Add("Identifier", Identifier);
-        foreach (var property in _modelProperties)
+    public IDisposable Subscribe(IObserver<IObservableProperty> observer)
+    {
+        PropertyChangedEventHandler propertyChanged = (sender, args) =>
         {
-            if (property.Value == null) continue;
-            node.Add(property.Key, property.Value.Serialize());
-        }
-        return node;
+            var property = sender as IObservableProperty;
+            //if (property != null)
+                observer.OnNext(property);
+        };
+
+        PropertyChanged += propertyChanged;
+        return new SimpleDisposable(() => PropertyChanged -= propertyChanged);
     }
 
     public override string ToString()
     {
-        return Serialize().ToString();
+        // TODO
+        return base.ToString();
     }
 
     public virtual void Unbind()
@@ -304,9 +301,9 @@ public abstract class ViewModel
     private void CacheReflectedModelProperties()
     {
         if (_modelProperties != null) return;
-        var dictionary = new Dictionary<string, ModelPropertyBase>();
+        var dictionary = new Dictionary<string, IObservableProperty>();
         foreach (KeyValuePair<string, FieldInfo> property in GetReflectedModelProperties(this.GetType()))
-            dictionary.Add(property.Key, (ModelPropertyBase)property.Value.GetValue(this));
+            dictionary.Add(property.Key, (IObservableProperty)property.Value.GetValue(this));
 
         _modelProperties = dictionary;
     }
@@ -358,25 +355,3 @@ public class ViewModelPropertyInfo
 #if DLL
 }
 #endif
-
-public static class ViewModelExtensions
-{
-    public static void AsComputed<T>(this P<T> targetProperty, Func<T> calculate, params ModelPropertyBase[] dependantProperties)
-    {
-        ModelPropertyBase.PropertyChangedHandler handler = delegate(object value) {  targetProperty.Value = calculate(); };
-        targetProperty.Owner.AddBinding(() =>
-        {
-            foreach (var property in dependantProperties)
-            {
-                property.ValueChanged += handler;
-            }
-        }, () =>
-        {
-            foreach (var property in dependantProperties)
-            {
-                property.ValueChanged -= handler;
-            }
-        });
-        
-    }
-}

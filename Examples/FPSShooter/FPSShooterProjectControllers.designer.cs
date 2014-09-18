@@ -50,6 +50,10 @@ public abstract class FPSEnemyControllerBase : FPSDamageableController {
         base.Initialize(viewModel);
         this.InitializeFPSEnemy(((FPSEnemyViewModel)(viewModel)));
     }
+    
+    public virtual Boolean ComputeIsHighAtHighSpeed(FPSEnemyViewModel vm) {
+        return default(Boolean);
+    }
 }
 
 public abstract class FPSGameControllerBase : Controller {

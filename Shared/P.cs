@@ -205,78 +205,28 @@ public class Computed<T> : P<T>
         }
     }
 
-    //public T LastValue
-    //{
-    //    get { return (T) LastValueObject; }
-    //}
-   
-    /// <summary>
-    /// Gets the type of the value.
-    /// </summary>
-    /// <value>The type of the value.</value>
-    //public override Type ValueType
-    //{
-    //    get
-    //    {
-    //        return typeof(T);
-    //    }
-    //}
-
-    //public Computed()
-    //{
-    //    Value = default(T);
-    //}
-
-    
-    //private readonly ModelPropertyBase[] _dependantProperties;
     public Computed(ViewModel owner, string propertyName,
-       params ModelPropertyBase[] dependantProperties)
+       params IObservableProperty[] dependantProperties)
         : base(owner, propertyName)
     {
-       // _dependantProperties = dependantProperties;
+
         foreach (var dependantProperty in dependantProperties)
         {
-            dependantProperty.ValueChanged += DependantPropertyOnValueChanged;
+            dependantProperty.SubscribeInternal(DependantPropertyOnValueChanged);
         }
       
     }
     public Computed(ViewModel owner, string propertyName, Func<ViewModel,T> calculator,
-        params ModelPropertyBase[] dependantProperties) : base(owner, propertyName)
+        params IObservableProperty[] dependantProperties)
+        : base(owner, propertyName)
     {
         Calculator = calculator;
-        //_dependantProperties = dependantProperties;
         foreach (var dependantProperty in dependantProperties)
         {
-            dependantProperty.ValueChanged += DependantPropertyOnValueChanged;
+            dependantProperty.SubscribeInternal(DependantPropertyOnValueChanged);
         }
     
     }
-
-    //public T Value
-    //{
-    //    get
-    //    {
-    //        if (ObjectValue == null)
-    //            return default(T);
-
-    //        try
-    //        {
-    //            return (T)ObjectValue;
-    //        }
-    //        catch
-    //        {
-    //            //UnityEngine.Debug.LogError(ObjectValue.GetType().FullName + " TO " + typeof(T).FullName + " : " + ex.Message);
-    //            return default(T);
-    //        }
-    //    }
-    //    set
-    //    {
-    //        if (CanSetValue(value))
-    //        {
-    //            ObjectValue = value;
-    //        }
-    //    }
-    //}
 
     public virtual bool CanSetValue(T value)
     {
@@ -288,11 +238,7 @@ public class Computed<T> : P<T>
         if (Calculator != null)
         this.Value = Calculator(Owner);
     }
-    
-    //public ModelPropertyBase[] DependantProperties
-    //{
-    //    get { return _dependantProperties; }
-    //}
+
     /// <summary>
     /// The binding class that allows chaining extra options.
     /// </summary>

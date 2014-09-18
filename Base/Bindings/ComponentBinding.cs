@@ -30,7 +30,7 @@ public abstract class ComponentBinding : MonoBehaviour
     /// </summary>
     /// <param name="modelProperties"></param>
     /// <returns></returns>
-    public virtual IEnumerable<KeyValuePair<string, ModelPropertyBase>> FilterBindableProperties(Dictionary<string, ModelPropertyBase> modelProperties)
+    public virtual IEnumerable<KeyValuePair<string, IObservableProperty>> FilterBindableProperties(Dictionary<string, IObservableProperty> modelProperties)
     {
         return modelProperties;//.Where(p => !typeof(ICollection).IsAssignableFrom(p.Value.ValueType));
     }

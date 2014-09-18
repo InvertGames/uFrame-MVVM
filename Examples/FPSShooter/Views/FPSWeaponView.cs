@@ -1,4 +1,5 @@
 using System.Globalization;
+using UniRx;
 using UnityEngine;
 
 public partial class FPSWeaponView
@@ -58,6 +59,7 @@ public partial class FPSWeaponView
     {
      
         base.Bind();
+        FPSWeapon.Subscribe((v) => { Debug.Log(v.PropertyName + " Changed!!!!!!!!!!!!!!!!!!!!!!!!!"); });
         this.BindKey(() => FPSWeapon.NextZoom, KeyCode.LeftShift);
         this.BindKey(() => FPSWeapon.Reload, KeyCode.R);
         FPSCrosshair.ResetCrosshair();

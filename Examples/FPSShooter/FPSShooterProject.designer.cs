@@ -90,11 +90,19 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
     public P<Single> _SpeedProperty;
     
+    public EnemyStateAI _EnemyStateProperty;
+    
+    public Computed<Boolean> _IsHighAtHighSpeedProperty;
+    
     private FPSGameViewModel _ParentFPSGame;
     
     public FPSEnemyViewModel() : 
-            base() {
+            base()
+    {
+        
         _SpeedProperty = new P<Single>(this, "Speed");
+        _EnemyStateProperty = new EnemyStateAI(this, "EnemyState");
+        _IsHighAtHighSpeedProperty = new Computed<Boolean>(this, "IsHighAtHighSpeed", this._SpeedProperty);
     }
     
     public FPSEnemyViewModel(FPSEnemyControllerBase controller) : 
@@ -120,6 +128,24 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
         }
     }
     
+    public virtual Invert.StateMachine.State EnemyState {
+        get {
+            return _EnemyStateProperty.Value;
+        }
+        set {
+            _EnemyStateProperty.Value = value;
+        }
+    }
+    
+    public virtual Boolean IsHighAtHighSpeed {
+        get {
+            return _IsHighAtHighSpeedProperty.Value;
+        }
+        set {
+            _IsHighAtHighSpeedProperty.Value = value;
+        }
+    }
+    
     public virtual FPSGameViewModel ParentFPSGame {
         get {
             return this._ParentFPSGame;
@@ -131,6 +157,13 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+        var fPSEnemy = controller as FPSEnemyControllerBase;
+        _IsHighAtHighSpeedProperty.Calculator = (vm)=> { return fPSEnemy.ComputeIsHighAtHighSpeed(vm as FPSEnemyViewModel); };
+        _EnemyStateProperty.Attack.AddTrigger(_IsHighAtHighSpeedProperty,_EnemyStateProperty.Attack.PlayerOutOfSight);
+    }
+    
+    public virtual Boolean ComputeIsHighAtHighSpeed(FPSEnemyViewModel vm) {
+        return default(Boolean);
     }
     
     public override void Unbind() {
@@ -140,6 +173,8 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_SpeedProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_EnemyStateProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_IsHighAtHighSpeedProperty, false, false, false, true));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {

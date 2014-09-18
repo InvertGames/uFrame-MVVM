@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,6 +11,7 @@ public partial class FPSGameView
         this._EnemiesList.Add(item);
         ((FPSEnemyView)item)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
         item.transform.position = GetRandomSpawnPoint().position;
+        
     }
 
     public override void EnemiesRemoved(FPSEnemyViewBase item)
@@ -26,7 +28,7 @@ public partial class FPSGameView
     public override void Bind()
     {
         base.Bind();
-
+        
         //if (_PlayerView == null) // Create the player if he doesn't exist.  Resources/FPSPlayer.prefab
         //    _PlayerView = InstantiateView(FPSGame.CurrentPlayer) as FPSPlayerView;
         //else
