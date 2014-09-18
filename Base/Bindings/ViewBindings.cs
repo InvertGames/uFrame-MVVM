@@ -203,7 +203,14 @@ public static class ViewBindings
         var binding = new ModelPropertyBinding()
         {
             Source = t.ViewModelObject,
-            SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
+            SetTargetValueDelegate = (o) =>
+            {
+                if (targetSetter == null)
+                {
+                    Debug.Log("TARGET SETTER IS NULL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!s");
+                }
+                targetSetter((TBindingType) o);
+            },
             ModelPropertySelector = () => (IObservableProperty)sourceProperty(),
             TwoWay = false
         };

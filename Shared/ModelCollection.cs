@@ -46,6 +46,13 @@ public class ModelCollection<T> : ObservableCollection<T>
     {
         return this.Subscribe((v) => { propertyChanged(v); });
     }
+
+    public void AddRange(IEnumerable<T> enumerable)
+    {
+        foreach (var item in enumerable)
+            Add(item);
+    }
+
 }
 
     //public enum ModelCollectionAction

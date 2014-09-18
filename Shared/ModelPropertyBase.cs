@@ -213,7 +213,7 @@ public class P<T> : IObservable<T>, IObservableProperty
     {
         get
         {
-            return _objectValue;
+            return _objectValue ?? default(T);
         }
         set
         {
@@ -288,7 +288,7 @@ public class P<T> : IObservable<T>, IObservableProperty
     public T Value
     {
         get { return (T)ObjectValue; }
-        set { ObjectValue = (T)value; }
+        set { ObjectValue = value; }
     }
 
 }

@@ -138,7 +138,7 @@ public abstract class SceneManager : ViewContainer
         var contextViewModel = Context[identifier];
         if (contextViewModel == null)
         {
-            contextViewModel = new TViewModel { Controller = controller, Identifier = identifier };
+            contextViewModel = controller.Create(identifier) as TViewModel;
             Context[identifier] = contextViewModel;
         }
         Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);

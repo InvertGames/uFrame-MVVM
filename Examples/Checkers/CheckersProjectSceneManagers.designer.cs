@@ -65,7 +65,7 @@ public class CheckersSceneManagerBase : SceneManager {
     
     public CheckersMenuSceneManagerSettings _GameOverTransition = new CheckersMenuSceneManagerSettings();
     
-    private CheckersGameViewModel _CheckersGame;
+    private AICheckersGameViewModel _CheckersGame;
     
     private CheckerBoardViewModel _CheckerBoard;
     
@@ -82,10 +82,10 @@ public class CheckersSceneManagerBase : SceneManager {
     public CheckersSceneManagerSettings _CheckersSceneManagerSettings = new CheckersSceneManagerSettings();
     
     [Inject("CheckersGame")]
-    public virtual CheckersGameViewModel CheckersGame {
+    public virtual AICheckersGameViewModel CheckersGame {
         get {
             if ((this._CheckersGame == null)) {
-                this._CheckersGame = SetupViewModel<CheckersGameViewModel>(CheckersGameController, "CheckersGame");
+                this._CheckersGame = SetupViewModel<AICheckersGameViewModel>(AICheckersGameController, "CheckersGame");
             }
             return this._CheckersGame;
         }
@@ -174,6 +174,9 @@ public class CheckersSceneManagerBase : SceneManager {
     
     public override void Setup() {
         base.Setup();
+        Container.RegisterInstance<AICheckersGameViewModel>(CheckersGame,"CheckersGame");
+        Container.RegisterInstance<CheckersGameViewModel>(CheckersGame,"CheckersGame");
+        Container.RegisterInstance<CheckerBoardViewModel>(CheckerBoard,"CheckerBoard");
         Container.RegisterInstance(AICheckersGameController,false);
         Container.RegisterInstance(CheckerBoardController,false);
         Container.RegisterInstance(CheckerPlateController,false);

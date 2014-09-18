@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace System.Collections.Specialized
@@ -275,7 +276,7 @@ namespace System.Collections.Specialized
         {
             get
             {
-                return this._newItemList;
+                return this._newItemList ?? new List<object>();
             }
         }
 
@@ -291,7 +292,7 @@ namespace System.Collections.Specialized
         {
             get
             {
-                return this._oldItemList;
+                return this._oldItemList ?? new List<object>();
             }
         }
 
