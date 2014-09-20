@@ -1,14 +1,20 @@
+using System;
 using UnityEngine;
-
+using UniRx;
 public partial class FPSEnemyView
 {
     public NavMeshAgent _NavAgent;
-    public FPSPlayerViewBase _TargetPlayer;
-
+    private IDisposable disposable;
     public override void Bind()
     {
         base.Bind();
+        //disposable = FPSEnemy.ParentFPSGame.CurrentPlayer._PositionProperty.Subscribe(_ =>
+        //{
+        //    _NavAgent.SetDestination(this.transform.position);
+        //    transform.LookAt(_);
+        //});
 
+        //UpdateAsObservable().Subscribe(_ => transform.Translate(this.transform.forward*Time.deltaTime*FPSEnemy.Speed));
     }
 
     public override void HealthChanged(float value)
@@ -22,21 +28,9 @@ public partial class FPSEnemyView
         gameObject.SetActive(value != FPSPlayerState.Dead);
     }
 
-    public override void Start()
+    public override void OnDestroy()
     {
-        base.Start();
-        this._NavAgent.SetDestination(_TargetPlayer.transform.position);
-        _started = true;
+        base.OnDestroy();
+        disposable.Dispose();
     }
-
-    public bool _started = false;
-    public void Update()
-    {
-        if (_TargetPlayer == null) return;
-        if (_started == false) return;
-        this._NavAgent.SetDestination(_TargetPlayer.transform.position);
-        this.transform.LookAt(_TargetPlayer.transform);
-        this.transform.Translate(this.transform.forward * Time.deltaTime * FPSEnemy.Speed);
-    }
-
 }

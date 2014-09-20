@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
+using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -101,3 +102,5 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         return null;
     }
 }
+
+

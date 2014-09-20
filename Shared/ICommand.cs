@@ -16,7 +16,7 @@ public interface ICommand
     event CommandEvent OnCommandExecuting;
     object Sender { get; set; }
     object Parameter { get; set; }
-
+    
     IEnumerator Execute();
 }
 

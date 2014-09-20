@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 
 
@@ -566,7 +567,8 @@ public class CheckerViewViewBase : CheckerViewBase {
     
     protected override void Apply() {
         base.Apply();
-        if (Checker.Dirty) {
+        if (Checker.Dirty)
+        {
             Checker.Dirty = false;
         }
     }

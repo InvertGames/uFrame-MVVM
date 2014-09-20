@@ -5,22 +5,15 @@ using Random = UnityEngine.Random;
 
 public partial class FPSGameView
 {
-    public override void EnemiesAdded(FPSEnemyViewBase item)
+    public override void EnemiesAdded(ViewBase viewBase)
     {
-        base.EnemiesAdded(item);
-        this._EnemiesList.Add(item);
-        ((FPSEnemyView)item)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
-        item.transform.position = GetRandomSpawnPoint().position;
-        
+        base.EnemiesAdded(viewBase);
+        viewBase.transform.position = GetRandomSpawnPoint().position;
     }
 
-    public override void EnemiesRemoved(FPSEnemyViewBase item)
+    public override void EnemiesRemoved(ViewBase viewBase)
     {
-        base.EnemiesRemoved(item);
-        Debug.Log("Enemy removed");
-        this._EnemiesList.Remove(item);
-        if (item != null && item.gameObject != null) 
-            UnityEngine.Object.Destroy(item.gameObject);
+        base.EnemiesRemoved(viewBase);
     }
 
     public Transform _SpawnPointsParent;
@@ -29,30 +22,11 @@ public partial class FPSGameView
     {
         base.Bind();
         
-        //if (_PlayerView == null) // Create the player if he doesn't exist.  Resources/FPSPlayer.prefab
-        //    _PlayerView = InstantiateView(FPSGame.CurrentPlayer) as FPSPlayerView;
-        //else
-        //    _PlayerView.FPSPlayer = FPSGame.CurrentPlayer;
-
-        //// Add bindings here or add binding components in unity.
-        //this.BindProperty(() => FPSGame._StateProperty, state => gameObject.SetActive(state != FPSGameState.Paused));
-        //// Bind to a ViewModel collection, instantiating views when the model collection is changed
-        //this.BindToViewCollection(() => FPSGame._EnemiesProperty, _Enemies)
-        //    .SetAddHandler((enemyView) =>
-        //    {
-        //        var enemy = ((FPSEnemyView)enemyView);
-        //        enemy._TargetPlayer = _PlayerView;
-        //        enemy.transform.position = GetRandomSpawnPoint().position;
-        //        _Enemies.Add(enemyView);
-        //    })
-        //    .SetParent(_EnemiesTransform);
     }
 
     public override void CurrentPlayerChanged(FPSPlayerViewModel value)
     {
         base.CurrentPlayerChanged(value);
-        //_CurrentPlayer.FPSPlayer = FPSGame.CurrentPlayer;
-
     }
 
     public override ViewBase CreateEnemiesView(FPSEnemyViewModel fPSEnemy)
@@ -65,14 +39,6 @@ public partial class FPSGameView
         base.StateChanged(value);
         gameObject.SetActive(value != FPSGameState.Paused);
     }
-
-    //public override void EnemiesAdded(FPSEnemyViewBase enemy)
-    //{
-    //    base.EnemiesAdded(enemy);
-    //    ((FPSEnemyView) enemy)._TargetPlayer = (FPSPlayerView)_CurrentPlayer;
-    //    enemy.transform.position = GetRandomSpawnPoint().position;
-
-    //}
 
     public Transform GetRandomSpawnPoint()
     {

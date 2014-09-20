@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using UniRx;
 using UnityEngine;
 
-public class P<T> : IObservable<T>, IObservableProperty
+public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
 {
     private object _objectValue;
     private object _lastValue;
@@ -48,7 +48,12 @@ public class P<T> : IObservable<T>, IObservableProperty
     {
         PropertyChangedEventHandler evt = delegate { observer.OnNext(ObjectValue); };
         PropertyChanged += evt;
-        return new SimpleDisposable(() => PropertyChanged -= evt);
+        var disposer = new SimpleDisposable(() => PropertyChanged -= evt);
+        if (Owner != null)
+        {
+            Owner.AddBinding(disposer);
+        }
+        return disposer;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -94,4 +99,18 @@ public class P<T> : IObservable<T>, IObservableProperty
         set { ObjectValue = value; }
     }
 
+    public void OnCompleted()
+    {
+        
+    }
+
+    public void OnError(Exception error)
+    {
+        
+    }
+
+    public void OnNext(T value)
+    {
+        ObjectValue = value;
+    }
 }

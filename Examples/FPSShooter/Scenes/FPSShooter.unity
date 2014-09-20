@@ -395,12 +395,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d9e1a6ae2d624e439ad70f93c696f77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Save: 0
-  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
+  _InjectView: 0
   _overrideViewModel: 0
   _resolveName: FPSGame
+  _Save: 0
   _CurrentPlayer: {fileID: 0}
   _Score: 0
   _Kills: 0
@@ -715,12 +715,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b6136f9bca7ea47a5fc4a04af98273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Save: 0
-  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
+  _InjectView: 0
   _overrideViewModel: 0
   _resolveName: FPSGame
+  _Save: 0
   _CurrentPlayer: {fileID: 0}
   _Score: 0
   _Kills: 0
@@ -826,21 +826,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c725c153896552949b6406b247e6deef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Save: 0
-  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
+  _InjectView: 0
   _overrideViewModel: 1
   _resolveName: LocalPlayer
+  _Save: 0
   _Health: 1
-  _CurrentWeaponIndex: 1
+  _Position: {x: 0, y: 0, z: 0}
+  _BindHealth: 0
+  _BindState: 0
   _BindCurrentWeaponIndex: 1
   _BindWeapons: 1
   _WeaponsList: []
   _WeaponsSceneFirst: 1
   _WeaponsContainer: {fileID: 933135608}
-  _BindHealth: 0
-  _BindState: 0
+  _CurrentWeaponIndex: 1
 --- !u!114 &887022876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1193,12 +1194,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8d8f9457f6a6174e91b264a779210d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Save: 0
-  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
+  _InjectView: 0
   _overrideViewModel: 1
   _resolveName: FPSGame
+  _Save: 0
   _CurrentPlayer: {fileID: 887022875}
   _Score: 0
   _Kills: 0
@@ -1485,21 +1486,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247b2466323d2a94fbe668060d23baef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Save: 0
-  _InjectView: 0
   _LogEvents: 0
   _forceResolveViewModel: 1
+  _InjectView: 0
   _overrideViewModel: 0
   _resolveName: LocalPlayer
+  _Save: 0
   _Health: 0
+  _Position: {x: 0, y: 0, z: 0}
   _CurrentWeaponIndex: 0
   _BindCurrentWeaponIndex: 0
   _BindWeapons: 1
   _WeaponsList: []
   _WeaponsSceneFirst: 0
   _WeaponsContainer: {fileID: 0}
-  _BindHealth: 0
-  _BindState: 0
   _AmmoLabel: {fileID: 1071219179}
   _ReloadLabel: {fileID: 141528934}
   _HudTextures: []

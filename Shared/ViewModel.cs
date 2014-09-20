@@ -18,14 +18,14 @@ using UniRx;
 [Serializable]
 public abstract class ViewModel
 #if !DLL
-    :  IUFSerializable, IViewModelObserver, INotifyPropertyChanged , IObservable<IObservableProperty>
+    :  IUFSerializable, INotifyPropertyChanged , IObservable<IObservableProperty>
 #else
  : INotifyPropertyChanged
 #endif
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private Dictionary<int, List<IBinding>> _bindings;
+    private Dictionary<int, List<IDisposable>> _bindings;
     private Dictionary<string, ICommand> _commands;
     private Controller _controller;
     private Dictionary<string, IObservableProperty> _modelProperties;
@@ -54,9 +54,9 @@ public abstract class ViewModel
         }
     }
 
-    public Dictionary<int, List<IBinding>> Bindings
+    public Dictionary<int, List<IDisposable>> Bindings
     {
-        get { return _bindings ?? (_bindings = new Dictionary<int, List<IBinding>>()); }
+        get { return _bindings ?? (_bindings = new Dictionary<int, List<IDisposable>>()); }
         set { _bindings = value; }
     }
 
@@ -149,19 +149,20 @@ public abstract class ViewModel
         return modelProperties;
     }
 
-    public void AddBinding(IBinding binding)
+    public void AddBinding(IDisposable binding)
     {
         if (!Bindings.ContainsKey(-1))
         {
-            Bindings[-1] = new List<IBinding>();
+            Bindings[-1] = new List<IDisposable>();
         }
         Bindings[-1].Add(binding);
-        binding.Bind();
+        //binding.Bind();
     }
-    public void AddBinding(Action bind, Action unbind)
-    {
-        AddBinding(new GenericBinding(bind,unbind));
-    }
+    //public void AddBinding(Action bind, Action unbind)
+    //{
+
+    //    AddBinding(new GenericBinding(bind,unbind));
+    //}
     /// <summary>
     /// Override this method to skip using reflection.  This can drastically improve performance especially IOS
     /// </summary>
@@ -246,12 +247,6 @@ public abstract class ViewModel
     }
 
 #endif
-    public void RemoveBinding(IBinding binding)
-    {
-        
-        Bindings[-1].Remove(binding);
-    }
-
 
     public IDisposable Subscribe(IObserver<IObservableProperty> observer)
     {
@@ -278,7 +273,7 @@ public abstract class ViewModel
         {
             foreach (var binding1 in binding.Value)
             {
-                binding1.Unbind();
+                binding1.Dispose();
             }
             binding.Value.Clear();
         }

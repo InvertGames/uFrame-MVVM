@@ -12,12 +12,15 @@ public partial class FPSDamageableViewModel : ViewModel {
     
     public P<FPSPlayerState> _StateProperty;
     
+    public P<Int32> _DistanceToPlayerProperty;
+    
     private ICommand _ApplyDamage;
     
     public FPSDamageableViewModel() : 
             base() {
         _HealthProperty = new P<Single>(this, "Health");
         _StateProperty = new P<FPSPlayerState>(this, "State");
+        _DistanceToPlayerProperty = new P<Int32>(this, "DistanceToPlayer");
     }
     
     public FPSDamageableViewModel(FPSDamageableControllerBase controller) : 
@@ -43,6 +46,15 @@ public partial class FPSDamageableViewModel : ViewModel {
         }
     }
     
+    public virtual Int32 DistanceToPlayer {
+        get {
+            return _DistanceToPlayerProperty.Value;
+        }
+        set {
+            _DistanceToPlayerProperty.Value = value;
+        }
+    }
+    
     public virtual ICommand ApplyDamage {
         get {
             return _ApplyDamage;
@@ -65,6 +77,7 @@ public partial class FPSDamageableViewModel : ViewModel {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_HealthProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_StateProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_DistanceToPlayerProperty, false, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
@@ -86,37 +99,18 @@ public partial class FPSDamageableViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooterProject")]
 public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
-    private UnityEngine.Vector3 _position;
-    
     public P<Single> _SpeedProperty;
-    
-    public EnemyStateAI _EnemyStateProperty;
-    
-    public Computed<Boolean> _IsHighAtHighSpeedProperty;
     
     private FPSGameViewModel _ParentFPSGame;
     
     public FPSEnemyViewModel() : 
-            base()
-    {
-        
+            base() {
         _SpeedProperty = new P<Single>(this, "Speed");
-        _EnemyStateProperty = new EnemyStateAI(this, "EnemyState");
-        _IsHighAtHighSpeedProperty = new Computed<Boolean>(this, "IsHighAtHighSpeed", this._SpeedProperty);
     }
     
     public FPSEnemyViewModel(FPSEnemyControllerBase controller) : 
             this() {
         this.Controller = controller;
-    }
-    
-    public virtual UnityEngine.Vector3 TransformPosition {
-        get {
-            return this._position;
-        }
-        set {
-            _position = value;
-        }
     }
     
     public virtual Single Speed {
@@ -125,24 +119,6 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
         }
         set {
             _SpeedProperty.Value = value;
-        }
-    }
-    
-    public virtual Invert.StateMachine.State EnemyState {
-        get {
-            return _EnemyStateProperty.Value;
-        }
-        set {
-            _EnemyStateProperty.Value = value;
-        }
-    }
-    
-    public virtual Boolean IsHighAtHighSpeed {
-        get {
-            return _IsHighAtHighSpeedProperty.Value;
-        }
-        set {
-            _IsHighAtHighSpeedProperty.Value = value;
         }
     }
     
@@ -157,13 +133,6 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
-        var fPSEnemy = controller as FPSEnemyControllerBase;
-        _IsHighAtHighSpeedProperty.Calculator = (vm)=> { return fPSEnemy.ComputeIsHighAtHighSpeed(vm as FPSEnemyViewModel); };
-        _EnemyStateProperty.Attack.AddTrigger(_IsHighAtHighSpeedProperty,_EnemyStateProperty.Attack.PlayerOutOfSight);
-    }
-    
-    public virtual Boolean ComputeIsHighAtHighSpeed(FPSEnemyViewModel vm) {
-        return default(Boolean);
     }
     
     public override void Unbind() {
@@ -173,8 +142,6 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_SpeedProperty, false, false, false));
-        list.Add(new ViewModelPropertyInfo(_EnemyStateProperty, false, false, false));
-        list.Add(new ViewModelPropertyInfo(_IsHighAtHighSpeedProperty, false, false, false, true));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
@@ -183,12 +150,10 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
-		stream.SerializeVector3("TransformPosition", this.TransformPosition);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
-		this.TransformPosition = stream.DeserializeVector3("TransformPosition");
     }
 }
 
@@ -338,8 +303,6 @@ public partial class FPSGameViewModel : ViewModel {
 [DiagramInfoAttribute("FPSShooterProject")]
 public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     
-    private UnityEngine.Vector3 _position;
-    
     public P<Int32> _CurrentWeaponIndexProperty;
     
     public readonly ModelCollection<FPSWeaponViewModel> _WeaponsProperty;
@@ -364,15 +327,6 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     public FPSPlayerViewModel(FPSPlayerControllerBase controller) : 
             this() {
         this.Controller = controller;
-    }
-    
-    public virtual UnityEngine.Vector3 TransformPosition {
-        get {
-            return this._position;
-        }
-        set {
-            _position = value;
-        }
     }
     
     public virtual Int32 CurrentWeaponIndex {
@@ -474,13 +428,11 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
-		stream.SerializeVector3("TransformPosition", this.TransformPosition);
 		stream.SerializeArray("Weapons", this.Weapons);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
-		this.TransformPosition = stream.DeserializeVector3("TransformPosition");
 		this.Weapons = stream.DeserializeObjectArray<FPSWeaponViewModel>("Weapons").ToList();
     }
 }

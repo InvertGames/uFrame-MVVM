@@ -8,6 +8,7 @@ using Invert.uFrame.Code.Bindings;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
+using UniRx;
 using UnityEngine;
 
 public class UFrameEditorPlugin : DiagramPlugin
@@ -27,17 +28,17 @@ public class UFrameEditorPlugin : DiagramPlugin
     }
     public override void Initialize(uFrameContainer container)
     {
-#if DEBUG
-        Debug.Log("Registering " + "UFrameEditorPlugin");
-#endif
+        container.Register<GraphData, ExternalSubsystemGraph>("External Subsystem Graph");
 
         container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
+
+
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelPropertyTypeSelection");
+        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false, IncludeUnityEngine = true }, "ViewPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = true, PrimitiveOnly = false }, "ViewModelCommandTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() {AllowNone = false,PrimitiveOnly = false}, "ViewModelCollectionTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ComputedPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false, IncludeUnityEngine = true }, "StateMachineVariableTypeSelection");
-
 
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");
@@ -45,37 +46,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneCommand(), "AddViewToScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneSelectionCommand(), "AddViewToSceneSelection");
 
-        // Where the generated code files are placed
-        container.Register<ICodePathStrategy,DefaultCodePathStrategy>("Default");
-        container.Register<ICodePathStrategy,SubSystemPathStrategy>("By Subsystem");
-        // The code generators
-        container.Register<DesignerGeneratorFactory, ElementDataGeneratorFactory>("ElementData");
-        container.Register<DesignerGeneratorFactory, EnumDataGeneratorFactory>("EnumData");
-        container.Register<DesignerGeneratorFactory, ViewDataGeneratorFactory>("ViewData");
-        container.Register<DesignerGeneratorFactory, ViewComponentDataGeneratorFactory>("ViewComponentData");
-        container.Register<DesignerGeneratorFactory, SceneManagerDataGeneratorFactory>("SceneManagerData");
-
-        container.Register<IBindingGenerator, PropertyBindingGenerator>("PropertyBinding");
-        container.Register<IBindingGenerator, CollectionItemAddedBindingGenerator>("Added");
-        container.Register<IBindingGenerator, CollectionItemRemovedBindingGenerator>("Removed");
-        container.Register<IBindingGenerator, CollectionItemCreateBindingGenerator>("Create");
-
-
-        
-        //container.RegisterInstance<IBindingGenerator>(new PropertyBindingGenerator(){},"PropertyBinding");
-        //container.RegisterInstance<IBindingGenerator>(new CollectionItemAddedBindingGenerator() { IsViewModelBinding = true }, "AddedVMBinding");
-        //container.RegisterInstance<IBindingGenerator>(new CollectionItemRemovedBindingGenerator() { IsViewModelBinding = true }, "RemovedVMBinding");
-        //container.RegisterInstance<IBindingGenerator>(new CollectionItemCreateBindingGenerator() { IsViewModelBinding = true }, "CreateVMBinding");
-
-        //container.RegisterInstance<IBindingGenerator>(new CollectionItemAddedBindingGenerator() { IsViewModelBinding = false }, "AddedBinding");
-        //container.RegisterInstance<IBindingGenerator>(new CollectionItemRemovedBindingGenerator() { IsViewModelBinding = false }, "RemovedBinding");
-
-
-
         container.RegisterInstance<IUFrameTypeProvider>(new uFrameTypeProvider());
-
-        // Import is no longer needed
-        //container.RegisterInstance<IToolbarCommand>(new ImportCommand(),"Import");
     }
 
     public class uFrameTypeProvider : IUFrameTypeProvider
@@ -219,6 +190,11 @@ public class UFrameEditorPlugin : DiagramPlugin
         public Type StateMachine
         {
             get { return typeof (StateMachine); }
+        }
+
+        public Type IObservable
+        {
+            get { return typeof (IObservable<>); }
         }
 
 

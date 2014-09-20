@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 56819800, guid: 8909b3110239b804886e7150f2263a2a, type: 3}
+  m_Name: NewExternalSubsystemGraph
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"NewExternalSubsystemGraph", "Version":"1.501", "Identifier":"edb2c999-0b4b-416a-9936-202152cdb563",
+    "FilterState":{"_CLRType":"FilterState", "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings",
+    "SnapSize":"10", "CodePathStrategyName":"Default", "GridLinesColor":{"r":"0.271",
+    "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169", "g":"0.169",
+    "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1", "b":"1", "a":"1"},
+    "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"}, "InheritanceLinkColor":{"r":"0",
+    "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5", "a":"1"}, "TransitionLinkColor":{"r":"1",
+    "g":"0.9215686", "b":"0.01568628", "a":"1"}, "ViewLinkColor":{"r":"0", "g":"0",
+    "b":"1", "a":"1"}, "GemerateDefaultBindings":"true", "RootNamespace":""}, "PositionData":{"_CLRType":"FilterPositionData",
+    "420c613f-433f-474c-a7e9-268dabf4924c":{"46e2176a-7dbf-49a4-808f-8178f5964ce6":{"x":"405",
+    "y":"195"}, "420c613f-433f-474c-a7e9-268dabf4924c":{"x":"40", "y":"138"}, "e6261fca-ad1c-4ad5-831e-9e94d87f5a46":{"x":"655",
+    "y":"94"}, "584be711-c589-4edf-b648-81e0eb6807f6":{"x":"661", "y":"280"}}, "52f22cf4-8fd9-4830-9b2e-a8e92d6e9f81":{"52f22cf4-8fd9-4830-9b2e-a8e92d6e9f81":{"x":"92",
+    "y":"137"}, "46e2176a-7dbf-49a4-808f-8178f5964ce6":{"x":"428", "y":"156"}, "e6261fca-ad1c-4ad5-831e-9e94d87f5a46":{"x":"707",
+    "y":"82"}, "584be711-c589-4edf-b648-81e0eb6807f6":{"x":"625", "y":"277"}}, "2e277a8c-051c-457f-b9db-c805fada84e4":{"2e277a8c-051c-457f-b9db-c805fada84e4":{"x":"134",
+    "y":"136"}, "a39fefa7-d01c-4bfe-a1b5-7244372aea19":{"x":"569", "y":"156"}}, "f7f9d476-ee93-4bf8-b090-f7335c428473":{"a39fefa7-d01c-4bfe-a1b5-7244372aea19":{"x":"399",
+    "y":"215"}, "f7f9d476-ee93-4bf8-b090-f7335c428473":{"x":"77", "y":"201"}, "0baa00cc-1a01-4b56-bc38-38cf595ec194":{"x":"653",
+    "y":"92"}}, "a39fefa7-d01c-4bfe-a1b5-7244372aea19":{"a39fefa7-d01c-4bfe-a1b5-7244372aea19":{"x":"207",
+    "y":"157"}, "5db4bb5d-f30c-4bed-9cf9-b3a498f54d76":{"x":"494", "y":"100"}}}, "SceneFlow":{"_CLRType":"SubSystemData",
+    "Name":"NewExternalSubsystemGraph", "IsCollapsed":"false", "Identifier":"f7f9d476-ee93-4bf8-b090-f7335c428473",
+    "Items":[  ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, "Nodes":[ {"_CLRType":"SubSystemData", "Name":"NewExternalSubsystemGraph",
+    "IsCollapsed":"false", "Identifier":"f7f9d476-ee93-4bf8-b090-f7335c428473", "Items":[  ],
+    "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, {"_CLRType":"SubSystemData", "Name":"NewExternalSubsystemGraph",
+    "IsCollapsed":"false", "Identifier":"f7f9d476-ee93-4bf8-b090-f7335c428473", "Items":[  ],
+    "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, {"_CLRType":"SubSystemData", "Name":"NewExternalSubsystemGraph",
+    "IsCollapsed":"false", "Identifier":"f7f9d476-ee93-4bf8-b090-f7335c428473", "Items":[  ],
+    "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, {"_CLRType":"SubSystemData", "Name":"NewExternalSubsystemGraph",
+    "IsCollapsed":"false", "Identifier":"2e277a8c-051c-457f-b9db-c805fada84e4", "Items":[  ],
+    "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, {"_CLRType":"SubSystemData", "Name":"NewExternalSubsystemGraph",
+    "IsCollapsed":"false", "Identifier":"52f22cf4-8fd9-4830-9b2e-a8e92d6e9f81", "Items":[  ],
+    "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, {"_CLRType":"SubSystemData", "Name":"NewExternalSubsystemGraph",
+    "IsCollapsed":"false", "Identifier":"420c613f-433f-474c-a7e9-268dabf4924c", "Items":[
+    {"_CLRType":"RegisteredInstanceData", "Name":"NewElement2", "Identifier":"", "Flags":{"_CLRType":"true"},
+    "DataBag":{"_CLRType":"DataBag"}, "RegisterType":"584be711-c589-4edf-b648-81e0eb6807f6"}
+    ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "Imports":[  ]}, {"_CLRType":"ElementData", "Name":"NewElement", "IsCollapsed":"true",
+    "Identifier":"46e2176a-7dbf-49a4-808f-8178f5964ce6", "Items":[  ], "CollapsedValues":{},
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"}, "IsTemplate":"false",
+    "BaseIdentifier":"", "IsMultiInstance":"false"}, {"_CLRType":"ElementData", "Name":"NewElement1",
+    "IsCollapsed":"true", "Identifier":"e6261fca-ad1c-4ad5-831e-9e94d87f5a46", "Items":[  ],
+    "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "IsTemplate":"false", "BaseIdentifier":"46e2176a-7dbf-49a4-808f-8178f5964ce6",
+    "IsMultiInstance":"false"}, {"_CLRType":"ElementData", "Name":"NewElement2", "IsCollapsed":"true",
+    "Identifier":"584be711-c589-4edf-b648-81e0eb6807f6", "Items":[  ], "CollapsedValues":{},
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"}, "IsTemplate":"false",
+    "BaseIdentifier":"", "IsMultiInstance":"false"}, {"_CLRType":"ElementData", "Name":"MTESTNODE",
+    "IsCollapsed":"true", "Identifier":"a39fefa7-d01c-4bfe-a1b5-7244372aea19", "Items":[  ],
+    "CollapsedValues":{"5db4bb5d-f30c-4bed-9cf9-b3a498f54d76":"true"}, "Flags":{"_CLRType":"true"},
+    "DataBag":{"_CLRType":"DataBag"}, "IsTemplate":"false", "BaseIdentifier":"", "IsMultiInstance":"false"},
+    {"_CLRType":"ElementData", "Name":"NewElement3", "IsCollapsed":"true", "Identifier":"0baa00cc-1a01-4b56-bc38-38cf595ec194",
+    "Items":[  ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"DataBag"},
+    "IsTemplate":"false", "BaseIdentifier":"a39fefa7-d01c-4bfe-a1b5-7244372aea19",
+    "IsMultiInstance":"false"}, {"_CLRType":"ViewData", "Name":"NewView", "IsCollapsed":"true",
+    "Identifier":"5db4bb5d-f30c-4bed-9cf9-b3a498f54d76", "Items":[  ], "CollapsedValues":{},
+    "Flags":{"_CLRType":"FlagsDictionary"}, "DataBag":{"_CLRType":"DataBag"}, "ForElementIdentifier":"a39fefa7-d01c-4bfe-a1b5-7244372aea19",
+    "BaseViewIdentifier":"", "ComponentIdentifiers":[  ]} ]}'

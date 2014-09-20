@@ -20,12 +20,12 @@ public partial class FPSPlayerHUDView
         return null;
     }
 
-    public override void WeaponsAdded(FPSWeaponViewBase fPSWeapon)
+    public override void WeaponsAdded(ViewBase fPSWeapon)
     {
 
     }
 
-    public override void WeaponsRemoved(FPSWeaponViewBase fPSWeapon)
+    public override void WeaponsRemoved(ViewBase fPSWeapon)
     {
 
 

@@ -26,6 +26,11 @@ public class ModelCollection<T> : ObservableCollection<T>
         PropertyName = propertyName;
     }
 #endif
+
+    public ModelCollection()
+    {
+    }
+
     public IDisposable Subscribe(IObserver<NotifyCollectionChangedEventArgs> observer)
     {
         NotifyCollectionChangedEventHandler evt = args => observer.OnNext(args);
@@ -53,16 +58,19 @@ public class ModelCollection<T> : ObservableCollection<T>
             Add(item);
     }
 
+    public delegate void ModelCollectionChangedWith(ModelCollectionChangeEventWith<T> changeArgs);
+    public event ModelCollectionChangedWith CollectionChangedWith;
 }
 
-    //public enum ModelCollectionAction
-    //{
-    //    Add,
-    //    Remove,
-    //    Move,
-    //    Replace,
-    //    Reset
-    //}
+[Obsolete]
+public enum ModelCollectionAction
+{
+    Add,
+    Remove,
+    Move,
+    Replace,
+    Reset
+}
 
     //public delegate void ModelCollectionChanged(ModelCollectionChangeEvent changeArgs);
 
@@ -325,49 +333,49 @@ public class ModelCollection<T> : ObservableCollection<T>
     //        if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     //    }
     //}
+[Obsolete]
+public class ModelCollectionChangeEvent
+{
+    private object[] _newItems;
+    private object[] _oldItems;
 
-    //public class ModelCollectionChangeEvent
-    //{
-    //    private object[] _newItems;
-    //    private object[] _oldItems;
+    public ModelCollectionAction Action { get; set; }
 
-    //    public ModelCollectionAction Action { get; set; }
+    public object[] NewItems
+    {
+        get { return _newItems ?? (_newItems = new object[] { }); }
+        set { _newItems = value; }
+    }
 
-    //    public object[] NewItems
-    //    {
-    //        get { return _newItems ?? (_newItems = new object[] {}); }
-    //        set { _newItems = value; }
-    //    }
+    public object[] OldItems
+    {
+        get { return _oldItems ?? (_oldItems = new object[] { }); }
+        set { _oldItems = value; }
+    }
+}
+[Obsolete]
+public class ModelCollectionChangeEventWith<T> : ModelCollectionChangeEvent
+{
+    public T[] NewItemsOfT
+    {
+        get { return NewItems.Cast<T>().ToArray(); }
+        set
+        {
+            if (value == null) return;
+            NewItems = value.Cast<object>().ToArray();
+        }
+    }
 
-    //    public object[] OldItems
-    //    {
-    //        get { return _oldItems ?? (_oldItems = new object[] {}); }
-    //        set { _oldItems = value; }
-    //    }
-    //}
-
-    //public class ModelCollectionChangeEventWith<T> : ModelCollectionChangeEvent
-    //{
-    //    public T[] NewItemsOfT
-    //    {
-    //        get { return NewItems.Cast<T>().ToArray(); }
-    //        set
-    //        {
-    //            if (value == null) return;
-    //            NewItems = value.Cast<object>().ToArray();
-    //        }
-    //    }
-
-    //    public T[] OldItemsOfT
-    //    {
-    //        get { return OldItems.Cast<T>().ToArray(); }
-    //        set
-    //        {
-    //            if (value == null) return;
-    //            OldItems = value.Cast<object>().ToArray();
-    //        }
-    //    }
-    //}
+    public T[] OldItemsOfT
+    {
+        get { return OldItems.Cast<T>().ToArray(); }
+        set
+        {
+            if (value == null) return;
+            OldItems = value.Cast<object>().ToArray();
+        }
+    }
+}
 
 #if DLL
 }

@@ -134,7 +134,7 @@ public class ViewInspector : uFrameInspector
     }
     public override void OnInspectorGUI()
     {
-        
+
         var t = target as ViewBase;
         if (EditorApplication.isPlaying)
         {
@@ -275,21 +275,30 @@ public class ViewInspector : uFrameInspector
     private void DoInitializationSection(ViewBase t)
     {
         EditorGUILayout.Space();
-        if (t.IsMultiInstance)
-        {
-            Info("Store the ViewModel instance in the container.  So other views can use the same instance.");
-            var resolveProperty = serializedObject.FindProperty("_forceResolveViewModel");
-            EditorGUILayout.PropertyField(resolveProperty, new GUIContent("Force Resolve"));
-        }
+        var resolveProperty = serializedObject.FindProperty("_forceResolveViewModel");
+        var resolveNameProperty = serializedObject.FindProperty("_resolveName");
+
+        if (!string.IsNullOrEmpty(t.DefaultIdentifier) && (resolveNameProperty.stringValue != t.DefaultIdentifier || !resolveProperty.boolValue))
+            if (GUILayout.Button(string.Format("Use Registered \"{0}\" Instance", t.DefaultIdentifier)))
+            {
+                resolveProperty.boolValue = true;
+                serializedObject.FindProperty("_resolveName").stringValue = t.DefaultIdentifier;
+            }
+
+        Info("Store the ViewModel instance in the container.  So other views can use the same instance.");
+
+        EditorGUILayout.PropertyField(resolveProperty, new GUIContent("Force Resolve"));
+
+
         Info(
             "The Identifier is used for persisting this view and should be unique.  This identifier should always be the same each time the scene loads.  If instantiating prefabs you'll want to override the 'Identifier' property and make it unique.");
         if (t != null)
             EditorGUILayout.LabelField("Id", t.Identifier);
 
-        if (!t.IsMultiInstance || t.ForceResolveViewModel)
+        if (t.ForceResolveViewModel)
         {
             Info("The name that is used to share this instance among others (if any).");
-            var resolveNameProperty = serializedObject.FindProperty("_resolveName");
+
             EditorGUILayout.PropertyField(resolveNameProperty, new GUIContent("Resolve Name"));
             if (!t.IsMultiInstance && !string.IsNullOrEmpty(resolveNameProperty.stringValue))
             {
@@ -297,6 +306,8 @@ public class ViewInspector : uFrameInspector
                     "When using a 'ResolveName' on a single instance element, the element must be initialized manually in the scene manager's setup method.");
             }
         }
+
+
         var saveProperty = serializedObject.FindProperty("_Save");
         Info(
             "Should this field be saved and loaded when saving a scene's in-game state. e.g. GameManager.ActiveSceneManager.Load(...); GameManger.ActiveSceneManager.Save(...);");
@@ -454,7 +465,7 @@ public class ViewInspector : uFrameInspector
             if (_designerWidnow != null && _designerWidnow.DiagramDrawer != null)
             {
                 var items = _designerWidnow.DiagramDrawer.DiagramViewModel.GraphItems;
-                
+
                 var objectValue = property.Property.ObjectValue as State;
                 if (objectValue != null)
                 {
@@ -472,20 +483,20 @@ public class ViewInspector : uFrameInspector
                             var connectionNode = item as ConnectionViewModel;
                             if (connectionNode != null)
                             {
-                            
+
                                 connectionNode.IsActive = stateMachine.LastTransition.Name ==
                                                           connectionNode.ConnectorA.ConnectorFor.Name;
                             }
                         }
-                        
-                        
+
+
                     }
                 }
-                    
-                
+
+
                 _designerWidnow.Repaint();
             }
-            
+
             return;
         }
         EditorGUI.BeginChangeCheck();
@@ -523,6 +534,7 @@ public class ViewInspector : uFrameInspector
         }
         else if (type == typeof(Rect))
         {
+
             newValue = EditorGUILayout.RectField(property.Property.PropertyName,
               (Rect)property.Property.ObjectValue);
         }
@@ -536,14 +548,15 @@ public class ViewInspector : uFrameInspector
             newValue = EditorGUILayout.EnumPopup(property.Property.PropertyName,
               (Enum)property.Property.ObjectValue);
         }
-        else if (property.IsElementProperty)
-        {
-            GUIHelpers.DoToolbarEx(property.Property.PropertyName);
-            DoViewModelGUI(property.Property.ObjectValue as ViewModel);
-        } 
+        //else if (property.IsElementProperty)
+        //{
+        //    GUIHelpers.DoToolbarEx(property.Property.PropertyName);
+        //    DoViewModelGUI(property.Property.ObjectValue as ViewModel);
+        //} 
 
         if (EditorGUI.EndChangeCheck())
         {
+
             property.Property.ObjectValue = newValue;
         }
     }

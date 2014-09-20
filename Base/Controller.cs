@@ -217,17 +217,18 @@ public abstract class Controller : ICommandHandler
         GameManager.Instance.StopCoroutine(name);
     }
 
-    public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction) where TViewModel : ViewModel
-    {
-        var binding = new ModelPropertyBinding()
-        {
-            SetTargetValueDelegate = (o) => changedAction(source, (TBindingType)o),
-            ModelPropertySelector = () => sourceProperty,
-            IsImmediate = false
-        };
-        source.AddBinding(binding);
-        return binding;
-    }
+    //public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction) where TViewModel : ViewModel
+    //{
+    //    sourceProperty.Subscribe()
+    //    var binding = new ModelPropertyBinding()
+    //    {
+    //        SetTargetValueDelegate = (o) => changedAction(source, (TBindingType)o),
+    //        ModelPropertySelector = () => sourceProperty,
+    //        IsImmediate = false
+    //    };
+    //    source.AddBinding(binding);
+    //    return binding;
+    //}
 #endif
     //public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
     //{

@@ -59,7 +59,7 @@ public partial class FPSWeaponView
     {
      
         base.Bind();
-        FPSWeapon.Subscribe((v) => { Debug.Log(v.PropertyName + " Changed!!!!!!!!!!!!!!!!!!!!!!!!!"); });
+
         this.BindKey(() => FPSWeapon.NextZoom, KeyCode.LeftShift);
         this.BindKey(() => FPSWeapon.Reload, KeyCode.R);
         FPSCrosshair.ResetCrosshair();
@@ -71,7 +71,7 @@ public partial class FPSWeaponView
         _ModelTransform.localPosition = Vector3.Lerp(_ModelTransform.localPosition, _StartPosition, FPSWeapon.RecoilSpeed);
         _ModelTransform.localRotation = Quaternion.Lerp(_ModelTransform.localRotation, _StartRotation, FPSWeapon.RecoilSpeed);
 
-        if (gameObject.activeSelf && Input.GetMouseButtonDown(0))
+        if (gameObject.activeSelf && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftControl)))
         {
             if (FPSWeapon.State == FPSWeaponState.Active)
             {
@@ -79,7 +79,7 @@ public partial class FPSWeaponView
             
             }
         }
-        if (gameObject.activeSelf && Input.GetMouseButtonUp(0))
+        if (gameObject.activeSelf && (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftControl)))
         {
             ExecuteEndFire();
         }

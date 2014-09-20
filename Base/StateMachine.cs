@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UnityEditorInternal;
 using UnityEngine;
 using System.Collections;
@@ -14,7 +15,6 @@ namespace Invert.StateMachine
 
         private List<StateTransition> _transitions;
         private Dictionary<Computed<bool>, StateTransition> _triggers;
-
 
         public void Transition(StateTransition transition)
         {
@@ -75,6 +75,7 @@ namespace Invert.StateMachine
 
         public virtual void AddTrigger(Computed<bool> property, StateTransition transition)
         {
+            
             property.Subscribe((v) =>
             {
                 if (v) Transition(transition);
