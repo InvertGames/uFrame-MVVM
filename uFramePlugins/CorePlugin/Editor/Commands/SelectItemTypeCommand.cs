@@ -6,6 +6,7 @@ using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
+using UnityEditor.Graphs;
 using UnityEngine;
 
 public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
@@ -49,7 +50,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
 
         if (!PrimitiveOnly)
         {
-            foreach (var viewModel in diagramData.Data.GetElements())
+            foreach (var viewModel in diagramData.DiagramData.GetElements())
             {
                 yield return new ElementItemType()
                 {
@@ -77,6 +78,11 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
 
 
         //}
+
+        foreach (var item in diagramData.CurrentRepository.NodeItems.OfType<IDesignerType>())
+        {
+            yield return new ElementItemType() { AssemblyQualifiedName = item.Identifier, Group = "", Label = item.Name };
+        }
         var projectAssembly = typeof(ViewModel).Assembly;
         foreach (var type in projectAssembly.GetTypes())
         {

@@ -1,0 +1,21 @@
+using UniRx;
+using UnityEngine;
+
+public class ObservableMouseDownBehaviour : ObservableComponent
+{
+    private Subject<Unit> onMouseDown;
+
+    /// <summary>OnMouseEnter is called when the mouse entered the GUIElement or Collider.</summary>
+    public void OnMouseDown()
+    {
+        if (onMouseDown != null) onMouseDown.OnNext(Unit.Default);
+    }
+
+    /// <summary>OnMouseEnter is called when the mouse entered the GUIElement or Collider.</summary>
+    public IObservable<Unit> OnMouseDownAsObservable()
+    {
+        return onMouseDown ?? (onMouseDown = new Subject<Unit>());
+    }
+
+
+}

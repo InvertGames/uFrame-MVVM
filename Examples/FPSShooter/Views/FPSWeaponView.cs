@@ -65,11 +65,12 @@ public partial class FPSWeaponView
         FPSCrosshair.ResetCrosshair();
     }
 
-    public void Update()
+    public override void Update()
     {
+        base.Update();
         if (_ModelTransform == null) return;
-        _ModelTransform.localPosition = Vector3.Lerp(_ModelTransform.localPosition, _StartPosition, FPSWeapon.RecoilSpeed);
-        _ModelTransform.localRotation = Quaternion.Lerp(_ModelTransform.localRotation, _StartRotation, FPSWeapon.RecoilSpeed);
+        //_ModelTransform.localPosition = Vector3.Lerp(_ModelTransform.localPosition, _StartPosition, FPSWeapon.RecoilSpeed);
+        //_ModelTransform.localRotation = Quaternion.Lerp(_ModelTransform.localRotation, _StartRotation, FPSWeapon.RecoilSpeed);
 
         if (gameObject.activeSelf && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftControl)))
         {

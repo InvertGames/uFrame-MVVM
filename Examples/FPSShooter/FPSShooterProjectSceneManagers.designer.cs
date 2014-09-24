@@ -26,9 +26,9 @@ public class FPSMainMenuManagerBase : SceneManager {
     
     private FPSMenuViewModel _FPSMenu;
     
-    private FPSGameViewModel _FPSGame;
-    
     private FPSPlayerViewModel _LocalPlayer;
+    
+    private FPSGameViewModel _FPSGame;
     
     private FPSMenuController _FPSMenuController;
     
@@ -57,19 +57,6 @@ public class FPSMainMenuManagerBase : SceneManager {
         }
     }
     
-    [Inject("FPSGame")]
-    public virtual FPSGameViewModel FPSGame {
-        get {
-            if ((this._FPSGame == null)) {
-                this._FPSGame = SetupViewModel<FPSGameViewModel>(FPSGameController, "FPSGame");
-            }
-            return this._FPSGame;
-        }
-        set {
-            _FPSGame = value;
-        }
-    }
-    
     [Inject("LocalPlayer")]
     public virtual FPSPlayerViewModel LocalPlayer {
         get {
@@ -80,6 +67,19 @@ public class FPSMainMenuManagerBase : SceneManager {
         }
         set {
             _LocalPlayer = value;
+        }
+    }
+    
+    [Inject("FPSGame")]
+    public virtual FPSGameViewModel FPSGame {
+        get {
+            if ((this._FPSGame == null)) {
+                this._FPSGame = SetupViewModel<FPSGameViewModel>(FPSGameController, "FPSGame");
+            }
+            return this._FPSGame;
+        }
+        set {
+            _FPSGame = value;
         }
     }
     
@@ -164,10 +164,8 @@ public class FPSMainMenuManagerBase : SceneManager {
     public override void Setup() {
         base.Setup();
         Container.RegisterInstance<FPSMenuViewModel>(FPSMenu,"FPSMenu");
-        Container.RegisterInstance<FPSMenuViewModel>(FPSMenu,"FPSMenu");
-        Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
-        Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance<FPSPlayerViewModel>(LocalPlayer,"LocalPlayer");
+        Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance(FPSMenuController,false);
         Container.RegisterInstance(FPSDamageableController,false);
         Container.RegisterInstance(FPSEnemyController,false);
@@ -194,10 +192,6 @@ public class WavesFPSGameManagerBase : SceneManager {
     
     public FPSMainMenuManagerSettings _QuitGameTransition = new FPSMainMenuManagerSettings();
     
-    private DeathMatchGameViewModel _DeathMatchGame;
-    
-    private WavesFPSGameViewModel _WavesFPSGame;
-    
     private WavesFPSGameViewModel _FPSGame;
     
     private FPSPlayerViewModel _LocalPlayer;
@@ -217,32 +211,6 @@ public class WavesFPSGameManagerBase : SceneManager {
     private FPSWeaponController _FPSWeaponController;
     
     public WavesFPSGameManagerSettings _WavesFPSGameManagerSettings = new WavesFPSGameManagerSettings();
-    
-    [Inject("DeathMatchGame")]
-    public virtual DeathMatchGameViewModel DeathMatchGame {
-        get {
-            if ((this._DeathMatchGame == null)) {
-                this._DeathMatchGame = SetupViewModel<DeathMatchGameViewModel>(DeathMatchGameController, "DeathMatchGame");
-            }
-            return this._DeathMatchGame;
-        }
-        set {
-            _DeathMatchGame = value;
-        }
-    }
-    
-    [Inject("WavesFPSGame")]
-    public virtual WavesFPSGameViewModel WavesFPSGame {
-        get {
-            if ((this._WavesFPSGame == null)) {
-                this._WavesFPSGame = SetupViewModel<WavesFPSGameViewModel>(WavesFPSGameController, "WavesFPSGame");
-            }
-            return this._WavesFPSGame;
-        }
-        set {
-            _WavesFPSGame = value;
-        }
-    }
     
     [Inject("FPSGame")]
     public virtual WavesFPSGameViewModel FPSGame {
@@ -363,10 +331,7 @@ public class WavesFPSGameManagerBase : SceneManager {
     
     public override void Setup() {
         base.Setup();
-        Container.RegisterInstance<DeathMatchGameViewModel>(DeathMatchGame,"DeathMatchGame");
-        Container.RegisterInstance<WavesFPSGameViewModel>(WavesFPSGame,"WavesFPSGame");
         Container.RegisterInstance<WavesFPSGameViewModel>(FPSGame,"FPSGame");
-        Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance<FPSPlayerViewModel>(LocalPlayer,"LocalPlayer");
         Container.RegisterInstance(WavesFPSGameController,false);
@@ -387,4 +352,3 @@ public class WavesFPSGameManagerBase : SceneManager {
         GameManager.TransitionLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _QuitGameTransition; }, this._QuitGameTransition._Scenes);
     }
 }
-

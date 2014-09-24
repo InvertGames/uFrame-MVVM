@@ -27,7 +27,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
 
     public override void Perform(DiagramNodeViewModel node)
     {
-        var paths = uFrameEditor.CurrentDiagramViewModel.Settings.CodePathStrategy;
+        var paths = uFrameEditor.CurrentProject.CurrentGraph.CodePathStrategy;
         var sceneManagerData = node as SceneManagerViewModel;
 
         if (!Directory.Exists(paths.ScenesPath))
@@ -41,7 +41,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
         var sceneManager = EnsureSceneContainerInScene(sceneManagerData);
         if (sceneManager != null)
         go.GetComponent<GameManager>()._Start = sceneManager;
-        EditorApplication.SaveScene();
+        EditorApplication.SaveScene(System.IO.Path.Combine(paths.ScenesPath,node.Name + ".unity"));
         AssetDatabase.Refresh();
     }
 

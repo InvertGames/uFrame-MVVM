@@ -2,6 +2,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using UniRx;
 
 public class FPSGameController : FPSGameControllerBase
 {
@@ -28,13 +29,12 @@ public class FPSGameController : FPSGameControllerBase
     {
         var enemy = FPSEnemyController.CreateFPSEnemy();
 
-
-
-        this.SubscribeToProperty(enemy,enemy._StateProperty, (e, state) =>
+        enemy._StateProperty.Subscribe(_ =>
         {
-            if (e.State == FPSPlayerState.Dead)
+            if (enemy.State == FPSPlayerState.Dead)
                 EnemyDied(enemy);
         });
+
         FPSGame.Enemies.Add(enemy);
     }
 

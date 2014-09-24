@@ -6,12 +6,6 @@ using System.Linq;
 namespace Invert.Common.MVVM
 {
 #endif
-public interface ICommandHandler
-{
-    void ExecuteCommand(ICommand command, object argument);
-    void ExecuteCommand(ICommand command);
-    void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument);
-}
 
 /// <summary>
 /// A controller is a group of commands usually to provide an abstract level
@@ -191,12 +185,6 @@ public abstract class Controller : ICommandHandler
             StartCoroutine(enumerator);
     }
 
-
-    /// <summary>
-    /// Send an event to our game
-    /// </summary>
-    /// <param name="message"></param>
-    /// <param name="additionalParamters"></param>
     public virtual void GameEvent(string message, params object[] additionalParamters)
     {
         Event(null, message, additionalParamters);
@@ -217,30 +205,17 @@ public abstract class Controller : ICommandHandler
         GameManager.Instance.StopCoroutine(name);
     }
 
-    //public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction) where TViewModel : ViewModel
-    //{
-    //    sourceProperty.Subscribe()
-    //    var binding = new ModelPropertyBinding()
-    //    {
-    //        SetTargetValueDelegate = (o) => changedAction(source, (TBindingType)o),
-    //        ModelPropertySelector = () => sourceProperty,
-    //        IsImmediate = false
-    //    };
-    //    source.AddBinding(binding);
-    //    return binding;
-    //}
+    [Obsolete("This method is obsolete. Use Property.Subscribe")]
+    public ModelPropertyBinding SubscribeToProperty<TViewModel, TBindingType>(TViewModel source, P<TBindingType> sourceProperty, Action<TViewModel, TBindingType> changedAction) where TViewModel : ViewModel
+    {
+        return null;
+    }
 #endif
-    //public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
-    //{
-    //    var binding = new ModelPropertyBinding()
-    //    {
-    //        SetTargetValueDelegate = (o) => targetSetter((TBindingType)o),
-    //        ModelPropertySelector = () => (ModelPropertyBase)sourceProperty,
-    //        IsImmediate = false
-    //    };
-    //    sourceProperty().AddBinding(binding);
-    //    return binding;
-    //}
+    [Obsolete("This method is obsolete. Use Property.Subscribe")]
+    public ModelPropertyBinding SubscribeToProperty<TBindingType>(P<TBindingType> sourceProperty, Action<TBindingType> targetSetter)
+    {
+        return null;
+    }
 
     protected void SubscribeToCommand(ICommand command, Action action)
     {
@@ -296,46 +271,9 @@ public abstract class Controller : ICommandHandler
         }
     }
 #endif
-
-
 };
 
 
-/// <summary>
-/// Future name of controller.
-/// </summary>
-public abstract class ElementService : Controller
-{
-}
 #if DLL
 }
 #endif
-public class UFToggleGroup : Attribute
-{
-    public UFToggleGroup(string checkers)
-    {
-        Name = checkers;
-    }
-
-    public string Name { get; set; }
-}
-
-public class UFRequireInstanceMethod : Attribute
-{
-    public UFRequireInstanceMethod(string canmovetochanged)
-    {
-        MethodName = canmovetochanged;
-    }
-
-    public string MethodName { get; set; }
-}
-
-public class UFGroup : Attribute
-{
-    public UFGroup(string viewModelProperties)
-    {
-        Name = viewModelProperties;
-    }
-
-    public string Name { get; set; }
-}

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UniRx;
 
 /// <summary>
 /// A coroutine command with a parameter.
@@ -58,6 +59,28 @@ public class YieldCommandWith<T> : ICommandWith<T>
     {
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
+    }
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
     }
 }
 /// <summary>
@@ -119,6 +142,28 @@ public class YieldCommandWithSender<T> : ICommandWith<T>
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
     }
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
+    }
 }
 
 /// <summary>
@@ -179,5 +224,27 @@ public class YieldCommandWithSenderAndArgument<TSender, TArgument> : ICommandWit
     {
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
+    }
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
     }
 }

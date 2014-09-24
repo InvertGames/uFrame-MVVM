@@ -187,11 +187,11 @@ public class ViewInspector : uFrameInspector
                 DoBindingsSection();
             }
 
-            var btnContent = new GUIContent("Show In Designer");
-            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
-            {
-                uFrameEditorSceneManager.NavigateBack(target as ViewBase);
-            }
+            //var btnContent = new GUIContent("Show In Designer");
+            //if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), btnContent, ElementDesignerStyles.ButtonStyle))
+            //{
+            //    uFrameEditorSceneManager.NavigateBack(target as ViewBase);
+            //}
         }
 
 
@@ -450,11 +450,13 @@ public class ViewInspector : uFrameInspector
 
         if (property.IsCollectionProperty)
         {
+            if (property.Property != null && property.Property.ObjectValue != null)
             EditorGUILayout.LabelField(property.Property.PropertyName, ((IList)property.Property.ObjectValue).Count.ToString());
             return;
         }
         if (property.IsComputed)
         {
+            if (property.Property != null && property.Property.ObjectValue != null)
             EditorGUILayout.LabelField(property.Property.PropertyName, property.Property.ObjectValue.ToString());
             return;
         }

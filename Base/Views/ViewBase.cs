@@ -10,6 +10,16 @@ using UnityEngine;
 /// </summary>
 public abstract class ViewBase : ViewContainer, ICommandHandler
 {
+    public T AddComponentBinding<T>() where T : ObservableComponent
+    {
+        var component = gameObject.AddComponent<T>();
+        AddBinding(component);
+        return component;
+    }
+    public IDisposable AddComponentBinding(ObservableComponent component) 
+    {
+        return AddBinding(component);
+    }
     Subject<Unit> _updateObservable;
 
     /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
@@ -227,8 +237,16 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     {
         get
         {
+           
             if (_parentView == null)
             {
+                //var parentView = transform.parent;
+                //while (parentView != null)
+                //{
+                    
+                //    if (parentView == null)
+                //        parentView = parentView.parent;
+                //}
                 if (transform == null) return null;
                 if (transform.parent == null) return null;
                 _parentView = transform.parent.GetView();
@@ -328,9 +346,10 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     /// Adds a binding to the view-model's binding dictionary for this view.
     /// </summary>
     /// <param name="binding"></param>
-    public void AddBinding(IDisposable binding)
+    public IDisposable AddBinding(IDisposable binding)
     {
         Bindings.Add(binding);
+        return binding;
     }
 
     /// <summary>
@@ -486,14 +505,14 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
         stream.SerializeString("ViewType", this.GetType().FullName);
     }
 
-    /// <summary>
-    /// Removes a binding from the view-models binding dictionary for this view.
-    /// </summary>
-    /// <param name="binding"></param>
-    public void RemoveBinding(IBinding binding)
-    {
-        Bindings.Remove(binding);
-    }
+    ///// <summary>
+    ///// Removes a binding from the view-models binding dictionary for this view.
+    ///// </summary>
+    ///// <param name="binding"></param>
+    //public void RemoveBinding(IBinding binding)
+    //{
+    //    Bindings.Remove(binding);
+    //}
 
     /// <summary>
     /// This method will setup all bindings on this view.  Bindings don't actually occur on a view until this method is called.
@@ -523,9 +542,9 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
         // Add any programming bindings
         PreBind();
         Bind();
-        // Initialize the bindings
-        for (var i = 0; i < Bindings.Count; i++)
-            Bindings[i].Bind();
+        //// Initialize the bindings
+        //for (var i = 0; i < Bindings.Count; i++)
+        //    Bindings[i].Bind();
 
         for (var i = 0; i < transform.childCount; i++)
         {
@@ -585,7 +604,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
             {
                 foreach (var binding in Bindings)
                 {
-                    binding.Unbind();
+                    binding.Dispose();
                 }
             }
         }

@@ -47,6 +47,12 @@ public class ModelCollection<T> : ObservableCollection<T>
 
     public string PropertyName { get; set; }
     public ViewModel Owner { get; set; }
+
+    public IObservable<Unit> AsUnit
+    {
+        get { return Observable.Select(this, _ => Unit.Default); }
+    }
+
     public IDisposable SubscribeInternal(Action<object> propertyChanged)
     {
         return this.Subscribe((v) => { propertyChanged(v); });

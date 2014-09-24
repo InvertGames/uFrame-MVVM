@@ -18,7 +18,7 @@ using UniRx;
 [Serializable]
 public abstract class ViewModel
 #if !DLL
-    :  IUFSerializable, INotifyPropertyChanged , IObservable<IObservableProperty>
+    :  IUFSerializable, INotifyPropertyChanged , IObservable<IObservableProperty>, IDisposable
 #else
  : INotifyPropertyChanged
 #endif
@@ -265,6 +265,11 @@ public abstract class ViewModel
     {
         // TODO
         return base.ToString();
+    }
+
+    public void Dispose()
+    {
+        Unbind();
     }
 
     public virtual void Unbind()

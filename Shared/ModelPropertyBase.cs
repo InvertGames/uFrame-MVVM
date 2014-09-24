@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using UniRx;
 using UnityEngine;
@@ -18,10 +20,9 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
         }
         set
         {
-            _lastValue = value;
+            _lastValue = _objectValue;
             _objectValue = value;
             OnPropertyChanged(PropertyName);
-           
         }
     }
     public string PropertyName { get; set; }
@@ -66,6 +67,35 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
         Owner.OnPropertyChanged(this, PropertyName);
     }
 
+    public IObservable<Unit> AsUnit
+    {
+        get { return this.Select(p => Unit.Default); }
+    }
+
+    /// <summary>
+    /// Makes this property a computed variable.
+    /// </summary>
+    /// <param name="action"></param>
+    /// <param name="properties"></param>
+    /// <returns></returns>
+    public IDisposable ToComputed(Func<ViewModel, T> action, params IObservableProperty[] properties)
+    {
+        var disposables = new List<IDisposable>();
+        foreach (var property in properties)
+        {
+            disposables.Add(property.SubscribeInternal(_ =>
+            {
+                OnNext(action(Owner));
+            }));
+        }
+        action(Owner);
+
+        return Disposable.Create(() =>
+        {
+            foreach (var d in disposables)
+                d.Dispose();
+        });
+    }
 
     public P(T value)
     {

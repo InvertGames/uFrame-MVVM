@@ -1,112 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using UnityEditorInternal;
 using UnityEngine;
-using System.Collections;
 
 namespace Invert.StateMachine
 {
-    public abstract class State 
-    {
-        public abstract string Name { get; }
-
-        public StateMachine StateMachine { get; set; }
-
-        private List<StateTransition> _transitions;
-        private Dictionary<Computed<bool>, StateTransition> _triggers;
-
-        public void Transition(StateTransition transition)
-        {
-            StateMachine.Transition(transition);
-        }
-
-        public override string ToString()
-        {
-            return Name ?? this.GetType().Name;
-        }
-
-        public List<StateTransition> Transitions
-        {
-            get
-            {
-                if (_transitions != null) return _transitions;
-                Compose();
-                return _transitions;
-            }
-            set { _transitions = value; }
-        }
-
-        private void Compose()
-        {
-            
-            _transitions = new List<StateTransition>();
-            Compose(_transitions);
-        }
-
-
-        public virtual void Compose(List<StateTransition> action)
-        {
-           
-        }
-
-        public virtual void OnEnter(State previousState)
-        {
-            if (previousState != null && previousState != this)
-            foreach (var trigger in Triggers)
-            {
-                if (trigger.Key.Calculator == null) continue;
-                if (trigger.Key.Calculator(this.StateMachine.Owner))
-                {
-                    StateMachine.Transition(trigger.Value);
-                }
-            }
-        }
-
-        public virtual void OnExit(State nextState)
-        {
-
-        }
-
-        public void OnEntering(State currentState)
-        {
-            
-        }
-
-        public virtual void AddTrigger(Computed<bool> property, StateTransition transition)
-        {
-            
-            property.Subscribe((v) =>
-            {
-                if (v) Transition(transition);
-            },false);
-            Triggers.Add(property,transition);
-        }
-
-        protected Dictionary<Computed<bool>, StateTransition> Triggers
-        {
-            get { return _triggers ?? (_triggers = new Dictionary<Computed<bool>, StateTransition>()); }
-            set { _triggers = value; }
-        }
-    }
-
     public class StateMachine : P<State>
     {
-
         private List<State> _states;
  
-
         public StateMachine(ViewModel owner, string propertyName) : base(owner, propertyName)
         {
             Compose();
         }
 
+        
         private void Compose()
         {
             _states = new List<State>();
             _states.Clear();
             Compose(_states);
-            Transitions = _states.SelectMany(p => p.Transitions).ToArray();
             CurrentState = StartState;
             Value = StartState;
         }
@@ -186,6 +100,7 @@ namespace Invert.StateMachine
         {
             if (transition.From == CurrentState)
             {
+                
                 CurrentState = transition.To;
                 LastTransition = transition;
             }
@@ -195,20 +110,60 @@ namespace Invert.StateMachine
         public StateTransition LastTransition { get; set; }
     }
 
-    public class StateTransition
+
+    public class StateMachineTrigger : IObserver<Unit>, IObserver<bool>
     {
-        public string Identifier;
-        public State From;
-        public State To;
-        public string Name;
+        public StateMachine StateMachine { get; set; }
 
+        public string Name { get; set; }
 
-        public StateTransition(string name, State from, State to)
+        public StateMachineTrigger(StateMachine stateMachine, string name)
         {
+            StateMachine = stateMachine;
             Name = name;
-            From = from;
-            To = to;
         }
+
+        public void OnCompleted()
+        {
+            
+        }
+
+        public void OnError(Exception error)
+        {
+            
+        }
+
+        public void OnNext(bool value)
+        {
+            if (value)
+                StateMachine.CurrentState.Trigger(this);
+
+            Debug.Log(Name + " was triggered.");
+        }
+
+        public void OnNext(Unit value)
+        {
+            StateMachine.CurrentState.Trigger(this);
+
+            Debug.Log(Name + " was triggered.");
+        }
+
+        
     }
+
+    public class TestStateMachine : StateMachine
+    {
+        public TestStateMachine(ViewModel owner, string propertyName) : base(owner, propertyName)
+        {
+        }
+
+        public StateMachineTrigger Next { get; set; }
+        public StateMachineTrigger Back { get; set; }
+
+         
+
+    }
+
+
 }
 

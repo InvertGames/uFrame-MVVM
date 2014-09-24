@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UniRx;
 
 /// <summary>
 /// A command with an argument of type T.
@@ -55,6 +56,28 @@ public class CommandWith<T> : ICommandWith<T>
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
     }
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
+    }
 }
 
 public class CommandWithSender<TSender> : ICommandWith<TSender>
@@ -102,8 +125,30 @@ public class CommandWithSender<TSender> : ICommandWith<TSender>
         if (handler != null) handler();
     }
 
- 
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
+    }
 }
+
 
 public class CommandWithSenderAndArgument<TSender,TArgument> : ICommandWith<TArgument>
 {
@@ -148,5 +193,28 @@ public class CommandWithSenderAndArgument<TSender,TArgument> : ICommandWith<TArg
     {
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
+    }
+
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
     }
 }

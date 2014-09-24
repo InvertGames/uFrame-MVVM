@@ -729,10 +729,6 @@ MonoBehaviour:
   _CurrentPlayerPrefab: {fileID: 0}
   _BindScore: 0
   _BindKills: 1
-  _BindEnemies: 0
-  _EnemiesList: []
-  _EnemiesSceneFirst: 0
-  _EnemiesContainer: {fileID: 0}
   _GameOverLabel: {fileID: 386323272}
   _TotalKillsLabel: {fileID: 361990734}
 --- !u!4 &800961565
@@ -833,15 +829,15 @@ MonoBehaviour:
   _resolveName: LocalPlayer
   _Save: 0
   _Health: 1
-  _Position: {x: 0, y: 0, z: 0}
+  _DistanceToPlayer: 0
   _BindHealth: 0
   _BindState: 0
   _BindCurrentWeaponIndex: 1
   _BindWeapons: 1
-  _WeaponsList: []
   _WeaponsSceneFirst: 1
   _WeaponsContainer: {fileID: 933135608}
   _CurrentWeaponIndex: 1
+  _WeaponsList: []
 --- !u!114 &887022876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1209,7 +1205,6 @@ MonoBehaviour:
   _BindScore: 0
   _BindKills: 0
   _BindEnemies: 1
-  _EnemiesList: []
   _EnemiesSceneFirst: 0
   _EnemiesContainer: {fileID: 901754239}
   _SpawnPointsParent: {fileID: 371131675}
@@ -1493,11 +1488,10 @@ MonoBehaviour:
   _resolveName: LocalPlayer
   _Save: 0
   _Health: 0
-  _Position: {x: 0, y: 0, z: 0}
+  _DistanceToPlayer: 0
   _CurrentWeaponIndex: 0
   _BindCurrentWeaponIndex: 0
   _BindWeapons: 1
-  _WeaponsList: []
   _WeaponsSceneFirst: 0
   _WeaponsContainer: {fileID: 0}
   _AmmoLabel: {fileID: 1071219179}

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 
 
@@ -13,6 +14,11 @@ public partial class FPSPlayerHUDView
     public GUIText _ReloadLabel;
     public List<Texture2D> _HudTextures;
 
+    public override void Bind()
+    {
+        base.Bind(); 
+        
+    }
 
     public override ViewBase CreateWeaponsView(FPSWeaponViewModel fPSWeapon)
     {
@@ -20,16 +26,6 @@ public partial class FPSPlayerHUDView
         return null;
     }
 
-    public override void WeaponsAdded(ViewBase fPSWeapon)
-    {
-
-    }
-
-    public override void WeaponsRemoved(ViewBase fPSWeapon)
-    {
-
-
-    }
 
     public void OnGUI()
     {

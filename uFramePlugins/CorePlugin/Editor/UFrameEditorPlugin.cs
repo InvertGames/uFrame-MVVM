@@ -28,8 +28,7 @@ public class UFrameEditorPlugin : DiagramPlugin
     }
     public override void Initialize(uFrameContainer container)
     {
-        container.Register<GraphData, ExternalSubsystemGraph>("External Subsystem Graph");
-
+  
         container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
 
 

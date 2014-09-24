@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 
 public interface IObservableProperty
 {
@@ -8,6 +9,7 @@ public interface IObservableProperty
     ViewModel Owner { get; set; }
 #endif
     Type ValueType { get; }
+    IObservable<Unit> AsUnit { get; }
     IDisposable SubscribeInternal(Action<object> propertyChanged);
 }
 

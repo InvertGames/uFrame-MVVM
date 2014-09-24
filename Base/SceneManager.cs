@@ -124,6 +124,8 @@ public abstract class SceneManager : ViewContainer
         }
     }
 
+
+    private List<Action> _initializers = new List<Action>();
     /// <summary>
     /// Used by the SceneManager when creating an instance before the scene loads.  This allows a view-model instance to be ready
     /// before a view-initializes it. This is used by the uFrame generators to initialize single isntance view-models.
@@ -134,15 +136,13 @@ public abstract class SceneManager : ViewContainer
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
     {
-
-        var contextViewModel = Context[identifier];
-        if (contextViewModel == null)
-        {
-            contextViewModel = controller.Create(identifier) as TViewModel;
-            Context[identifier] = contextViewModel;
-        }
+        // Create the ViewModel
+        var contextViewModel = new TViewModel();
+        // Register the instance under "ViewModel" so any single instance view-model can be accessed with ResolveAll<ViewModel>();
         Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);
-        return (TViewModel)contextViewModel;
+        // Add an initializer so that apply the controller happens after everything has been injected
+        _initializers.Add(()=> { contextViewModel.Controller = controller; controller.Initialize(contextViewModel); });
+        return contextViewModel;
     }
     public ISerializerStorage LoadingStream { get; set; }
     /// <summary>
@@ -210,6 +210,15 @@ public abstract class SceneManager : ViewContainer
         }
 
         return contextViewModel;
+    }
+
+    public virtual void Initialize()
+    {
+        foreach (var initalizer in _initializers)
+        {
+            if (initalizer != null)
+                initalizer();
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UniRx;
 
 /// <summary>
 /// A ViewModel command that can be executed.
@@ -45,6 +46,29 @@ public class Command : ICommand
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
     }
+
+    public void OnCompleted()
+    {
+        
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
+    }
 }
 
 public class YieldCommand : ICommand
@@ -89,5 +113,28 @@ public class YieldCommand : ICommand
     {
         CommandEvent handler = OnCommandExecuting;
         if (handler != null) handler();
+    }
+
+    public void OnCompleted()
+    {
+        
+    }
+
+    public void OnError(Exception error)
+    {
+        throw error;
+    }
+
+    public void OnNext(Unit value)
+    {
+        Execute();
+    }
+
+    public IDisposable Subscribe(IObserver<Unit> observer)
+    {
+        CommandEvent handler = () => observer.OnNext(Unit.Default);
+        this.OnCommandExecuted += handler;
+
+        return Disposable.Create(() => OnCommandExecuted -= handler);
     }
 }

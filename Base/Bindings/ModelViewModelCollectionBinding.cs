@@ -28,7 +28,7 @@ public class ModelCollectionBinding<TCollectionType> : Binding
     public Action<TCollectionType> OnAdd { get; set; }
 
     public Action<TCollectionType> OnRemove { get; set; }
-
+    
     public override void Bind()
     {
         base.Bind();

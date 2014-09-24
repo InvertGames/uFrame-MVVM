@@ -4,12 +4,14 @@ using System.Collections;
 namespace Invert.MVVM
 {
 #endif
+using UniRx;
+
 public delegate void CommandEvent();
 
 /// <summary>
 /// The base command interface for implementing a command in a ViewModel
 /// </summary>
-public interface ICommand
+public interface ICommand : ISubject<Unit>
 {
     event CommandEvent OnCommandExecuted;
 

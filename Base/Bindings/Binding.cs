@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The base class for all bindings.
 /// </summary>
-public abstract class Binding : IBinding
+public abstract class Binding : IBinding, IDisposable
 {
     private IObservableProperty _modelProperty;
     private Func<IObservableProperty> _modelPropertySelector;
@@ -132,5 +132,10 @@ public abstract class Binding : IBinding
     {
         IsBound = false;
         _modelProperty = null;
+    }
+
+    public void Dispose()
+    {
+        Unbind();
     }
 }
