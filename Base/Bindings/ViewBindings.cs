@@ -171,6 +171,25 @@ public static class ViewBindings
     }
 
     /// <summary>
+    /// Bind a key to a ViewModel Command
+    /// </summary>
+    /// <param name="t">The view that owns the binding</param>
+    /// <returns>The binding class that allows chaining extra options.</returns>
+    public static IObservable<T> ScreenToRaycastAsObservable<T>(this ViewBase t,Func<RaycastHit,T> onHit)
+    {
+        return t.UpdateAsObservable().Select(p =>
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                return onHit(hit);
+            }
+            return default(T);
+        });
+
+    }
+    /// <summary>
     /// Binds a mouse event to a ViewModel Command.
     /// </summary>
     /// <param name="view">The view that will own the Binding.</param>
@@ -210,9 +229,10 @@ public static class ViewBindings
 
     public static IDisposable BindProperty<TBindingType>(this ViewBase t, P<TBindingType> sourceProperty, Action<TBindingType> targetSetter, bool onlyWhenChanged = true)
     {
-
+        targetSetter(sourceProperty.Value);
         if (onlyWhenChanged)
         {
+
             return t.AddBinding(sourceProperty.Where(p => sourceProperty.LastValue != sourceProperty.ObjectValue).Subscribe(targetSetter));
         }
 

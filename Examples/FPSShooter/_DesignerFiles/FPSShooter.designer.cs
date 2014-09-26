@@ -12,7 +12,7 @@ public partial class FPSDamageableViewModel : ViewModel {
     
     public P<FPSPlayerState> _StateProperty;
     
-    public P<Int32> _DistanceToPlayerProperty;
+    public P<Vector3> _PositionProperty;
     
     private ICommand _ApplyDamage;
     
@@ -20,12 +20,21 @@ public partial class FPSDamageableViewModel : ViewModel {
             base() {
         _HealthProperty = new P<Single>(this, "Health");
         _StateProperty = new P<FPSPlayerState>(this, "State");
-        _DistanceToPlayerProperty = new P<Int32>(this, "DistanceToPlayer");
+        _PositionProperty = new P<Vector3>(this, "Position");
     }
     
     public FPSDamageableViewModel(FPSDamageableControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual P<Single> HealthProperty {
+        get {
+            return this._HealthProperty;
+        }
+        set {
+            _HealthProperty = value;
+        }
     }
     
     public virtual Single Health {
@@ -34,6 +43,15 @@ public partial class FPSDamageableViewModel : ViewModel {
         }
         set {
             _HealthProperty.Value = value;
+        }
+    }
+    
+    public virtual P<FPSPlayerState> StateProperty {
+        get {
+            return this._StateProperty;
+        }
+        set {
+            _StateProperty = value;
         }
     }
     
@@ -46,12 +64,21 @@ public partial class FPSDamageableViewModel : ViewModel {
         }
     }
     
-    public virtual Int32 DistanceToPlayer {
+    public virtual P<Vector3> PositionProperty {
         get {
-            return _DistanceToPlayerProperty.Value;
+            return this._PositionProperty;
         }
         set {
-            _DistanceToPlayerProperty.Value = value;
+            _PositionProperty = value;
+        }
+    }
+    
+    public virtual Vector3 Position {
+        get {
+            return _PositionProperty.Value;
+        }
+        set {
+            _PositionProperty.Value = value;
         }
     }
     
@@ -77,7 +104,7 @@ public partial class FPSDamageableViewModel : ViewModel {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_HealthProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_StateProperty, false, false, true));
-        list.Add(new ViewModelPropertyInfo(_DistanceToPlayerProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_PositionProperty, false, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
@@ -101,16 +128,28 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     
     public P<Single> _SpeedProperty;
     
+    public P<Single> _DistanceToPlayerProperty;
+    
     private FPSGameViewModel _ParentFPSGame;
     
     public FPSEnemyViewModel() : 
             base() {
         _SpeedProperty = new P<Single>(this, "Speed");
+        _DistanceToPlayerProperty = new P<Single>(this, "DistanceToPlayer");
     }
     
     public FPSEnemyViewModel(FPSEnemyControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual P<Single> SpeedProperty {
+        get {
+            return this._SpeedProperty;
+        }
+        set {
+            _SpeedProperty = value;
+        }
     }
     
     public virtual Single Speed {
@@ -119,6 +158,24 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
         }
         set {
             _SpeedProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Single> DistanceToPlayerProperty {
+        get {
+            return this._DistanceToPlayerProperty;
+        }
+        set {
+            _DistanceToPlayerProperty = value;
+        }
+    }
+    
+    public virtual Single DistanceToPlayer {
+        get {
+            return _DistanceToPlayerProperty.Value;
+        }
+        set {
+            _DistanceToPlayerProperty.Value = value;
         }
     }
     
@@ -142,6 +199,7 @@ public partial class FPSEnemyViewModel : FPSDamageableViewModel {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_SpeedProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_DistanceToPlayerProperty, false, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
@@ -189,12 +247,30 @@ public partial class FPSGameViewModel : ViewModel {
         this.Controller = controller;
     }
     
+    public virtual P<FPSGameState> StateProperty {
+        get {
+            return this._StateProperty;
+        }
+        set {
+            _StateProperty = value;
+        }
+    }
+    
     public virtual FPSGameState State {
         get {
             return _StateProperty.Value;
         }
         set {
             _StateProperty.Value = value;
+        }
+    }
+    
+    public virtual P<FPSPlayerViewModel> CurrentPlayerProperty {
+        get {
+            return this._CurrentPlayerProperty;
+        }
+        set {
+            _CurrentPlayerProperty = value;
         }
     }
     
@@ -208,12 +284,30 @@ public partial class FPSGameViewModel : ViewModel {
         }
     }
     
+    public virtual P<Int32> ScoreProperty {
+        get {
+            return this._ScoreProperty;
+        }
+        set {
+            _ScoreProperty = value;
+        }
+    }
+    
     public virtual Int32 Score {
         get {
             return _ScoreProperty.Value;
         }
         set {
             _ScoreProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Int32> KillsProperty {
+        get {
+            return this._KillsProperty;
+        }
+        set {
+            _KillsProperty = value;
         }
     }
     
@@ -327,6 +421,15 @@ public partial class FPSPlayerViewModel : FPSDamageableViewModel {
     public FPSPlayerViewModel(FPSPlayerControllerBase controller) : 
             this() {
         this.Controller = controller;
+    }
+    
+    public virtual P<Int32> CurrentWeaponIndexProperty {
+        get {
+            return this._CurrentWeaponIndexProperty;
+        }
+        set {
+            _CurrentWeaponIndexProperty = value;
+        }
     }
     
     public virtual Int32 CurrentWeaponIndex {
@@ -500,12 +603,30 @@ public partial class FPSWeaponViewModel : ViewModel {
         this.Controller = controller;
     }
     
+    public virtual P<Int32> AmmoProperty {
+        get {
+            return this._AmmoProperty;
+        }
+        set {
+            _AmmoProperty = value;
+        }
+    }
+    
     public virtual Int32 Ammo {
         get {
             return _AmmoProperty.Value;
         }
         set {
             _AmmoProperty.Value = value;
+        }
+    }
+    
+    public virtual P<FPSWeaponState> StateProperty {
+        get {
+            return this._StateProperty;
+        }
+        set {
+            _StateProperty = value;
         }
     }
     
@@ -518,12 +639,30 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual P<Int32> ZoomIndexProperty {
+        get {
+            return this._ZoomIndexProperty;
+        }
+        set {
+            _ZoomIndexProperty = value;
+        }
+    }
+    
     public virtual Int32 ZoomIndex {
         get {
             return _ZoomIndexProperty.Value;
         }
         set {
             _ZoomIndexProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Int32> MaxZoomsProperty {
+        get {
+            return this._MaxZoomsProperty;
+        }
+        set {
+            _MaxZoomsProperty = value;
         }
     }
     
@@ -536,12 +675,30 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual P<WeaponType> WeaponTypeProperty {
+        get {
+            return this._WeaponTypeProperty;
+        }
+        set {
+            _WeaponTypeProperty = value;
+        }
+    }
+    
     public virtual WeaponType WeaponType {
         get {
             return _WeaponTypeProperty.Value;
         }
         set {
             _WeaponTypeProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Single> ReloadTimeProperty {
+        get {
+            return this._ReloadTimeProperty;
+        }
+        set {
+            _ReloadTimeProperty = value;
         }
     }
     
@@ -554,12 +711,30 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual P<Int32> RoundSizeProperty {
+        get {
+            return this._RoundSizeProperty;
+        }
+        set {
+            _RoundSizeProperty = value;
+        }
+    }
+    
     public virtual Int32 RoundSize {
         get {
             return _RoundSizeProperty.Value;
         }
         set {
             _RoundSizeProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Int32> MinSpreadProperty {
+        get {
+            return this._MinSpreadProperty;
+        }
+        set {
+            _MinSpreadProperty = value;
         }
     }
     
@@ -572,12 +747,30 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual P<Int32> BurstSizeProperty {
+        get {
+            return this._BurstSizeProperty;
+        }
+        set {
+            _BurstSizeProperty = value;
+        }
+    }
+    
     public virtual Int32 BurstSize {
         get {
             return _BurstSizeProperty.Value;
         }
         set {
             _BurstSizeProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Single> RecoilSpeedProperty {
+        get {
+            return this._RecoilSpeedProperty;
+        }
+        set {
+            _RecoilSpeedProperty = value;
         }
     }
     
@@ -590,6 +783,15 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual P<Single> FireSpeedProperty {
+        get {
+            return this._FireSpeedProperty;
+        }
+        set {
+            _FireSpeedProperty = value;
+        }
+    }
+    
     public virtual Single FireSpeed {
         get {
             return _FireSpeedProperty.Value;
@@ -599,12 +801,30 @@ public partial class FPSWeaponViewModel : ViewModel {
         }
     }
     
+    public virtual P<Single> BurstSpeedProperty {
+        get {
+            return this._BurstSpeedProperty;
+        }
+        set {
+            _BurstSpeedProperty = value;
+        }
+    }
+    
     public virtual Single BurstSpeed {
         get {
             return _BurstSpeedProperty.Value;
         }
         set {
             _BurstSpeedProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Single> SpreadMultiplierProperty {
+        get {
+            return this._SpreadMultiplierProperty;
+        }
+        set {
+            _SpreadMultiplierProperty = value;
         }
     }
     
@@ -744,6 +964,15 @@ public partial class WavesFPSGameViewModel : FPSGameViewModel {
         this.Controller = controller;
     }
     
+    public virtual P<Int32> KillsToNextWaveProperty {
+        get {
+            return this._KillsToNextWaveProperty;
+        }
+        set {
+            _KillsToNextWaveProperty = value;
+        }
+    }
+    
     public virtual Int32 KillsToNextWave {
         get {
             return _KillsToNextWaveProperty.Value;
@@ -753,12 +982,30 @@ public partial class WavesFPSGameViewModel : FPSGameViewModel {
         }
     }
     
+    public virtual P<Int32> WaveKillsProperty {
+        get {
+            return this._WaveKillsProperty;
+        }
+        set {
+            _WaveKillsProperty = value;
+        }
+    }
+    
     public virtual Int32 WaveKills {
         get {
             return _WaveKillsProperty.Value;
         }
         set {
             _WaveKillsProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Int32> CurrentWaveProperty {
+        get {
+            return this._CurrentWaveProperty;
+        }
+        set {
+            _CurrentWaveProperty = value;
         }
     }
     

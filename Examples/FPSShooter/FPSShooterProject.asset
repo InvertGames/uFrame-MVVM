@@ -13,8 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _diagrams:
   - {fileID: 11400000, guid: 4ffde1fb86cf42e41b12c46eb7969ac4, type: 2}
-  _outputDirectory: Assets/Examples/FPSShooter/NewProjectRepository.asset
   _generatorSettings:
-    _generateControllers: 1
+    _generateComments: 1
     _namespaceProvider:
       _rootNamespace: 

@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public partial class FPSGameView
-{
+{ 
+
+
     public override void EnemiesAdded(ViewBase viewBase)
     {
         base.EnemiesAdded(viewBase);
@@ -24,21 +27,17 @@ public partial class FPSGameView
         
     }
 
-    public override void CurrentPlayerChanged(FPSPlayerViewModel value)
-    {
-        base.CurrentPlayerChanged(value);
-    }
 
     public override ViewBase CreateEnemiesView(FPSEnemyViewModel fPSEnemy)
     {
         return InstantiateView(fPSEnemy);
     }
 
-    public override void StateChanged(FPSGameState value)
-    {
-        base.StateChanged(value);
-        gameObject.SetActive(value != FPSGameState.Paused);
-    }
+    //public override void StateChanged(FPSGameState value)
+    //{
+    //    base.StateChanged(value); 
+    //    gameObject.SetActive(value != FPSGameState.Paused);
+    //}
 
     public Transform GetRandomSpawnPoint()
     {

@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 
 [System.SerializableAttribute()]
@@ -20,6 +21,9 @@ public sealed partial class FPSMainMenuManagerSettings {
     public string[] _Scenes;
 }
 
+// <summary>
+// The responsibility of this class is to manage the scenes Initialization, Loading, Transitioning, and Unloading.
+// </summary>
 public class FPSMainMenuManagerBase : SceneManager {
     
     public WavesFPSGameManagerSettings _PlayTransition = new WavesFPSGameManagerSettings();
@@ -161,6 +165,11 @@ public class FPSMainMenuManagerBase : SceneManager {
         }
     }
     
+    // <summary>
+    // This method is the first method to be invoked when the scene first loads. Anything registered here with 'Container' will effectively 
+    // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
+    // the 'Inject' attribute on any controller or view-model will automatically be set by uFrame. 
+    // </summary>
     public override void Setup() {
         base.Setup();
         Container.RegisterInstance<FPSMenuViewModel>(FPSMenu,"FPSMenu");
@@ -186,11 +195,16 @@ public sealed partial class WavesFPSGameManagerSettings {
     public string[] _Scenes;
 }
 
+// <summary>
+// The responsibility of this class is to manage the scenes Initialization, Loading, Transitioning, and Unloading.
+// </summary>
 public class WavesFPSGameManagerBase : SceneManager {
     
     public FPSMainMenuManagerSettings _MainMenuTransition = new FPSMainMenuManagerSettings();
     
     public FPSMainMenuManagerSettings _QuitGameTransition = new FPSMainMenuManagerSettings();
+    
+    private DeathMatchGameViewModel _DeathMatchGame;
     
     private WavesFPSGameViewModel _FPSGame;
     
@@ -211,6 +225,19 @@ public class WavesFPSGameManagerBase : SceneManager {
     private FPSWeaponController _FPSWeaponController;
     
     public WavesFPSGameManagerSettings _WavesFPSGameManagerSettings = new WavesFPSGameManagerSettings();
+    
+    [Inject("DeathMatchGame")]
+    public virtual DeathMatchGameViewModel DeathMatchGame {
+        get {
+            if ((this._DeathMatchGame == null)) {
+                this._DeathMatchGame = SetupViewModel<DeathMatchGameViewModel>(DeathMatchGameController, "DeathMatchGame");
+            }
+            return this._DeathMatchGame;
+        }
+        set {
+            _DeathMatchGame = value;
+        }
+    }
     
     [Inject("FPSGame")]
     public virtual WavesFPSGameViewModel FPSGame {
@@ -329,8 +356,14 @@ public class WavesFPSGameManagerBase : SceneManager {
         }
     }
     
+    // <summary>
+    // This method is the first method to be invoked when the scene first loads. Anything registered here with 'Container' will effectively 
+    // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
+    // the 'Inject' attribute on any controller or view-model will automatically be set by uFrame. 
+    // </summary>
     public override void Setup() {
         base.Setup();
+        Container.RegisterInstance<DeathMatchGameViewModel>(DeathMatchGame,"DeathMatchGame");
         Container.RegisterInstance<WavesFPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance<FPSPlayerViewModel>(LocalPlayer,"LocalPlayer");

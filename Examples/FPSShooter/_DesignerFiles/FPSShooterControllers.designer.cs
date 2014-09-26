@@ -12,12 +12,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 
 public abstract class FPSDamageableControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
     [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
+    [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     public abstract void InitializeFPSDamageable(FPSDamageableViewModel fPSDamageable);
     
@@ -56,6 +58,7 @@ public abstract class FPSGameControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
     [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
+    [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     [Inject] public FPSPlayerController FPSPlayerController {get;set;}
     [Inject] public FPSEnemyController FPSEnemyController {get;set;}
@@ -118,6 +121,7 @@ public abstract class FPSWeaponControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
     [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
+    [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     [Inject] public FPSPlayerController FPSPlayerController {get;set;}
     public abstract void InitializeFPSWeapon(FPSWeaponViewModel fPSWeapon);
@@ -173,6 +177,7 @@ public abstract class FPSMenuControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
     [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
+    [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     public abstract void InitializeFPSMenu(FPSMenuViewModel fPSMenu);
     

@@ -23,10 +23,6 @@ public abstract class FPSDamageableViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public Single _Health;
     
-    [UFGroup("View Model Properties")]
-    [UnityEngine.HideInInspector()]
-    public Int32 _DistanceToPlayer;
-    
     public override System.Type ViewModelType {
         get {
             return typeof(FPSDamageableViewModel);
@@ -49,7 +45,6 @@ public abstract class FPSDamageableViewBase : ViewBase {
     protected override void InitializeViewModel(ViewModel viewModel) {
         FPSDamageableViewModel fPSDamageable = ((FPSDamageableViewModel)(viewModel));
         fPSDamageable.Health = this._Health;
-        fPSDamageable.DistanceToPlayer = this._DistanceToPlayer;
     }
     
     public virtual void ExecuteApplyDamage(Int32 arg) {
@@ -415,6 +410,12 @@ public abstract class FPSMenuViewBase : ViewBase {
 [DiagramInfoAttribute("FPSShooterProject")]
 public abstract class DeathMatchGameViewBase : FPSGameViewBase {
     
+    public override string DefaultIdentifier {
+        get {
+            return "DeathMatchGame";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(DeathMatchGameViewModel);
@@ -441,29 +442,6 @@ public abstract class DeathMatchGameViewBase : FPSGameViewBase {
 
 public class FPSGameViewViewBase : FPSGameViewBase {
     
-    [UFToggleGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState = true;
-    
-    [UFToggleGroup("CurrentPlayer")]
-    [UnityEngine.HideInInspector()]
-    public bool _BindCurrentPlayer = true;
-    
-    [UFGroup("CurrentPlayer")]
-    [UnityEngine.HideInInspector()]
-    public UnityEngine.GameObject _CurrentPlayerPrefab;
-    
-    [UFToggleGroup("Score")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("ScoreChanged")]
-    public bool _BindScore = true;
-    
-    [UFToggleGroup("Kills")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("KillsChanged")]
-    public bool _BindKills = true;
-    
     [UFToggleGroup("Enemies")]
     [UnityEngine.HideInInspector()]
     public bool _BindEnemies = true;
@@ -476,49 +454,63 @@ public class FPSGameViewViewBase : FPSGameViewBase {
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _EnemiesContainer;
     
+    [UFToggleGroup("State")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("StateChanged")]
+    public bool _BindState = true;
+    
+    [UFToggleGroup("CurrentPlayer")]
+    [UnityEngine.HideInInspector()]
+    public bool _BindCurrentPlayer = true;
+    
+    [UFToggleGroup("Score")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("ScoreChanged")]
+    public bool _BindScore = true;
+    
+    [UFToggleGroup("Kills")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("KillsChanged")]
+    public bool _BindKills = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSGameController>());
     }
     
-    public virtual void StateChanged(FPSGameState value) {
-    }
-    
-    public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
-        if (value == null && _CurrentPlayer != null && _CurrentPlayer.gameObject != null) {
-            Destroy(_CurrentPlayer.gameObject);
-        }
-        if (_CurrentPlayerPrefab == null ) {
-            this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(value)));
-        }
-        else {
-            this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(this._CurrentPlayerPrefab, value)));
-        }
-    }
-    
-    public virtual void ScoreChanged(Int32 value) {
-    }
-    
-    public virtual void KillsChanged(Int32 value) {
-    }
-    
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual ViewBase CreateEnemiesView(FPSEnemyViewModel item) {
-        return this.InstantiateView(item);
+        return null;
     }
     
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual void EnemiesAdded(ViewBase item) {
     }
     
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual void EnemiesRemoved(ViewBase item) {
     }
     
-    public virtual void EnemiesAdded(FPSEnemyViewModel item) {
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void StateChanged(FPSGameState value) {
     }
     
-    public virtual void EnemiesRemoved(FPSEnemyViewModel item) {
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void ScoreChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void KillsChanged(Int32 value) {
     }
     
     public override void Bind() {
         base.Bind();
+        if (this._BindEnemies) {
+            this.BindToViewCollection( FPSGame._EnemiesProperty, viewModel=>{ return CreateEnemiesView(viewModel as FPSEnemyViewModel); }, EnemiesAdded, EnemiesRemoved, _EnemiesContainer, _EnemiesSceneFirst);
+        }
         if (this._BindState) {
             this.BindProperty(FPSGame._StateProperty, this.StateChanged);
         }
@@ -530,9 +522,6 @@ public class FPSGameViewViewBase : FPSGameViewBase {
         }
         if (this._BindKills) {
             this.BindProperty(FPSGame._KillsProperty, this.KillsChanged);
-        }
-        if (this._BindEnemies) {
-            this.BindToViewCollection( FPSGame._EnemiesProperty, viewModel=>{ return CreateEnemiesView(viewModel as FPSEnemyViewModel); }, EnemiesAdded, EnemiesRemoved, _EnemiesContainer, _EnemiesSceneFirst);
         }
     }
     
@@ -553,15 +542,15 @@ public class FPSWeaponViewViewBase : FPSWeaponViewBase {
     [UFRequireInstanceMethod("AmmoChanged")]
     public bool _BindAmmo = true;
     
-    [UFToggleGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState = true;
-    
     [UFToggleGroup("ZoomIndex")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("ZoomIndexChanged")]
     public bool _BindZoomIndex = true;
+    
+    [UFToggleGroup("State")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("StateChanged")]
+    public bool _BindState = true;
     
     [UFToggleGroup("MaxZooms")]
     [UnityEngine.HideInInspector()]
@@ -617,42 +606,55 @@ public class FPSWeaponViewViewBase : FPSWeaponViewBase {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSWeaponController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void AmmoChanged(Int32 value) {
     }
     
-    public virtual void StateChanged(FPSWeaponState value) {
-    }
-    
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void ZoomIndexChanged(Int32 value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void StateChanged(FPSWeaponState value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void MaxZoomsChanged(Int32 value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void WeaponTypeChanged(WeaponType value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void ReloadTimeChanged(Single value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void RoundSizeChanged(Int32 value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void MinSpreadChanged(Int32 value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void BurstSizeChanged(Int32 value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void RecoilSpeedChanged(Single value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void FireSpeedChanged(Single value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void BurstSpeedChanged(Single value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void SpreadMultiplierChanged(Single value) {
     }
     
@@ -661,11 +663,11 @@ public class FPSWeaponViewViewBase : FPSWeaponViewBase {
         if (this._BindAmmo) {
             this.BindProperty(FPSWeapon._AmmoProperty, this.AmmoChanged);
         }
-        if (this._BindState) {
-            this.BindProperty(FPSWeapon._StateProperty, this.StateChanged);
-        }
         if (this._BindZoomIndex) {
             this.BindProperty(FPSWeapon._ZoomIndexProperty, this.ZoomIndexChanged);
+        }
+        if (this._BindState) {
+            this.BindProperty(FPSWeapon._StateProperty, this.StateChanged);
         }
         if (this._BindMaxZooms) {
             this.BindProperty(FPSWeapon._MaxZoomsProperty, this.MaxZoomsChanged);
@@ -711,11 +713,6 @@ public partial class FPSWeaponView : FPSWeaponViewViewBase {
 
 public class FPSPlayerViewViewBase : DamageableView {
     
-    [UFToggleGroup("CurrentWeaponIndex")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
-    public bool _BindCurrentWeaponIndex = true;
-    
     [UFToggleGroup("Weapons")]
     [UnityEngine.HideInInspector()]
     public bool _BindWeapons = true;
@@ -727,6 +724,11 @@ public class FPSPlayerViewViewBase : DamageableView {
     [UFGroup("Weapons")]
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _WeaponsContainer;
+    
+    [UFToggleGroup("CurrentWeaponIndex")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
+    public bool _BindCurrentWeaponIndex = true;
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -757,32 +759,30 @@ public class FPSPlayerViewViewBase : DamageableView {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSPlayerController>());
     }
     
-    public virtual void CurrentWeaponIndexChanged(Int32 value) {
-    }
-    
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual ViewBase CreateWeaponsView(FPSWeaponViewModel item) {
-        return this.InstantiateView(item);
+        return null;
     }
     
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual void WeaponsAdded(ViewBase item) {
     }
     
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual void WeaponsRemoved(ViewBase item) {
     }
     
-    public virtual void WeaponsAdded(FPSWeaponViewModel item) {
-    }
-    
-    public virtual void WeaponsRemoved(FPSWeaponViewModel item) {
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void CurrentWeaponIndexChanged(Int32 value) {
     }
     
     public override void Bind() {
         base.Bind();
-        if (this._BindCurrentWeaponIndex) {
-            this.BindProperty(FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
-        }
         if (this._BindWeapons) {
             this.BindToViewCollection( FPSPlayer._WeaponsProperty, viewModel=>{ return CreateWeaponsView(viewModel as FPSWeaponViewModel); }, WeaponsAdded, WeaponsRemoved, _WeaponsContainer, _WeaponsSceneFirst);
+        }
+        if (this._BindCurrentWeaponIndex) {
+            this.BindProperty(FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
         }
     }
     
@@ -820,11 +820,6 @@ public partial class FPSPlayerView : FPSPlayerViewViewBase {
 
 public class FPSPlayerHUDViewViewBase : FPSPlayerViewBase {
     
-    [UFToggleGroup("CurrentWeaponIndex")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
-    public bool _BindCurrentWeaponIndex = true;
-    
     [UFToggleGroup("Weapons")]
     [UnityEngine.HideInInspector()]
     public bool _BindWeapons = true;
@@ -837,36 +832,39 @@ public class FPSPlayerHUDViewViewBase : FPSPlayerViewBase {
     [UnityEngine.HideInInspector()]
     public UnityEngine.Transform _WeaponsContainer;
     
+    [UFToggleGroup("CurrentWeaponIndex")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("CurrentWeaponIndexChanged")]
+    public bool _BindCurrentWeaponIndex = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSPlayerController>());
     }
     
-    public virtual void CurrentWeaponIndexChanged(Int32 value) {
-    }
-    
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual ViewBase CreateWeaponsView(FPSWeaponViewModel item) {
-        return this.InstantiateView(item);
+        return null;
     }
     
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual void WeaponsAdded(ViewBase item) {
     }
     
+    /// This binding will add or remove views based on an element/viewmodel collection.
     public virtual void WeaponsRemoved(ViewBase item) {
     }
     
-    public virtual void WeaponsAdded(FPSWeaponViewModel item) {
-    }
-    
-    public virtual void WeaponsRemoved(FPSWeaponViewModel item) {
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void CurrentWeaponIndexChanged(Int32 value) {
     }
     
     public override void Bind() {
         base.Bind();
-        if (this._BindCurrentWeaponIndex) {
-            this.BindProperty(FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
-        }
         if (this._BindWeapons) {
             this.BindToViewCollection( FPSPlayer._WeaponsProperty, viewModel=>{ return CreateWeaponsView(viewModel as FPSWeaponViewModel); }, WeaponsAdded, WeaponsRemoved, _WeaponsContainer, _WeaponsSceneFirst);
+        }
+        if (this._BindCurrentWeaponIndex) {
+            this.BindProperty(FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
         }
     }
     
@@ -882,11 +880,6 @@ public partial class FPSPlayerHUDView : FPSPlayerHUDViewViewBase {
 
 public class FPSWavesHudViewViewBase : WavesFPSGameViewBase {
     
-    [UFToggleGroup("KillsToNextWave")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("KillsToNextWaveChanged")]
-    public bool _BindKillsToNextWave = true;
-    
     [UFToggleGroup("WaveKills")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("WaveKillsChanged")]
@@ -897,29 +890,37 @@ public class FPSWavesHudViewViewBase : WavesFPSGameViewBase {
     [UFRequireInstanceMethod("CurrentWaveChanged")]
     public bool _BindCurrentWave = true;
     
+    [UFToggleGroup("KillsToNextWave")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("KillsToNextWaveChanged")]
+    public bool _BindKillsToNextWave = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<WavesFPSGameController>());
     }
     
-    public virtual void KillsToNextWaveChanged(Int32 value) {
-    }
-    
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void WaveKillsChanged(Int32 value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void CurrentWaveChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void KillsToNextWaveChanged(Int32 value) {
     }
     
     public override void Bind() {
         base.Bind();
-        if (this._BindKillsToNextWave) {
-            this.BindProperty(WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
-        }
         if (this._BindWaveKills) {
             this.BindProperty(WavesFPSGame._WaveKillsProperty, this.WaveKillsChanged);
         }
         if (this._BindCurrentWave) {
             this.BindProperty(WavesFPSGame._CurrentWaveProperty, this.CurrentWaveChanged);
+        }
+        if (this._BindKillsToNextWave) {
+            this.BindProperty(WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
         }
     }
     
@@ -935,83 +936,58 @@ public partial class FPSWavesHudView : FPSWavesHudViewViewBase {
 
 public class FPSHUDViewViewBase : FPSGameViewBase {
     
-    [UFToggleGroup("State")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("StateChanged")]
-    public bool _BindState = true;
-    
     [UFToggleGroup("CurrentPlayer")]
     [UnityEngine.HideInInspector()]
     public bool _BindCurrentPlayer = true;
     
-    [UFGroup("CurrentPlayer")]
+    [UFToggleGroup("State")]
     [UnityEngine.HideInInspector()]
-    public UnityEngine.GameObject _CurrentPlayerPrefab;
-    
-    [UFToggleGroup("Score")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("ScoreChanged")]
-    public bool _BindScore = true;
+    [UFRequireInstanceMethod("StateChanged")]
+    public bool _BindState = true;
     
     [UFToggleGroup("Kills")]
     [UnityEngine.HideInInspector()]
     [UFRequireInstanceMethod("KillsChanged")]
     public bool _BindKills = true;
     
+    [UFToggleGroup("Score")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("ScoreChanged")]
+    public bool _BindScore = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSGameController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void StateChanged(FPSGameState value) {
     }
     
-    public virtual void CurrentPlayerChanged(FPSPlayerViewModel value) {
-        if (value == null && _CurrentPlayer != null && _CurrentPlayer.gameObject != null) {
-            Destroy(_CurrentPlayer.gameObject);
-        }
-        if (_CurrentPlayerPrefab == null ) {
-            this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(value)));
-        }
-        else {
-            this._CurrentPlayer = ((FPSPlayerViewBase)(this.InstantiateView(this._CurrentPlayerPrefab, value)));
-        }
-    }
-    
-    public virtual void ScoreChanged(Int32 value) {
-    }
-    
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void KillsChanged(Int32 value) {
     }
     
-    public virtual ViewBase CreateEnemiesView(FPSEnemyViewModel item) {
-        return this.InstantiateView(item);
-    }
-    
-    public virtual void EnemiesAdded(ViewBase item) {
-    }
-    
-    public virtual void EnemiesRemoved(ViewBase item) {
-    }
-    
-    public virtual void EnemiesAdded(FPSEnemyViewModel item) {
-    }
-    
-    public virtual void EnemiesRemoved(FPSEnemyViewModel item) {
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void ScoreChanged(Int32 value) {
     }
     
     public override void Bind() {
         base.Bind();
-        if (this._BindState) {
-            this.BindProperty(FPSGame._StateProperty, this.StateChanged);
-        }
         if (this._BindCurrentPlayer) {
             this.BindProperty(FPSGame._CurrentPlayerProperty, this.CurrentPlayerChanged);
         }
-        if (this._BindScore) {
-            this.BindProperty(FPSGame._ScoreProperty, this.ScoreChanged);
+        if (this._BindState) {
+            this.BindProperty(FPSGame._StateProperty, this.StateChanged);
         }
         if (this._BindKills) {
             this.BindProperty(FPSGame._KillsProperty, this.KillsChanged);
+        }
+        if (this._BindScore) {
+            this.BindProperty(FPSGame._ScoreProperty, this.ScoreChanged);
         }
     }
     
@@ -1032,10 +1008,16 @@ public class FPSEnemyViewViewBase : DamageableView {
     [UFRequireInstanceMethod("SpeedChanged")]
     public bool _BindSpeed = true;
     
+    [UFToggleGroup("DistanceToPlayer")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("DistanceToPlayerChanged")]
+    public bool _BindDistanceToPlayer = true;
+    
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public Single _Speed;
     
+    public IObservable<Single> DistanceToPlayer { get; set; }
     public FPSEnemyViewModel FPSEnemy {
         get {
             return ((FPSEnemyViewModel)(this.ViewModelObject));
@@ -1055,13 +1037,31 @@ public class FPSEnemyViewViewBase : DamageableView {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSEnemyController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void SpeedChanged(Single value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void DistanceToPlayerChanged(Single value) {
+    }
+    
+    protected virtual Single GetDistanceToPlayer() {
+        return default(Single);
+    }
+    
+    protected virtual UniRx.IObservable<Single> GetDistanceToPlayerObservable() {
+        return this.UpdateAsObservable().Select(p => GetDistanceToPlayer());
     }
     
     public override void Bind() {
         base.Bind();
+        DistanceToPlayer = GetDistanceToPlayerObservable();
+        DistanceToPlayer.Subscribe(FPSEnemy._DistanceToPlayerProperty);
         if (this._BindSpeed) {
             this.BindProperty(FPSEnemy._SpeedProperty, this.SpeedChanged);
+        }
+        if (this._BindDistanceToPlayer) {
+            this.BindProperty(FPSEnemy._DistanceToPlayerProperty, this.DistanceToPlayerChanged);
         }
     }
     
@@ -1113,34 +1113,48 @@ public class DamageableViewViewBase : FPSDamageableViewBase {
     [UFRequireInstanceMethod("StateChanged")]
     public bool _BindState = true;
     
-    public IObservable<Int32> DistanceToPlayer { get; set; }
+    [UFToggleGroup("Position")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("PositionChanged")]
+    public bool _BindPosition = true;
+    
+    public IObservable<Vector3> Position { get; set; }
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSDamageableController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void HealthChanged(Single value) {
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
     public virtual void StateChanged(FPSPlayerState value) {
     }
     
-    protected virtual Int32 GetDistanceToPlayer() {
-        return default(Int32);
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void PositionChanged(Vector3 value) {
     }
     
-    protected virtual UniRx.IObservable<Int32> GetDistanceToPlayerObservable() {
-        return this.UpdateAsObservable().Select(p => GetDistanceToPlayer());
+    protected virtual Vector3 GetPosition() {
+        return default(Vector3);
+    }
+    
+    protected virtual UniRx.IObservable<Vector3> GetPositionObservable() {
+        return this.UpdateAsObservable().Select(p => GetPosition());
     }
     
     public override void Bind() {
         base.Bind();
-        DistanceToPlayer = GetDistanceToPlayerObservable();
-        DistanceToPlayer.Subscribe(FPSDamageable._DistanceToPlayerProperty);
+        Position = GetPositionObservable();
+        Position.Subscribe(FPSDamageable._PositionProperty);
         if (this._BindHealth) {
             this.BindProperty(FPSDamageable._HealthProperty, this.HealthChanged);
         }
         if (this._BindState) {
             this.BindProperty(FPSDamageable._StateProperty, this.StateChanged);
+        }
+        if (this._BindPosition) {
+            this.BindProperty(FPSDamageable._PositionProperty, this.PositionChanged);
         }
     }
     
@@ -1213,6 +1227,82 @@ public class WavesGameViewViewBase : FPSGameView {
 }
 
 public partial class WavesGameView : WavesGameViewViewBase {
+}
+
+public class EnemyView2ViewBase : FPSEnemyViewBase {
+    
+    [UFToggleGroup("Speed")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("SpeedChanged")]
+    public bool _BindSpeed = true;
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<FPSEnemyController>());
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void SpeedChanged(Single value) {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        if (this._BindSpeed) {
+            this.BindProperty(FPSEnemy._SpeedProperty, this.SpeedChanged);
+        }
+    }
+    
+    protected override void Apply() {
+        base.Apply();
+        if (FPSEnemy.Dirty) {
+        }
+    }
+}
+
+public partial class EnemyView2 : EnemyView2ViewBase {
+}
+
+public class NewViewViewBase : FPSEnemyViewBase {
+    
+    [UFToggleGroup("Speed")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("SpeedChanged")]
+    public bool _BindSpeed = true;
+    
+    [UFToggleGroup("DistanceToPlayer")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("DistanceToPlayerChanged")]
+    public bool _BindDistanceToPlayer = true;
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<FPSEnemyController>());
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void SpeedChanged(Single value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void DistanceToPlayerChanged(Single value) {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        if (this._BindSpeed) {
+            this.BindProperty(FPSEnemy._SpeedProperty, this.SpeedChanged);
+        }
+        if (this._BindDistanceToPlayer) {
+            this.BindProperty(FPSEnemy._DistanceToPlayerProperty, this.DistanceToPlayerChanged);
+        }
+    }
+    
+    protected override void Apply() {
+        base.Apply();
+        if (FPSEnemy.Dirty) {
+        }
+    }
+}
+
+public partial class NewView : NewViewViewBase {
 }
 
 public partial class FPSWeaponFire : ViewComponent {

@@ -31,6 +31,7 @@ public partial class FPSEnemyView
     public override void OnDestroy()
     {
         base.OnDestroy();
+        if (disposable != null)
         disposable.Dispose();
     }
 }

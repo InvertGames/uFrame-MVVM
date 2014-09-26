@@ -4,7 +4,8 @@ using UnityEngine;
 
 public partial class FPSPlayerView
 {
-    public List<FPSWeaponViewBase> _WeaponsList = new List<FPSWeaponViewBase>(); 
+    public List<FPSWeaponViewBase> _WeaponsList = new List<FPSWeaponViewBase>();
+    
     //public Transform _GunsTransform;
     //public List<ViewBase> _Weapons = new List<ViewBase>();
     public override void Awake()
