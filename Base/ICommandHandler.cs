@@ -1,6 +1,4 @@
-public interface ICommandHandler
+public interface ICommandDispatcher
 {
     void ExecuteCommand(ICommand command, object argument);
-    void ExecuteCommand(ICommand command);
-    void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument);
 }

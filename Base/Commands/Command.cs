@@ -24,7 +24,7 @@ public class Command : ICommand
         Delegate = @delegate;
     }
 
-    public IEnumerator Execute()
+    public void Execute()
     {
         OnOnCommandExecuting();
         if (Delegate != null)
@@ -32,7 +32,17 @@ public class Command : ICommand
             Delegate();
         }
         OnOnCommandComplete();
-        return null;
+    }
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        throw new NotImplementedException();
     }
 
     protected virtual void OnOnCommandComplete()
@@ -70,12 +80,14 @@ public class Command : ICommand
         return Disposable.Create(() => OnCommandExecuted -= handler);
     }
 }
-
+[Obsolete("Yield commands are no longer used.")]
 public class YieldCommand : ICommand
 {
     public event CommandEvent OnCommandExecuted;
 
     public event CommandEvent OnCommandExecuting;
+
+
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
@@ -87,20 +99,28 @@ public class YieldCommand : ICommand
         EnumeratorDelegate = enumeratorDelegate;
     }
 
-    public IEnumerator Execute()
+    public void Execute()
     {
         OnOnCommandExecuting();
         if (EnumeratorDelegate != null)
         {
-            var result = EnumeratorDelegate();
             OnOnCommandComplete();
-            return result;
         }
         else
         {
             OnOnCommandComplete();
         }
-        return null;
+    }
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        return true;
     }
 
     protected virtual void OnOnCommandComplete()

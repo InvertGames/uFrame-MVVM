@@ -13,13 +13,18 @@ public delegate void CommandEvent();
 /// </summary>
 public interface ICommand : ISubject<Unit>
 {
+   
+   
+    //event EventHandler CanExecuteChanged;
     event CommandEvent OnCommandExecuted;
+    event CommandEvent OnCommandExecuting; 
 
-    event CommandEvent OnCommandExecuting;
-    object Sender { get; set; }
-    object Parameter { get; set; }
+    //object Sender { get; set; }
+    //object Parameter { get; set; }
     
-    IEnumerator Execute();
+    void Execute();
+    void Execute(object parameter);
+    bool CanExecute(object parameter);
 }
 
 /// <summary>
@@ -29,11 +34,6 @@ public interface ICommand : ISubject<Unit>
 public interface ICommandWith<T> : ICommand
 {
     //IEnumerator Execute(T parameter);
-}
-[Obsolete("Use ICommandWith<TArgument>")]
-public interface ICommand<T> : ICommand
-{
-    
 }
 #if DLL
 }

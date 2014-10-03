@@ -83,6 +83,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 130683333}
   - 114: {fileID: 130683334}
+  - 114: {fileID: 130683335}
   m_Layer: 0
   m_Name: LoadingScreenView
   m_TagString: Untagged
@@ -114,9 +115,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _LogEvents: 0
-  _overrideViewModel: 0
   _forceResolveViewModel: 0
+  _InjectView: 0
+  _overrideViewModel: 0
   _resolveName: 
+  _Save: 0
   progressBackground: {fileID: 2800000, guid: 145161dcf273556449e10d15de5a00f5, type: 3}
   progressForground: {fileID: 2800000, guid: e7571ace17ded0743a6b8d4b576eb256, type: 3}
   background: {fileID: 2800000, guid: 1604ede42208d9c42bf0ab259a89bc3a, type: 3}
+  layersToDisable:
+  - Everything
+--- !u!114 &130683335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 130683332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 409bff57c5cb80a47bafb07ccb2e9d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

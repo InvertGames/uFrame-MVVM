@@ -23,6 +23,10 @@ public abstract class FPSDamageableViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public Single _Health;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public String _Data;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(FPSDamageableViewModel);
@@ -45,6 +49,7 @@ public abstract class FPSDamageableViewBase : ViewBase {
     protected override void InitializeViewModel(ViewModel viewModel) {
         FPSDamageableViewModel fPSDamageable = ((FPSDamageableViewModel)(viewModel));
         fPSDamageable.Health = this._Health;
+        fPSDamageable.Data = this._Data;
     }
     
     public virtual void ExecuteApplyDamage(Int32 arg) {
@@ -147,12 +152,6 @@ public abstract class FPSPlayerViewBase : FPSDamageableViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public Int32 _CurrentWeaponIndex;
-    
-    public override string DefaultIdentifier {
-        get {
-            return "LocalPlayer";
-        }
-    }
     
     public override System.Type ViewModelType {
         get {
@@ -524,12 +523,6 @@ public class FPSGameViewViewBase : FPSGameViewBase {
             this.BindProperty(FPSGame._KillsProperty, this.KillsChanged);
         }
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSGame.Dirty) {
-        }
-    }
 }
 
 public partial class FPSGameView : FPSGameViewViewBase {
@@ -700,12 +693,6 @@ public class FPSWeaponViewViewBase : FPSWeaponViewBase {
             this.BindProperty(FPSWeapon._SpreadMultiplierProperty, this.SpreadMultiplierChanged);
         }
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSWeapon.Dirty) {
-        }
-    }
 }
 
 public partial class FPSWeaponView : FPSWeaponViewViewBase {
@@ -746,12 +733,6 @@ public class FPSPlayerViewViewBase : DamageableView {
     public override System.Type ViewModelType {
         get {
             return typeof(FPSPlayerViewModel);
-        }
-    }
-    
-    public override string DefaultIdentifier {
-        get {
-            return "LocalPlayer";
         }
     }
     
@@ -807,12 +788,6 @@ public class FPSPlayerViewViewBase : DamageableView {
     public virtual void ExecuteSelectWeapon(Int32 arg) {
         this.ExecuteCommand(FPSPlayer.SelectWeapon, arg);
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSPlayer.Dirty) {
-        }
-    }
 }
 
 public partial class FPSPlayerView : FPSPlayerViewViewBase {
@@ -867,12 +842,6 @@ public class FPSPlayerHUDViewViewBase : FPSPlayerViewBase {
             this.BindProperty(FPSPlayer._CurrentWeaponIndexProperty, this.CurrentWeaponIndexChanged);
         }
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSPlayer.Dirty) {
-        }
-    }
 }
 
 public partial class FPSPlayerHUDView : FPSPlayerHUDViewViewBase {
@@ -921,12 +890,6 @@ public class FPSWavesHudViewViewBase : WavesFPSGameViewBase {
         }
         if (this._BindKillsToNextWave) {
             this.BindProperty(WavesFPSGame._KillsToNextWaveProperty, this.KillsToNextWaveChanged);
-        }
-    }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (WavesFPSGame.Dirty) {
         }
     }
 }
@@ -990,12 +953,6 @@ public class FPSHUDViewViewBase : FPSGameViewBase {
             this.BindProperty(FPSGame._ScoreProperty, this.ScoreChanged);
         }
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSGame.Dirty) {
-        }
-    }
 }
 
 public partial class FPSHUDView : FPSHUDViewViewBase {
@@ -1045,12 +1002,12 @@ public class FPSEnemyViewViewBase : DamageableView {
     public virtual void DistanceToPlayerChanged(Single value) {
     }
     
-    protected virtual Single GetDistanceToPlayer() {
+    protected virtual Single CalculateDistanceToPlayer() {
         return default(Single);
     }
     
     protected virtual UniRx.IObservable<Single> GetDistanceToPlayerObservable() {
-        return this.UpdateAsObservable().Select(p => GetDistanceToPlayer());
+        return this.UpdateAsObservable().Select(p => CalculateDistanceToPlayer());
     }
     
     public override void Bind() {
@@ -1070,12 +1027,6 @@ public class FPSEnemyViewViewBase : DamageableView {
         FPSEnemyViewModel fPSEnemy = ((FPSEnemyViewModel)(viewModel));
         fPSEnemy.Speed = this._Speed;
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSEnemy.Dirty) {
-        }
-    }
 }
 
 public partial class FPSEnemyView : FPSEnemyViewViewBase {
@@ -1090,18 +1041,17 @@ public class FPSMainMenuViewViewBase : FPSMenuViewBase {
     public override void Bind() {
         base.Bind();
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSMenu.Dirty) {
-        }
-    }
 }
 
 public partial class FPSMainMenuView : FPSMainMenuViewViewBase {
 }
 
 public class DamageableViewViewBase : FPSDamageableViewBase {
+    
+    [UFToggleGroup("Position")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("PositionChanged")]
+    public bool _BindPosition = true;
     
     [UFToggleGroup("Health")]
     [UnityEngine.HideInInspector()]
@@ -1113,14 +1063,13 @@ public class DamageableViewViewBase : FPSDamageableViewBase {
     [UFRequireInstanceMethod("StateChanged")]
     public bool _BindState = true;
     
-    [UFToggleGroup("Position")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("PositionChanged")]
-    public bool _BindPosition = true;
-    
     public IObservable<Vector3> Position { get; set; }
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<FPSDamageableController>());
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void PositionChanged(Vector3 value) {
     }
     
     /// Subscribes to the property and is notified anytime the value changes.
@@ -1131,36 +1080,26 @@ public class DamageableViewViewBase : FPSDamageableViewBase {
     public virtual void StateChanged(FPSPlayerState value) {
     }
     
-    /// Subscribes to the property and is notified anytime the value changes.
-    public virtual void PositionChanged(Vector3 value) {
-    }
-    
-    protected virtual Vector3 GetPosition() {
+    protected virtual Vector3 CalculatePosition() {
         return default(Vector3);
     }
     
     protected virtual UniRx.IObservable<Vector3> GetPositionObservable() {
-        return this.UpdateAsObservable().Select(p => GetPosition());
+        return this.UpdateAsObservable().Select(p => CalculatePosition());
     }
     
     public override void Bind() {
         base.Bind();
         Position = GetPositionObservable();
         Position.Subscribe(FPSDamageable._PositionProperty);
+        if (this._BindPosition) {
+            this.BindProperty(FPSDamageable._PositionProperty, this.PositionChanged);
+        }
         if (this._BindHealth) {
             this.BindProperty(FPSDamageable._HealthProperty, this.HealthChanged);
         }
         if (this._BindState) {
             this.BindProperty(FPSDamageable._StateProperty, this.StateChanged);
-        }
-        if (this._BindPosition) {
-            this.BindProperty(FPSDamageable._PositionProperty, this.PositionChanged);
-        }
-    }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSDamageable.Dirty) {
         }
     }
 }
@@ -1218,47 +1157,9 @@ public class WavesGameViewViewBase : FPSGameView {
         wavesFPSGame.WaveKills = this._WaveKills;
         wavesFPSGame.CurrentWave = this._CurrentWave;
     }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (WavesFPSGame.Dirty) {
-        }
-    }
 }
 
 public partial class WavesGameView : WavesGameViewViewBase {
-}
-
-public class EnemyView2ViewBase : FPSEnemyViewBase {
-    
-    [UFToggleGroup("Speed")]
-    [UnityEngine.HideInInspector()]
-    [UFRequireInstanceMethod("SpeedChanged")]
-    public bool _BindSpeed = true;
-    
-    public override ViewModel CreateModel() {
-        return this.RequestViewModel(GameManager.Container.Resolve<FPSEnemyController>());
-    }
-    
-    /// Subscribes to the property and is notified anytime the value changes.
-    public virtual void SpeedChanged(Single value) {
-    }
-    
-    public override void Bind() {
-        base.Bind();
-        if (this._BindSpeed) {
-            this.BindProperty(FPSEnemy._SpeedProperty, this.SpeedChanged);
-        }
-    }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSEnemy.Dirty) {
-        }
-    }
-}
-
-public partial class EnemyView2 : EnemyView2ViewBase {
 }
 
 public class NewViewViewBase : FPSEnemyViewBase {
@@ -1292,12 +1193,6 @@ public class NewViewViewBase : FPSEnemyViewBase {
         }
         if (this._BindDistanceToPlayer) {
             this.BindProperty(FPSEnemy._DistanceToPlayerProperty, this.DistanceToPlayerChanged);
-        }
-    }
-    
-    protected override void Apply() {
-        base.Apply();
-        if (FPSEnemy.Dirty) {
         }
     }
 }

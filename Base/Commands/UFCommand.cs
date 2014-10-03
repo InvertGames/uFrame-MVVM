@@ -26,6 +26,7 @@ public abstract class UFCommand<T> : ICommandWith<T>
 
         return Disposable.Create(() => OnCommandExecuted -= handler);
     }
+
     protected virtual void OnOnCommandComplete()
     {
         CommandEvent handler = OnCommandExecuted;
@@ -43,13 +44,23 @@ public abstract class UFCommand<T> : ICommandWith<T>
     public object Sender { get; set; }
     public object Parameter { get; set; }
 
-    public abstract void Execute(T arg);
+    protected abstract void Perform(T arg);
 
-    public IEnumerator Execute()
+    public void Execute()
     {
         OnOnCommandExecuting();
         Execute((T)Parameter);
         OnOnCommandComplete();
-        yield return null;
+    }
+
+    public void Execute(object arg)
+    {
+        Parameter = arg;
+        Execute();
+    }
+
+    public virtual bool CanExecute(object parameter)
+    {
+        return true;
     }
 }

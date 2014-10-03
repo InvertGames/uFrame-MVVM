@@ -5,7 +5,7 @@ using UnityEngine;
 /// The View Managers responsibility is to provide prefabes based off of a view model
 /// This implementation finds a prefab based off of the ViewModel's type name removing "View" from it.
 /// </summary>
-public class ViewResolver
+public class ViewResolver : IViewResolver
 {
     /// <summary>
     /// Provides a prefab

@@ -13,12 +13,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
+using UnityEngine;
 
 
 public abstract class FPSDamageableControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
-    [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
     [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     public abstract void InitializeFPSDamageable(FPSDamageableViewModel fPSDamageable);
@@ -57,7 +57,6 @@ public abstract class FPSEnemyControllerBase : FPSDamageableController {
 public abstract class FPSGameControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
-    [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
     [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     [Inject] public FPSPlayerController FPSPlayerController {get;set;}
@@ -120,7 +119,6 @@ public abstract class FPSPlayerControllerBase : FPSDamageableController {
 public abstract class FPSWeaponControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
-    [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
     [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     [Inject] public FPSPlayerController FPSPlayerController {get;set;}
@@ -144,8 +142,7 @@ public abstract class FPSWeaponControllerBase : Controller {
     public virtual void NextZoom(FPSWeaponViewModel fPSWeapon) {
     }
     
-    public virtual System.Collections.IEnumerator Reload(FPSWeaponViewModel fPSWeapon) {
-        yield break;
+    public virtual void Reload(FPSWeaponViewModel fPSWeapon) {
     }
     
     public virtual void EndFire(FPSWeaponViewModel fPSWeapon) {
@@ -176,7 +173,6 @@ public abstract class WavesFPSGameControllerBase : FPSGameController {
 public abstract class FPSMenuControllerBase : Controller {
     
     [Inject("FPSGame")] public FPSGameViewModel FPSGame { get; set; }
-    [Inject("LocalPlayer")] public FPSPlayerViewModel LocalPlayer { get; set; }
     [Inject("DeathMatchGame")] public DeathMatchGameViewModel DeathMatchGame { get; set; }
     [Inject("FPSMenu")] public FPSMenuViewModel FPSMenu { get; set; }
     public abstract void InitializeFPSMenu(FPSMenuViewModel fPSMenu);

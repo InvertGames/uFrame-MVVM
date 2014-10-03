@@ -21,13 +21,13 @@ public class AddViewToSceneSelectionCommand : EditorCommand<DiagramNodeViewModel
         var view = node.GraphItemObject as ViewData;
         if (view == null) return;
 
-        if (view.CurrentViewType == null)
+        if (view.CurrentType == null)
         {
             EditorUtility.DisplayDialog("Can't add to scene", "The diagram must be saved and have no compiler errors.",
                 "OK");
             return;
         }
-        Selection.activeGameObject.AddComponent(view.CurrentViewType);
+        Selection.activeGameObject.AddComponent(view.CurrentType);
     }
 
     public override string CanPerform(DiagramNodeViewModel node)

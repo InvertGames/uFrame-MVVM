@@ -20,23 +20,53 @@ public class SceneManagerInspector : uFrameInspector
         base.OnInspectorGUI();
         if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)
         {
-            foreach (var instance in GameManager.ActiveSceneManager.Context.ViewModels)
-            {
-                if (GUIHelpers.DoTriggerButton(new UFStyle(instance.Value.GetHashCode() +": " + instance.Key,
-                    UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
-                    TextAnchor.MiddleCenter) { SubLabel = instance.Value.GetType().Name }))
-                {
-                    Debug.Log(instance.Value.GetHashCode().ToString() + ": " + instance.ToString());
-                }
 
+            if (GUIHelpers.DoToolbarEx("Instances"))
+            {
+                foreach (var instance in GameManager.ActiveSceneManager.Context.ViewModels)
+                {
+                    if (GUIHelpers.DoTriggerButton(new UFStyle(instance.Value.GetHashCode() + ": " + instance.Key,
+                        UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
+                        TextAnchor.MiddleCenter) { SubLabel = instance.Value.GetType().Name }))
+                    {
+                        Debug.Log(instance.Value.GetHashCode().ToString() + ": " + instance.ToString());
+                    }
+
+                }
             }
 
-            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "To Json", ElementDesignerStyles.ButtonStyle))
+            if (GUIHelpers.DoToolbarEx("Views"))
             {
-                var fileStorage = new TextAssetStorage();
-                var stringStorage = new StringSerializerStorage();
-                ((SceneManager)target).Context.Save(fileStorage, new JsonStream() {UseReferences = true});
-                Debug.Log(stringStorage);
+                foreach (var viewBase in GameManager.ActiveSceneManager.RootViews)
+                {
+                    if (GUIHelpers.DoTriggerButton(new UFStyle(viewBase.name,
+                        UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
+                        TextAnchor.MiddleCenter) { SubLabel = viewBase.Identifier }))
+                    {
+                        //var fileStorage = new TextAssetStorage();
+                        var stringStorage = new StringSerializerStorage();
+                        var stream = new JsonStream();
+                        viewBase.Write(stream);
+                        stringStorage.Save(stream);
+                        Debug.Log(stringStorage);
+                    }
+
+                }
+            }
+
+
+            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Serialize To String", ElementDesignerStyles.ButtonStyle))
+            {
+                var sm = (target as SceneManager);
+
+                sm.Save(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
+                
+            }
+            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Load From String", ElementDesignerStyles.ButtonStyle))
+            {
+                var sm = (target as SceneManager);
+                sm.Load(new TextAssetStorage() { AssetPath = "Assets/TestData.txt"}, new JsonStream() {UseReferences = true});
+                
             }
         }
         Toggle("GameRoot",true);
@@ -51,21 +81,17 @@ public class TextAssetStorage : ISerializerStorage
     {
         get
         {
-            
             return AssetDatabase.LoadAssetAtPath(AssetPath, typeof (TextAsset)) as TextAsset;
         }
     }
     public void Save(ISerializerStream stream)
     {
-        File.WriteAllText(Application.dataPath + "/test.txt", Encoding.UTF8.GetString(stream.Save()));
+        File.WriteAllText(AssetPath, Encoding.UTF8.GetString(stream.Save()));
         AssetDatabase.Refresh();
-        //var ast = new TextAsset() {};
-        //ast.text = ;s
-        //var ta = AssetDatabase.CreateAsset(, ScriptableObject.CreateInstance<TextAsset>());
     }
 
     public void Load(ISerializerStream stream)
     {
-//        return AssetDatabase.LoadAssetAtPath(AssetPath, typeof(TextAsset)) as TextAsset;
+        stream.Load(Asset.bytes);
     }
 }

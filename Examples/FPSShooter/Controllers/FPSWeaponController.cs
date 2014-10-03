@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class FPSWeaponController : FPSWeaponControllerBase
 {
-    
     public override void NextZoom(FPSWeaponViewModel fpsWeapon)
     {
         if (fpsWeapon.MaxZooms - 1 == fpsWeapon.ZoomIndex)
@@ -49,10 +48,9 @@ public class FPSWeaponController : FPSWeaponControllerBase
         }
     }
 
-    public override IEnumerator Reload(FPSWeaponViewModel fpsWeapon)
+    public override void Reload(FPSWeaponViewModel fpsWeapon)
     {
         fpsWeapon.State = FPSWeaponState.Reloading;
-        yield return new WaitForSeconds(fpsWeapon.ReloadTime);
         fpsWeapon.Ammo = fpsWeapon.RoundSize;
         fpsWeapon.State = FPSWeaponState.Active;
     }

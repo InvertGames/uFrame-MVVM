@@ -10,8 +10,10 @@ namespace Invert.Common.MVVM
 /// <summary>
 /// A controller is a group of commands usually to provide an abstract level
 /// </summary>
-public abstract class Controller : ICommandHandler
+public abstract class Controller
 {
+    [Inject]
+    public ICommandDispatcher CommandDispatcher { get; set; }
 
     private SceneContext _context;
 
@@ -142,47 +144,17 @@ public abstract class Controller : ICommandHandler
 #if !TESTS
     public void ExecuteCommand(ICommand command, object argument)
     {
-
-        if (command == null)
-        {
-            throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
-        }
-        command.Parameter = argument;
-        if (command.Parameter == null)
-        {
-            command.Parameter = argument;
-        }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+       CommandDispatcher.ExecuteCommand(command,argument);
     }
 
     public virtual void ExecuteCommand(ICommand command)
     {
-
-        if (command == null)
-        {
-            throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
-        }
-        //command.Sender = null;
-        command.Parameter = null;
-
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        CommandDispatcher.ExecuteCommand(command, null);
     }
 
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        if (command == null)
-        {
-            throw new Exception("Command is null.  This is probably cause 'Initialize View Model' has not been checked in the inspector.");
-        }
-        command.Parameter = argument;
-
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        CommandDispatcher.ExecuteCommand(command,argument);
     }
 
     public virtual void GameEvent(string message, params object[] additionalParamters)
@@ -262,8 +234,6 @@ public abstract class Controller : ICommandHandler
             }
 
             method.Invoke(sceneManager, list.ToArray());
-            //result.Component = controller;
-            //result.Execute();
         }
         else
         {

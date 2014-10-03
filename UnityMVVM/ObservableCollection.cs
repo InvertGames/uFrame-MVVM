@@ -193,20 +193,5 @@ namespace System.Collections.ObjectModel
             OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
         }
 
-   
-
-
-        //public IDisposable SubscribeInternal(Action<object> propertyChanged)
-        //{
-        //    return this.Subscribe((v) => propertyChanged(v));
-        //}
-
-        //public IDisposable Subscribe(IObserver<NotifyCollectionChangedEventArgs> observer)
-        //{
-        //    NotifyCollectionChangedEventHandler evt =
-        //        delegate(NotifyCollectionChangedEventArgs changeArgs) { observer.OnNext(changeArgs); };
-        //    CollectionChanged += evt;
-        //    return new SimpleDisposable(() => CollectionChanged -= evt);
-        //}
     }
 }

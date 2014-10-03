@@ -14,7 +14,7 @@ using Debug = UnityEngine.Debug;
 /// 	<para></para>
 /// 	<para>The game manager also has a static ActiveSceneManager property that can be used to access the current Scene's Manager class.</para>
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, ICommandDispatcher
 {
     /// <summary>
     /// Do not use async loading on "TransitionLevel"
@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
     private static IGameContainer _container;
     private static LevelLoadViewModel _loadingViewModel;
     private static LevelLoadViewModel _progress;
+    private static IViewResolver _viewResolver;
+    private static ICommandDispatcher _commandDispatcher;
     private List<SceneManager> _sceneManagers = new List<SceneManager>();
 
     /// <summary>
@@ -59,9 +61,22 @@ public class GameManager : MonoBehaviour
             {
                 _container = new GameContainer();
                 _container.RegisterInstance(Progress);
+                uFrameBootstraper.Configure(Instance, _container);
             }
             return _container;
         }
+    }
+
+    public static IViewResolver ViewResolver
+    {
+        get { return _viewResolver ?? (_viewResolver = Container.Resolve<IViewResolver>()); }
+        set { _viewResolver = value; }
+    }
+
+    public static ICommandDispatcher CommandDispatcher
+    {
+        get { return _commandDispatcher ?? (_commandDispatcher = Container.Resolve<ICommandDispatcher>()); }
+        set { _commandDispatcher = value; }
     }
 
     /// <summary>
@@ -402,26 +417,6 @@ public class GameManager : MonoBehaviour
         sceneManager.gameObject.SetActive(false);
     }
 
-    ///// <summary>
-    ///// Applies the render settings specified in the inspector.
-    ///// </summary>
-    //public void ApplyRenderSettings()
-    //{
-    //    RenderSettings.fog = _Fog;
-    //    RenderSettings.fogColor = _FogColor;
-    //    RenderSettings.fogMode = _FogMode;
-    //    RenderSettings.fogDensity = _FogDensity;
-
-    //    RenderSettings.fogStartDistance = _LinearFogStart;
-    //    RenderSettings.fogEndDistance = _LinearFogEnd;
-
-    //    RenderSettings.ambientLight = _AmbientLight;
-    //    RenderSettings.skybox = _SkyboxMaterial;
-
-    //    RenderSettings.haloStrength = _HaloStrength;
-
-    //    RenderSettings.flareStrength = _FlareStrength;
-    //}
     /// <summary>
     /// Checks if the gamemanager has already been loaded.  If so it will copy necessary info and destroy
     /// itself.  This also calls "Transition" in order to load the "Start" scene manager of the scene.
@@ -463,26 +458,6 @@ public class GameManager : MonoBehaviour
         ActiveSceneManager = _Start;
     }
 
-    ///// <summary>
-    ///// Loads the current render settings of a scene.
-    ///// </summary>
-    //public void LoadRenderSettings()
-    //{
-    //    _Fog = RenderSettings.fog;
-    //    _FogColor = RenderSettings.fogColor;
-    //    _FogMode = RenderSettings.fogMode;
-    //    _FogDensity = RenderSettings.fogDensity;
-
-    //    _LinearFogStart = RenderSettings.fogStartDistance;
-    //    _LinearFogEnd = RenderSettings.fogEndDistance;
-
-    //    _AmbientLight = RenderSettings.ambientLight;
-    //    _SkyboxMaterial = RenderSettings.skybox;
-
-    //    _HaloStrength = RenderSettings.haloStrength;
-
-    //    _FlareStrength = RenderSettings.flareStrength;
-    //}
     /// <summary>
     /// Removes the Scene Manager from this manager.  This will only happen if a Game is destroyed
     /// </summary>
@@ -513,6 +488,19 @@ public class GameManager : MonoBehaviour
         ActiveSceneManager.OnLoaded();
     }
 
-    /// <summary>The uFrame Boot loader that will begin the startup process</summary>
-    /// <returns></returns>
+    
+    public void ExecuteCommand(ICommand command, object argument)
+    {
+        command.Execute(argument);
+    }
+
+    public void ExecuteCommand(ICommand command)
+    {
+        command.Execute();
+    }
+
+    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
+    {
+        command.Execute(argument);
+    }
 }

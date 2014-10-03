@@ -225,7 +225,7 @@ public class ViewInspector : uFrameInspector
                         var newValue = EditorGUILayout.Vector3Field(property.name, property.vector3Value);
                         if (newValue != property.vector3Value)
                         {
-                            property.vector2Value = newValue;
+                            property.vector3Value = newValue;
                         }
                     }
                     else
@@ -518,6 +518,11 @@ public class ViewInspector : uFrameInspector
         {
             newValue = EditorGUILayout.TextField(property.Property.PropertyName,
               (string)property.Property.ObjectValue);
+        }
+        else if (type == typeof(decimal))
+        {
+            newValue = Convert.ToDecimal(EditorGUILayout.FloatField(property.Property.PropertyName,
+              (float)property.Property.ObjectValue));
         }
         else if (type == typeof(float))
         {

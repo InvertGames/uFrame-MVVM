@@ -105,7 +105,7 @@ public class ModelViewModelCollectionBinding : Binding
     public INotifyCollectionChanged Collection
     {
         get
-        {
+        { 
             return ModelProperty as INotifyCollectionChanged;
         }
     }
@@ -267,6 +267,16 @@ public class ModelViewModelCollectionBinding : Binding
 
     private void CollectionOnChanged(NotifyCollectionChangedEventArgs changeArgs)
     {
+        if (changeArgs.Action == NotifyCollectionChangedAction.Reset)
+        {
+            foreach (var item in ObjectIdLookup.Keys.ToArray())
+            {
+                RemoveLookup(item);
+            }
+            ObjectIdLookup.Clear();
+            GameObjectLookup.Clear();
+            return;
+        }
         var targetTransform = Parent ?? SourceView.transform;
         if (changeArgs.NewItems != null)
             foreach (var item in changeArgs.NewItems)
@@ -274,10 +284,12 @@ public class ModelViewModelCollectionBinding : Binding
                 ViewBase view = null;
                 if (OnCreateView != null)
                 {
+                 
                     view = OnCreateView(item as ViewModel);
                 }
                 else
                 {
+                    
                     view = ViewName == null
                         ? SourceView.InstantiateView(item as ViewModel)
                         : SourceView.InstantiateView(ViewName, item as ViewModel) as ViewBase;

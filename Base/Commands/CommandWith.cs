@@ -13,6 +13,17 @@ public class CommandWith<T> : ICommandWith<T>
 
     public event CommandEvent OnCommandExecuting;
 
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        throw new NotImplementedException();
+    }
+
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
@@ -35,14 +46,13 @@ public class CommandWith<T> : ICommandWith<T>
     //    return new CommandWith<T>(e);
     //}
 
-    public virtual IEnumerator Execute()
+    public virtual void Execute()
     {
         OnOnCommandExecuting();
         if (Delegate != null)
             Delegate((T)Parameter);
 
         OnOnCommandComplete();
-        return null;
     }
 
     protected virtual void OnOnCommandComplete()
@@ -103,14 +113,24 @@ public class CommandWithSender<TSender> : ICommandWith<TSender>
         Delegate = @delegate;
     }
 
-    public virtual IEnumerator Execute()
+    public virtual void Execute()
     {
         OnOnCommandExecuting();
         if (Delegate != null)
             Delegate((TSender)Sender);
 
         OnOnCommandComplete();
-        return null;
+    }
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        throw new NotImplementedException();
     }
 
     protected virtual void OnOnCommandComplete()
@@ -173,14 +193,24 @@ public class CommandWithSenderAndArgument<TSender,TArgument> : ICommandWith<TArg
         Delegate = @delegate;
     }
 
-    public virtual IEnumerator Execute()
+    public virtual void Execute()
     {
         OnOnCommandExecuting();
         if (Delegate != null)
             Delegate((TSender)Sender,(TArgument)Parameter);
 
         OnOnCommandComplete();
-        return null;
+    }
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        return true;
     }
 
     protected virtual void OnOnCommandComplete()

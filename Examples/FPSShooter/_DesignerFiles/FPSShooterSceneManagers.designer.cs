@@ -30,8 +30,6 @@ public class FPSMainMenuManagerBase : SceneManager {
     
     private FPSMenuViewModel _FPSMenu;
     
-    private FPSPlayerViewModel _LocalPlayer;
-    
     private FPSGameViewModel _FPSGame;
     
     private FPSMenuController _FPSMenuController;
@@ -58,19 +56,6 @@ public class FPSMainMenuManagerBase : SceneManager {
         }
         set {
             _FPSMenu = value;
-        }
-    }
-    
-    [Inject("LocalPlayer")]
-    public virtual FPSPlayerViewModel LocalPlayer {
-        get {
-            if ((this._LocalPlayer == null)) {
-                this._LocalPlayer = SetupViewModel<FPSPlayerViewModel>(FPSPlayerController, "LocalPlayer");
-            }
-            return this._LocalPlayer;
-        }
-        set {
-            _LocalPlayer = value;
         }
     }
     
@@ -173,7 +158,6 @@ public class FPSMainMenuManagerBase : SceneManager {
     public override void Setup() {
         base.Setup();
         Container.RegisterInstance<FPSMenuViewModel>(FPSMenu,"FPSMenu");
-        Container.RegisterInstance<FPSPlayerViewModel>(LocalPlayer,"LocalPlayer");
         Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance(FPSMenuController,false);
         Container.RegisterInstance(FPSDamageableController,false);
@@ -207,8 +191,6 @@ public class WavesFPSGameManagerBase : SceneManager {
     private DeathMatchGameViewModel _DeathMatchGame;
     
     private WavesFPSGameViewModel _FPSGame;
-    
-    private FPSPlayerViewModel _LocalPlayer;
     
     private WavesFPSGameController _WavesFPSGameController;
     
@@ -249,19 +231,6 @@ public class WavesFPSGameManagerBase : SceneManager {
         }
         set {
             _FPSGame = value;
-        }
-    }
-    
-    [Inject("LocalPlayer")]
-    public virtual FPSPlayerViewModel LocalPlayer {
-        get {
-            if ((this._LocalPlayer == null)) {
-                this._LocalPlayer = SetupViewModel<FPSPlayerViewModel>(FPSPlayerController, "LocalPlayer");
-            }
-            return this._LocalPlayer;
-        }
-        set {
-            _LocalPlayer = value;
         }
     }
     
@@ -366,7 +335,6 @@ public class WavesFPSGameManagerBase : SceneManager {
         Container.RegisterInstance<DeathMatchGameViewModel>(DeathMatchGame,"DeathMatchGame");
         Container.RegisterInstance<WavesFPSGameViewModel>(FPSGame,"FPSGame");
         Container.RegisterInstance<FPSGameViewModel>(FPSGame,"FPSGame");
-        Container.RegisterInstance<FPSPlayerViewModel>(LocalPlayer,"LocalPlayer");
         Container.RegisterInstance(WavesFPSGameController,false);
         Container.RegisterInstance(DeathMatchGameController,false);
         Container.RegisterInstance(FPSDamageableController,false);

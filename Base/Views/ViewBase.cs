@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// The base class for a View that binds to a ViewModel
 /// </summary>
-public abstract class ViewBase : ViewContainer, ICommandHandler
+public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 {
     public T AddComponentBinding<T>() where T : ObservableComponent
     {
@@ -22,13 +22,28 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     }
     Subject<Unit> _updateObservable;
 
-    /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
+    private Subject<Transform> _transformObservable;
+    /// <summary>
+    /// 	<para>Update is called every frame, if the MonoBehaviour is enabled.  It is important to make sure that you override this method instead of just creating
+    /// it.  uFrame uses this method as an observable, and that observable is used for all default Scene Property implementations.</para>
+    /// </summary>
     public virtual void Update()
     {
-        if (_updateObservable != null) _updateObservable.OnNext(Unit.Default);
+        if (_updateObservable != null) 
+            _updateObservable.OnNext(Unit.Default);
+
+        if (TransformChangedObservable != null && transform.hasChanged)
+        {
+            TransformChangedObservable.OnNext(transform);
+            transform.hasChanged = false;
+        }
     }
 
-    /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
+    /// <summary>This Observable allows you to use the Update method of a monobehaviour as an observable.</summary>
+    /// <example>
+    /// 	<code title="Simple Update Observable" description="In this example we subscribe to the update observable, and print out a message every frame." groupname="Views" lang="CS">
+    /// this.UpdateAsObservable().Subscribe(_=&gt;Debug.Log("Output every frame"));</code>
+    /// </example>
     public IObservable<Unit> UpdateAsObservable()
     {
         return _updateObservable ?? (_updateObservable = new Subject<Unit>());
@@ -99,6 +114,8 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     [NonSerialized]
     private bool _shouldRebindOnEnable = false;
 
+    private IObservable<Transform> _transformChangedObservable;
+
     public List<IBindingProvider> BindingProviders
     {
         get { return _bindingProviders ?? (_bindingProviders = new List<IBindingProvider>()); }
@@ -136,10 +153,6 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
         set { _children = value; }
     }
 
-    public virtual ICommandHandler CommandHandler
-    {
-        get { return this; }
-    }
 
     /// <summary>
     /// This is the default identifier to use when "ResolveName" is not specified and it's a single instance.
@@ -239,11 +252,11 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
         {
            
             if (_parentView == null)
-            {
+            { 
                 //var parentView = transform.parent;
                 //while (parentView != null)
                 //{
-                    
+                     
                 //    if (parentView == null)
                 //        parentView = parentView.parent;
                 //}
@@ -268,33 +281,6 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
             return pv.ViewModelObject;
         }
     }
-
-    public IObservable<Vector3> PositionObservable
-    {
-        get
-
-        {
-
-            return _positionObservable ?? (_positionObservable = UpdateAsObservable().Where(p => this.transform.hasChanged).Select(_ => this.transform.position));
-        }
-    }
-
-    public IObservable<Quaternion> RotationAsObservable
-    {
-        get
-        {
-            return _rotationObservable ?? (_rotationObservable = UpdateAsObservable().Where(p => this.transform.hasChanged).Select(_ => this.transform.rotation));
-        }
-    }
-
-    public IObservable<Vector3> ScaleAsObservable
-    {
-        get
-        {
-            return _scaleObservable ?? (_scaleObservable = UpdateAsObservable().Where(p => this.transform.hasChanged).Select(_ => this.transform.localScale));
-        }
-    }
-
 
     /// <summary>
     /// Should this view be saved in the "SceneContext"
@@ -337,15 +323,67 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
 
     public abstract Type ViewModelType { get; }
 
+    public IObservable<Vector3> PositionAsObservable
+    {
+        get
+        {
+            return TransformChangedObservable.Select(p => p.transform.position).DistinctUntilChanged();
+        }
+    }
+    public IObservable<Vector3> LocalPositionAsObservable
+    {
+        get
+        {
+            return TransformChangedObservable.Select(p => p.transform.localPosition).DistinctUntilChanged();
+        }
+    }
+    public IObservable<Quaternion> LocalRotationAsObservable
+    {
+        get
+        {
+            return TransformChangedObservable.Select(p => p.transform.localRotation).DistinctUntilChanged();
+        }
+    }
+    
+    public IObservable<Quaternion> RotationAsObservable
+    {
+        get
+        {
+            return TransformChangedObservable.Select(p => p.transform.rotation).DistinctUntilChanged();
+        }
+    }
+    public IObservable<Vector3> ScaleAsObservable
+    {
+        get
+        {
+            return TransformChangedObservable.Select(p => p.transform.localScale).DistinctUntilChanged();
+        }
+    }
     /// <summary>
     /// The name of the prefab that created this view
     /// </summary>
     public string ViewName { get; set; }
 
+
     /// <summary>
-    /// Adds a binding to the view-model's binding dictionary for this view.
+    /// Observable that notifies its subscribers only when the transform has changed.
     /// </summary>
-    /// <param name="binding"></param>
+    public Subject<Transform> TransformChangedObservable
+    {
+        get { return _transformObservable ?? (_transformObservable = new Subject<Transform>()); }
+        set { _transformObservable = value; }
+    }
+
+    /// <summary>
+    /// 	<para>This method adds a binding directly onto the view-model.  It will be registered with a key of this object instance id, this allows any disposable to be
+    /// properly disposed when this view is destroyed.</para>
+    /// </summary>
+    /// <param name="binding">The IDisposable that will be invoked when a view or view-model is un-bound.</param>
+    /// <returns>The same disposable you pass in order to store a local destruction of the binding if needed.</returns>
+    /// <example>
+    /// 	<code title="Adding a simple binding." description="This example will register the HealthChange subscription so that when the view is destroyed, it will no longer be invoked when the health changes." groupname="Views" lang="CS">
+    /// this.AddBinding(MyViewModel.HealthProperty.Subscribe(HealthChanged));</code>
+    /// </example>
     public IDisposable AddBinding(IDisposable binding)
     {
         Bindings.Add(binding);
@@ -353,20 +391,30 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     }
 
     /// <summary>
-    /// This method is invoked right after it has been bound
+    /// 	<para>This method is invoked right after the view-model has been bound.</para>
     /// </summary>
+    
     public virtual void AfterBind()
     {
     }
 
+    /// <summary>The awake method currenlty doesn't overried anything, but is left as a virutal metthod so that in the future if the method is needed other methods will not
+    /// hide any implementation.</summary>
     public virtual void Awake()
     {
         
     }
 
     /// <summary>
-    /// This method is called in order to subscribe to properties, commands, and collections.
+    /// 	<para>This method is the primary method of a view.  It's purpose is to provide a safe place to create subscriptions/bindings to it's view-model.  When
+    /// this method is invoked it will allways have an instance to a view-model.</para>
+    /// 	<para>In this method you should subscribe to it's owned view-models properties, collections, and execute commands.</para>
     /// </summary>
+    /// <example>
+    /// 	<code title="Example" description="" lang="CS">
+    /// var viewModel = ViewModelObject as FPSWeaponViewModel; // &lt;-- for clarity, use property instead
+    /// this.BindProperty(viewModel.AmmoProperty, ammo=&gt; { _AmmoLabel.text = ammo.ToString(); });</code>
+    /// </example>
     public virtual void Bind()
     {
     }
@@ -375,28 +423,15 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     /// This method is called in order to create a model for this view.  In a uFrame Designer generated
     /// view it will implement this method and call the "RequestViewModel" on the scene manager.
     /// </summary>
-    /// <returns>A view model for this view to bind to</returns>
     public abstract ViewModel CreateModel();
 
-    /// <summary>
-    /// All of the designer generated "Execute{CommandName}" ultimately use this method.  So when
-    /// need to execute a command on an outside view-model(meaning not the view-model of this view) this
-    /// method can be used. e.g. ExecuteCommand(command, argument)
-    /// </summary>
+    /// <summary>All of the designer generated "Execute{CommandName}" ultimately use this method. So when you need to execute a command on an outside view-model(meaning not the
+    /// view-model of this view) this method can be used. e.g. ExecuteCommand(command, argument)</summary>
     /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
     /// <param name="argument">The argument to pass along if needed.</param>
     public void ExecuteCommand(ICommand command, object argument)
     {
-        if (command == null) return;
-
-        command.Parameter = argument;
-        if (command.Parameter == null)
-        {
-            command.Parameter = this.ViewModelObject;
-        }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        GameManager.CommandDispatcher.ExecuteCommand(command,argument);
     }
 
     /// <summary>
@@ -407,14 +442,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
     public virtual void ExecuteCommand(ICommand command)
     {
-        if (command == null) return;
-
-        if (command.Parameter == null)
-            command.Parameter = this.ViewModelObject;
-
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        GameManager.CommandDispatcher.ExecuteCommand(command,null);
     }
 
     /// <summary>
@@ -426,15 +454,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     /// <param name="argument">The argument required by the command.</param>
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, ViewModel sender, TArgument argument)
     {
-        if (command == null) return;
-        command.Parameter = argument;
-        if (command.Parameter == null)
-        {
-            command.Parameter = this.ViewModelObject;
-        }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        GameManager.CommandDispatcher.ExecuteCommand(command, null);
     }
 
     /// <summary>
@@ -445,21 +465,24 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     /// <param name="argument">The argument required by the command.</param>
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        if (command == null) return;
-        command.Parameter = argument;
-        if (command.Parameter == null)
-        {
-            command.Parameter = this.ViewModelObject;
-        }
-        IEnumerator enumerator = command.Execute();
-        if (enumerator != null)
-            StartCoroutine(enumerator);
+        GameManager.CommandDispatcher.ExecuteCommand(command,argument);
     }
 
     /// <summary>
-    /// A wrapper for "InitializeViewModel".
+    /// 	<para>A wrapper for "InitializeViewModel" which takes the information supplied in the inspector and applies it to the view-model.</para>
+    /// 	<innovasys:widget type="Note Box" layout="block" xmlns:innovasys="http://www.innovasys.com/widgets">
+    /// 		<innovasys:widgetproperty layout="block" name="Content">If your viewmodel is a composite view-model containing properties of other view-models, a view can
+    ///     be referenced, and this method will use that view's view-model.</innovasys:widgetproperty>
+    /// 	</innovasys:widget>
     /// </summary>
     /// <param name="model"></param>
+    /// <example>
+    /// 	<code title="Initialize Data Example" description="Demonstrates using initializedata to pull use the values from the inspector on an instantiated view." groupname="Views" lang="CS">
+    /// var myView = InstantiateView(new FPSWeaponViewModel() { Ammo=60 });
+    /// myView.InitializeData();
+    /// Debug.Log(myView.FPSWeapon.Ammo);
+    /// // output will not be 60, it will be the value specified on the views insepctor.</code>
+    /// </example>
     public void InitializeData(ViewModel model)
     {
         InitializeViewModel(model);
@@ -499,11 +522,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
             SetupBindings();
     }
 
-    public virtual void Read(ISerializerStream stream)
-    {
-        ViewModelObject.Read(stream);
-        stream.SerializeString("ViewType", this.GetType().FullName);
-    }
+
 
     ///// <summary>
     ///// Removes a binding from the view-models binding dictionary for this view.
@@ -514,10 +533,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     //    Bindings.Remove(binding);
     //}
 
-    /// <summary>
-    /// This method will setup all bindings on this view.  Bindings don't actually occur on a view until this method is called.
-    /// In the bind method it will simply add to the collection of bindings.  You should never have to call this method manually.
-    /// </summary>
+    /// <summary>This method will ensure that a view-model exists and then call the bind method when it's appropriate.</summary>
     public void SetupBindings()
     {
         if (ViewModelObject == null)
@@ -531,10 +547,8 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
         if (ViewModelObject != null)
         {
             ViewModelObject.References++;
-
-            if (ViewModelObject.CommandHandler == null)
-                ViewModelObject.CommandHandler = CommandHandler;
         }
+
         // Loop through and binding providers and let them add bindings
         foreach (var bindingProvider in BindingProviders)
             bindingProvider.Bind(this);
@@ -588,9 +602,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
         }
     }
 
-    /// <summary>
-    /// Unbind the current bindings.
-    /// </summary>
+    /// <summary>Unbind any binding or disposable that has been added via the "AddBinding" method.</summary>
     public virtual void Unbind()
     {
         if (_Model != null)
@@ -617,13 +629,28 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
 
     public virtual void Write(ISerializerStream stream)
     {
-        ViewModelObject.Write(stream);
+        if (OverrideViewModel)
+        {
+            ViewModelObject.Write(stream);
+        }
+        
         stream.SerializeString("ViewType", this.GetType().FullName);
     }
-
+    /// <summary>Will deserialize this view directly from a stream.</summary>
+    public virtual void Read(ISerializerStream stream)
+    {
+        if (OverrideViewModel)
+        {
+            ViewModelObject.Read(stream);
+        }
+        stream.SerializeString("ViewType", this.GetType().FullName);
+    }
     /// <summary>
     /// Overriden by the the uFrame designer to apply any two-way/reverse properties.
     /// </summary>
+    /// <buildflag>Exclude from Online</buildflag>
+    /// <buildflag>Exclude from Booklet</buildflag>
+    [Obsolete("No longer used by uFrame designer. You most likely need to Save and Compile your diagram")]
     protected virtual void Apply()
     {
     }
@@ -632,6 +659,8 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     /// This method should be overriden to Initialize the ViewModel
     /// with any options specified in a unity component inspector.
     /// </summary>
+    /// <buildflag>Exclude from Online</buildflag>
+    /// <buildflag>Exclude from Booklet</buildflag>
     /// <param name="model">The model to initialize.</param>
     protected abstract void InitializeViewModel(ViewModel model);
 
@@ -641,8 +670,6 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     public virtual void LateUpdate()
     {
      
-        if (IsBound)
-            Apply();
     }
 
     /// <summary>
@@ -653,6 +680,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     {
     }
 
+    /// <summary>This method will destroy a view if it exists, then replace it with another view.</summary>
     protected virtual ViewBase ReplaceView(ViewBase current, ViewModel value, GameObject prefab)
     {
         if (value == null && current != null && current.gameObject != null)
@@ -670,7 +698,7 @@ public abstract class ViewBase : ViewContainer, ICommandHandler
     }
 
     /// <summary>
-    /// Request a view-model with a given controller.
+    /// Request a view-model with a given controller if any.
     /// </summary>
     /// <param name="controller"></param>
     /// <returns></returns>

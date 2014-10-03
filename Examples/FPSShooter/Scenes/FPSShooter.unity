@@ -334,14 +334,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ed389338bd40e4199be13947bc8ca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ShowLogs: 1
+  _DontUseAsyncLoading: 0
   _LoadingLevel: 4c6f6164696e67
+  _ShowLogs: 1
   _Start: {fileID: 1069661708}
   _StartupScene: 
-  _ViewModelScriptsPath: 40456c656d656e74506174682f
-  _ViewPrefabsPath: 40456c656d656e74506174682f5265736f75726365732f
-  _ViewsScriptsPath: 40456c656d656e74506174682f
-  _DontUseAsyncLoading: 0
 --- !u!4 &152263753
 Transform:
   m_ObjectHideFlags: 0
@@ -407,9 +404,9 @@ MonoBehaviour:
   _KillsToNextWave: 0
   _WaveKills: 0
   _CurrentWave: 0
-  _BindKillsToNextWave: 1
   _BindWaveKills: 1
   _BindCurrentWave: 1
+  _BindKillsToNextWave: 1
   _KillsRemainingLabel: {fileID: 607578323}
   _WaveStartLabel: {fileID: 1648258930}
 --- !u!1 &361990733
@@ -724,11 +721,10 @@ MonoBehaviour:
   _CurrentPlayer: {fileID: 0}
   _Score: 0
   _Kills: 0
-  _BindState: 1
   _BindCurrentPlayer: 0
-  _CurrentPlayerPrefab: {fileID: 0}
-  _BindScore: 0
+  _BindState: 1
   _BindKills: 1
+  _BindScore: 0
   _GameOverLabel: {fileID: 386323272}
   _TotalKillsLabel: {fileID: 361990734}
 --- !u!4 &800961565
@@ -829,13 +825,14 @@ MonoBehaviour:
   _resolveName: LocalPlayer
   _Save: 0
   _Health: 1
-  _DistanceToPlayer: 0
+  _Data: 
+  _BindPosition: 1
   _BindHealth: 0
   _BindState: 0
-  _BindCurrentWeaponIndex: 1
   _BindWeapons: 1
   _WeaponsSceneFirst: 1
   _WeaponsContainer: {fileID: 933135608}
+  _BindCurrentWeaponIndex: 1
   _CurrentWeaponIndex: 1
   _WeaponsList: []
 --- !u!114 &887022876
@@ -1199,14 +1196,13 @@ MonoBehaviour:
   _CurrentPlayer: {fileID: 887022875}
   _Score: 0
   _Kills: 0
-  _BindState: 1
-  _BindCurrentPlayer: 0
-  _CurrentPlayerPrefab: {fileID: 100000, guid: b01f223937df6f249a26798b3eaeea71, type: 2}
-  _BindScore: 0
-  _BindKills: 0
   _BindEnemies: 1
   _EnemiesSceneFirst: 0
   _EnemiesContainer: {fileID: 901754239}
+  _BindState: 1
+  _BindCurrentPlayer: 0
+  _BindScore: 0
+  _BindKills: 0
   _SpawnPointsParent: {fileID: 371131675}
 --- !u!1 &1106698304
 GameObject:
@@ -1488,12 +1484,12 @@ MonoBehaviour:
   _resolveName: LocalPlayer
   _Save: 0
   _Health: 0
-  _DistanceToPlayer: 0
+  _Data: 
   _CurrentWeaponIndex: 0
-  _BindCurrentWeaponIndex: 0
   _BindWeapons: 1
   _WeaponsSceneFirst: 0
   _WeaponsContainer: {fileID: 0}
+  _BindCurrentWeaponIndex: 0
   _AmmoLabel: {fileID: 1071219179}
   _ReloadLabel: {fileID: 141528934}
   _HudTextures: []

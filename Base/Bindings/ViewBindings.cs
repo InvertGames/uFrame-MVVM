@@ -7,7 +7,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using UniRx;
 /// <summary>
-/// Binding extension method that make it easy to bind ViewModels to Views
+/// Binding extension methods that make it easy to bind ViewModels to Views, Any method that starts with Bind{...} will properly be unbound when a view is destroyed, if not
+/// it is the developers repsonsibility to properly dispose any subscriptions using the returned IDisposable.
 /// </summary>
 public static class ViewBindings
 {
@@ -58,9 +59,6 @@ public static class ViewBindings
         return t.AddBinding(Disposable.Create(() => collection.CollectionChanged -= collectionChanged));
     }
 
-
-
-
     /// <summary>
     /// Bind to a ViewModel collection.
     /// </summary>
@@ -81,6 +79,13 @@ public static class ViewBindings
         return binding;
     }
 
+    /// <summary>
+    /// Adds a binding to a collision, when the collusion occurs the call back will be invoked.
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="eventType"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
     public static IDisposable BindCollision(this ViewBase t, CollisionEventType eventType, Action<Collision> action)
     {
         return t.AddBinding(OnCollisionObservable(t.gameObject, eventType).Subscribe(action));
@@ -110,19 +115,40 @@ public static class ViewBindings
         }
     }
 
+
+    /// <summary>
+    /// Ensures that a component exists and returns it.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="t"></param>
+    /// <returns></returns>
     public static T EnsureComponent<T>(this ViewBase t) where T : Component
     {
         return t.GetComponent<T>() ?? t.gameObject.AddComponent<T>();
     }
+    /// <summary>
+    /// Ensures that a component exists and returns it.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="t"></param>
+    /// <returns></returns>
     public static T EnsureComponent<T>(this GameObject t) where T : Component
     {
         return t.GetComponent<T>() ?? t.AddComponent<T>();
     }
 
+    /// <summary>
+    /// Creates a binding on collisions that filter to views only.
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="eventType"></param>
+    /// <param name="collision"></param>
+    /// <returns></returns>
     public static IDisposable BindViewCollision(this ViewBase t, CollisionEventType eventType, Action<ViewBase> collision)
     {
         return t.AddBinding(OnViewCollision(t.gameObject, eventType).Subscribe(collision));
     }
+
     public static IDisposable BindViewCollisionWith<T>(this ViewBase t, CollisionEventType eventType, Action<T> collision) where T : ViewBase
     {
         return t.AddBinding(OnViewCollisionWith<T>(t.gameObject, eventType).Subscribe(collision));
@@ -175,7 +201,7 @@ public static class ViewBindings
     /// </summary>
     /// <param name="t">The view that owns the binding</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public static IObservable<T> ScreenToRaycastAsObservable<T>(this ViewBase t,Func<RaycastHit,T> onHit)
+    public static IObservable<T> ScreenToRaycastAsObservable<T>(this ViewBase t, Func<RaycastHit, T> onHit)
     {
         return t.UpdateAsObservable().Select(p =>
         {
@@ -227,6 +253,30 @@ public static class ViewBindings
         return view.AddComponentBinding<ObservableMouseOverBehaviour>().OnMouseOverAsObservable();
     }
 
+    public static IDisposable DisposeWith(this IDisposable disposable, IBindable bindable)
+    {
+        return bindable.AddBinding(disposable);
+    }
+    public static IDisposable DisposeWhenChanged<T>(this IDisposable disposable, P<T> sourceProperty, bool onlyWhenChanged = true)
+    {
+        if (onlyWhenChanged)
+        {
+            var d = sourceProperty.Where(p => sourceProperty.LastValue != sourceProperty.ObjectValue).First().Subscribe(_ => { disposable.Dispose(); });
+            return d;
+        }
+        return sourceProperty.First().Subscribe(_ => { disposable.Dispose(); });
+
+    }
+
+    /// <summary>
+    /// Binds a property to a view, this is the standard property binding extension method.
+    /// </summary>
+    /// <typeparam name="TBindingType"></typeparam>
+    /// <param name="t"></param>
+    /// <param name="sourceProperty"></param>
+    /// <param name="targetSetter"></param>
+    /// <param name="onlyWhenChanged"></param>
+    /// <returns></returns>
     public static IDisposable BindProperty<TBindingType>(this ViewBase t, P<TBindingType> sourceProperty, Action<TBindingType> targetSetter, bool onlyWhenChanged = true)
     {
         targetSetter(sourceProperty.Value);
@@ -353,7 +403,7 @@ public static class ViewBindings
         };
         binding.SetParent(parent);
         binding.SetAddHandler(added);
-        binding.SetRemoveHandler(added);
+        binding.SetRemoveHandler(removed);
         binding.SetCreateHandler(createView);
         t.AddBinding(binding);
         if (viewFirst)
@@ -381,7 +431,7 @@ public static class ViewBindings
         };
         binding.SetParent(parent);
         binding.SetAddHandler(added);
-        binding.SetRemoveHandler(added);
+        binding.SetRemoveHandler(removed);
         binding.SetCreateHandler(createView);
         if (viewFirst)
         {

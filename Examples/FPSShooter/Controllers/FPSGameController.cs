@@ -27,6 +27,7 @@ public class FPSGameController : FPSGameControllerBase
 
     protected void SpawnEnemy()
     {
+        return;
         var enemy = FPSEnemyController.CreateFPSEnemy();
 
         enemy._StateProperty.Subscribe(_ =>

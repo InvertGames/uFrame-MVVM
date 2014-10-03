@@ -6,11 +6,24 @@ using UniRx;
 /// A coroutine command with a parameter.
 /// </summary>
 /// <typeparam name="T"></typeparam>
+[Obsolete]
 public class YieldCommandWith<T> : ICommandWith<T>
 {
     public event CommandEvent OnCommandExecuted;
 
     public event CommandEvent OnCommandExecuting;
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        throw new NotImplementedException();
+    }
+
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
@@ -32,21 +45,18 @@ public class YieldCommandWith<T> : ICommandWith<T>
         EnumeratorDelegate = enumeratorDelegate;
     }
 
-    public IEnumerator Execute()
+    public void Execute()
     {
         OnOnCommandExecuting();
         if (EnumeratorDelegate != null)
         {
-            var result = EnumeratorDelegate((T)Parameter);
             OnOnCommandComplete();
-            return result;
         }
         else
         {
             OnOnCommandComplete();
         }
 
-        return null;
     }
 
     protected virtual void OnOnCommandComplete()
@@ -87,12 +97,24 @@ public class YieldCommandWith<T> : ICommandWith<T>
 /// A coroutine command with a parameter.
 /// </summary>
 /// <typeparam name="T"></typeparam>
+[Obsolete]
 public class YieldCommandWithSender<T> : ICommandWith<T>
 {
     public event CommandEvent OnCommandExecuted;
 
     public event CommandEvent OnCommandExecuting;
-    
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        throw new NotImplementedException();
+    }
+
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
@@ -114,21 +136,21 @@ public class YieldCommandWithSender<T> : ICommandWith<T>
         EnumeratorDelegate = enumeratorDelegate;
     }
 
-    public IEnumerator Execute()
+    public void Execute()
     {
         OnOnCommandExecuting();
         if (EnumeratorDelegate != null)
         {
-            var result = EnumeratorDelegate((T)Sender);
+            //var result = EnumeratorDelegate((T)Sender);
             OnOnCommandComplete();
-            return result;
+            //return result;
         }
         else
         {
             OnOnCommandComplete();
         }
 
-        return null;
+        //return null;
     }
 
     protected virtual void OnOnCommandComplete()
@@ -171,11 +193,25 @@ public class YieldCommandWithSender<T> : ICommandWith<T>
 /// </summary>
 /// <typeparam name="TSender"></typeparam>
 /// <typeparam name="TArgument"></typeparam>
+[Obsolete]
 public class YieldCommandWithSenderAndArgument<TSender, TArgument> : ICommandWith<TArgument>
 {
     public event CommandEvent OnCommandExecuted;
 
     public event CommandEvent OnCommandExecuting;
+
+
+    public void Execute(object parameter)
+    {
+        Parameter = parameter;
+        Execute();
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        throw new NotImplementedException();
+    }
+
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
@@ -197,21 +233,17 @@ public class YieldCommandWithSenderAndArgument<TSender, TArgument> : ICommandWit
         EnumeratorDelegate = enumeratorDelegate;
     }
 
-    public IEnumerator Execute()
+    public void Execute()
     {
         OnOnCommandExecuting();
         if (EnumeratorDelegate != null)
         {
-            var result = EnumeratorDelegate((TSender)Sender,(TArgument)Parameter);
-            OnOnCommandComplete();
-            return result;
+            OnOnCommandComplete(); 
         }
         else
         {
             OnOnCommandComplete();
         }
-
-        return null;
     }
 
     protected virtual void OnOnCommandComplete()

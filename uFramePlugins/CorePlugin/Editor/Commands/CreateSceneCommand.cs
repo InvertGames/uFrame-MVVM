@@ -41,8 +41,17 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
         var sceneManager = EnsureSceneContainerInScene(sceneManagerData);
         if (sceneManager != null)
         go.GetComponent<GameManager>()._Start = sceneManager;
-        EditorApplication.SaveScene(System.IO.Path.Combine(paths.ScenesPath,node.Name + ".unity"));
-        AssetDatabase.Refresh();
+        if (!File.Exists(System.IO.Path.Combine(paths.ScenesPath, node.Name + ".unity")))
+        {
+            EditorApplication.SaveScene(System.IO.Path.Combine(paths.ScenesPath, node.Name + ".unity"));
+            AssetDatabase.Refresh();
+        }
+        else
+        {
+            EditorApplication.SaveScene();
+        }
+        
+        
     }
 
 

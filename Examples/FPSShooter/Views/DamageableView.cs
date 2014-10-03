@@ -6,18 +6,18 @@ using UnityEngine;
 
 
 public abstract partial class DamageableView {
-    
     public override void Bind() {
         base.Bind();
     }
+    
+    protected override IObservable<Vector3> GetPositionObservable()
+    {
+        return PositionAsObservable;
+    }
 
-    //protected override IObservable<Vector3> GetPositionObservable()
-    //{
-    //    return base.GetPositionObservable();
-    //}
-
-    //protected override Vector3 GetPosition()
-    //{
-    //    return this.transform.position;
-    //}
+    public override void PositionChanged(Vector3 value)
+    {
+        base.PositionChanged(value);
+        Debug.Log("Position has changed", this);
+    }
 }

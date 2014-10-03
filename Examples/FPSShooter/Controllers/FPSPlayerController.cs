@@ -23,6 +23,7 @@ public class FPSPlayerController : FPSPlayerControllerBase
     public override void PickupWeapon( FPSPlayerViewModel fPsPlayer, FPSWeaponViewModel fpsWeaponViewModel)
     {
         fPsPlayer.Weapons.Add(fpsWeaponViewModel);
+        
     }
 
     public override void PreviousWeapon(FPSPlayerViewModel fPsPlayer)
