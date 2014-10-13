@@ -22,7 +22,6 @@ namespace Invert.StateMachine
             _states.Clear();
             Compose(_states);
             CurrentState = StartState;
-            Value = StartState;
         }
         public List<State> States
         {
@@ -64,15 +63,7 @@ namespace Invert.StateMachine
         {
             
         }
-
-        public virtual void Awake()
-        {
-            var startState = StartState;
-            if (startState != null)
-            {
-                CurrentState = startState;
-            }
-        }
+        
 
 
         public StateTransition[] Transitions { get; set; }
@@ -107,12 +98,24 @@ namespace Invert.StateMachine
                 
         }
 
+        public void SetState(string stateName)
+        {
+            var state = States.FirstOrDefault(p => p.Name == stateName);
+            if (state != null)
+            {
+                CurrentState = state;
+            }
+        }
         public StateTransition LastTransition { get; set; }
+
+        public string Identifier { get; private set; }
+
     }
 
 
     public class StateMachineTrigger : IObserver<Unit>, IObserver<bool>
     {
+        private List<Func<bool>> _computers;
         public StateMachine StateMachine { get; set; }
 
         public string Name { get; set; }
@@ -137,33 +140,26 @@ namespace Invert.StateMachine
         {
             if (value)
                 StateMachine.CurrentState.Trigger(this);
-
-            Debug.Log(Name + " was triggered.");
         }
 
         public void OnNext(Unit value)
         {
             StateMachine.CurrentState.Trigger(this);
 
-            Debug.Log(Name + " was triggered.");
         }
 
-        
-    }
-
-    public class TestStateMachine : StateMachine
-    {
-        public TestStateMachine(ViewModel owner, string propertyName) : base(owner, propertyName)
+        public List<Func<bool>> Computers
         {
+            get { return _computers ?? (_computers = new List<Func<bool>>()); }
+            set { _computers = value; }
         }
 
-        public StateMachineTrigger Next { get; set; }
-        public StateMachineTrigger Back { get; set; }
-
-         
-
+        public void AddComputer(P<bool> computed)
+        {
+            computed.Subscribe(this);
+            Computers.Add(computed.Computer);
+        }
     }
-
 
 }
 

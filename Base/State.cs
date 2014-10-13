@@ -22,26 +22,14 @@ namespace Invert.StateMachine
             return Name ?? this.GetType().Name;
         }
 
-        private void Compose()
-        {
-            
-       
-        }
-
-
-
+   
         public virtual void OnEnter(State previousState)
         {
-
-            //if (previousState != null && previousState != this)
-            //    foreach (var trigger in Triggers)
-            //    {
-            //        if (trigger.Key.Calculator == null) continue;
-            //        if (trigger.Key.Calculator(this.StateMachine.Owner))
-            //        {
-            //            StateMachine.Transition(trigger.Value);
-            //        }
-            //    }
+        
+            if (previousState != null && previousState != this)
+                foreach (var trigger in Triggers)
+                    foreach (var computer in trigger.Key.Computers)
+                        trigger.Key.OnNext(computer());
         }
 
         public virtual void OnExit(State nextState)

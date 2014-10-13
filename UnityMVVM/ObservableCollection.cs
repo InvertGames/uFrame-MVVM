@@ -38,160 +38,162 @@ namespace System.Collections.ObjectModel
     public class ObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
 #endif
-        public Type ValueType
-        {
-            get { return typeof (ICollection<T>); }
-        }
-        private class Reentrant : IDisposable
-        {
-            private int count = 0;
+  
+		[Serializable]
+		sealed class SimpleMonitor : IDisposable {
+			private int _busyCount;
 
-            public Reentrant()
-            {
-            }
+			public SimpleMonitor()
+			{
+			}
 
-            public void Enter()
-            {
-                count++;
-            }
+			public void Enter()
+			{
+				_busyCount++;
+			}
 
-            public void Dispose()
-            {
-                count--;
-            }
+			public void Dispose()
+			{
+				_busyCount--;
+			}
 
-            public bool Busy
-            {
-                get { return count > 0; }
-            }
-        }
+			public bool Busy
+			{
+				get { return _busyCount > 0; }
+			}
+		}
 
-        private Reentrant reentrant = new Reentrant();
+		private SimpleMonitor _monitor = new SimpleMonitor ();
+
 #if !DLL
-        public ObservableCollection()
-        {
-        }
+        public ObservableCollection ()
+		{
+            
+		}
 
-        public ObservableCollection(IEnumerable<T> collection)
-        {
-            throw new NotImplementedException();
-        }
+		public ObservableCollection (IEnumerable<T> collection)
+		{
+			if (collection == null)
+				throw new ArgumentNullException ("collection");
 
-        public ObservableCollection(List<T> list)
-            : base(list)
-        {
-        }
+			foreach (var item in collection)
+				Add (item);
+		}
+
+		public ObservableCollection (List<T> list)
+			: base (list != null ? new List<T> (list) : null)
+		{
+		}
 #endif
-        public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
-        protected virtual event PropertyChangedEventHandler PropertyChanged;
 
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
-        {
-            add { this.PropertyChanged += value; }
-            remove { this.PropertyChanged -= value; }
-        }
+		[field:NonSerialized]
+		public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
+		[field:NonSerialized]
+		protected virtual event PropertyChangedEventHandler PropertyChanged;
 
-        protected IDisposable BlockReentrancy()
-        {
-            reentrant.Enter();
-            return reentrant;
-        }
+		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
+			add { this.PropertyChanged += value; }
+			remove { this.PropertyChanged -= value; }
+		}
 
-        protected void CheckReentrancy()
-        {
-            NotifyCollectionChangedEventHandler eh = CollectionChanged;
+		protected IDisposable BlockReentrancy ()
+		{
+			_monitor.Enter ();
+			return _monitor;
+		}
 
-            // Only have a problem if we have more than one event listener.
-            if (reentrant.Busy && eh != null && eh.GetInvocationList().Length > 1)
-                throw new InvalidOperationException("Cannot modify the collection while reentrancy is blocked.");
-        }
+		protected void CheckReentrancy ()
+		{
+			NotifyCollectionChangedEventHandler eh = CollectionChanged;
 
-        protected override void ClearItems()
-        {
-            CheckReentrancy();
+			// Only have a problem if we have more than one event listener.
+			if (_monitor.Busy && eh != null && eh.GetInvocationList ().Length > 1)
+				throw new InvalidOperationException ("Cannot modify the collection while reentrancy is blocked.");
+		}
 
-            base.ClearItems();
+		protected override void ClearItems ()
+		{
+			CheckReentrancy ();
 
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-        }
+			base.ClearItems ();
 
-        protected override void InsertItem(int index, T item)
-        {
-            CheckReentrancy();
+			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+		}
 
-            base.InsertItem(index, item);
+		protected override void InsertItem (int index, T item)
+		{
+			CheckReentrancy ();
 
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-        }
+			base.InsertItem (index, item);
 
-        public void Move(int oldIndex, int newIndex)
-        {
-            MoveItem(oldIndex, newIndex);
-        }
+			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, item, index));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+		}
 
-        protected virtual void MoveItem(int oldIndex, int newIndex)
-        {
-            CheckReentrancy();
+		public void Move (int oldIndex, int newIndex)
+		{
+			MoveItem (oldIndex, newIndex);
+		}
 
-            T item = Items[oldIndex];
-            base.RemoveItem(oldIndex);
-            base.InsertItem(newIndex, item);
+		protected virtual void MoveItem (int oldIndex, int newIndex)
+		{
+			CheckReentrancy ();
 
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-        }
+			T item = this [oldIndex];
+			base.RemoveItem (oldIndex);
+			base.InsertItem (newIndex, item);
 
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            NotifyCollectionChangedEventHandler eh = CollectionChanged;
+			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+		}
 
-            if (eh != null)
-            {
-                // Make sure that the invocation is done before the collection changes,
-                // Otherwise there's a chance of data corruption.
-                using (BlockReentrancy())
-                {
-                    eh(e);
-                }
-            }
-        }
+		protected virtual void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
+		{
+			NotifyCollectionChangedEventHandler eh = CollectionChanged;
 
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChangedEventHandler eh = PropertyChanged;
+			if (eh != null) {
+				// Make sure that the invocation is done before the collection changes,
+				// Otherwise there's a chance of data corruption.
+				using (BlockReentrancy ()) {
+					eh (e);
+				}
+			}
+		}
 
-            if (eh != null)
-                eh(this, e);
-        }
+		protected virtual void OnPropertyChanged (PropertyChangedEventArgs e)
+		{
+			PropertyChangedEventHandler eh = PropertyChanged;
 
-        protected override void RemoveItem(int index)
-        {
-            CheckReentrancy();
+			if (eh != null)
+				eh (this, e);
+		}
 
-            T item = Items[index];
+		protected override void RemoveItem (int index)
+		{
+			CheckReentrancy ();
 
-            base.RemoveItem(index);
+			T item = this [index];
 
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-        }
+			base.RemoveItem (index);
 
-        protected override void SetItem(int index, T item)
-        {
-            CheckReentrancy();
+			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, item, index));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+		}
 
-            T oldItem = Items[index];
+		protected override void SetItem (int index, T item)
+		{
+			CheckReentrancy ();
 
-            base.SetItem(index, item);
+			T oldItem = this [index];
 
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-        }
+			base.SetItem (index, item);
 
-    }
+			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Replace, item, oldItem, index));
+			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+		}
+	}
 }

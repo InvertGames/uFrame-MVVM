@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -16,20 +15,23 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         AddBinding(component);
         return component;
     }
-    public IDisposable AddComponentBinding(ObservableComponent component) 
+    public IDisposable AddComponentBinding(ObservableComponent component)
     {
         return AddBinding(component);
     }
+
     Subject<Unit> _updateObservable;
 
     private Subject<Transform> _transformObservable;
+
+
     /// <summary>
     /// 	<para>Update is called every frame, if the MonoBehaviour is enabled.  It is important to make sure that you override this method instead of just creating
     /// it.  uFrame uses this method as an observable, and that observable is used for all default Scene Property implementations.</para>
     /// </summary>
     public virtual void Update()
     {
-        if (_updateObservable != null) 
+        if (_updateObservable != null)
             _updateObservable.OnNext(Unit.Default);
 
         if (TransformChangedObservable != null && transform.hasChanged)
@@ -162,7 +164,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     {
         get
         {
-            return ViewModelType.Name;
+            return null;
         }
     }
 
@@ -187,12 +189,17 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     {
         get
         {
+
             if (ForceResolveViewModel)
             {
                 if (string.IsNullOrEmpty(_resolveName)) return null;
                 return _resolveName;
             }
-            return _id = (this.transform.position.GetHashCode()).ToString() + this.ViewModelType.Name;
+            if (!string.IsNullOrEmpty(_id))
+            {
+                return _id;
+            }
+            return _id = Guid.NewGuid().ToString();
         }
         set { _id = value; }
     }
@@ -250,13 +257,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     {
         get
         {
-           
+
             if (_parentView == null)
-            { 
+            {
                 //var parentView = transform.parent;
                 //while (parentView != null)
                 //{
-                     
+
                 //    if (parentView == null)
                 //        parentView = parentView.parent;
                 //}
@@ -344,7 +351,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
             return TransformChangedObservable.Select(p => p.transform.localRotation).DistinctUntilChanged();
         }
     }
-    
+
     public IObservable<Quaternion> RotationAsObservable
     {
         get
@@ -393,7 +400,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <summary>
     /// 	<para>This method is invoked right after the view-model has been bound.</para>
     /// </summary>
-    
+
     public virtual void AfterBind()
     {
     }
@@ -402,7 +409,8 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// hide any implementation.</summary>
     public virtual void Awake()
     {
-        
+
+
     }
 
     /// <summary>
@@ -431,7 +439,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <param name="argument">The argument to pass along if needed.</param>
     public void ExecuteCommand(ICommand command, object argument)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command,argument);
+        GameManager.CommandDispatcher.ExecuteCommand(command, argument);
     }
 
     /// <summary>
@@ -442,7 +450,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
     public virtual void ExecuteCommand(ICommand command)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command,null);
+        GameManager.CommandDispatcher.ExecuteCommand(command, null);
     }
 
     /// <summary>
@@ -465,7 +473,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <param name="argument">The argument required by the command.</param>
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command,argument);
+        GameManager.CommandDispatcher.ExecuteCommand(command, argument);
     }
 
     /// <summary>
@@ -485,9 +493,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </example>
     public void InitializeData(ViewModel model)
     {
-        InitializeViewModel(model);
-        model.Dirty = false;
+        if (!Initialized)
+            InitializeViewModel(model);
+
+        Initialized = true;
     }
+
+    public bool Initialized { get; set; }
 
     /// <summary>
     /// When this view is destroy it will decrememnt the ViewModel's reference count.  If the reference count reaches 0
@@ -495,7 +507,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void OnDestroy()
     {
-       
+        SceneManager.UnRegisterView(this);
         Unbind();
         var pv = ParentView;
         if (pv != null)
@@ -506,32 +518,15 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
     public virtual void OnDisable()
     {
-        //var pv = ParentView;
-        //if (pv != null)
-        //{
-        //    pv.ChildViews.Remove(this);
-        //}
-        //Unbind();
-        //_shouldRebindOnEnable = true;
+
     }
 
     public virtual void OnEnable()
     {
-        
+
         if (_shouldRebindOnEnable)
             SetupBindings();
     }
-
-
-
-    ///// <summary>
-    ///// Removes a binding from the view-models binding dictionary for this view.
-    ///// </summary>
-    ///// <param name="binding"></param>
-    //public void RemoveBinding(IBinding binding)
-    //{
-    //    Bindings.Remove(binding);
-    //}
 
     /// <summary>This method will ensure that a view-model exists and then call the bind method when it's appropriate.</summary>
     public void SetupBindings()
@@ -540,6 +535,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         {
             _Model = CreateModel();
         }
+
 
         if (IsBound)
             return;
@@ -556,16 +552,15 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         // Add any programming bindings
         PreBind();
         Bind();
-        //// Initialize the bindings
-        //for (var i = 0; i < Bindings.Count; i++)
-        //    Bindings[i].Bind();
 
+        //// Initialize the bindings
         for (var i = 0; i < transform.childCount; i++)
         {
             var view = transform.GetChild(i).GetView();
             if (view == null) continue;
             view.SetupBindings();
         }
+
         foreach (var childView in ChildViews)
         {
             if (childView.transform != this.transform)
@@ -585,6 +580,15 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void Start()
     {
+        if (this.Save)
+        {
+            var sm = SceneManager;
+            if (sm != null)
+            {
+                sm.RegisterView(this);
+            }
+        }
+
         var pv = ParentView;
         if (pv != null)
         {
@@ -608,16 +612,9 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         if (_Model != null)
         {
             _Model.References--;
-            if (_Model.References < 1)
+            foreach (var binding in Bindings)
             {
-                _Model.Unbind();
-            }
-            else
-            {
-                foreach (var binding in Bindings)
-                {
-                    binding.Dispose();
-                }
+                binding.Dispose();
             }
         }
 
@@ -629,21 +626,17 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
     public virtual void Write(ISerializerStream stream)
     {
-        if (OverrideViewModel)
-        {
-            ViewModelObject.Write(stream);
-        }
-        
+
+        //ViewModelObject.Write(stream);
+        stream.SerializeString("Identifier", this.Identifier);
         stream.SerializeString("ViewType", this.GetType().FullName);
     }
     /// <summary>Will deserialize this view directly from a stream.</summary>
     public virtual void Read(ISerializerStream stream)
     {
-        if (OverrideViewModel)
-        {
-            ViewModelObject.Read(stream);
-        }
-        stream.SerializeString("ViewType", this.GetType().FullName);
+        this.Identifier = stream.DeserializeString("Identifier");
+
+
     }
     /// <summary>
     /// Overriden by the the uFrame designer to apply any two-way/reverse properties.
@@ -669,7 +662,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void LateUpdate()
     {
-     
+
     }
 
     /// <summary>
@@ -704,6 +697,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <returns></returns>
     protected ViewModel RequestViewModel(Controller controller)
     {
-        return SceneManager.RequestViewModel(this, controller, Identifier);
+        return SceneManager.RequestViewModel(this, controller);
     }
 }

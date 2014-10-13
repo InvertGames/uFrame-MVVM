@@ -15,5 +15,7 @@ public static class uFrameBootstraper
         container.RegisterInstance<IViewResolver>(new ViewResolver());
         // The game manager is the default command dispatcher
         container.RegisterInstance<ICommandDispatcher>(manager);
+
+
     }
 }

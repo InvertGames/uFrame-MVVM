@@ -76,10 +76,10 @@ public abstract class Binding : IBinding, IDisposable
     /// </summary>
     public Action<object> SetTargetValueDelegate { get; set; }
 
-    /// <summary>
-    /// The owner view that this Binding belongs to
-    /// </summary>
-    public ViewModel Source { get; set; }
+    ///// <summary>
+    ///// The owner view that this Binding belongs to
+    ///// </summary>
+    //public ViewModel Source { get; set; }
 
     /// <summary>
     /// The value of the ViewModel Member

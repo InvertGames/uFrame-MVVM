@@ -16,42 +16,48 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
 
     public override void OnInspectorGUI()
     {
+        GUIHelpers.IsInsepctor = true;
         //base.OnInspectorGUI();
         DrawTitleBar("Game Manager");
         serializedObject.Update();
 
-
-
-
         if (Application.isPlaying)
         {
-            Toggle("Dependency Container - Instances", _RenderSettingsOpen,false);
-            foreach (var instance in GameManager.Container.Instances)
+            if (GUIHelpers.DoToolbarEx("Dependency Container - Instances"))
             {
-                if (GUIHelpers.DoTriggerButton(new UFStyle()
+                foreach (var instance in GameManager.Container.Instances)
                 {
-                    Label =
-                        string.Format("'{0}': {1}->{2}", instance.Name, instance.Base.Name,
-                            instance.Instance.GetType().Name)
-                }))
-                {
-                    Debug.Log(instance.Instance);
-                }
-                
-                
+                    if (GUIHelpers.DoTriggerButton(new UFStyle()
+                    {
+                        Label =
+                            string.Format("'{0}': {1}->{2}", instance.Name, instance.Base.Name,
+                                instance.Instance.GetType().Name),
+                        BackgroundStyle = UBStyles.EventButtonStyleSmall
+                    }))
+                    {
+                        Debug.Log(instance.Instance);
+                    }
 
-            }
-            Toggle("Dependency Container - Mappings", _RenderSettingsOpen, false);
-            foreach (var instance in GameManager.Container.Mappings)
-            {
-                if (GUIHelpers.DoTriggerButton(new UFStyle()
-                {
-                    Label= string.Format("{0}: {1}->{2}", instance.Name, instance.From.Name, instance.To.Name)
-                }))
-                {
-                  
+
+
                 }
             }
+
+            if (GUIHelpers.DoToolbarEx("Dependency Container - Mappings"))
+            {
+                foreach (var instance in GameManager.Container.Mappings)
+                {
+                    if (GUIHelpers.DoTriggerButton(new UFStyle()
+                    {
+                        BackgroundStyle = UBStyles.EventButtonStyleSmall,
+                        Label = string.Format("{0}: {1}->{2}", instance.Name, instance.From.Name, instance.To.Name)
+                    }))
+                    {
+
+                    }
+                }
+            }
+
         }
         else
         {
@@ -101,7 +107,7 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
             //        t.LoadRenderSettings();
             //    }
             //}
-            
+
         }
 
         if (serializedObject.ApplyModifiedProperties())
@@ -109,6 +115,7 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
             //var t = Target as GameManager;
             //t.ApplyRenderSettings();
         }
+        GUIHelpers.IsInsepctor = false;
     }
 
     protected override bool ExistsInScene(Type itemType)

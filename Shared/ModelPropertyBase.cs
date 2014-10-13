@@ -26,12 +26,17 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
         }
     }
     public string PropertyName { get; set; }
+
 #if !DLL
     public ViewModel Owner { get; set; }
 #endif
     public IDisposable SubscribeInternal(Action<object> propertyChanged)
     {
         return this.Subscribe((v) => propertyChanged(v));
+    }
+
+    public P()
+    {
     }
 
     //public IDisposable SubscribeInternal(Action<object> obj)
@@ -72,6 +77,28 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
         get { return this.Select(p => Unit.Default); }
     }
 
+    public Func<T> Computer { get; set; } 
+
+    public IDisposable ToComputed(Func<T> action, params IObservableProperty[] properties)
+    {
+        Computer = action;
+        var disposables = new List<IDisposable>();
+        foreach (var property in properties)
+        {
+            disposables.Add(property.SubscribeInternal(_ =>
+            {
+                OnNext(action());
+            }));
+        }
+
+        OnNext(action());
+
+        return Disposable.Create(() =>
+        {
+            foreach (var d in disposables)
+                d.Dispose();
+        });
+    }
     /// <summary>
     /// Makes this property a computed variable.
     /// </summary>
@@ -121,7 +148,6 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
         PropertyChanged += evt;
         return new SimpleDisposable(() => PropertyChanged -= evt);
     }
-
 
     public T Value
     {

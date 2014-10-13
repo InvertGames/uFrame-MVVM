@@ -19,12 +19,12 @@ public static class ViewBindings
     /// <param name="t">This</param>
     /// <param name="collectionSelector">Select a model collection.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public static ModelCollectionBinding<TCollectionItemType> BindCollection<TCollectionItemType>(this ViewModel t, Func<ModelCollection<TCollectionItemType>> collectionSelector)
+    [Obsolete]
+    public static ModelCollectionBinding<TCollectionItemType> BindCollection<TCollectionItemType>(this ViewModel t, ModelCollection<TCollectionItemType> collectionSelector)
     {
         var binding = new ModelCollectionBinding<TCollectionItemType>()
         {
-            Source = t,
-            ModelPropertySelector = () => collectionSelector(),
+            ModelPropertySelector = () => collectionSelector,
         };
 
         t.AddBinding(binding);
@@ -41,7 +41,7 @@ public static class ViewBindings
     /// <param name="added"></param>
     /// <param name="removed"></param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public static IDisposable BindCollection<TCollectionItemType>(this ViewBase t, ObservableCollection<TCollectionItemType> collection, Action<TCollectionItemType> added, Action<TCollectionItemType> removed)
+    public static IDisposable BindCollection<TCollectionItemType>(this IBindable t, ObservableCollection<TCollectionItemType> collection, Action<TCollectionItemType> added, Action<TCollectionItemType> removed)
     {
         NotifyCollectionChangedEventHandler collectionChanged = delegate(NotifyCollectionChangedEventArgs args)
          {
@@ -71,7 +71,6 @@ public static class ViewBindings
     {
         var binding = new ModelCollectionBinding<TCollectionItemType>()
         {
-            Source = t.ViewModelObject,
             ModelPropertySelector = () => collectionSelector(),
         };
         t.AddBinding(binding);
@@ -91,7 +90,6 @@ public static class ViewBindings
         return t.AddBinding(OnCollisionObservable(t.gameObject, eventType).Subscribe(action));
     }
 
-
     /// <summary>
     /// Bind a Unity Collision event to a ViewModel command.
     /// </summary>
@@ -100,12 +98,11 @@ public static class ViewBindings
     /// <returns>The collision binding class that allows chaining extra options.</returns>
     public static IObservable<Collision> OnCollisionObservable(this GameObject t, CollisionEventType eventType)
     {
-        if (eventType == CollisionEventType.OnCollisionEnter)
+        if (eventType == CollisionEventType.Enter)
         {
-
             return t.EnsureComponent<ObservableCollisionEnterBehaviour>().OnCollisionEnterAsObservable();
         }
-        else if (eventType == CollisionEventType.OnCollisionExit)
+        else if (eventType == CollisionEventType.Exit)
         {
             return t.EnsureComponent<ObservableCollisionExitBehaviour>().OnCollisionExitAsObservable();
         }
@@ -115,6 +112,80 @@ public static class ViewBindings
         }
     }
 
+    /// <summary>
+    /// Bind a Unity Collision event to a ViewModel command.
+    /// </summary>
+    /// <param name="t">The view that owns the binding</param>
+    /// <param name="eventType">The collision event to bind to.</param>
+    /// <returns>The collision binding class that allows chaining extra options.</returns>
+    public static IObservable<Collision2D> OnCollision2DObservable(this GameObject t, CollisionEventType eventType)
+    {
+        if (eventType == CollisionEventType.Enter)
+        {
+            return t.EnsureComponent<ObservableCollisionEnter2DBehaviour>().OnCollisionEnter2DAsObservable();
+        }
+        else if (eventType == CollisionEventType.Exit)
+        {
+            return t.EnsureComponent<ObservableCollisionExit2DBehaviour>().OnCollisionExit2DAsObservable();
+        }
+        else
+        {
+            return t.EnsureComponent<ObservableCollisionStay2DBehaviour>().OnCollisionStay2DAsObservable();
+        }
+    }
+
+    /// <summary>
+    /// Bind a Unity Collision event to a ViewModel command.
+    /// </summary>
+    /// <param name="t">The view that owns the binding</param>
+    /// <param name="eventType">The collision event to bind to.</param>
+    /// <returns>The collision binding class that allows chaining extra options.</returns>
+    public static IObservable<Collider> OnTriggerObservable(this GameObject t, CollisionEventType eventType)
+    {
+        if (eventType == CollisionEventType.Enter)
+        {
+            return t.EnsureComponent<ObservableTriggerEnterBehaviour>().OnTriggerEnterAsObservable();
+        }
+        else if (eventType == CollisionEventType.Exit)
+        {
+            return t.EnsureComponent<ObservableTriggerExitBehaviour>().OnTriggerExitAsObservable();
+        }
+        else
+        {
+            return t.EnsureComponent<ObservableTriggerStayBehaviour>().OnTriggerStayAsObservable();
+        }
+    }
+    /// <summary>
+    /// Bind a Unity Collision event to a ViewModel command.
+    /// </summary>
+    /// <param name="t">The view that owns the binding</param>
+    /// <param name="eventType">The collision event to bind to.</param>
+    /// <returns>The collision binding class that allows chaining extra options.</returns>
+    public static IObservable<Collider2D> OnTrigger2DObservable(this GameObject t, CollisionEventType eventType)
+    {
+        if (eventType == CollisionEventType.Enter)
+        {
+            return t.EnsureComponent<ObservableTriggerEnter2DBehaviour>().OnTriggerEnter2DAsObservable();
+        }
+        else if (eventType == CollisionEventType.Exit)
+        {
+            return t.EnsureComponent<ObservableTriggerExit2DBehaviour>().OnTriggerExit2DAsObservable();
+        }
+        else
+        {
+            return t.EnsureComponent<ObservableTriggerStay2DBehaviour>().OnTriggerStay2DAsObservable();
+        }
+    }
+    ///// <summary>
+    ///// Ensures that a component exists and returns it.
+    ///// </summary>
+    ///// <typeparam name="T"></typeparam>
+    ///// <param name="t"></param>
+    ///// <returns></returns>
+    //public static T EnsureComponent<T>(this ViewBase t) where T : Component
+    //{
+    //    return t.GetComponent<T>() ?? t.gameObject.AddComponent<T>();
+    //}
 
     /// <summary>
     /// Ensures that a component exists and returns it.
@@ -122,19 +193,10 @@ public static class ViewBindings
     /// <typeparam name="T"></typeparam>
     /// <param name="t"></param>
     /// <returns></returns>
-    public static T EnsureComponent<T>(this ViewBase t) where T : Component
+    public static T EnsureComponent<T>(this GameObject t) where T : MonoBehaviour
     {
-        return t.GetComponent<T>() ?? t.gameObject.AddComponent<T>();
-    }
-    /// <summary>
-    /// Ensures that a component exists and returns it.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="t"></param>
-    /// <returns></returns>
-    public static T EnsureComponent<T>(this GameObject t) where T : Component
-    {
-        return t.GetComponent<T>() ?? t.AddComponent<T>();
+        if (t.GetComponent<T>() != null) return t.GetComponent<T>();
+        return t.AddComponent<T>();
     }
 
     /// <summary>
@@ -153,9 +215,10 @@ public static class ViewBindings
     {
         return t.AddBinding(OnViewCollisionWith<T>(t.gameObject, eventType).Subscribe(collision));
     }
+
     public static IObservable<ViewBase> OnViewCollision(this GameObject t, CollisionEventType eventType)
     {
-        return OnCollisionObservable(t, eventType).Where(p => p.GetView() != null).Select(p => p.GetView());
+        return OnCollisionObservable(t, eventType).Select(p => p.GetView()).Where(p => p != null);
     }
 
     public static IObservable<T> OnViewCollisionWith<T>(this GameObject t, CollisionEventType eventType) where T : ViewBase
@@ -170,18 +233,18 @@ public static class ViewBindings
     /// <param name="commandSelector">The command to bind the input to</param>
     /// <param name="buttonName">The name of the input button to bind to.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public static IDisposable BindInputButton(this ViewBase t, Func<ICommand> commandSelector, string buttonName, InputButtonEventType buttonEventType = InputButtonEventType.ButtonDown)
+    public static IDisposable BindInputButton(this ViewBase t, ICommand commandSelector, string buttonName, InputButtonEventType buttonEventType = InputButtonEventType.ButtonDown)
     {
         if (buttonEventType == InputButtonEventType.Button)
         {
-            return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetButton(buttonName)).Subscribe(_ => t.ExecuteCommand(commandSelector())));
+            return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetButton(buttonName)).Subscribe(_ => t.ExecuteCommand(commandSelector)));
         }
         else if (buttonEventType == InputButtonEventType.ButtonDown)
         {
-            return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetButtonDown(buttonName)).Subscribe(_ => t.ExecuteCommand(commandSelector())));
+            return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetButtonDown(buttonName)).Subscribe(_ => t.ExecuteCommand(commandSelector)));
         }
 
-        return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetButtonUp(buttonName)).Subscribe(_ => t.ExecuteCommand(commandSelector())));
+        return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetButtonUp(buttonName)).Subscribe(_ => t.ExecuteCommand(commandSelector)));
     }
 
     /// <summary>
@@ -191,9 +254,9 @@ public static class ViewBindings
     /// <param name="commandSelector"></param>
     /// <param name="key"></param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public static IDisposable BindKey(this ViewBase t, Func<ICommand> commandSelector, KeyCode key, object parameter = null)
+    public static IDisposable BindKey(this ViewBase t, ICommand commandSelector, KeyCode key, object parameter = null)
     {
-        return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetKey(key)).Subscribe(_ => t.ExecuteCommand(commandSelector(), parameter)));
+        return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetKey(key)).Subscribe(_ => t.ExecuteCommand(commandSelector, parameter)));
     }
 
     /// <summary>
@@ -215,14 +278,14 @@ public static class ViewBindings
         });
 
     }
+
     /// <summary>
     /// Binds a mouse event to a ViewModel Command.
     /// </summary>
     /// <param name="view">The view that will own the Binding.</param>
-    /// <param name="commandSelector">ICommand selector</param>
     /// <param name="eventType">The mouse event to bind to.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
-    public static IObservable<Unit> OnMouseEvent(this ViewBase view, Func<ICommand> commandSelector, MouseEventType eventType)
+    public static IObservable<Unit> OnMouseEvent(this ViewBase view, MouseEventType eventType)
     {
         if (eventType == MouseEventType.OnMouseDown)
         {
@@ -253,10 +316,21 @@ public static class ViewBindings
         return view.AddComponentBinding<ObservableMouseOverBehaviour>().OnMouseOverAsObservable();
     }
 
+    public static IObservable<Unit> OnDestroyObservable(this GameObject gameObject)
+    {
+        return gameObject.EnsureComponent<ObservableOnDestroyBehaviour>().OnDestroyAsObservable();
+    }
+
+    public static IDisposable DisposeWith(this IDisposable disposable, GameObject gameObject)
+    {
+        return gameObject.OnDestroyObservable().First().Subscribe(p => disposable.Dispose());
+    }
+
     public static IDisposable DisposeWith(this IDisposable disposable, IBindable bindable)
     {
         return bindable.AddBinding(disposable);
     }
+
     public static IDisposable DisposeWhenChanged<T>(this IDisposable disposable, P<T> sourceProperty, bool onlyWhenChanged = true)
     {
         if (onlyWhenChanged)
@@ -272,49 +346,60 @@ public static class ViewBindings
     /// Binds a property to a view, this is the standard property binding extension method.
     /// </summary>
     /// <typeparam name="TBindingType"></typeparam>
-    /// <param name="t"></param>
+    /// <param name="bindable"></param>
     /// <param name="sourceProperty"></param>
     /// <param name="targetSetter"></param>
     /// <param name="onlyWhenChanged"></param>
     /// <returns></returns>
-    public static IDisposable BindProperty<TBindingType>(this ViewBase t, P<TBindingType> sourceProperty, Action<TBindingType> targetSetter, bool onlyWhenChanged = true)
+    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, P<TBindingType> sourceProperty, Action<TBindingType> targetSetter, bool onlyWhenChanged = true)
     {
         targetSetter(sourceProperty.Value);
         if (onlyWhenChanged)
         {
-
-            return t.AddBinding(sourceProperty.Where(p => sourceProperty.LastValue != sourceProperty.ObjectValue).Subscribe(targetSetter));
+            return bindable.AddBinding(sourceProperty.Where(p => sourceProperty.LastValue != sourceProperty.ObjectValue).Subscribe(targetSetter));
         }
 
-        return t.AddBinding(sourceProperty.Subscribe(targetSetter));
+        return bindable.AddBinding(sourceProperty.Subscribe(targetSetter));
+    }
+
+    /// <summary>
+    /// Binds to a commands execution and is diposed with the bindable
+    /// </summary>
+    /// <param name="bindable"></param>
+    /// <param name="sourceCommand"></param>
+    /// <param name="onExecuted"></param>
+    /// <returns></returns>
+    public static IDisposable BindCommandExecuted(this IBindable bindable, ICommand sourceCommand, Action onExecuted)
+    {
+        return bindable.AddBinding(sourceCommand.Subscribe(delegate { onExecuted(); }));
     }
 
     /// <summary>
     /// The binding class that allows chaining extra options.
     /// </summary>
     /// <typeparam name="TBindingType">The type of the model property to bind to.</typeparam>
-    /// <param name="t">The view that owns the binding</param>
+    /// <param name="bindable">The view that owns the binding</param>
     /// <param name="sourceProperty">The ViewModel property to bind to. Ex. ()=>Model.MyViewModelProperty</param>
     /// <param name="targetSetter">Should set the value of the target.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
     [Obsolete("Use other overload without function selector.")]
-    public static IDisposable BindProperty<TBindingType>(this ViewBase t, Func<P<TBindingType>> sourceProperty, Action<TBindingType> targetSetter)
+    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, Func<P<TBindingType>> sourceProperty, Action<TBindingType> targetSetter)
     {
-        return t.AddBinding(sourceProperty().Subscribe(targetSetter));
+        return bindable.AddBinding(sourceProperty().Subscribe(targetSetter));
     }
 
     /// <summary>
     /// The binding class that allows chaining extra options.
     /// </summary>
     /// <typeparam name="TBindingType">The type of the model property to bind to.</typeparam>
-    /// <param name="t">The view that owns the binding</param>
+    /// <param name="bindable">The view that owns the binding</param>
     /// <param name="sourceProperty">The ViewModel property to bind to. Ex. ()=>Model.MyViewModelProperty</param>
     /// <param name="targetSetter">Should set the value of the target.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
     [Obsolete("Use other overload without function selector.")]
-    public static IDisposable BindProperty<TBindingType>(this ViewBase t, Func<Computed<TBindingType>> sourceProperty, Action<TBindingType> targetSetter)
+    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, Func<Computed<TBindingType>> sourceProperty, Action<TBindingType> targetSetter)
     {
-        return t.AddBinding(sourceProperty().Subscribe(targetSetter));
+        return bindable.AddBinding(sourceProperty().Subscribe(targetSetter));
     }
 
     /// <summary>
@@ -322,14 +407,14 @@ public static class ViewBindings
     /// </summary>
     /// <typeparam name="TView">The view that owns the binding</typeparam>
     /// <typeparam name="TViewModelType"></typeparam>
-    /// <param name="t"></param>
+    /// <param name="view"></param>
     /// <param name="sourceViewModelCollection"></param>
     /// <param name="viewCollection">The view collection is a list of ICollection that can be used to keep track of the Views created from the ViewModel Collection.</param>
     /// <param name="viewFirst"></param>
     /// <returns>The collection binding class that allows chaining extra options.</returns>
     [Obsolete("User other bindings, or regenerate this code.")]
     public static ModelViewModelCollectionBinding BindToViewCollection<TView, TViewModelType>(
-        this ViewBase t,
+        this ViewBase view,
         Func<ModelCollection<TViewModelType>> sourceViewModelCollection,
         ICollection<TView> viewCollection, bool viewFirst = false
         )
@@ -338,8 +423,7 @@ public static class ViewBindings
     {
         var binding = new ModelViewModelCollectionBinding()
         {
-            Source = t.ViewModelObject,
-            SourceView = t,
+            SourceView = view,
             ModelPropertySelector = () => sourceViewModelCollection() as IObservableProperty
         }
         .SetAddHandler(v => viewCollection.Add(v as TView))
@@ -349,7 +433,7 @@ public static class ViewBindings
         {
             binding.ViewFirst();
         }
-        t.AddBinding(binding);
+        view.AddBinding(binding);
         binding.Bind();
         return binding;
     }
@@ -358,19 +442,18 @@ public static class ViewBindings
     /// The binding class that allows chaining extra options.
     /// </summary>
     /// <typeparam name="TBindingType">The type of the model property to bind to.</typeparam>
-    /// <param name="t">The view that owns the binding</param>
+    /// <param name="view">The view that owns the binding</param>
     /// <param name="sourceViewModelSelector">Selector for the ViewModel Property</param>
     /// <param name="setLocal">Set a local variable on your view to store the bound view.</param>
     /// <param name="getLocal">Get the local variable on your view used in this binding.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
     [Obsolete]
-    public static ModelViewPropertyBinding BindToView<TBindingType>(this ViewBase t, Func<P<TBindingType>> sourceViewModelSelector, Action<ViewBase> setLocal = null, Func<ViewBase> getLocal = null)
+    public static ModelViewPropertyBinding BindToView<TBindingType>(this ViewBase view, Func<P<TBindingType>> sourceViewModelSelector, Action<ViewBase> setLocal = null, Func<ViewBase> getLocal = null)
     where TBindingType : ViewModel
     {
         var binding = new ModelViewPropertyBinding()
         {
-            Source = t.ViewModelObject,
-            SourceView = t,
+            SourceView = view,
             ModelPropertySelector = () => (IObservableProperty)sourceViewModelSelector(),
             TwoWay = false
         };
@@ -382,12 +465,12 @@ public static class ViewBindings
             binding.SetTargetValueDelegate = (o) => setLocal((ViewBase)o);
         }
 
-        t.AddBinding(binding);
+        view.AddBinding(binding);
         binding.Bind();
         return binding;
     }
 
-    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase t,
+    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase view,
         Func<ModelCollection<TCollectionType>> viewModelCollection, Func<ViewModel,
         ViewBase> createView,
         Action<ViewBase> added,
@@ -397,15 +480,14 @@ public static class ViewBindings
     {
         var binding = new ModelViewModelCollectionBinding()
         {
-            Source = t.ViewModelObject,
-            SourceView = t,
+            SourceView = view,
             ModelPropertySelector = () => viewModelCollection()
         };
         binding.SetParent(parent);
         binding.SetAddHandler(added);
         binding.SetRemoveHandler(removed);
         binding.SetCreateHandler(createView);
-        t.AddBinding(binding);
+        view.AddBinding(binding);
         if (viewFirst)
         {
             binding.ViewFirst();
@@ -415,7 +497,7 @@ public static class ViewBindings
         return binding;
     }
 
-    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase t,
+    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase view,
         ModelCollection<TCollectionType> viewModelCollection, Func<ViewModel,
         ViewBase> createView,
         Action<ViewBase> added,
@@ -425,8 +507,7 @@ public static class ViewBindings
     {
         var binding = new ModelViewModelCollectionBinding()
         {
-            Source = t.ViewModelObject,
-            SourceView = t,
+            SourceView = view,
             ModelPropertySelector = () => viewModelCollection
         };
         binding.SetParent(parent);
@@ -437,7 +518,7 @@ public static class ViewBindings
         {
             binding.ViewFirst();
         }
-        t.AddBinding(binding);
+        view.AddBinding(binding);
         binding.Bind();
 
         return binding;
@@ -447,25 +528,24 @@ public static class ViewBindings
     /// Bind a ViewModel Collection
     /// </summary>
     /// <typeparam name="TCollectionType"></typeparam>
-    /// <param name="t">The view that owns the binding</param>
+    /// <param name="view">The view that owns the binding</param>
     /// <param name="viewModelCollection">The view collection is a list of ICollection that can be used to keep track of the Views created from the ViewModel Collection.</param>
     /// <param name="viewFirst">Should the collection be initialized from the view. If false the View will be initialized to the ViewModel.</param>
     /// <returns>The Collection Binding class that allows chaining extra options.</returns>
     [Obsolete]
-    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase t,
+    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase view,
         Func<ModelCollection<TCollectionType>> viewModelCollection, bool viewFirst = false)
     {
         var binding = new ModelViewModelCollectionBinding()
         {
-            Source = t.ViewModelObject,
-            SourceView = t,
+            SourceView = view,
             ModelPropertySelector = () => viewModelCollection()
         };
         if (viewFirst)
         {
             binding.ViewFirst();
         }
-        t.AddBinding(binding);
+        view.AddBinding(binding);
         return binding;
     }
 

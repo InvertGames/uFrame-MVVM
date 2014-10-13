@@ -34,7 +34,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         {
             uFrameEditor.ExecuteCommand((diagram) =>
             {
-                viewModelItemData.RelatedType = selected.AssemblyQualifiedName;
+                viewModelItemData.RelatedType = selected.Name;
             });
             EditorWindow.GetWindow<ElementItemTypesWindow>().Close();
         });
@@ -44,7 +44,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
     {
         if (AllowNone)
         {
-            yield return new ElementItemType() { AssemblyQualifiedName = null, Group = "", Label = "[ None ]" };
+            yield return new ElementItemType() { Name = null, Group = "", Label = "[ None ]" };
         }
 
         if (!PrimitiveOnly)
@@ -53,7 +53,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
             {
                 yield return new ElementItemType()
                 {
-                    AssemblyQualifiedName = viewModel.Identifier,
+                    Name = viewModel.Identifier,
                     Label = viewModel.Name,
                     Group = diagramData.Title
                 };
@@ -80,7 +80,7 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
 
         foreach (var item in diagramData.CurrentRepository.NodeItems.OfType<IDesignerType>())
         {
-            yield return new ElementItemType() { AssemblyQualifiedName = item.Identifier, Group = "", Label = item.Name };
+            yield return new ElementItemType() { Name = item.Identifier, Group = "", Label = item.Name };
         }
         var projectAssembly = typeof(ViewModel).Assembly;
         foreach (var type in projectAssembly.GetTypes())

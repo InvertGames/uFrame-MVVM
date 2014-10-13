@@ -23,6 +23,8 @@ public class JsonStream : ISerializerStream
         set { _typeResolver = value; }
     }
 
+    public bool DeepSerialize { get; set; }
+
     public JsonStream(JSONNode node)
     {
         RootNode = node;
@@ -117,6 +119,7 @@ public class JsonStream : ISerializerStream
 
     public void SerializeObjectArray(string name, IEnumerable<object> items)
     {
+        
         var array = new JSONArray();
         if (name == null)
             CurrentNode.Add(array);
@@ -179,6 +182,7 @@ public class JsonStream : ISerializerStream
         var serializable = value as IUFSerializable;
         if (serializable != null)
         {
+            
             SerializeString("Identifier", serializable.Identifier);
             if (!UseReferences || !ReferenceObjects.ContainsKey(serializable.Identifier))
             {
@@ -324,7 +328,7 @@ public class JsonStream : ISerializerStream
         if (ufSerializable != null)
         {
             if (UseReferences)
-            ReferenceObjects.Add(identifier, ufSerializable);
+                ReferenceObjects.Add(identifier, ufSerializable);
             ufSerializable.Read(this);
         }
         return instance;

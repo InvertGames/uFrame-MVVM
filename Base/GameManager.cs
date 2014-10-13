@@ -496,7 +496,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
 
     public void ExecuteCommand(ICommand command)
     {
-        command.Execute();
+        command.Execute(null);
     }
 
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)

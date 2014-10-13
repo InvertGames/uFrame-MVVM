@@ -29,8 +29,12 @@ public abstract class ViewModel
     private Controller _controller;
     private Dictionary<string, IObservableProperty> _modelProperties;
     private string _identifier;
-    
-    
+
+    protected ViewModel()
+    {
+        Controller = null;
+    }
+
     /// <summary>
     ///Access a model property via string.  This is optimized using a compiled delegate to
     ///access derived classes properties so use as needed
@@ -89,17 +93,20 @@ public abstract class ViewModel
             if (value != null)
             {
                 WireCommands(value);
-                //value.Initialize(this);
             }
             _controller = value;
+            Bind();
         }
     }
 
-    public bool Dirty { get; set; }
+    public virtual void Bind()
+    {
+        
+    }
 
     public virtual string Identifier
     {
-        get { return _identifier ?? (_identifier = Guid.NewGuid().ToString()); }
+        get { return _identifier; }
         set { _identifier = value; }
     }
 
@@ -225,7 +232,7 @@ public abstract class ViewModel
             var controller = stream.DependencyContainer.Resolve(stream.TypeResolver.GetType(controllerName)) as Controller;
             Controller = controller;
         }
-        this.Dirty = true;
+  
     }
     public virtual void Write(ISerializerStream stream)
     {

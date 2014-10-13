@@ -24,7 +24,7 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins.UnityVS
                 try
                 {
                     
-
+                    UnityEngine.Debug.Log("GENERATED FILES");
                     EditorApplication.ExecuteMenuItem("Visual Studio Tools/Generate Project Files");
                     //EditorApplication.ExecuteMenuItem("UnityVS/Generate Project Files");
                 }

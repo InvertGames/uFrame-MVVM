@@ -120,7 +120,7 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         public Type CommandWith
         {
-            get { return typeof (CommandWith<>); }
+            get { return null; }
         }
 
         public Type CommandWithSenderAndArgument

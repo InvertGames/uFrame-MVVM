@@ -26,7 +26,7 @@ public class ModelCollection<T> : ObservableCollection<T>
         PropertyName = propertyName;
     }
 #endif
-
+    
     public ModelCollection()
     {
     }
@@ -41,12 +41,20 @@ public class ModelCollection<T> : ObservableCollection<T>
 
     public object ObjectValue
     {
-        get { return Items; }
+        get { return this; }
         set {  }
     }
 
     public string PropertyName { get; set; }
     public ViewModel Owner { get; set; }
+
+    public Type ValueType
+    {
+        get
+        {
+            return typeof (ICollection<T>);
+        }
+    }
 
     public IObservable<Unit> AsUnit
     {

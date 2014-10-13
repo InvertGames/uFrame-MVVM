@@ -4,6 +4,7 @@ using System.Collections;
 namespace Invert.MVVM
 {
 #endif
+using System.Collections.Generic;
 using UniRx;
 
 public delegate void CommandEvent();
@@ -22,19 +23,70 @@ public interface ICommand : ISubject<Unit>
     //object Sender { get; set; }
     //object Parameter { get; set; }
     
-    void Execute();
+    //void Execute();
     void Execute(object parameter);
     bool CanExecute(object parameter);
 }
 
+public interface IParameterCommand : ICommand
+{
+    object Parameter { get; set; }
+}
 /// <summary>
 /// A base command interface for implementing a command with a parameter in a ViewModel
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public interface ICommandWith<T> : ICommand
+public interface ICommandWith<T> : IParameterCommand
 {
+    object Parameter { get; set; }
     //IEnumerator Execute(T parameter);
 }
 #if DLL
 }
 #endif
+
+public class SimpleSubject<T> : ISubject<T>
+{
+    private List<IObserver<T>> _observers;
+
+    public List<IObserver<T>> Observers
+    {
+        get { return _observers ?? (_observers = new List<IObserver<T>>()); }
+        set { _observers = value; }
+    }
+
+    public void OnCompleted()
+    {
+        foreach (var observer in Observers.ToArray())
+        {
+            if (observer == null) continue;
+            observer.OnCompleted();
+        }
+        Observers.Clear();
+    }
+
+    public void OnError(Exception error)
+    {
+        foreach (var observer in Observers.ToArray())
+        {
+            if (observer == null) continue;
+            observer.OnError(error);
+        }
+    }
+
+    public void OnNext(T value)
+    {
+        foreach (var observer in Observers)
+        {
+            if (observer == null) continue;
+            observer.OnNext(value);
+        }
+    }
+
+    public IDisposable Subscribe(IObserver<T> observer)
+    {
+        Observers.Add(observer);
+        return Disposable.Create(() => Observers.Remove(observer));
+    }
+}
+

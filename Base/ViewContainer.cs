@@ -161,20 +161,4 @@ public class ViewContainer : MonoBehaviour
             throw new Exception(string.Format("Root object {0} could not be found.", rootObjectName));
         }
     }
-
-    //protected void Event(string controllerName, string message)
-    //{
-    //    Event(controllerName, message, null);
-    //}
-
-    //protected void Event(string controllerName, string message, ViewModel model, params object[] additionalParameters)
-    //{
-    //    var c = GameManager.ActiveGame[controllerName];
-    //    if (c == null)
-    //    {
-    //        throw new Exception(string.Format("Controller {0} was not found while trying to send event {1}.", controllerName, message));
-    //    }
-
-    //    Event(c, model, message, additionalParameters);
-    //}
 }

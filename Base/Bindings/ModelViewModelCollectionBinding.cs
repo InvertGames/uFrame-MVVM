@@ -259,7 +259,7 @@ public class ModelViewModelCollectionBinding : Binding
         Collection.CollectionChanged += CollectionOnChanged;
         if (!_viewFirst && IsImmediate)
         {
-            CollectionOnChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset,null));
+            CollectionOnChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, List));
         }
     }
 

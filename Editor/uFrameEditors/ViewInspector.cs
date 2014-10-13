@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Invert.Common;
 using Invert.Common.UI;
+using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
@@ -13,11 +14,11 @@ using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using State = Invert.StateMachine.State;
-
+using UniRx;
 [CustomEditor(typeof(ViewBase), true)]
 public class ViewInspector : uFrameInspector
 {
-    private Dictionary<string, ICommand> _commands;
+    private List<ViewModelCommandInfo> _commands;
 
     public static bool ShowInfoLabels
     {
@@ -134,18 +135,18 @@ public class ViewInspector : uFrameInspector
     }
     public override void OnInspectorGUI()
     {
-
+        GUIHelpers.IsInsepctor = true;
         var t = target as ViewBase;
         if (EditorApplication.isPlaying)
         {
-
+           
             ShowDefaultSettings = Toggle("Default", ShowDefaultSettings);
             if (ShowDefaultSettings)
             {
                 EditorGUILayout.Space();
                 base.OnInspectorGUI();
             }
-            DrawPlayModeGui(t);
+            DrawPlayModeGui();
             return;
         }
 
@@ -196,6 +197,7 @@ public class ViewInspector : uFrameInspector
 
 
         serializedObject.ApplyModifiedProperties();
+        GUIHelpers.IsInsepctor = false;
     }
 
     private void DoGroupField(KeyValuePair<string, List<FieldInfo>> groupField, ViewBase t)
@@ -333,7 +335,7 @@ public class ViewInspector : uFrameInspector
     {
         get { return (ViewBase)target; }
     }
-    public Dictionary<string, ICommand> Commands
+    public List<ViewModelCommandInfo> Commands
     {
         get
         {
@@ -341,17 +343,17 @@ public class ViewInspector : uFrameInspector
             {
                 if (Target.ViewModelObject != null)
                 {
-                    _commands = Target.ViewModelObject.Commands;
+                    _commands = Target.ViewModelObject.GetViewModelCommands();
                 }
             }
             return _commands;
         }
     }
-    private void DrawPlayModeGui(ViewBase t)
+    private void DrawPlayModeGui()
     {
         if (EditorApplication.isPlaying)
         {
-
+            var t = target as ViewBase;
             if (t != null && t.ViewModelObject != null)
             {
                 if (GUIHelpers.DoToolbarEx("View Model Properties"))
@@ -384,14 +386,44 @@ public class ViewInspector : uFrameInspector
                 {
                     if (GUIHelpers.DoToolbarEx("Commands"))
                     {
+
                         foreach (var command in Commands)
                         {
-                            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), command.Key,
+                            var type = command.ParameterType;
+
+                            if (type != null && type != typeof (void))
+                            {
+                                EditorGUI.BeginChangeCheck();
+                                object newValue = null;
+                                object currentValue = ((IParameterCommand) command.Command).Parameter ?? Activator.CreateInstance(type);
+
+                                var propertyName = "Parameter";
+                                var isEnum = false;
+                                newValue = DoTypeInspector(type, propertyName, currentValue, isEnum);
+
+                                if (EditorGUI.EndChangeCheck())
+                                {
+                                    ((IParameterCommand) command.Command).Parameter = newValue;
+                                }
+                            }
+                            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), command.Name,
                                 ElementDesignerStyles.ButtonStyle))
                             {
-                                Target.ExecuteCommand(command.Value);
+                                GameManager.CommandDispatcher.ExecuteCommand(command.Command, ((IParameterCommand)command.Command).Parameter);
                             }
                         }
+                        //foreach (var command in Commands)
+                        //{
+                        //    if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), command.Key,
+                        //        ElementDesignerStyles.ButtonStyle))
+                        //    {
+                        //        var commandWith = command.Value as ICommandWith<object>;
+
+
+
+                        //        Target.ExecuteCommand(command.Value);
+                        //    }
+                        //}
                     }
 
 
@@ -426,6 +458,7 @@ public class ViewInspector : uFrameInspector
             else
             {
                 EditorGUILayout.HelpBox("View Model not initialized yet.", MessageType.Info);
+                Repaint();
             }
 
         }
@@ -503,63 +536,10 @@ public class ViewInspector : uFrameInspector
         }
         EditorGUI.BeginChangeCheck();
         object newValue = null;
-        if (type == typeof(int))
-        {
-            newValue = EditorGUILayout.IntField(property.Property.PropertyName,
-                (int)property.Property.ObjectValue);
-
-        }
-        else if (type == typeof(bool))
-        {
-            newValue = EditorGUILayout.Toggle(property.Property.PropertyName,
-              (bool)property.Property.ObjectValue);
-        }
-        else if (type == typeof(string))
-        {
-            newValue = EditorGUILayout.TextField(property.Property.PropertyName,
-              (string)property.Property.ObjectValue);
-        }
-        else if (type == typeof(decimal))
-        {
-            newValue = Convert.ToDecimal(EditorGUILayout.FloatField(property.Property.PropertyName,
-              (float)property.Property.ObjectValue));
-        }
-        else if (type == typeof(float))
-        {
-            newValue = EditorGUILayout.FloatField(property.Property.PropertyName,
-              (float)property.Property.ObjectValue);
-        }
-        else if (type == typeof(Vector2))
-        {
-            newValue = EditorGUILayout.Vector2Field(property.Property.PropertyName,
-              (Vector2)property.Property.ObjectValue);
-        }
-        else if (type == typeof(Vector3))
-        {
-            newValue = EditorGUILayout.Vector3Field(property.Property.PropertyName,
-              (Vector3)property.Property.ObjectValue);
-        }
-        else if (type == typeof(Rect))
-        {
-
-            newValue = EditorGUILayout.RectField(property.Property.PropertyName,
-              (Rect)property.Property.ObjectValue);
-        }
-        else if (type == typeof(Color))
-        {
-            newValue = EditorGUILayout.ColorField(property.Property.PropertyName,
-              (Color)property.Property.ObjectValue);
-        }
-        else if (property.IsEnum)
-        {
-            newValue = EditorGUILayout.EnumPopup(property.Property.PropertyName,
-              (Enum)property.Property.ObjectValue);
-        }
-        //else if (property.IsElementProperty)
-        //{
-        //    GUIHelpers.DoToolbarEx(property.Property.PropertyName);
-        //    DoViewModelGUI(property.Property.ObjectValue as ViewModel);
-        //} 
+        object currentValue = property.Property.ObjectValue;
+        var propertyName = property.Property.PropertyName;
+        var isEnum = property.IsEnum;
+        newValue = DoTypeInspector(type,  propertyName, currentValue, isEnum);
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -567,4 +547,80 @@ public class ViewInspector : uFrameInspector
             property.Property.ObjectValue = newValue;
         }
     }
+
+    private static object DoTypeInspector(Type type,  string propertyName, object currentValue, bool isEnum)
+    {
+
+        object newValue = null;
+        if (type == typeof (int))
+        {
+            newValue = EditorGUILayout.IntField(propertyName,
+                (int) currentValue);
+        }
+        else if (type == typeof (bool))
+        {
+            newValue = EditorGUILayout.Toggle(propertyName,
+                (bool) currentValue);
+        }
+        else if (type == typeof (string))
+        {
+            newValue = EditorGUILayout.TextField(propertyName,
+                (string) currentValue);
+        }
+        else if (type == typeof (decimal))
+        {
+            newValue = Convert.ToDecimal(EditorGUILayout.FloatField(propertyName,
+                Convert.ToSingle(currentValue)));
+        }
+        else if (type == typeof (float))
+        {
+            newValue = EditorGUILayout.FloatField(propertyName,
+                (float) currentValue);
+        }
+        else if (type == typeof (Vector2))
+        {
+            newValue = EditorGUILayout.Vector2Field(propertyName,
+                (Vector2) currentValue);
+        }
+        else if (type == typeof (Vector3))
+        {
+            newValue = EditorGUILayout.Vector3Field(propertyName,
+                (Vector3) currentValue);
+        }
+        else if (type == typeof (Rect))
+        {
+            newValue = EditorGUILayout.RectField(propertyName,
+                (Rect) currentValue);
+        }
+        else if (type == typeof (Color))
+        {
+            newValue = EditorGUILayout.ColorField(propertyName,
+                (Color) currentValue);
+        }
+        else if (isEnum)
+        {
+            newValue = EditorGUILayout.EnumPopup(propertyName,
+                (Enum) currentValue);
+        }
+        return newValue;
+    }
 }
+
+//public class WireHighlighter : DiagramPlugin
+//{
+//    public override void Initialize(uFrameContainer container)
+//    {
+//        EditorApplication.playmodeStateChanged += PlaymodeStateChanged;
+//    }
+
+//    private void PlaymodeStateChanged()
+//    {
+//        if (EditorApplication.isPlaying)
+//        {
+            
+//        }
+        
+
+//        EditorApplication.playmodeStateChanged -= PlaymodeStateChanged;
+//    }
+//}

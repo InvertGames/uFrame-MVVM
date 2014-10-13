@@ -17,7 +17,8 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     [Inject]
     public ICommandDispatcher CommandDispatcher
     {
-        get; set;
+        get;
+        set;
     }
 
     /// <summary>
@@ -38,6 +39,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// <summary>
     /// The scene context for the current running scene.  Used for Saving and loading a scenes state.
     /// </summary>
+    [Obsolete("No longer used")]
     public SceneContext Context
     {
         get { return _context ?? (_context = new SceneContext(Container)); }
@@ -130,6 +132,8 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
 
     private List<Action> _initializers = new List<Action>();
+    private List<ViewModel> _viewModels;
+
     /// <summary>
     /// Used by the SceneManager when creating an instance before the scene loads.  This allows a view-model instance to be ready
     /// before a view-initializes it. This is used by the uFrame generators to initialize single isntance view-models.
@@ -138,115 +142,145 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// <param name="controller">The controller that the view-model should be initialized with</param>
     /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
-    public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
+    public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
     {
         // Create the ViewModel
-        var contextViewModel = new TViewModel();
+        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), controller) as TViewModel;
+        contextViewModel.Identifier = identifier;
         // Register the instance under "ViewModel" so any single instance view-model can be accessed with ResolveAll<ViewModel>();
         Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);
         // Add an initializer so that apply the controller happens after everything has been injected
-        _initializers.Add(()=> { contextViewModel.Controller = controller; controller.Initialize(contextViewModel); });
+        _initializers.Add(() => { controller.Initialize(contextViewModel); });
         return contextViewModel;
     }
-    public ISerializerStorage LoadingStream { get; set; }
 
-    public List<ViewBase> RootViews
+    /// <summary>
+    /// All of the views that have registered
+    /// </summary>
+    public List<ViewBase> PersistantViews
     {
         get { return _rootViews ?? (_rootViews = new List<ViewBase>()); }
         set { _rootViews = value; }
     }
 
-    public void Load(ISerializerStorage storage, ISerializerStream stream)
+    /// <summary>
+    /// All of the view-models in the current scene marked for persistance
+    /// </summary>
+    public List<ViewModel> PersistantViewModels
     {
+        get { return _viewModels ?? (_viewModels = new List<ViewModel>()); }
+        set { _viewModels = value; }
+    }
+
+    public void LoadState(ISerializerStorage storage, ISerializerStream stream)
+    {
+        // Enforce required settings for scene state loading
+        stream.DeepSerialize = true;
         stream.TypeResolver = this;
         stream.DependencyContainer = Container;
         storage.Load(stream);
-        var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();
+
+        // STEP 1: Load the viewmodels
+        var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels");
+        foreach (var viewModel in viewModels)
+        {
+            // Do something here maybe?
+        }
+
+        // STEP 2: LOAD THE VIEWS
+        stream.TypeResolver = this;
+        // Clear the reference objects because the view-models will share the same identifier with views.
+        stream.ReferenceObjects.Clear();
         var views = stream.DeserializeObjectArray<ViewBase>("Views").ToArray();
         foreach (var view in views)
         {
-            
-        }
-        foreach (var viewModel in viewModels)
-        {
-            
-        }
 
+            // Do something here maybe?
+        }
     }
-    public void Save(ISerializerStorage storage, ISerializerStream stream)
+
+    public void SaveState(ISerializerStorage storage, ISerializerStream stream)
     {
+        stream.DeepSerialize = true;
         stream.TypeResolver = this;
-        stream.SerializeArray("Views", RootViews);
-        stream.SerializeArray("ViewModels", Context.PersitantViewModels);
+        // Serialize The View Models
+        stream.SerializeArray("ViewModels", PersistantViewModels);
+        // Clear the references so view-models and view of the same identifier don't match up
+        stream.ReferenceObjects.Clear();
+        // Serialize the views
+        stream.SerializeArray("Views", PersistantViews);
+        // Serialize the stream
         storage.Save(stream);
     }
 
- 
+    public void RegisterView(ViewBase view, ViewModel viewModel = null)
+    {
+        var vm = viewModel ?? view.ViewModelObject;
+
+        if (!PersistantViews.Contains(view))
+            PersistantViews.Add(view);
+
+        if (!PersistantViewModels.Contains(vm))
+            PersistantViewModels.Add(vm);
+
+        //vm.Identifier = view.Identifier;
+    }
+
     /// <summary>
     /// This is method is called by each view in order to get it's view-model as well as place it in
     /// the SceneContext if the "Save & Load" option is checked in it's inspector
     /// </summary>
     /// <param name="viewBase">The view that is requesting it's view-model.</param>
     /// <param name="controller">The controller that should be assigned to the view-model if any.</param>
-    /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
-    public ViewModel RequestViewModel(ViewBase viewBase, Controller controller, string identifier)
+    public ViewModel RequestViewModel(ViewBase viewBase, Controller controller)
     {
-        RootViews.Add(viewBase);
-        var contextViewModel = Context[identifier];
+        // Attempt to resolve it by the identifier 
+        var contextViewModel = Container.Resolve<ViewModel>(viewBase.Identifier);
+        // If it doesn't resolve by the identifier we need to create it
         if (contextViewModel == null)
         {
-            contextViewModel = Container.Resolve(viewBase.ViewModelType) as ViewModel;
-            if (contextViewModel == null)
+            // Either use the controller to create it or create it ourselves
+            contextViewModel = controller == null ? Activator.CreateInstance(viewBase.ViewModelType) as ViewModel : 
+                controller.CreateEmpty(viewBase.Identifier);
+            
+            // Make sure the initialized is called on the controller
+            if (controller != null)
+                controller.Initialize(contextViewModel);
+
+            if (viewBase.ForceResolveViewModel)
             {
-                contextViewModel = Container.Resolve<ViewModel>(identifier);
-                if (contextViewModel == null)
-                {
-                    contextViewModel = controller == null ? Activator.CreateInstance(viewBase.ViewModelType) as ViewModel : controller.CreateEmpty(identifier);
-
-                    Context[identifier] = contextViewModel;
-
-                    if (viewBase.ForceResolveViewModel)
-                    {
-                        
-                        Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
-                            string.IsNullOrEmpty(identifier) ? null : identifier);
-
-                    }
-                }
+                // Register it, this is usually when a non registered element is treated like a single-instance anways
+                Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
+                    string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
             }
-
-            Context[identifier] = contextViewModel;
+            else
+            {
+                // Inject the View-Model
+                Container.Inject(contextViewModel);
+            }
         }
+        // If we found a view-model
         if (contextViewModel != null)
         {
-
-            // Make sure its wired to the controller
-            if (controller != null)
-            contextViewModel.Controller = controller;
-
-
-            // If its just an empty view model we need to initialize it
+            // If the view needs to be overriden it will initialize with the inspector values
             if (viewBase.OverrideViewModel)
             {
-
                 viewBase.InitializeData(contextViewModel);
-                if (controller != null)
-                controller.Initialize(contextViewModel);
             }
-
-            if (viewBase.Save)
-            {
-                if (identifier != null)
-                {
-                    if (!Context.PersitantViewModels.ContainsKey(identifier))
-                        Context.PersitantViewModels.Add(identifier, contextViewModel);
-                }
-            }
-
         }
-
+        // Save if the "Save" checkbox in the view inspector is checked
+        if (viewBase.Save)
+        {
+            // Register a view for persistance
+            RegisterView(viewBase, contextViewModel);
+        }
         return contextViewModel;
+    }
+
+    protected virtual ViewBase ViewNotFoundOnLoad(string typeName, string identifier)
+    {
+        return null;
     }
 
     public virtual void Initialize()
@@ -258,37 +292,62 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         }
     }
 
-    public Type GetType(string name)
+    Type ITypeResolver.GetType(string name)
     {
         return Type.GetType(name);
     }
 
-    public string SetType(Type type)
+    string ITypeResolver.SetType(Type type)
     {
         return type.AssemblyQualifiedName;
     }
 
-    public object CreateInstance(string name, string identifier)
+    object ITypeResolver.CreateInstance(string name, string identifier)
     {
-        var view = RootViews.FirstOrDefault(p => p.Identifier == identifier);
+        var type = ((ITypeResolver)this).GetType(name);
+        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+
+        if (isViewModel)
+        {
+            var contextViewModel = PersistantViewModels.FirstOrDefault(p => p.Identifier == identifier);
+            if (contextViewModel != null)
+            {
+                return contextViewModel;
+            }
+            return Activator.CreateInstance(type);
+        }
+        var view = PersistantViews.FirstOrDefault(p => p.Identifier == identifier);
         if (view != null)
         {
-            Debug.Log("Found View",view);
+            Debug.Log(string.Format("Loading View: {0} - {1}", name, identifier));
             return view;
         }
-        Debug.Log("Couldn't find view" + name + identifier);
-        return null;
+        return ViewNotFoundOnLoad(name, identifier);
+    }
+
+    public void UnRegisterView(ViewBase viewBase)
+    {
+        PersistantViews.Remove(viewBase);
     }
 }
 
+
 public static class SceneManagerExtensions
 {
-
+    public static void FromJson(this SceneManager sceneManager, string stateData)
+    {
+        var stringStorage = new StringSerializerStorage()
+        {
+            Result = stateData
+        };
+        var stream = new JsonStream();
+        sceneManager.LoadState(stringStorage, stream);
+    }
     public static string ToJson(this SceneManager sceneManager)
     {
         var stringStorage = new StringSerializerStorage();
         var stream = new JsonStream();
-        sceneManager.Save(stringStorage,stream);
+        sceneManager.SaveState(stringStorage, stream);
         return stringStorage.Result;
     }
 }

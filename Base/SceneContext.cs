@@ -99,7 +99,7 @@ public class SceneContext
     {
         stream.DependencyContainer = Container;
         storage.Load(stream);
-        stream.TypeResolver = new StateLoaderResolver(this);
+        //stream.TypeResolver = new ViewStateResolver(this);
         // ReSharper disable once UnusedVariable
         var vms = stream.DeserializeObjectArray<ViewModel>("ViewModels").ToArray();
         foreach (var vm in vms)

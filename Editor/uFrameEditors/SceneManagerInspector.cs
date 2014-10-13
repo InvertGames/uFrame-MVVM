@@ -16,32 +16,34 @@ public class SceneManagerInspector : uFrameInspector
 
     public override void OnInspectorGUI()
     {
+        GUIHelpers.IsInsepctor = true;
         DrawTitleBar("Scene Manager");
+
         base.OnInspectorGUI();
         if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)
         {
 
-            if (GUIHelpers.DoToolbarEx("Instances"))
+            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Serialize To String", ElementDesignerStyles.ButtonStyle))
             {
-                foreach (var instance in GameManager.ActiveSceneManager.Context.ViewModels)
-                {
-                    if (GUIHelpers.DoTriggerButton(new UFStyle(instance.Value.GetHashCode() + ": " + instance.Key,
-                        UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
-                        TextAnchor.MiddleCenter) { SubLabel = instance.Value.GetType().Name }))
-                    {
-                        Debug.Log(instance.Value.GetHashCode().ToString() + ": " + instance.ToString());
-                    }
+                var sm = (target as SceneManager);
 
-                }
+                sm.SaveState(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
+
             }
-
-            if (GUIHelpers.DoToolbarEx("Views"))
+            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Load From String", ElementDesignerStyles.ButtonStyle))
             {
-                foreach (var viewBase in GameManager.ActiveSceneManager.RootViews)
+                var sm = (target as SceneManager);
+                sm.LoadState(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
+
+            }
+            if (GUIHelpers.DoToolbarEx("Persistable Views"))
+            {
+                foreach (var viewBase in GameManager.ActiveSceneManager.PersistantViews)
                 {
-                    if (GUIHelpers.DoTriggerButton(new UFStyle(viewBase.name,
-                        UBStyles.EventButtonLargeStyle, null, UBStyles.RemoveButtonStyle, null, false,
-                        TextAnchor.MiddleCenter) { SubLabel = viewBase.Identifier }))
+                    if (viewBase == null) continue;
+                    if (GUIHelpers.DoTriggerButton(new UFStyle(viewBase.Identifier + ": " + viewBase.name,
+                        UBStyles.EventButtonStyleSmall, null, null, null, false,
+                        TextAnchor.MiddleCenter) { }))
                     {
                         //var fileStorage = new TextAssetStorage();
                         var stringStorage = new StringSerializerStorage();
@@ -50,27 +52,35 @@ public class SceneManagerInspector : uFrameInspector
                         stringStorage.Save(stream);
                         Debug.Log(stringStorage);
                     }
-
                 }
+               
+
+
             }
-
-
-            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Serialize To String", ElementDesignerStyles.ButtonStyle))
+            if (GUIHelpers.DoToolbarEx("Persistable View-Models"))
             {
-                var sm = (target as SceneManager);
+                foreach (var viewBase in GameManager.ActiveSceneManager.PersistantViewModels)
+                {
+                    if (viewBase == null) continue;
+                    if (GUIHelpers.DoTriggerButton(new UFStyle(viewBase.Identifier + ": " + viewBase.GetType().Name,
+                        UBStyles.EventButtonStyleSmall, null, null, null, false,
+                        TextAnchor.MiddleCenter) { }))
+                    {
+                        //var fileStorage = new TextAssetStorage();
+                        var stringStorage = new StringSerializerStorage();
+                        var stream = new JsonStream();
+                        viewBase.Write(stream);
+                        stringStorage.Save(stream);
+                        Debug.Log(stringStorage);
+                    }
+                }
 
-                sm.Save(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
-                
-            }
-            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Load From String", ElementDesignerStyles.ButtonStyle))
-            {
-                var sm = (target as SceneManager);
-                sm.Load(new TextAssetStorage() { AssetPath = "Assets/TestData.txt"}, new JsonStream() {UseReferences = true});
-                
+
+
             }
         }
-        Toggle("GameRoot",true);
 
+        GUIHelpers.IsInsepctor = false;
     }
 }
 public class TextAssetStorage : ISerializerStorage
@@ -81,7 +91,7 @@ public class TextAssetStorage : ISerializerStorage
     {
         get
         {
-            return AssetDatabase.LoadAssetAtPath(AssetPath, typeof (TextAsset)) as TextAsset;
+            return AssetDatabase.LoadAssetAtPath(AssetPath, typeof(TextAsset)) as TextAsset;
         }
     }
     public void Save(ISerializerStream stream)
