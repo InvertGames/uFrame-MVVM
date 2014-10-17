@@ -71,8 +71,10 @@ public class ModelCollection<T> : ObservableCollection<T>
         foreach (var item in enumerable)
             Add(item);
     }
-
+    [Obsolete]
     public delegate void ModelCollectionChangedWith(ModelCollectionChangeEventWith<T> changeArgs);
+
+    [Obsolete]
     public event ModelCollectionChangedWith CollectionChangedWith;
 }
 

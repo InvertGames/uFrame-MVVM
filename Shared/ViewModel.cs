@@ -27,12 +27,17 @@ public abstract class ViewModel
     private Dictionary<int, List<IDisposable>> _bindings;
     private Dictionary<string, ICommand> _commands;
     private Controller _controller;
-    private Dictionary<string, IObservableProperty> _modelProperties;
+    private List<ViewModelPropertyInfo> _modelProperties;
     private string _identifier;
 
     protected ViewModel()
     {
         Controller = null;
+    }
+
+    protected ViewModel(Controller controller)
+    {
+        Controller = controller;
     }
 
     /// <summary>
@@ -41,14 +46,14 @@ public abstract class ViewModel
     /// </summary>
     /// <param name="bindingPropertyName">The name of the property/field to access</param>
     /// <returns>ModelPropertyBase The Model Property class.  Use value to get the value of the property</returns>
-    public IObservableProperty this[string bindingPropertyName]
+    public ViewModelPropertyInfo this[string bindingPropertyName]
     {
         get
         {
             try
             {
                 CacheReflectedModelProperties();
-                return _modelProperties[bindingPropertyName];
+                return _modelProperties.FirstOrDefault(p=>p.Property.PropertyName == bindingPropertyName);
             }
             catch (Exception ex)
             {
@@ -63,6 +68,7 @@ public abstract class ViewModel
         set { _bindings = value; }
     }
 
+    [Obsolete("Use GetViewModelCommands")]
     public Dictionary<string, ICommand> Commands
     {
         get
@@ -83,22 +89,30 @@ public abstract class ViewModel
         }
     }
 
-    public Controller Controller
+    /// <summary>
+    /// 
+    /// </summary>
+    protected Controller Controller
     {
         get { return _controller; }
         set
         {
-            if (_controller == value)
+            if (value != null && _controller == value)
                 return;
             if (value != null)
             {
                 WireCommands(value);
             }
             _controller = value;
-            Bind();
+            if (!_isBound)
+            {
+                Bind();
+                _isBound = true;
+            }
         }
     }
 
+    private bool _isBound;
     public virtual void Bind()
     {
         
@@ -110,7 +124,7 @@ public abstract class ViewModel
         set { _identifier = value; }
     }
 
-    public Dictionary<string, IObservableProperty> Properties
+    public List<ViewModelPropertyInfo> Properties
     {
         get
         {
@@ -167,16 +181,6 @@ public abstract class ViewModel
         }
         Bindings[-1].Add(binding);
         return binding;
-    }
-
-    /// <summary>
-    /// Override this method to skip using reflection.  This can drastically improve performance especially IOS
-    /// </summary>
-    /// <returns></returns>
-    public virtual IEnumerable<IObservableProperty> GetProperties()
-    {
-        CacheReflectedModelProperties();
-        return _modelProperties.Values.ToArray();
     }
 
     /// <summary>
@@ -305,14 +309,11 @@ public abstract class ViewModel
     {
     }
 
+    
     private void CacheReflectedModelProperties()
     {
         if (_modelProperties != null) return;
-        var dictionary = new Dictionary<string, IObservableProperty>();
-        foreach (KeyValuePair<string, FieldInfo> property in GetReflectedModelProperties(this.GetType()))
-            dictionary.Add(property.Key, (IObservableProperty)property.Value.GetValue(this));
-
-        _modelProperties = dictionary;
+        _modelProperties = GetViewModelProperties();
     }
 }
 

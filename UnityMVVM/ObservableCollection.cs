@@ -89,7 +89,7 @@ namespace System.Collections.ObjectModel
 		[field:NonSerialized]
 		public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
 		[field:NonSerialized]
-		protected virtual event PropertyChangedEventHandler PropertyChanged;
+		public virtual event PropertyChangedEventHandler PropertyChanged;
 
 		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
 			add { this.PropertyChanged += value; }

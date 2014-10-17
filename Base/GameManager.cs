@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     private static IViewResolver _viewResolver;
     private static ICommandDispatcher _commandDispatcher;
     private List<SceneManager> _sceneManagers = new List<SceneManager>();
+    private SimpleSubject<CommandInfo> _commandsAsObservable;
 
     /// <summary>
     /// The current running game
@@ -326,7 +328,8 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     {
         if (ActiveSceneManager != null)
         {
-            ActiveSceneManager.Context.Clear();
+            ActiveSceneManager.PersistantViewModels.Clear();
+            ActiveSceneManager.PersistantViews.Clear();
             ActiveSceneManager.Unload();
             ActiveSceneManager.enabled = false;
             ActiveSceneManager.gameObject.SetActive(false);
@@ -402,6 +405,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     public virtual void RegisterSceneManager(SceneManager sceneManager)
     {
         if (SceneManagers.Contains(sceneManager)) return;
+        SceneManagers.Add(sceneManager);
         Log(string.Format("Scene Manager {0} was registered", sceneManager.gameObject.name));
         sceneManager.Container = Container;
 
@@ -412,7 +416,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         Container.Inject(sceneManager);
         sceneManager.Setup();
         sceneManager.Initialize();
-        SceneManagers.Add(sceneManager);
+     
         sceneManager.enabled = false;
         sceneManager.gameObject.SetActive(false);
     }
@@ -488,19 +492,23 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         ActiveSceneManager.OnLoaded();
     }
 
-    
-    public void ExecuteCommand(ICommand command, object argument)
+    public void ExecuteCommand(ICommand command, object argument, bool isChained = false)
     {
         command.Execute(argument);
+        if (_commandsAsObservable != null)
+        {
+            _commandsAsObservable.OnNext(new CommandInfo(command,argument,isChained));
+        }
     }
 
-    public void ExecuteCommand(ICommand command)
+    public IObservable<CommandInfo> CommandsAsObservable
     {
-        command.Execute(null);
+        get { return _commandsAsObservable ?? (_commandsAsObservable = new SimpleSubject<CommandInfo>()); }
+        
     }
 
-    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
+    public IDisposable Subscribe(IObserver<CommandInfo> observer)
     {
-        command.Execute(argument);
+        return CommandsAsObservable.Subscribe(observer);
     }
 }

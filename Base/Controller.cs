@@ -41,19 +41,21 @@ public abstract class Controller
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
-    public IGameContainer Container {
+    public IGameContainer Container
+    {
         get
         {
             return GameManager.Container;
         }
         set
         {
-            
+
         }
     }
     /// <summary>
     /// The scene context that contains the View-Models for the current scene.
     /// </summary>
+    [Obsolete]
     public SceneContext Context
     {
         get { return _context ?? GameManager.ActiveSceneManager.Context; }
@@ -73,16 +75,6 @@ public abstract class Controller
     }
 
     /// <summary>
-    /// Initialize this controller with a SceneContext object
-    /// </summary>
-    /// <param name="context"></param>
-    protected Controller(SceneContext context)
-    {
-        Context = context;
-    }
-
-
-    /// <summary>
     /// Create a new ViewModel. This will generate a Unique Identifier for the VM.  If this is a specific instance use the overload and pass
     /// an identifier.
     /// </summary>
@@ -99,14 +91,9 @@ public abstract class Controller
     /// <returns></returns>
     public virtual ViewModel Create(string identifier)
     {
-        var vm = Context[identifier];
 
-        if (vm == null)
-        {
-            vm = CreateEmpty(identifier);
-            vm.Controller = this;
-            Initialize(vm);
-        }
+        var vm = CreateEmpty(identifier);
+        Initialize(vm);
         return vm;
     }
 
@@ -141,10 +128,10 @@ public abstract class Controller
 
     }
 
-#if !TESTS
+
     public void ExecuteCommand(ICommand command, object argument)
     {
-       CommandDispatcher.ExecuteCommand(command,argument);
+        CommandDispatcher.ExecuteCommand(command, argument);
     }
 
     public virtual void ExecuteCommand(ICommand command)
@@ -154,24 +141,24 @@ public abstract class Controller
 
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        CommandDispatcher.ExecuteCommand(command,argument);
+        CommandDispatcher.ExecuteCommand(command, argument);
     }
 
-    public virtual void GameEvent(string message, params object[] additionalParamters)
-    {
-        Event(null, message, additionalParamters);
-    }
 
+#if !TESTS
+    [Obsolete("Coroutines are no longer used in controllers for external compatability, use Observable.Timer or Observable.Interval")]
     public UnityEngine.Coroutine StartCoroutine(IEnumerator routine)
     {
         return GameManager.Instance.StartCoroutine(routine);
     }
 
+    [Obsolete("Coroutines are no longer used in controllers for external compatability, use Observable.Timer or Observable.Interval")]
     public void StopAllCoroutines()
     {
         GameManager.Instance.StopAllCoroutines();
     }
 
+    [Obsolete("Coroutines are no longer used in controllers for external compatability, use Observable.Timer or Observable.Interval")]
     public void StopCoroutine(string name)
     {
         GameManager.Instance.StopCoroutine(name);
@@ -194,53 +181,6 @@ public abstract class Controller
         command.OnCommandExecuted += () => action();
 
     }
-
-#if !TESTS
-    /// <summary>
-    /// \brief Send an event to a game.
-    /// Additional parameters shouldn't pass the view to the controller unless absolutely necessary.
-    /// A warning will be issued if you try to pass a view to the controller
-    /// </summary>
-    /// <param name="model">The model at which the controller will accept automatically as its first parameter.</param>
-    /// <param name="message">The event/method that will be sent to the controller.</param>
-    /// <param name="additionalParameters">Any additional information to pass along with the event.</param>
-    private void Event(ViewModel model, string message, params object[] additionalParameters)
-    {
-        var sceneManager = GameManager.ActiveSceneManager;
-        if (sceneManager == null)
-        {
-            throw new Exception("SceneManager is not set.");
-        }
-        var method = sceneManager.GetType().GetMethod(message);
-
-        if (method == null)
-        {
-            throw new Exception(string.Format("Event '{0}' was not found on {1}", message, sceneManager));
-        }
-
-        if (model != null && method.GetParameters().Length > 0)
-        {
-            var list = new List<object>();
-            foreach (object o in Enumerable.Concat(new[] { model }, additionalParameters))
-            {
-                if ((o is IViewModelObserver))
-                {
-#if !DLL
-                    UnityEngine.Debug.LogWarning("A view was passed as a parameter to an event.  This is not recommended.");
-#endif
-                }
-                if (o == null) continue;
-                list.Add(o);
-            }
-
-            method.Invoke(sceneManager, list.ToArray());
-        }
-        else
-        {
-            method.Invoke(sceneManager, additionalParameters);
-        }
-    }
-#endif
 };
 
 

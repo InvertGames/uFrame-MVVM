@@ -38,7 +38,6 @@ public interface IParameterCommand : ICommand
 /// <typeparam name="T"></typeparam>
 public interface ICommandWith<T> : IParameterCommand
 {
-    object Parameter { get; set; }
     //IEnumerator Execute(T parameter);
 }
 #if DLL

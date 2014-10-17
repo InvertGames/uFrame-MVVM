@@ -164,6 +164,28 @@ public abstract class CommandBase<TArgument> : ICommandWith<TArgument>
     public object Parameter { get; set; }
 }
 
+[Obsolete]
+public class CommandWith<TArgument> : CommandBase<TArgument>
+{
+    public CommandWith()
+    {
+    }
+
+    public CommandWith(Action<TArgument> argument)
+    {
+        
+    } 
+    protected override void Execute()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override bool CanExecute()
+    {
+        throw new NotImplementedException();
+    }
+}
+
 public class CommandWithSender<TSender> : CommandBase<TSender>
 {
  
@@ -198,11 +220,8 @@ public class CommandWithSender<TSender> : CommandBase<TSender>
 public class CommandWithSenderAndArgument<TSender,TArgument> : CommandBase<TArgument>
 {
 
-
     public object Sender { get; set; }
     
-    
-
     protected Action<TSender,TArgument> Delegate { get; set; }
 
     public CommandWithSenderAndArgument(Action<TSender,TArgument> @delegate)

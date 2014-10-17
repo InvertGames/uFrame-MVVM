@@ -149,6 +149,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         contextViewModel.Identifier = identifier;
         // Register the instance under "ViewModel" so any single instance view-model can be accessed with ResolveAll<ViewModel>();
         Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);
+        Container.RegisterInstance(typeof(TViewModel),contextViewModel, identifier);
         // Add an initializer so that apply the controller happens after everything has been injected
         _initializers.Add(() => { controller.Initialize(contextViewModel); });
         return contextViewModel;
@@ -184,6 +185,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         var viewModels = stream.DeserializeObjectArray<ViewModel>("ViewModels");
         foreach (var viewModel in viewModels)
         {
+            VoidMethod(viewModel);
             // Do something here maybe?
         }
 
@@ -194,11 +196,11 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         var views = stream.DeserializeObjectArray<ViewBase>("Views").ToArray();
         foreach (var view in views)
         {
-
+            VoidMethod(view);
             // Do something here maybe?
         }
     }
-
+    private void VoidMethod(object p) { }
     public void SaveState(ISerializerStorage storage, ISerializerStream stream)
     {
         stream.DeepSerialize = true;
@@ -249,10 +251,12 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
                 controller.Initialize(contextViewModel);
 
             if (viewBase.ForceResolveViewModel)
-            {
+            {   
                 // Register it, this is usually when a non registered element is treated like a single-instance anways
                 Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
                     string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
+                // Register it under the generic view-model type
+                Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
             }
             else
             {

@@ -4,6 +4,7 @@ using System.Linq;
 /// <summary>
 /// The scene context keeps track of view-models based on their identifiers when a view has checked "Save & Load"
 /// </summary>
+[Obsolete]
 public class SceneContext
 {
     private IGameContainer _container;
@@ -80,14 +81,7 @@ public class SceneContext
 
     public TViewModel CreateViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel, new()
     {
-        var contextViewModel = this[identifier];
-        if (contextViewModel == null)
-        {
-            contextViewModel = new TViewModel { Controller = controller, Identifier = identifier };
-            this[identifier] = contextViewModel;
-        }
-        contextViewModel.Controller = controller;
-        return (TViewModel)contextViewModel;
+        return null;
     }
 
     /// <summary>

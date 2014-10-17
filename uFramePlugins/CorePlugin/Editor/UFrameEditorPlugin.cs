@@ -128,25 +128,25 @@ public class UFrameEditorPlugin : DiagramPlugin
             get { return typeof (CommandWithSenderAndArgument<,>); }
         }
 
-        public Type YieldCommandWithSenderT
-        {
-            get { return typeof (YieldCommandWithSender<>); }
-        }
+        //public Type YieldCommandWithSenderT
+        //{
+        //    get { return typeof (YieldCommandWithSender<>); }
+        //}
 
-        public Type YieldCommandWith
-        {
-            get { return typeof (YieldCommandWith<>); }
-        }
+        //public Type YieldCommandWith
+        //{
+        //    get { return typeof (YieldCommandWith<>); }
+        //}
 
-        public Type YieldCommandWithSenderAndArgument
-        {
-            get { return typeof (YieldCommandWithSenderAndArgument<,>); }
-        }
+        //public Type YieldCommandWithSenderAndArgument
+        //{
+        //    get { return typeof (YieldCommandWithSenderAndArgument<,>); }
+        //}
 
-        public Type YieldCommand
-        {
-            get { return typeof (YieldCommand); }
-        }
+        //public Type YieldCommand
+        //{
+        //    get { return typeof (YieldCommand); }
+        //}
 
         public Type Command
         {

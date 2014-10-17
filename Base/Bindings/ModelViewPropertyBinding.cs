@@ -77,8 +77,4 @@ public class ModelViewPropertyBinding : Binding,IDisposable
         base.Unbind();
     }
 
-    public void Dispose()
-    {
-        Unbind();
-    }
 }

@@ -9,7 +9,7 @@ using System;
 /// </summary>
 public class ModelPropertyBinding : Binding, ITwoWayBinding
 {
-    private object _lastValue;
+
     private bool _isImmediate = true;
 
     public bool IsImmediate
@@ -57,7 +57,6 @@ public class ModelPropertyBinding : Binding, ITwoWayBinding
     /// <param name="value"></param>
     private void PropertyChanged(object value)
     {
-        _lastValue = value;
         SetTargetValueDelegate(value);
     }
 }

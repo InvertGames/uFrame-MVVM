@@ -142,7 +142,7 @@ public class uFrameEditorSceneManager
                     var viewBase = SceneViews.FirstOrDefault(p => p.gameObject.GetInstanceID() == instanceID);
                     if (viewBase != null)
                     {
-                        GUI.DrawTexture(r, viewBase.IsMultiInstance ? textureViewMI : textureViewSI);
+                        GUI.DrawTexture(r, textureViewSI);
                     }
                 }
                 catch (Exception ex)
@@ -161,10 +161,10 @@ public class uFrameEditorSceneManager
 
     public static void NavigateBack(ViewBase view)
     {
-        var designerWindow = EditorWindow.GetWindow<ElementsDesigner>();
-        var attribute = view.GetType().GetCustomAttributes(typeof(DiagramInfoAttribute), true).FirstOrDefault() as DiagramInfoAttribute;
+        //var designerWindow = EditorWindow.GetWindow<ElementsDesigner>();
+        //var attribute = view.GetType().GetCustomAttributes(typeof(DiagramInfoAttribute), true).FirstOrDefault() as DiagramInfoAttribute;
 
-        if (attribute == null) return;
+        //if (attribute == null) return;
       //  designerWindow.LoadDiagramByName(attribute.DiagramName);
         //designerWindow.Diagram.Data.PushFilter();
     }

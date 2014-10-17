@@ -57,11 +57,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     public delegate void ViewEvent(string eventName);
 
     /// <summary>
-    /// An event that is invoked whe calling Event("MyEvent")
-    /// </summary>
-    public event ViewEvent EventTriggered;
-
-    /// <summary>
     /// Should we log an event for each View event that occurs.
     /// </summary>
     [HideInInspector]
