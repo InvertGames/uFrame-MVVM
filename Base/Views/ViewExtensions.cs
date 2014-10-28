@@ -187,7 +187,7 @@ public static class ViewExtensions
     {
         // Create the view object from the specified prefab
         var viewObject = (GameObject)Object.Instantiate(prefab, position, rotation);
-
+        viewObject.transform.parent = parent;
         var view = InitializeView(parent, prefab.name, model, viewObject,identifier);
 
         return view;

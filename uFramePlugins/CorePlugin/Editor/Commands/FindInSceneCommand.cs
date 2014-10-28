@@ -5,7 +5,7 @@ public class FindInSceneCommand : EditorCommand<ViewData>
 {
     public override void Perform(ViewData node)
     {
-        var currentViewType = node.CurrentViewType;
+        var currentViewType = node.CurrentType;
         if (currentViewType != null)
         {
             uFrameEditorSceneManager.NavigateToFirstView(currentViewType);

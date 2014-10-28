@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using UnityEditor;
+using UnityEngine;
 
 namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins.UnityVS
 {
@@ -21,17 +21,7 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins.UnityVS
         {
             uFrameEditor.HookCommand<IToolbarCommand>("SaveCommand", new HookCommand(() =>
             {
-                try
-                {
-                    
-                    UnityEngine.Debug.Log("GENERATED FILES");
                     EditorApplication.ExecuteMenuItem("Visual Studio Tools/Generate Project Files");
-                    //EditorApplication.ExecuteMenuItem("UnityVS/Generate Project Files");
-                }
-                catch
-                {
-                    
-                }
             }));
             
         }

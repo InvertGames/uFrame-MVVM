@@ -23,6 +23,8 @@ public abstract class ViewModel
  : INotifyPropertyChanged
 #endif
 {
+    [Obsolete]
+    public bool Dirty { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
     private Dictionary<int, List<IDisposable>> _bindings;
     private Dictionary<string, ICommand> _commands;

@@ -23,19 +23,19 @@ public class SceneManagerInspector : uFrameInspector
         if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)
         {
 
-            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Serialize To String", ElementDesignerStyles.ButtonStyle))
-            {
-                var sm = (target as SceneManager);
+            //if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Serialize To String", ElementDesignerStyles.ButtonStyle))
+            //{
+            //    var sm = (target as SceneManager);
 
-                sm.SaveState(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
+            //    sm.SaveState(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
 
-            }
-            if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Load From String", ElementDesignerStyles.ButtonStyle))
-            {
-                var sm = (target as SceneManager);
-                sm.LoadState(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
+            //}
+            //if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), "Load From String", ElementDesignerStyles.ButtonStyle))
+            //{
+            //    var sm = (target as SceneManager);
+            //    sm.LoadState(new TextAssetStorage() { AssetPath = "Assets/TestData.txt" }, new JsonStream() { UseReferences = true });
 
-            }
+            //}
             if (GUIHelpers.DoToolbarEx("Persistable Views"))
             {
                 foreach (var viewBase in GameManager.ActiveSceneManager.PersistantViews)
@@ -74,9 +74,6 @@ public class SceneManagerInspector : uFrameInspector
                         Debug.Log(stringStorage);
                     }
                 }
-
-
-
             }
         }
 

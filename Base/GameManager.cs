@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     /// <summary>
     /// A level that displays a progress bar and message
     /// </summary>
-    public string _LoadingLevel;
+    public string _LoadingLevel = "Loading";
 
     public bool _ShowLogs = false;
 

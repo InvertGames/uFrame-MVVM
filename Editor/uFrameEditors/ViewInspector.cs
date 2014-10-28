@@ -302,6 +302,11 @@ public class ViewInspector : uFrameInspector
             Info("The name that is used to share this instance among others (if any).");
 
             EditorGUILayout.PropertyField(resolveNameProperty, new GUIContent("Resolve Name"));
+            if (!t.IsMultiInstance && !string.IsNullOrEmpty(resolveNameProperty.stringValue))
+            {
+                Warning(
+                    "When using a 'ResolveName' on a single instance element, the element must be initialized manually in the scene manager's setup method.");
+            }
         }
 
 
@@ -390,7 +395,7 @@ public class ViewInspector : uFrameInspector
                             {
                                 EditorGUI.BeginChangeCheck();
                                 object newValue = null;
-                                object currentValue = ((IParameterCommand) command.Command).Parameter ?? Activator.CreateInstance(type);
+                                object currentValue = ((IParameterCommand)command.Command).Parameter ?? GetDefaultValue(type);//Activator.CreateInstance(type);
 
                                 var propertyName = "Parameter";
                                 var isEnum = false;
@@ -545,7 +550,10 @@ public class ViewInspector : uFrameInspector
 
     private static object DoTypeInspector(Type type,  string propertyName, object currentValue, bool isEnum)
     {
-
+        if (currentValue == null)
+        {
+            return null;
+        }
         object newValue = null;
         if (type == typeof (int))
         {
@@ -599,7 +607,20 @@ public class ViewInspector : uFrameInspector
         }
         return newValue;
     }
+
+    object GetDefaultValue(Type t)
+    {
+        if (t == typeof (string)) return String.Empty;
+        if (t.IsValueType)
+            return Activator.CreateInstance(t);
+
+        return null;
+    }
+
 }
+
+
+
 
 //public class WireHighlighter : DiagramPlugin
 //{
