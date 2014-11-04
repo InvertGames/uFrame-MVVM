@@ -46,6 +46,11 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     private List<SceneManager> _sceneManagers = new List<SceneManager>();
     private SimpleSubject<CommandInfo> _commandsAsObservable;
 
+    public void Reset()
+    {
+        if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
+            this.gameObject.AddComponent<MainThreadDispatcher>();
+    }
     /// <summary>
     /// The current running game
     /// </summary>
@@ -370,8 +375,6 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     /// </summary>
     public void Awake()
     {
-        //        ApplyRenderSettings();
-
         if (Instance != null)
         {
             // If the instace already exist destroy this
@@ -381,6 +384,8 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         else
         {
             Instance = this;
+            if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
+                this.gameObject.AddComponent<MainThreadDispatcher>();
             // Don't destory this through scene switching
             DontDestroyOnLoad(gameObject);
             Startup();

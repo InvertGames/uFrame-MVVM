@@ -59,15 +59,11 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
                 };
             }
         }
-        yield return new ElementItemType() { Type = typeof(int), Group = "", Label = "int" };
-        yield return new ElementItemType() { Type = typeof(string), Group = "", Label = "string" };
-        yield return new ElementItemType() { Type = typeof(decimal), Group = "", Label = "decimal" };
-        yield return new ElementItemType() { Type = typeof(float), Group = "", Label = "float" };
-        yield return new ElementItemType() { Type = typeof(bool), Group = "", Label = "bool" };
-        yield return new ElementItemType() { Type = typeof(char), Group = "", Label = "char" };
-        yield return new ElementItemType() { Type = typeof(DateTime), Group = "", Label = "date" };
-        yield return new ElementItemType() { Type = typeof(Vector2), Group = "", Label = "Vector2" };
-        yield return new ElementItemType() { Type = typeof(Vector3), Group = "", Label = "Vector3" };
+        var itemTypes = uFrameEditor.TypesContainer.ResolveAll<ElementItemType>();
+        foreach (var elementItemType in itemTypes)
+        {
+            yield return elementItemType;
+        }
 
         if (PrimitiveOnly) yield break;
         //if (IncludeUnityEngine)
@@ -82,20 +78,27 @@ public class SelectItemTypeCommand : EditorCommand<DiagramViewModel>
         {
             yield return new ElementItemType() { Name = item.Identifier, Group = "", Label = item.Name };
         }
-        var projectAssembly = typeof(ViewModel).Assembly;
-        foreach (var type in projectAssembly.GetTypes())
-        {
-            if (IncludeUnityEngine && typeof (UnityEngine.Object).IsAssignableFrom(type))
-            {
-                yield return new ElementItemType() { Type = type, Group = "Components", Label = type.Name };;
-                continue;
-            }
-            if (!typeof(Component).IsAssignableFrom(type) && type.IsClass && !type.Name.Contains("<") && !typeof(ViewModel).IsAssignableFrom(type) && !typeof(Controller).IsAssignableFrom(type) && !typeof(ViewBase).IsAssignableFrom(type))
-            {
-                if (!type.ContainsGenericParameters)
-                yield return new ElementItemType() { Type = type, Group = "Project", Label = type.Name };
-            }
-        }
+        
+        //foreach (var projectAssembly in AppDomain.CurrentDomain.GetAssemblies())
+        //{
+        //    foreach (var type in projectAssembly.GetTypes())
+        //    {
+        //        if (type.ContainsGenericParameters) continue;
+        //        if (type.Name.Contains("$")) continue;
+        //        if (IncludeUnityEngine && typeof(UnityEngine.Object).IsAssignableFrom(type))
+        //        {
+        //            yield return new ElementItemType() { Type = type, Group = "Components", Label = type.Name }; ;
+        //            continue;
+        //        }
+        //        if (!typeof(Component).IsAssignableFrom(type) && type.IsClass && !type.Name.Contains("<") && !typeof(ViewModel).IsAssignableFrom(type) && !typeof(Controller).IsAssignableFrom(type) && !typeof(ViewBase).IsAssignableFrom(type))
+        //        {
+        //            if (!type.ContainsGenericParameters)
+        //                yield return new ElementItemType() { Type = type, Group = "Project", Label = type.Name };
+        //        }
+        //    }
+        //}
+        
+        
     }
 
     public override string CanPerform(DiagramViewModel node)

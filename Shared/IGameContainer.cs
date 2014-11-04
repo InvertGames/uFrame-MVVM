@@ -85,7 +85,7 @@ public interface IGameContainer
         /// <typeparam name="TType">The Type to resolve</typeparam>
         /// <returns>List of objects.</returns>
         IEnumerable<TType> ResolveAll<TType>();
-
+            
         //IEnumerable<object> ResolveAll(Type type);
         void Register(Type source, Type target, string name = null);
 

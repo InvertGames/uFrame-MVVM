@@ -77,7 +77,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// </summary>
     public virtual void Reload()
     {
-
         GameManager.Transition(this);
     }
     /// <summary>
@@ -116,8 +115,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
             GameManager.Instance.UnRegisterSceneManager(this);
     }
 
-
-
     /// <summary>
     /// The settings at which the level will be loaded with.  Used for transitioning from one scene to another.
     /// </summary>
@@ -131,7 +128,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     }
 
 
-    private List<Action> _initializers = new List<Action>();
     private List<ViewModel> _viewModels;
 
     /// <summary>
@@ -145,16 +141,19 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
     {
         // Create the ViewModel
-        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), controller) as TViewModel;
+        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), controller, false) as TViewModel;
         contextViewModel.Identifier = identifier;
         // Register the instance under "ViewModel" so any single instance view-model can be accessed with ResolveAll<ViewModel>();
-        Container.RegisterInstance<ViewModel>(contextViewModel as TViewModel, identifier);
-        Container.RegisterInstance(typeof(TViewModel),contextViewModel, identifier);
-        // Add an initializer so that apply the controller happens after everything has been injected
-        _initializers.Add(() => { controller.Initialize(contextViewModel); });
+        Container.RegisterViewModel<TViewModel>(contextViewModel, identifier);
         return contextViewModel;
     }
 
+    public TViewModel CreateInstanceViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
+    {
+        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), controller, false) as TViewModel;
+        contextViewModel.Identifier = identifier;
+        return contextViewModel;
+    }
     /// <summary>
     /// All of the views that have registered
     /// </summary>
@@ -247,8 +246,8 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
                 controller.CreateEmpty(viewBase.Identifier);
             
             // Make sure the initialized is called on the controller
-            if (controller != null)
-                controller.Initialize(contextViewModel);
+            //if (controller != null)
+            //    controller.Initialize(contextViewModel);
 
             if (viewBase.ForceResolveViewModel)
             {   
@@ -289,11 +288,15 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
     public virtual void Initialize()
     {
-        foreach (var initalizer in _initializers)
-        {
-            if (initalizer != null)
-                initalizer();
-        }
+        //var vms = Container.ResolveAll<ViewModel>();
+        //foreach (var vm in vms)
+        //{
+        //    if (vm.Controller != null)
+        //    {
+        //        vm.Controller.Initialize(vm);
+        //    }
+        //}
+        
     }
 
     Type ITypeResolver.GetType(string name)
@@ -335,7 +338,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     }
 }
 
-
 public static class SceneManagerExtensions
 {
     public static void FromJson(this SceneManager sceneManager, string stateData)
@@ -353,5 +355,27 @@ public static class SceneManagerExtensions
         var stream = new JsonStream();
         sceneManager.SaveState(stringStorage, stream);
         return stringStorage.Result;
+    }
+}
+
+public static class ContainerExtensions
+{
+    
+    public static void RegisterViewModel<TViewModel>(this IGameContainer container, TViewModel viewModel, string identifier) where TViewModel : ViewModel
+    {
+        container.Register<TViewModel,TViewModel>();
+        container.RegisterInstance<ViewModel>(viewModel, identifier);
+        container.RegisterInstance(typeof(TViewModel), viewModel, identifier);
+    }
+
+    public static void RegisterController<TController>(this IGameContainer container, TController controller) where TController : Controller
+    {
+        container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
+        container.RegisterInstance<TController>(controller,false);
+    }
+
+    public static void RegisterViewModelController<TController, TViewModel>(this IGameContainer container, TController controller) where TController : Controller
+    {
+        // Nothing yet
     }
 }

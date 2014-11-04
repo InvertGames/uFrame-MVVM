@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class LevelLoaderView : View<LevelLoadViewModel>
 {
 
@@ -27,4 +29,19 @@ public abstract class LevelLoaderView : View<LevelLoadViewModel>
     {
     }
 
+}
+
+public class DebugLoaderView : LevelLoaderView
+{
+    protected override void ProgressChanged(float progressValue)
+    {
+        base.ProgressChanged(progressValue);
+        Debug.Log("Progress has changed to: " + progressValue);
+    }
+
+    protected override void StatusChanged(string statusMessage)
+    {
+        base.StatusChanged(statusMessage);
+        Debug.Log("Status has changed to: " + statusMessage);
+    }
 }

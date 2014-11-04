@@ -41,17 +41,7 @@ public abstract class Controller
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
-    public IGameContainer Container
-    {
-        get
-        {
-            return GameManager.Container;
-        }
-        set
-        {
-
-        }
-    }
+    public IGameContainer Container { get; set; }
     /// <summary>
     /// The scene context that contains the View-Models for the current scene.
     /// </summary>
@@ -93,7 +83,6 @@ public abstract class Controller
     {
 
         var vm = CreateEmpty(identifier);
-        Initialize(vm);
         return vm;
     }
 
@@ -119,6 +108,8 @@ public abstract class Controller
     }
 
 
+    [Obsolete("Game event is not longer used for transitions.  Regenerate your diagram.")]
+    public void GameEvent(string name) { }
 
     public abstract void Initialize(ViewModel viewModel);
 

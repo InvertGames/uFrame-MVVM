@@ -8,6 +8,11 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
     private object _objectValue;
     private object _lastValue;
 
+    public IObservable<T> ChangedObservable
+    {
+        get { return this.Where(p => ObjectValue != LastValue); }
+    }
+
     public object ObjectValue
     {
         get
@@ -19,6 +24,7 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
             _lastValue = _objectValue;
             _objectValue = value;
             OnPropertyChanged(PropertyName);
+          
         }
     }
     public string PropertyName { get; set; }

@@ -1,4 +1,3 @@
-using UniRx.UI;
 using UnityEngine;
 using UniRx;
 public class UnityGUILevelLoaderView : LevelLoaderView

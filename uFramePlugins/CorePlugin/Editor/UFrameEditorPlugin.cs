@@ -23,21 +23,30 @@ public class UFrameEditorPlugin : DiagramPlugin
         get { return true; }
         set
         {
-            
+
         }
     }
     public override void Initialize(uFrameContainer container)
     {
-  
+
         container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
 
+        var typeContainer = uFrameEditor.TypesContainer;
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(int), Group = "", Label = "int", IsPrimitive = true }, "int");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(string), Group = "", Label = "string", IsPrimitive = true }, "string");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(decimal), Group = "", Label = "decimal", IsPrimitive = true }, "decimal");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(float), Group = "", Label = "float", IsPrimitive = true }, "float");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(bool), Group = "", Label = "bool", IsPrimitive = true }, "bool");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(char), Group = "", Label = "char", IsPrimitive = true }, "char");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(DateTime), Group = "", Label = "date", IsPrimitive = true }, "date");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(Vector2), Group = "", Label = "Vector2", IsPrimitive = true }, "Vector2");
+        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(Vector3), Group = "", Label = "Vector3", IsPrimitive = true }, "Vector3");
 
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ClassPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ClassCollectionTypeSelection");
-        
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = true, PrimitiveOnly = false }, "ViewModelCommandTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() {AllowNone = false,PrimitiveOnly = false}, "ViewModelCollectionTypeSelection");
+        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelCollectionTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ComputedPropertyTypeSelection");
         container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false, IncludeUnityEngine = true }, "StateMachineVariableTypeSelection");
 
@@ -55,57 +64,57 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         public Type ViewModel
         {
-            get { return typeof (ViewModel); }
+            get { return typeof(ViewModel); }
         }
 
         public Type Controller
         {
-            get { return typeof (Controller); }
+            get { return typeof(Controller); }
         }
 
         public Type SceneManager
         {
-            get { return typeof (SceneManager); }
+            get { return typeof(SceneManager); }
         }
 
         public Type GameManager
         {
-            get { return typeof (GameManager); }
+            get { return typeof(GameManager); }
         }
 
         public Type ViewComponent
         {
-            get { return typeof (ViewComponent); }
+            get { return typeof(ViewComponent); }
         }
 
         public Type ViewBase
         {
-            get { return typeof (ViewBase); }
+            get { return typeof(ViewBase); }
         }
 
         public Type UFToggleGroup
         {
-            get { return typeof (UFToggleGroup); }
+            get { return typeof(UFToggleGroup); }
         }
 
         public Type UFGroup
         {
-            get { return typeof (UFGroup); }
+            get { return typeof(UFGroup); }
         }
 
         public Type UFRequireInstanceMethod
         {
-            get { return typeof (UFRequireInstanceMethod); }
+            get { return typeof(UFRequireInstanceMethod); }
         }
 
         public Type DiagramInfoAttribute
         {
-            get { return typeof (DiagramInfoAttribute); }
+            get { return typeof(DiagramInfoAttribute); }
         }
 
         public Type GetModelCollectionType<T>()
         {
-            return typeof (ModelCollection<T>);
+            return typeof(ModelCollection<T>);
         }
 
         public Type UpdateProgressDelegate
@@ -115,7 +124,7 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         public Type CommandWithSenderT
         {
-            get { return typeof (CommandWithSender<>); }
+            get { return typeof(CommandWithSender<>); }
         }
 
         public Type CommandWith
@@ -125,7 +134,7 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         public Type CommandWithSenderAndArgument
         {
-            get { return typeof (CommandWithSenderAndArgument<,>); }
+            get { return typeof(CommandWithSenderAndArgument<,>); }
         }
 
         //public Type YieldCommandWithSenderT
@@ -150,52 +159,52 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         public Type Command
         {
-            get { return typeof (Command); }
+            get { return typeof(Command); }
         }
 
         public Type ICommand
         {
-            get { return typeof (ICommand); }
+            get { return typeof(ICommand); }
         }
 
         public Type ListOfViewModel
         {
-            get {  return typeof (List<ViewModel>); }
+            get { return typeof(List<ViewModel>); }
         }
 
         public Type ISerializerStream
         {
-            get { return typeof (ISerializerStream); }
+            get { return typeof(ISerializerStream); }
         }
 
         public Type P
         {
-            get { return typeof (P<>); }
+            get { return typeof(P<>); }
         }
 
         public Type ModelCollection
         {
-            get { return typeof (ModelCollection<>); }
+            get { return typeof(ModelCollection<>); }
         }
 
         public Type Computed
         {
-            get { return typeof (Computed<>); }
+            get { return typeof(Computed<>); }
         }
 
         public Type State
         {
-            get { return typeof (State); }
+            get { return typeof(State); }
         }
 
         public Type StateMachine
         {
-            get { return typeof (StateMachine); }
+            get { return typeof(StateMachine); }
         }
 
         public Type IObservable
         {
-            get { return typeof (IObservable<>); }
+            get { return typeof(IObservable<>); }
         }
 
 
@@ -204,11 +213,11 @@ public class UFrameEditorPlugin : DiagramPlugin
             var properties = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var sb = new StringBuilder();
             sb.AppendFormat("public class uFrameStringTypeProvider : IUFrameTypeProvider {{");
-                sb.AppendLine();
+            sb.AppendLine();
             foreach (var property in properties)
             {
                 if (property.PropertyType != typeof(Type))
-                continue;
+                    continue;
                 var type = property.GetValue(this, null) as Type;
                 if (type == null) continue;
                 sb.AppendFormat("\tprivate Type _{0};", property.Name);
@@ -222,35 +231,5 @@ public class UFrameEditorPlugin : DiagramPlugin
             return sb.ToString();
         }
     }
-
-}
-
-
-public class MyCustomPlugin : DiagramPlugin
-{
-    public override decimal LoadPriority
-    {
-        get { return -1; }
-    }
-
-    public override bool Enabled
-    {
-        get { return true; }
-        set { }
-    }
-
-    public override void Initialize(uFrameContainer container)
-    {
-        container.RegisterInstance<IEditorCommand>(
-            new SelectItemTypeCommand() {AllowNone = false, PrimitiveOnly = false}, "ViewModelPropertyTypeSelection");
-        container.RegisterInstance<IEditorCommand>(
-            new SelectItemTypeCommand() {AllowNone = true, PrimitiveOnly = false}, "ViewModelCommandTypeSelection");
-        container.RegisterInstance<IEditorCommand>(
-            new SelectItemTypeCommand() {AllowNone = false, PrimitiveOnly = false}, "ViewModelCollectionTypeSelection");
-    }
-}
-
-public class ElementAssetsPlugin
-{
 
 }

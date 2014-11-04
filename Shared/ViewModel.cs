@@ -37,9 +37,14 @@ public abstract class ViewModel
         Controller = null;
     }
 
-    protected ViewModel(Controller controller)
+
+    protected ViewModel(Controller controller, bool initialize = true)
     {
         Controller = controller;
+        if (initialize)
+        {
+            controller.Initialize(this);
+        }
     }
 
     /// <summary>
@@ -94,13 +99,15 @@ public abstract class ViewModel
     /// <summary>
     /// 
     /// </summary>
-    protected Controller Controller
+    public Controller Controller
     {
         get { return _controller; }
         set
         {
+            
             if (value != null && _controller == value)
                 return;
+
             if (value != null)
             {
                 WireCommands(value);
@@ -111,6 +118,7 @@ public abstract class ViewModel
                 Bind();
                 _isBound = true;
             }
+           
         }
     }
 

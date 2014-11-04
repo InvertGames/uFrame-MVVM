@@ -1,5 +1,99 @@
 [u]Frame Release Notes
 Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, notifications, and cool info.
+1.5
+
+Overview
+
+uFrame 1.5 is out. Even thought is a minor version step, there are a lot of new exciting features,
+ changes and bugfixes. This version addresses almost all of the issues in 1.4. Let's see what's new:
+
+Editor and Project:
+
+1.5 brings a completely new theme, with new cool UI features that make editor more responsive.
+ Not only it looks more professional, but the usability is greatly improved, for example
+ highlighted connections or handy Inputs and Outputs for the diagram items.
+
+Thanks to the new project system, you can now seprate your project into as many graphs as you want, keeping it
+ all under control. New workflow features, project level namespaces, and even code generation settings have arrived!
+
+Framework:
+
+  RX
+    In 1.5 you will be able to unleash the power of Reactive Extensions!
+     UniRX implementation of RX is now shipped with uFrame.
+     Almost everything now is observable: viewmodels, properties, commands, collections and more!
+     Reactive extension methods are integrated seamlessly into your code and definitely will save you
+     incredible amount of time.
+     Binding have been completely reworked to follow the RX model.
+
+  Computed Properties
+    1.5 introduces computed properties. They are just properties which depend on other properties.
+     Simple and powerful. You can express dependency from the same element or from child elements.
+     They can be dependent on regular properties, scene properties or other computed properties.
+     They can serve as triggers for state machines.
+     In your code you can easily modify all the dependencies by simply overriding a special method.
+
+  Reactive State Machines:
+    1.5 brings brand new Reactive State Machines directly into your diagrams.
+     You can rapidly design states, transitions and triggers.
+     Then you can generate view bindings for the states with a few mouse clicks. Finally
+     you can easily setup any additional logic in the code.
+     uFrame State Machines do not use any dirty checks! This can save a lot of performance
+     to let other amazing things run inside your game.
+     You can easily debug your states right in the diagram or from the View Inspector.
+
+  Class Nodes:
+    Now you can easily create regular classes right inside of your diagram.
+     You can use those as property types or command argument types
+     Generated class automagically implements INotifyPropertyChanged interface, which makes it
+     compatible with other cool assets, libraries and frameworks
+
+    Moreover, you can now use any type which does not inherit from Unity Object as a type for ViewModel property
+     or command argument.
+
+  Registered Instances:
+    Subsystems now can export instances of ViewModels which will be shared around you application.
+     No more problems with transferring small pieces of data around your scenes. It's all done automagically
+     and only requires a few click in the diagram editor!
+
+    It also plays nicely with the inheritance, allowing you to
+     substitute certain instances with different implementations.
+
+    Finally, you can register several instances under different names,
+     and instantly get access to those in your controllers!
+
+Major Changes:
+
+  SIE
+
+    No more single instance elements!
+     Since you can now register any ViewModel instance in the subsystem,
+     you have ultimate control over your shared instances. That's why Single Instance Elements are removed from uFrame.
+     This also brings consistency into controller code, as now every command receives a sender.
+
+  Scene Transitions:
+    Scene transitions have been reworked to become as user-friendly as possible.
+     You can still use inspector to define linear transition logic.
+     But as soon as it comes to transitions based on command arguments / shared instances data,
+     you can easily do it in the code, by just overriding a couple of methods.
+     You can set scenes and scene manager settings with any condition you want.
+
+  Scene Persistence:
+    Save'n'Load functionality was greatly solidified. Now every user has an ability
+     to implement saving and loading without worrying too much about the low-level functionality.
+     ViewModel saving/loading is already there. But you also have an ability persist some of your view data
+     like transforms, states and so on.
+     You can access Read and Write methods in your View and operate over any data you want.
+
+  2-Way-Bindings
+    2-Way-Bindings were completely reworked and are now called Scene Properties.
+
+    Those little handy things allow you to access specific View information, like positions and distances.
+     Scene properties rely heavily on Observables. This means you get exceptional control over you performance.
+     You define how and when those things are calculated. The rest is automagically done by uFrame.
+
+  1.5 includes lots of other changes and bug fixes. And even more will come in the future versions. So stay tuned!
+
 1.41 ---
 Important Note: Element Inheritance,Property Types,Collections Types, Command Types and View links may be broken.  Double-check that they are correctly wired together.
 Added: Computed properties on view-models and controllers. Right-Click and choose "Computed By->{PropertyName}" on a Element Property.
