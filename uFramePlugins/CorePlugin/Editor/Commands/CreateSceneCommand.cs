@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using Invert.Core.GraphDesigner;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
@@ -29,7 +30,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
     {
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
-        var paths = uFrameEditor.CurrentProject.CurrentGraph.CodePathStrategy;
+        var paths = InvertGraphEditor.CurrentProject.CurrentGraph.CodePathStrategy;
         var sceneManagerData = node as SceneManagerViewModel;
 
         if (!Directory.Exists(paths.ScenesPath))

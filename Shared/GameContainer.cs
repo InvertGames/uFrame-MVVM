@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -242,7 +243,15 @@ public class GameContainer : IGameContainer
 
         public TBase ResolveRelation<TBase>(Type tfor, params object[] args)
         {
-            return (TBase)ResolveRelation(tfor, typeof (TBase),args);
+            try
+            {
+                return (TBase) ResolveRelation(tfor, typeof (TBase), args);
+            }
+            catch (InvalidCastException castIssue)
+            {
+                throw new Exception(string.Format("Resolve Relation couldn't cast to {0} from {1}", typeof(TBase).Name, tfor.Name));
+                return default(TBase);
+            }
         }
         public void InjectAll()
         {

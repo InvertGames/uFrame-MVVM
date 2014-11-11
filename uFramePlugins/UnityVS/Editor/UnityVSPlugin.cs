@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Invert.Core.GraphDesigner;
 using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
@@ -19,7 +20,7 @@ namespace Assets.uFrameComplete.uFrame.Editor.DiagramPlugins.UnityVS
 
         public override void Initialize(uFrameContainer container)
         {
-            uFrameEditor.HookCommand<IToolbarCommand>("SaveCommand", new HookCommand(() =>
+            InvertGraphEditor.HookCommand<IToolbarCommand>("SaveCommand", new HookCommand(() =>
             {
                     EditorApplication.ExecuteMenuItem("Visual Studio Tools/Generate Project Files");
             }));

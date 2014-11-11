@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame;
 using Invert.uFrame.Code.Bindings;
@@ -18,38 +19,11 @@ public class UFrameEditorPlugin : DiagramPlugin
         get { return -1; }
     }
 
-    public override bool Enabled
-    {
-        get { return true; }
-        set
-        {
 
-        }
-    }
     public override void Initialize(uFrameContainer container)
     {
 
-        container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
-
-        var typeContainer = uFrameEditor.TypesContainer;
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(int), Group = "", Label = "int", IsPrimitive = true }, "int");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(string), Group = "", Label = "string", IsPrimitive = true }, "string");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(decimal), Group = "", Label = "decimal", IsPrimitive = true }, "decimal");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(float), Group = "", Label = "float", IsPrimitive = true }, "float");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(bool), Group = "", Label = "bool", IsPrimitive = true }, "bool");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(char), Group = "", Label = "char", IsPrimitive = true }, "char");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(DateTime), Group = "", Label = "date", IsPrimitive = true }, "date");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(Vector2), Group = "", Label = "Vector2", IsPrimitive = true }, "Vector2");
-        typeContainer.RegisterInstance(new ElementItemType() { Type = typeof(Vector3), Group = "", Label = "Vector3", IsPrimitive = true }, "Vector3");
-
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelPropertyTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ClassPropertyTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ClassCollectionTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = true, PrimitiveOnly = false }, "ViewModelCommandTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ViewModelCollectionTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false }, "ComputedPropertyTypeSelection");
-        container.RegisterInstance<IEditorCommand>(new SelectItemTypeCommand() { AllowNone = false, PrimitiveOnly = false, IncludeUnityEngine = true }, "StateMachineVariableTypeSelection");
-
+        //container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneSelectionCommand(), "AddToSceneSelection");
