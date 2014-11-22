@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #if DLL
 
-namespace Invert.uFrame
+namespace Invert.Core
 {
     public interface IUFrameContainer
 #else
@@ -110,6 +110,7 @@ public interface IGameContainer
         object Resolve(Type baseType, string name = null, bool requireInstance = false, params object[] constructorArgs);
 
         object ResolveRelation(Type tfor, Type tbase, params object[] arg);
+        void RegisterRelation(Type tfor, Type tbase, Type tconcrete);
     }
 
 #if DLL

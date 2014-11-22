@@ -1,7 +1,7 @@
 using System;
 
 #if DLL
-namespace Invert.uFrame
+namespace Invert.Core
 {
 #endif
 /// <summary>

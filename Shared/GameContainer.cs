@@ -7,7 +7,7 @@ using System.Reflection;
 
 #if DLL
 
-namespace Invert.uFrame
+namespace Invert.Core
 {
 #endif
 
@@ -268,6 +268,11 @@ public class GameContainer : IGameContainer
         public void RegisterRelation<TFor, TBase, TConcrete>()
         {
             RelationshipMappings[typeof (TFor), typeof (TBase)] = typeof (TConcrete);
+        }
+
+        public void RegisterRelation(Type tfor, Type tbase, Type tconcrete)
+        {
+            RelationshipMappings[tfor, tbase] = tconcrete;
         }
         public object ResolveRelation(Type tfor, Type tbase, params object[] args)
         {

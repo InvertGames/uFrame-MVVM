@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame;

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Invert.Common;
 using Invert.Common.UI;
+using Invert.Core.GraphDesigner;
 using Invert.uFrame;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ViewModels;
