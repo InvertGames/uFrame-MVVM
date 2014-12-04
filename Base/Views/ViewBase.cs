@@ -493,8 +493,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
         Initialized = true;
     }
+    [NonSerialized]
+    private bool _initialized = false;
 
-    public bool Initialized { get; set; }
+    public bool Initialized {
+        get { return _initialized; } 
+        set { _initialized = value; }
+    }
 
     /// <summary>
     /// When this view is destroy it will decrememnt the ViewModel's reference count.  If the reference count reaches 0
@@ -502,6 +507,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void OnDestroy()
     {
+         Initialized = false; // Some weird bug where unity keeps this value at true between runs
         SceneManager.UnRegisterView(this);
         Unbind();
         var pv = ParentView;
@@ -518,7 +524,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
     public virtual void OnEnable()
     {
-
+        Initialized = false; // Some weird bug where unity keeps this value at true between runs
         if (_shouldRebindOnEnable)
             SetupBindings();
     }

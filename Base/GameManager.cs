@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     /// </summary>
     public static SceneManager ActiveSceneManager
     {
-        get { return _activeSceneManager ?? Instance._Start; }
+        get { return _activeSceneManager ?? (_activeSceneManager = Instance._Start) ?? (_activeSceneManager = UnityEngine.Object.FindObjectOfType<SceneManager>()); }
         private set { _activeSceneManager = value; }
     }
 

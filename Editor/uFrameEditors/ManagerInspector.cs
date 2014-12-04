@@ -74,7 +74,7 @@ public abstract class ManagerInspector<TManaged> : uFrameInspector
     protected virtual void OnAdd(string typeName)
     {
         var go = new GameObject(typeName);
-        go.AddComponent(typeName);
+        UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(go, "Assets/uFrameComplete/uFrame/Editor/uFrameEditors/ManagerInspector.cs (77,9)", typeName);
         go.transform.parent = Target.transform;
         //Selection.objects = new Object[] { go };
     }

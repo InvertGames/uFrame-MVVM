@@ -236,6 +236,10 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller)
     {
+        if (viewBase.InjectView)
+        {
+            Container.Inject(viewBase);
+        }
         // Attempt to resolve it by the identifier 
         var contextViewModel = Container.Resolve<ViewModel>(viewBase.Identifier);
         // If it doesn't resolve by the identifier we need to create it
