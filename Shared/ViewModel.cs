@@ -34,7 +34,9 @@ public abstract class ViewModel
 
     protected ViewModel()
     {
+#if !UNITY_EDITOR
         Controller = null;
+#endif
     }
 
 

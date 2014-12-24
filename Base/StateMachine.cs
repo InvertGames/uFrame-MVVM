@@ -9,7 +9,11 @@ namespace Invert.StateMachine
     public class StateMachine : P<State>
     {
         private List<State> _states;
- 
+
+        public StateMachine()
+        {
+        }
+
         public StateMachine(ViewModel owner, string propertyName) : base(owner, propertyName)
         {
             Compose();

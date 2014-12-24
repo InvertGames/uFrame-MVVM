@@ -42,7 +42,7 @@ public class SceneManagerInspector : uFrameInspector
                 {
                     if (viewBase == null) continue;
                     if (GUIHelpers.DoTriggerButton(new UFStyle(viewBase.Identifier + ": " + viewBase.name,
-                        UBStyles.EventButtonStyleSmall, null, null, null, false,
+                        ElementDesignerStyles.EventButtonStyleSmall, null, null, null, false,
                         TextAnchor.MiddleCenter) { }))
                     {
                         //var fileStorage = new TextAssetStorage();
@@ -63,7 +63,7 @@ public class SceneManagerInspector : uFrameInspector
                 {
                     if (viewBase == null) continue;
                     if (GUIHelpers.DoTriggerButton(new UFStyle(viewBase.Identifier + ": " + viewBase.GetType().Name,
-                        UBStyles.EventButtonStyleSmall, null, null, null, false,
+                        ElementDesignerStyles.EventButtonStyleSmall, null, null, null, false,
                         TextAnchor.MiddleCenter) { }))
                     {
                         //var fileStorage = new TextAssetStorage();

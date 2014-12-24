@@ -30,7 +30,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
     {
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
-        var paths = InvertGraphEditor.CurrentProject.CurrentGraph.CodePathStrategy;
+        var paths = node.GraphItemObject.Graph.CodePathStrategy;
         var sceneManagerData = node as SceneManagerViewModel;
 
         if (!Directory.Exists(paths.ScenesPath))

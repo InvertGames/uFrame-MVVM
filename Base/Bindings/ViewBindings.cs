@@ -347,19 +347,19 @@ public static class ViewBindings
     /// </summary>
     /// <typeparam name="TBindingType"></typeparam>
     /// <param name="bindable"></param>
-    /// <param name="sourceProperty"></param>
+    /// <param name="propertyChanged"></param>
     /// <param name="targetSetter"></param>
     /// <param name="onlyWhenChanged"></param>
     /// <returns></returns>
-    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, P<TBindingType> sourceProperty, Action<TBindingType> targetSetter, bool onlyWhenChanged = true)
+    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, P<TBindingType> property, Action<TBindingType> propertyChanged, bool onlyWhenChanged = true)
     {
-        targetSetter(sourceProperty.Value);
+        propertyChanged(property.Value);
         if (onlyWhenChanged)
         {
-            return bindable.AddBinding(sourceProperty.Where(p => sourceProperty.LastValue != sourceProperty.ObjectValue).Subscribe(targetSetter));
+            return bindable.AddBinding(property.Where(p => property.LastValue != property.ObjectValue).Subscribe(propertyChanged));
         }
 
-        return bindable.AddBinding(sourceProperty.Subscribe(targetSetter));
+        return bindable.AddBinding(property.Subscribe(propertyChanged));
     }
 
     /// <summary>
@@ -471,6 +471,32 @@ public static class ViewBindings
     }
 
     public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase view,
+        ModelCollection<TCollectionType> viewModelCollection, Func<ViewModel,ViewBase> createView,
+        Action<ViewBase> added,
+        Action<ViewBase> removed,
+        Transform parent,
+        bool viewFirst = false)
+    {
+        var binding = new ModelViewModelCollectionBinding()
+        {
+            SourceView = view,
+            ModelPropertySelector = () => viewModelCollection
+        };
+        binding.SetParent(parent);
+        binding.SetAddHandler(added);
+        binding.SetRemoveHandler(removed);
+        binding.SetCreateHandler(createView);
+        if (viewFirst)
+        {
+            binding.ViewFirst();
+        }
+        view.AddBinding(binding);
+        binding.Bind();
+
+        return binding;
+    }
+
+    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase view,
         Func<ModelCollection<TCollectionType>> viewModelCollection, Func<ViewModel,
         ViewBase> createView,
         Action<ViewBase> added,
@@ -492,33 +518,6 @@ public static class ViewBindings
         {
             binding.ViewFirst();
         }
-        binding.Bind();
-
-        return binding;
-    }
-
-    public static ModelViewModelCollectionBinding BindToViewCollection<TCollectionType>(this ViewBase view,
-        ModelCollection<TCollectionType> viewModelCollection, Func<ViewModel,
-        ViewBase> createView,
-        Action<ViewBase> added,
-        Action<ViewBase> removed,
-        Transform parent,
-        bool viewFirst = false)
-    {
-        var binding = new ModelViewModelCollectionBinding()
-        {
-            SourceView = view,
-            ModelPropertySelector = () => viewModelCollection
-        };
-        binding.SetParent(parent);
-        binding.SetAddHandler(added);
-        binding.SetRemoveHandler(removed);
-        binding.SetCreateHandler(createView);
-        if (viewFirst)
-        {
-            binding.ViewFirst();
-        }
-        view.AddBinding(binding);
         binding.Bind();
 
         return binding;

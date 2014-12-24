@@ -11,8 +11,9 @@ using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UniRx;
+using UnityEditor;
 using UnityEngine;
-
+[InitializeOnLoad]
 public class UFrameEditorPlugin : DiagramPlugin
 {
     public override decimal LoadPriority
@@ -20,10 +21,16 @@ public class UFrameEditorPlugin : DiagramPlugin
         get { return -1; }
     }
 
+    static UFrameEditorPlugin()
+    {
+        InvertApplication.CachedAssemblies.Add(typeof(ViewModel).Assembly);
+        InvertApplication.CachedAssemblies.Add(typeof(UFrameEditorPlugin).Assembly);
+        UnityEngine.Debug.Log("Added assembly");
+    }
 
     public override void Initialize(uFrameContainer container)
     {
-
+        Debug.Log("Loaded editr plugin");
         //container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");
