@@ -5,14 +5,11 @@ using System.Text;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
-using Invert.uFrame;
-using Invert.uFrame.Code.Bindings;
 using Invert.uFrame.Editor;
-using Invert.uFrame.Editor.ElementDesigner;
-using Invert.uFrame.Editor.ElementDesigner.Commands;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
+
 [InitializeOnLoad]
 public class UFrameEditorPlugin : DiagramPlugin
 {
@@ -25,19 +22,16 @@ public class UFrameEditorPlugin : DiagramPlugin
     {
         InvertApplication.CachedAssemblies.Add(typeof(ViewModel).Assembly);
         InvertApplication.CachedAssemblies.Add(typeof(UFrameEditorPlugin).Assembly);
-        UnityEngine.Debug.Log("Added assembly");
+        Debug.Log("Added assembly");
     }
 
     public override void Initialize(uFrameContainer container)
     {
-        Debug.Log("Loaded editr plugin");
-        //container.RegisterInstance<IEditorCommand>(new FindInSceneCommand(), "ViewDoubleClick");
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneSelectionCommand(), "AddToSceneSelection");
         container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneCommand(), "AddViewToScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneSelectionCommand(), "AddViewToSceneSelection");
-
         container.RegisterInstance<IUFrameTypeProvider>(new uFrameTypeProvider());
     }
 
@@ -214,4 +208,37 @@ public class UFrameEditorPlugin : DiagramPlugin
         }
     }
 
+}
+
+public class uFrameTemplates : DiagramPlugin
+{
+    // Make sure this plugin loads after the framework plugin loads
+    public override decimal LoadPriority
+    {
+        get { return 1; }
+    }
+
+   
+    private GameFramework Framework { get; set; }
+
+    public override void Initialize(uFrameContainer container)
+    {
+        // Grab a reference to the main framework graphs plugin
+        Framework = container.Resolve<GameFramework>();
+        // Register the code templates
+        Framework.Element.AddCodeTemplate<ViewModelTemplate>();
+        Framework.Element.AddCodeTemplate<ControllerTemplate>();
+        Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
+        Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
+        Framework.ElementView.AddCodeTemplate<ViewTemplate>();
+        Framework.ElementViewComponent.AddCodeTemplate<ViewComponentTemplate>();
+
+        // Register our bindable methods
+        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertyChildItem).DisplayName = " Changed";
+        container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionChildItem).DisplayName = " Changed";
+        container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionChildItem)
+            .DisplayName = " Changed With View";
+        //container.RegisterGraphItem<SubsystemNode, SubsystemNodeViewModel, SubsystemNodeDrawer>();
+
+    }
 }

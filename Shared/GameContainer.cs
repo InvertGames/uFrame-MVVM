@@ -237,7 +237,14 @@ public class GameContainer : IGameContainer
                 }
 
             }
-            var args = maxParameters.Select(p => Resolve(p.ParameterType)).ToArray();
+            var args = maxParameters.Select(p =>
+            {
+                if (p.ParameterType.IsArray)
+                {
+                    return ResolveAll(p.ParameterType);
+                }
+                return Resolve(p.ParameterType) ?? Resolve(p.ParameterType,p.Name);
+            }).ToArray();
             return Activator.CreateInstance(type, args);
         }
 

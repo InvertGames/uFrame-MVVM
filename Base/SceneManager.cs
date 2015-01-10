@@ -376,6 +376,7 @@ public static class ContainerExtensions
 
     public static void RegisterViewModelController<TController, TViewModel>(this IGameContainer container, TController controller) where TController : Controller
     {
+        
         // Nothing yet
     }
 }
