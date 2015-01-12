@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -234,10 +235,20 @@ public class uFrameTemplates : DiagramPlugin
         Framework.ElementViewComponent.AddCodeTemplate<ViewComponentTemplate>();
 
         // Register our bindable methods
-        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertyChildItem).DisplayName = " Changed";
-        container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionChildItem).DisplayName = " Changed";
+        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertyChildItem).DisplayFormat = "{0}Changed";
+        container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionChildItem).DisplayFormat = "{0}Changed";
         container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionChildItem)
-            .DisplayName = " Changed With View";
+            .DisplayFormat = " Changed With View";
+
+        container.AddBindingMethod(typeof (ViewBindings), "BindCommandExecuted", _ => _ is CommandChildItem)
+            .SetNameFormat("{0}Executed")
+            .ImplementWith(args =>
+            {
+                args.Method.Comments.Add(new CodeCommentStatement("BLABLABLABLA"));
+            })
+            ;
+        
+
         //container.RegisterGraphItem<SubsystemNode, SubsystemNodeViewModel, SubsystemNodeDrawer>();
 
     }

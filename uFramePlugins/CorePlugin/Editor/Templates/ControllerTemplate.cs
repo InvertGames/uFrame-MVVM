@@ -1,5 +1,6 @@
 using System.CodeDom;
 using System.Linq;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.Editor;
 using uFrame.Graphs;
@@ -37,19 +38,6 @@ public class ControllerTemplate : Controller, IClassTemplate<ElementNode>
         return null;
     }
 
-    //[TemplateMethod("Create{0}", MemberGeneratorLocation.DesignerFile, false)]
-    //public ViewModel CreateElementWithProperties()
-    //{
-    //    foreach (var item in Ctx.Data.Properties)
-    //    {
-    //        Ctx.CurrentMethod.Parameters.Add(
-    //            new CodeParameterDeclarationExpression(item.RelatedTypeName.ToCodeReference(), item.Name));
-    //    }
-    //    Ctx.SetType(NameAsViewModel);
-    //    Ctx._("return (({0})(this.Create()))", NameAsViewModel);
-    //    return null;
-    //}
-
     [TemplateMethod( MemberGeneratorLocation.DesignerFile, false)]
     public override ViewModel CreateEmpty()
     {
@@ -80,3 +68,32 @@ public class ControllerTemplate : Controller, IClassTemplate<ElementNode>
 
     }
 }
+
+//public class MyGeneratorsPlugin : DiagramPlugin
+//{
+//    public override void Initialize(uFrameContainer container)
+//    {
+//        var uFramePlugin = container.Resolve<GameFramework>();
+//        uFramePlugin.State.AddCodeTemplate<StateViewComponent>();
+//    }
+//}
+//[TemplateClass("StateComponents", MemberGeneratorLocation.Both, ClassNameFormat = "{0}StateComponent")]
+//public class StateViewComponent : ViewComponent, IClassTemplate<StateNode>
+//{
+//    #region Template Stuff
+//    public void TemplateSetup()
+//    {
+        
+//    }
+
+//    public TemplateContext<StateNode> Ctx { get; set; }
+//    #endregion
+
+//    public override void Bind(ViewBase view)
+//    {
+//        base.Bind(view);
+//        Ctx._comment("This comment will be inside the generated Bind method");
+
+//    }
+//}
+

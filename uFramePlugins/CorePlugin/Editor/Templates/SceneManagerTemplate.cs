@@ -4,7 +4,7 @@ using Invert.Core.GraphDesigner;
 using Invert.uFrame.Editor;
 using uFrame.Graphs;
 
-[TemplateClass("SceneManagers", "{0}", MemberGeneratorLocation.Both)]
+[TemplateClass("SceneManagers", uFrameFormats.SCENE_MANAGER_FORMAT, MemberGeneratorLocation.Both)]
 public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNode>
 {
     public void TemplateSetup()
@@ -16,6 +16,7 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
             if (to == null) continue;
             Ctx._("public {0} {1}Transition = new {0}();",to.Name.AsSceneManagerSettings(), transition.Name.AsField());
         }
+        if (Ctx.IsDesignerFile)
         Ctx._("public {0} {1} = new {0}();", Ctx.Data.Name.AsSceneManagerSettings(), Ctx.Data.Name.AsSceneManagerSettings().AsField());
 
         Ctx.AddIterator("InstanceProperty", node=>node.ImportedItems);
@@ -123,7 +124,7 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
     }
 
     [TemplateMethod("{0}TransitionComplete", MemberGeneratorLocation.Both,true)]
-    public virtual void TransitionComplete(FPSMainMenuManager sceneManager)
+    public virtual void TransitionComplete(object sceneManager)
     {
         //if (!Ctx.IsDesignerFile) return;
         var transition = Ctx.ItemAs<SceneManagerTransitionReference>();

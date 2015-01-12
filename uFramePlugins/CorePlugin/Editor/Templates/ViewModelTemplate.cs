@@ -17,13 +17,18 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     {
         Ctx.AddIterator("ResetComputed", (d) => d.ComputedProperties);
         Ctx.AddIterator("Compute", (d) => d.ComputedProperties);
-        Ctx.AddIterator("GetComputedDependents", (d) => d.ComputedProperties);
+        Ctx.AddIterator("ComputedDependents", (d) => d.ComputedProperties);
         Ctx.AddIterator("ViewModelProperty", (d) => d.AllProperties);
         Ctx.AddIterator("ViewModelValueProperty", (d) => d.AllProperties);
         Ctx.AddIterator("CollectionProperty", (d) => d.Collections);
         Ctx.AddIterator("CommandItems", (d) => d.Commands);
         Ctx.AddIterator("CommandMethod", (d) => d.Commands);
         Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
+
+        foreach (var item in Ctx.Data.ComputedProperties)
+        {
+            Ctx.CurrentDecleration._private_(typeof(IDisposable), "_{0}Disposable", item.Name);
+        }
     }
     #endregion
 
@@ -47,6 +52,10 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         {
             Ctx._("{0} = new ModelCollection<{1}>(this, \"{0}\")", property.Name.AsField(), property.RelatedTypeName);
             Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
+        }
+        foreach (var item in Ctx.Data.ComputedProperties)
+        {
+            Ctx._("Reset{0}()", item.Name);
         }
 
     }
@@ -135,7 +144,37 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     }
 
     #endregion
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
+    public virtual IEnumerable<IObservableProperty> ComputedDependents()
+    {
+        var computed = Ctx.ItemAs<ElementComputedPropertyNode>();
+        foreach (var item in computed.InputsFrom<PropertyChildItem>())
+        {
+           
 
+            var relatedNode = item.RelatedTypeNode;
+            if (relatedNode != null)
+            {
+                var conditionStatements = Ctx._if("{0}.Value != null", item.Name.AsSubscribableProperty())
+                    .TrueStatements;
+                foreach (var p in computed.Properties.Where(p => p.SourceItem.Node == relatedNode))
+                {
+                    conditionStatements._("yield return {0}.Value.{1}", item.Name.AsSubscribableProperty(), p.Name.AsSubscribableProperty());
+                }
+            }
+            else
+            {
+                Ctx._("yield return {0}", item.Name.AsSubscribableField());
+            }
+            
+
+        }
+       
+
+        Ctx._("yield break");
+
+        yield break;
+    }
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Reset{0}")]
     public virtual void ResetComputed()
     {
@@ -151,29 +190,14 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Compute{0}")]
     public virtual Boolean Compute()
     {
+        Debug.Log("TEMPLATE COMPUTED");
         var type = Ctx.ItemAs<ElementComputedPropertyNode>().RelatedTypeName;
         Ctx.SetType(type);
         Ctx._("return default({0})", type);
         return false;
     }
 
-    [TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
-    public virtual IEnumerable<IObservableProperty> GetComputedDependents()
-    {
-        var computed = Ctx.ItemAs<ElementComputedPropertyNode>();
-        foreach (var item in computed.InputsFrom<PropertyChildItem>())
-        {
-            Ctx._("yield return {0}", item.Name.AsSubscribableField());
-        }
-        foreach (var item in computed.Properties)
-        {
-            Ctx._("yield return {0}.Value.{1}", computed.Name.AsSubscribableProperty(),
-                item.Name.AsSubscribableProperty());
-        }
-        Ctx._("yield break");
-
-        yield break;
-    }
+ 
 
     public static Dictionary<Type, string> AcceptableTypes = new Dictionary<Type, string>
     {

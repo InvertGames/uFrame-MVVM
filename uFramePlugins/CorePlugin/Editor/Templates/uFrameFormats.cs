@@ -10,7 +10,7 @@ namespace uFrame.Graphs
         public const string VIEW_MODEL_FORMAT = "{0}ViewModel";
         public const string VIEW_FORMAT = "{0}View";
         public const string VIEW_COMPONENT_FORMAT = "{0}ViewComponent";
-        public const string SCENE_MANAGER_FORMAT = "{0}SceneManager";
+        public const string SCENE_MANAGER_FORMAT = "{0}";
         public const string SCENE_MANAGER_SETTINGS_FORMAT = "{0}Settings";
         public const string CONTROLLER_FORMAT = "{0}Controller";
 

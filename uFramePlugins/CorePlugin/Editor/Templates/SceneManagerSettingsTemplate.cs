@@ -13,8 +13,8 @@ public sealed class SceneManagerSettingsTemplate : IClassTemplate<SceneManagerNo
     public void TemplateSetup()
     {
         this.Ctx.AddAttribute(typeof (SerializableAttribute));
+        if (Ctx.IsDesignerFile)
         Ctx.CurrentDecleration._public_(typeof (string[]), "_Scenes");
-
     }
 
     public TemplateContext<SceneManagerNode> Ctx { get; set; }

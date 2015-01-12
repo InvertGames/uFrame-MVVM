@@ -15,7 +15,8 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     {
         foreach (var item in Ctx.Data.Element.Properties.Where(p => p.RelatedTypeName != null))
         {
-            var field = Ctx.CurrentDecleration._private_(item.Type, item.Name.AsField());
+            var field = Ctx.CurrentDecleration._private_(item.RelatedTypeName, item.Name.AsField());
+            field.Comments.Add(new CodeCommentStatement(item.RelatedTypeName));
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof (UFGroup)),
                 new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof (HideInInspector))));
@@ -67,20 +68,34 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     public override void Bind()
     {
         if (!Ctx.IsDesignerFile) return;
-        //foreach (var property in this.viewp)
+        // Let the Dll Know about uFrame Binding Specific Types
+        uFrameBindingType.ObservablePropertyType = typeof (IObservableProperty);
+        uFrameBindingType.UFGroupType = typeof (UFGroup);
+        // For each binding lets do some magic
         foreach (var item in Ctx.Data.Bindings)
         {
-            
-            
+            // Cast the source of our binding (ie: Property, Collection, Command..etc)
             var source = item.SourceItem as ITypedItem;
+            // Create a boolean field for each property that has a binding this will serve the condition
+            // in the bind method to turn the binding on or off.
             var bindingField = Ctx.CurrentDecleration._public_(typeof (bool), "_Bind{0}", source.Name);
+            // Add a toggle group attribute to it, this hides and shows anything within the same group
             bindingField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFToggleGroup)),
               new CodeAttributeArgument(new CodePrimitiveExpression(source.Name))));
+            // Hide them in the insepctor, our custom 'ViewInspector' class will handle them manually
             bindingField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
+            // Create the binding condition
             var bindingCondition = Ctx._if("{0}", bindingField.Name);
+            // Grab the uFrame Binding Type
             var bindingType = item.BindingType;
-            var bindingStatement = ViewBindingExtensions.CreateBindingSignature(Ctx.CurrentDecleration, bindingType.MethodInfo, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data.Element.Name, source.Name);
+            // Create the binding signature based on the Method Info
+            var bindingStatement = bindingType.CreateBindingSignature(
+                Ctx.CurrentDecleration, 
+                _ => source.RelatedTypeName.ToCodeReference(), 
+                Ctx.Data, source);
+            // Add the binding statement to the condition
             bindingCondition.TrueStatements.Add(bindingStatement);
+            // Add the bindingCondition to this method
             Ctx.CurrentStatements.Add(bindingCondition);
         }
         //var bindingStatement = ViewBindingExtensions.CreateBindingSignature(Ctx.CurrentDecleration,
@@ -106,79 +121,6 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
 }
 public static class ViewBindingExtensions
 {
-    public static CodeExpression CreateBindingSignature(CodeTypeDeclaration context, MethodInfo info, Func<Type, CodeTypeReference> convertGenericParameter, string vmName, string propertyName)
-    {
-        var methodInvoke = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), info.Name);
-        var isExtensionMethod = info.IsDefined(typeof (ExtensionAttribute), true);
-
-        for (int index = 0; index < info.GetParameters().Length; index++)
-        {
-            var parameter = info.GetParameters()[index];
-            if (isExtensionMethod && index == 0) continue;
-
-            var genericArguments = parameter.ParameterType.GetGenericArguments();
-            if (typeof (Delegate).IsAssignableFrom(parameter.ParameterType))
-            {
-                var method = CreateDelegateMethod(convertGenericParameter, parameter, genericArguments, propertyName);
-
-                methodInvoke.Parameters.Add(new CodeSnippetExpression(string.Format("this.{0}", method.Name)));
-                context.Members.Add(method);
-            }
-            else if (typeof(IObservableProperty).IsAssignableFrom(parameter.ParameterType))
-            {
-                methodInvoke.Parameters.Add(new CodeSnippetExpression(string.Format("this.{0}.{1}", vmName, propertyName)));
-            }
-            else
-            {
-                var field = context._private_(parameter.ParameterType, "_{0}{1}", propertyName, parameter.Name);
-                field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)),
-              new CodeAttributeArgument(new CodePrimitiveExpression(propertyName))));
-                field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof (SerializeField))));
-                methodInvoke.Parameters.Add(new CodeSnippetExpression(field.Name));
-            }
-        }
-        return methodInvoke;
-    }
-
-    private static CodeMemberMethod CreateDelegateMethod(Func<Type, CodeTypeReference> convertGenericParameter, ParameterInfo parameter,
-        Type[] genericArguments,string propertyName)
-    {
-        var method = new CodeMemberMethod()
-        {
-            Name = string.Format("{0}{1}{2}",propertyName, parameter.Name.Substring(0,1).ToUpper(),parameter.Name.Substring(1)),
-            Attributes = MemberAttributes.Public
-        };
-        var isFunc = parameter.ParameterType.Name.Contains("Func");
-        if (isFunc)
-        {
-            var returnType = genericArguments.LastOrDefault();
-            if (returnType != null)
-            {
-                method.ReturnType = new CodeTypeReference(returnType);
-            }
-        }
-        var index = 1;
-        foreach (var item in genericArguments)
-        {
-            if (isFunc && item == genericArguments.Last()) continue;
-            var type = item;
-            if (item.IsGenericParameter)
-            {
-                method.Parameters.Add(new CodeParameterDeclarationExpression(convertGenericParameter(item), string.Format("arg{0}", index)));
-            }
-            else
-            {
-                method.Parameters.Add(new CodeParameterDeclarationExpression(type, string.Format("arg{0}", index)));
-            }
-            
-        }
-        return method;
-    }
-
-    public static void CreateActionSignature(Type actionType)
-    {
-        
-    }
 }
 //public interface IElementViewBinding
 //{
