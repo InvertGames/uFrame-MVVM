@@ -1,71 +1,37 @@
+using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
+using Invert.uFrame.Editor;
 
 [TemplateClass("Machines","{0}",MemberGeneratorLocation.DesignerFile)]
-public class StateTemplate : Invert.StateMachine.State
+public class StateTemplate : Invert.StateMachine.State, IClassTemplate<StateNode>
 {
-
-    private StateTransition _BeginFiring;
-
-    private StateTransition _OnReload;
-
-    private StateTransition _OnEmpty;
-
-    public virtual StateTransition BeginFiring
+    public void TemplateSetup()
     {
-        get
-        {
-            return this._BeginFiring;
-        }
-        set
-        {
-            _BeginFiring = value;
-        }
+        Ctx.TryAddNamespace("Invert.StateMachine");
+
+        Ctx.AddIterator("TransitionProperty",_=>_.Transitions);
+        Ctx.AddIterator("TransitionInvoker", _ => _.Transitions);
     }
 
-    public virtual StateTransition OnReload
-    {
-        get
-        {
-            return this._OnReload;
-        }
-        set
-        {
-            _OnReload = value;
-        }
-    }
+    public TemplateContext<StateNode> Ctx { get; set; }
 
-    public virtual StateTransition OnEmpty
-    {
-        get
-        {
-            return this._OnEmpty;
-        }
-        set
-        {
-            _OnEmpty = value;
-        }
-    }
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnlyWithBackingField)]
+    public StateTransition TransitionProperty { get; set; }
 
+    [TemplateProperty]
     public override string Name
     {
         get
         {
+            Ctx._("return \"{0}\"",Ctx.Data.Name);
             return "Idle";
         }
     }
 
-    private void BeginFiringTransition()
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "{0}Transition")]
+    public void TransitionInvoker()
     {
-        this.Transition(this.BeginFiring);
+        Ctx._("this.Transition(this.{0})",Ctx.Item.Name);
     }
 
-    private void OnReloadTransition()
-    {
-        this.Transition(this.OnReload);
-    }
-
-    private void OnEmptyTransition()
-    {
-        this.Transition(this.OnEmpty);
-    }
 }

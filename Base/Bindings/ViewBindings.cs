@@ -346,22 +346,28 @@ public static class ViewBindings
     /// Binds a property to a view, this is the standard property binding extension method.
     /// </summary>
     /// <typeparam name="TBindingType"></typeparam>
+    /// <param name="property"></param>
     /// <param name="bindable"></param>
-    /// <param name="propertyChanged"></param>
-    /// <param name="targetSetter"></param>
+    /// <param name="changed"></param>
     /// <param name="onlyWhenChanged"></param>
     /// <returns></returns>
-    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, P<TBindingType> property, Action<TBindingType> propertyChanged, bool onlyWhenChanged = true)
+    public static IDisposable BindProperty<TBindingType>(this IBindable bindable, P<TBindingType> property, Action<TBindingType> changed, bool onlyWhenChanged = true)
     {
-        propertyChanged(property.Value);
+        changed(property.Value);
         if (onlyWhenChanged)
         {
-            return bindable.AddBinding(property.Where(p => property.LastValue != property.ObjectValue).Subscribe(propertyChanged));
+            return bindable.AddBinding(property.Where(p => property.LastValue != property.ObjectValue).Subscribe(changed));
         }
 
-        return bindable.AddBinding(property.Subscribe(propertyChanged));
+        return bindable.AddBinding(property.Subscribe(changed));
     }
 
+    public static IDisposable BindEnum<TBindingType>(this IBindable bindable, P<TBindingType> property,
+        Action<TBindingType> enumChanged, Action<TBindingType> enumChanged2)
+    {
+
+        return null;
+    }
     /// <summary>
     /// Binds to a commands execution and is diposed with the bindable
     /// </summary>

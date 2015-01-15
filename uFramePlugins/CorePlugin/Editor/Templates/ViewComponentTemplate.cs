@@ -1,4 +1,5 @@
 using Invert.Core.GraphDesigner;
+using Invert.StateMachine;
 using Invert.uFrame.Editor;
 using uFrame.Graphs;
 
@@ -12,3 +13,4 @@ public class ViewComponentTemplate : ViewComponent,IClassTemplate<ElementViewCom
 
     public TemplateContext<ElementViewComponentNode> Ctx { get; set; }
 }
+

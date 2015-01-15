@@ -1,11 +1,12 @@
 using Invert.Core.GraphDesigner;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
-public class AddViewToSceneCommand : EditorCommand<ViewNodeViewModel>, IDiagramNodeCommand
+public class AddViewToSceneCommand : EditorCommand<ElementViewNode>, IDiagramNodeCommand
 {
     public override string Group
     {
@@ -22,11 +23,10 @@ public class AddViewToSceneCommand : EditorCommand<ViewNodeViewModel>, IDiagramN
         get { return "Add To/Scene"; }
     }
 
-    public override void Perform(ViewNodeViewModel node)
+    public override void Perform(ElementViewNode view)
     {
      
-        var viewNode = node as ViewNodeViewModel;
-        var view = viewNode.GraphItem;
+        
         if (view == null) return;
 
         if (view.CurrentType == null)
@@ -45,10 +45,10 @@ public class AddViewToSceneCommand : EditorCommand<ViewNodeViewModel>, IDiagramN
         get { return true; }
     }
 
-    public override string CanPerform(ViewNodeViewModel node)
+    public override string CanPerform(ElementViewNode node)
     {
         if (node == null) return "Must be a valid view node.";
-        if (node.GraphItem.CurrentType == null) return "You must compile this view first";
+        if (node.CurrentType == null) return "You must compile this view first";
         return null;
     }
 }

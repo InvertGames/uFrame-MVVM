@@ -1,10 +1,11 @@
 using Invert.Core.GraphDesigner;
+using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
 using Invert.uFrame.Editor.ViewModels;
 using UnityEditor;
 
-public class AddViewToSceneSelectionCommand : EditorCommand<DiagramNodeViewModel>, IDiagramNodeCommand
+public class AddViewToSceneSelectionCommand : EditorCommand<ElementViewNode>, IDiagramNodeCommand
 {
     public override string Name
     {
@@ -16,10 +17,9 @@ public class AddViewToSceneSelectionCommand : EditorCommand<DiagramNodeViewModel
         get { return "Add To/Selection"; }
     }
 
-    public override void Perform(DiagramNodeViewModel node)
+    public override void Perform(ElementViewNode view)
     {
     
-        var view = node.GraphItemObject as ViewData;
         if (view == null) return;
 
         if (view.CurrentType == null)
@@ -31,10 +31,11 @@ public class AddViewToSceneSelectionCommand : EditorCommand<DiagramNodeViewModel
         Selection.activeGameObject.AddComponent(view.CurrentType);
     }
 
-    public override string CanPerform(DiagramNodeViewModel node)
+    public override string CanPerform(ElementViewNode node)
     {
-        if (node is ViewNodeViewModel) return null;
+        
         if (Selection.activeGameObject == null) return "No selection currently active.";
+        if (node != null) return null;
         return "Must be a scene manager to perform this action.";
     }
 }

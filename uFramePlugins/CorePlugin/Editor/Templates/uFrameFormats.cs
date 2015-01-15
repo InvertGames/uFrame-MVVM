@@ -8,7 +8,7 @@ namespace uFrame.Graphs
     public static class uFrameFormats
     {
         public const string VIEW_MODEL_FORMAT = "{0}ViewModel";
-        public const string VIEW_FORMAT = "{0}View";
+        public const string VIEW_FORMAT = "{0}";
         public const string VIEW_COMPONENT_FORMAT = "{0}ViewComponent";
         public const string SCENE_MANAGER_FORMAT = "{0}";
         public const string SCENE_MANAGER_SETTINGS_FORMAT = "{0}Settings";

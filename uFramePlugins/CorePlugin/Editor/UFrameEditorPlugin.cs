@@ -233,10 +233,13 @@ public class uFrameTemplates : DiagramPlugin
         Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
         Framework.ElementView.AddCodeTemplate<ViewTemplate>();
         Framework.ElementViewComponent.AddCodeTemplate<ViewComponentTemplate>();
+        //Framework.State.AddCodeTemplate<StateTemplate>();
+        //Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
 
         // Register our bindable methods
         container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertyChildItem).DisplayFormat = "{0}Changed";
         container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionChildItem).DisplayFormat = "{0}Changed";
+
         container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionChildItem)
             .DisplayFormat = " Changed With View";
 

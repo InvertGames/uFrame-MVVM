@@ -1,57 +1,88 @@
 using System.Collections.Generic;
+using System.Linq;
+using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
+using Invert.uFrame.Editor;
+using uFrame.Graphs;
 
 [TemplateClass("Machines","{0}",MemberGeneratorLocation.DesignerFile)]
-public class StateMachineTemplate : Invert.StateMachine.StateMachine
+public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemplate<StateMachineNode>
 {
+    public void TemplateSetup()
+    {
+        Ctx.TryAddNamespace("Invert.StateMachine");
+        Ctx.AddIterator("TriggerProperty", _ => _.Transitions);
+        Ctx.AddIterator("StateProperty", _ => _.States);
+    }
+
+    public TemplateContext<StateMachineNode> Ctx { get; set; }
+
     [TemplateConstructor(MemberGeneratorLocation.DesignerFile,"vm","propertyName")]
     public void StateMachineConstructor(ViewModel vm, string propertyName)
     {
 
     }
-    [TemplateProperty()]
+
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
     public override Invert.StateMachine.State StartState
     {
         get
         {
-            //return this.Idle;
+            Ctx._("return this.{0}",Ctx.Data.StartOutputSlot.OutputTo<StateNode>().Name);
             return null;
         }
     }
  
-    [TemplateProperty]
-    public virtual StateMachineTrigger FinishedReloading
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile,AutoFill = AutoFillType.NameOnlyWithBackingField)]
+    public virtual StateMachineTrigger TriggerProperty
     {
         get
         {
-            //if ((this._FinishedReloading == null))
-            //{
-            //    this._FinishedReloading = new StateMachineTrigger(this, "FinishedReloading");
-            //}
-            //return this._FinishedReloading;
+            Ctx._if("this.{0} == null", Ctx.Item.Name.AsField())
+                .TrueStatements
+                ._("this.{0} = new StateMachineTrigger(this , \"{1}\")",Ctx.Item.Name.AsField(),Ctx.Item.Name);
+
+//            Ctx._("return this.{0}", Ctx.Item.Name.AsField());
             return null;
         }
     }
 
 
-    [TemplateProperty]
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnlyWithBackingField)]
     public virtual State StateProperty
     {
         get
         {
-            //if ((this._Idle == null))
-            //{
-            //    this._Idle = new Idle();
-            //}
-            //return this._Idle;
+            Ctx.SetType(Ctx.Item.Name);
+            Ctx._if("this.{0} == null", Ctx.Item.Name.AsField())
+             .TrueStatements
+             ._("this.{0} = new {1}()", Ctx.Item.Name.AsField(), Ctx.Item.Name);
+
+//            Ctx._("return this.{0}", Ctx.Item.Name.AsField());
             return null;
         }
     }
 
-
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
     public override void Compose(List<State> states)
     {
         //base.Compose(states);
+        foreach (var state in Ctx.Data.States)
+        {
+            foreach (var transition in state.Transitions)
+            {
+                var to = transition.OutputTo<StateNode>();
+
+                Ctx._("{0}.{1} = new StateTransition(\"{1}\", {0}, {2})",state.Name,transition.Name,to.Name);
+            }
+            foreach (var transition in state.Transitions)
+            {
+                //var to = transition.OutputTo<StateNode>();
+                Ctx._("{0}.AddTrigger({1}, {0}.{1})",state.Name,transition.Name);
+            }
+            Ctx._("states.Add({0})",state.Name);
+
+        }
         //this.Idle.StateMachine = this;
         //Idle.BeginFiring = new StateTransition("BeginFiring", Idle, Firing);
         //Idle.OnReload = new StateTransition("OnReload", Idle, Reloading);
@@ -73,4 +104,6 @@ public class StateMachineTemplate : Invert.StateMachine.StateMachine
         //Empty.AddTrigger(OnReload, Empty.OnReload);
         //states.Add(Empty);
     }
+
+  
 }

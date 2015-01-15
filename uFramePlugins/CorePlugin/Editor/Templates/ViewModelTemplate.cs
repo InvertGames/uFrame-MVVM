@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.Editor;
 using uFrame.Graphs;
@@ -15,11 +16,22 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
     public void TemplateSetup()
     {
+        // Ensure the namespaces for each property type are property set up
+        
+        foreach (var property in Ctx.Data.AllProperties)
+        {
+            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+            if (type == null) continue;
+            Ctx.TryAddNamespace(type.Namespace);
+        }
+        StateMachineProperties = Ctx.Data.AllProperties.Where(p => (p.RelatedNode() is StateMachineNode)).ToArray();
+        ViewModelProperties = Ctx.Data.AllProperties.Where(p => !StateMachineProperties.Contains(p)).ToArray();
+         
         Ctx.AddIterator("ResetComputed", (d) => d.ComputedProperties);
         Ctx.AddIterator("Compute", (d) => d.ComputedProperties);
         Ctx.AddIterator("ComputedDependents", (d) => d.ComputedProperties);
-        Ctx.AddIterator("ViewModelProperty", (d) => d.AllProperties);
-        Ctx.AddIterator("ViewModelValueProperty", (d) => d.AllProperties);
+        Ctx.AddIterator("ViewModelProperty", (d) => ViewModelProperties);
+        Ctx.AddIterator("ViewModelValueProperty", (d) => ViewModelProperties);
         Ctx.AddIterator("CollectionProperty", (d) => d.Collections);
         Ctx.AddIterator("CommandItems", (d) => d.Commands);
         Ctx.AddIterator("CommandMethod", (d) => d.Commands);
@@ -30,6 +42,11 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             Ctx.CurrentDecleration._private_(typeof(IDisposable), "_{0}Disposable", item.Name);
         }
     }
+
+    public ITypedItem[] ViewModelProperties { get; set; }
+
+    public ITypedItem[] StateMachineProperties { get; set; }
+
     #endregion
 
     [TemplateConstructor(MemberGeneratorLocation.Both, "controller", "initialize")]
@@ -43,12 +60,12 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     public override void Bind()
     {
         if (!Ctx.IsDesignerFile) return;
-        foreach (var property in Ctx.Data.AllProperties.Where(p => p.RelatedTypeName != null))
+        foreach (var property in ViewModelProperties)
         {
             Ctx._("{0} = new P<{1}>(this, \"{0}\")", property.Name.AsSubscribableField(), property.RelatedTypeName);
         }
 
-        foreach (var property in Ctx.Data.Collections.Where(p => p.RelatedTypeName != null))
+        foreach (var property in ViewModelProperties)
         {
             Ctx._("{0} = new ModelCollection<{1}>(this, \"{0}\")", property.Name.AsField(), property.RelatedTypeName);
             Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
@@ -59,10 +76,33 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         }
 
     }
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
+    protected override void WireCommands(Controller controller)
+    {
+        //base.WireCommands(controller);
+        var varName = Ctx.Data.Name.ToLower();
+        Ctx._("var {0} = controller as {1}", varName, Ctx.Data.Name.AsController());
+        foreach (var command in Ctx.Data.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)))
+        {
+            Ctx._("this.{0} = new CommandWithSender<{1}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName);
+        }
+        foreach (var command in Ctx.Data.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)))
+        {
+            Ctx._("this.{0} = new CommandWithSenderAndArgument<{1},{3}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName, command.RelatedTypeName);
+        }
+    }
 
     #region Properties
+
     [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
-    public virtual P<float> ViewModelProperty { get; set; }
+    public virtual P<float> ViewModelProperty
+    {
+        get
+        {
+            return _viewModelProperty;
+        }
+        set { _viewModelProperty = value; }
+    }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType)]
     public virtual Single ViewModelValueProperty
@@ -97,7 +137,7 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     #endregion
 
     #region Commands
-    [TemplateProperty("{0}Command", AutoFillType.NameOnlyWithBackingField)]
+    [TemplateProperty("{0}", AutoFillType.NameOnlyWithBackingField)]
     public virtual ICommand CommandItems { get; set; }
     #endregion
 
@@ -107,11 +147,11 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     {
         foreach (var property in Ctx.Data.Properties.Where(x => x.RelatedTypeName != null && x.Type != null && AcceptableTypes.ContainsKey(x.Type)))
         {
-            Ctx._("stream.Deserialize{0}(\"{1}\", this.{1})", AcceptableTypes[property.Type], property.Name);
+            Ctx._("stream.Deserialize{0}(\"{1}\")", AcceptableTypes[property.Type], property.Name);
         }
         foreach (var property in Ctx.Data.Collections.Where(x => x.RelatedTypeName != null && x.Type != null && AcceptableTypes.ContainsKey(x.Type)))
         {
-            Ctx._("stream.DeserializeArray<{0}>(\"{1}\", this.{1})", AcceptableTypes[property.Type], property.Name);
+            Ctx._("stream.DeserializeArray<{0}>(\"{1}\")", AcceptableTypes[property.Type], property.Name);
         }
     }
 
@@ -131,16 +171,46 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
     #region Reflection
 
-
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.None)]
     protected override void FillCommands(List<ViewModelCommandInfo> list)
     {
-        base.FillCommands(list);
-
+        //base.FillCommands(list);
+        foreach (var commandChildItem in Ctx.Data.Commands)
+        {
+            Ctx._("list.Add(new ViewModelCommandInfo(\"{0}\", {0}) {{ ParameterType = typeof({1}) }})",
+               commandChildItem.Name,
+               string.IsNullOrEmpty(commandChildItem.RelatedTypeName) ? "void" : commandChildItem.RelatedTypeName
+            );
+        }
+        
     }
 
+
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.None)]
     protected override void FillProperties(List<ViewModelPropertyInfo> list)
     {
-        base.FillProperties(list);
+        //base.FillProperties(list);
+        foreach (var property in Ctx.Data.AllProperties)
+        {
+            Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}))",
+               property.Name.AsSubscribableField(),
+               property.RelatedNode() is ElementNode ? "true" : "false",
+               "false", // TODO FOR ENUMS
+               "false",
+               property is ElementComputedPropertyNode ? "true" : "false"
+
+            );
+        }
+        foreach (var property in Ctx.Data.Collections)
+        {
+            Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}))",
+               property.Name.AsField(),
+               property.RelatedNode() is ElementNode ? "true" : "false",
+               "true",
+               "false", // TODO FOR ENUMS
+               "false"
+            );
+        }
     }
 
     #endregion
@@ -182,15 +252,12 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         Ctx._if("_{0}Disposable != null", computed.Name)
             .TrueStatements._("_{0}Disposable.Dispose()",computed.Name);
         Ctx._("_{0}Disposable = {1}.ToComputed(Compute{0}, this.Get{0}Dependents().ToArray()).DisposeWith(this)",computed.Name, computed.Name.AsSubscribableField());
-
-        // if (_PlayerDiedDisposable != null) _PlayerDiedDisposable.Dispose();
-        // _PlayerDiedDisposable = _PlayerDiedProperty.ToComputed(ComputePlayerDied, this.GetPlayerDiedDependents().ToArray()).DisposeWith(this);
+        
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Compute{0}")]
     public virtual Boolean Compute()
     {
-        Debug.Log("TEMPLATE COMPUTED");
         var type = Ctx.ItemAs<ElementComputedPropertyNode>().RelatedTypeName;
         Ctx.SetType(type);
         Ctx._("return default({0})", type);
@@ -211,4 +278,5 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         {typeof(Quaternion),"Quaternion" },
     };
 
+    private P<float> _viewModelProperty;
 }
