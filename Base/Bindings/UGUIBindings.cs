@@ -1,8 +1,10 @@
+#if UNITY_4_6 || UNITY_5_0
 using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+
 using UnityEngine.UI;
 
     public static class UGUIExtensions
@@ -433,3 +435,5 @@ using UnityEngine.UI;
         }
 
     }
+
+#endif
