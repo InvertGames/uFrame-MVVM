@@ -10,7 +10,7 @@ using uFrame.Graphs;
 using UnityEngine;
 
 [TemplateClass("Views",uFrameFormats.VIEW_FORMAT, MemberGeneratorLocation.Both)]
-public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
+public partial class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
 {  
     public void TemplateSetup()
     {
@@ -31,6 +31,7 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     }
 
     public TemplateContext<ElementViewNode> Ctx { get; set; }
+
     #region SceneProperties
 
     [TemplateMethod("Reset{0}",MemberGeneratorLocation.DesignerFile, false)]
@@ -93,14 +94,18 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
 
         return null;
     }
+
     [TemplateMethod(MemberGeneratorLocation.Both)]
     protected override void InitializeViewModel(ViewModel model)
     {
         if (!Ctx.IsDesignerFile) return;
         var variableName = Ctx.Data.Name.ToLower();
         Ctx._("var {0} = (({1})model)",variableName,Ctx.Data.Element.Name.AsViewModel());
+        
         foreach (var property in Ctx.Data.Element.Properties)
         {
+            if (property.RelatedTypeNode is StateMachineNode) continue;
+
             var field = Ctx.CurrentDecleration._public_(property.RelatedTypeName, property.Name.AsField());
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)),
@@ -180,36 +185,35 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
         Ctx._("this.ExecuteCommand({0}.{1}, arg)", Ctx.Data.Element.Name, Ctx.Item.Name);
     }
 }
+
+[TemplateClass("Backups", "{0}Backup",MemberGeneratorLocation.DesignerFile)]
+public class BackupData : IClassTemplate<DiagramNode>
+{
+    public string Identifier
+    {
+        get
+        {
+            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Identifier)));
+            return null;
+        }
+    }
+    public string Data
+    {
+        get
+        {
+            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Serialize().ToString())));
+            return null;
+        }
+    }
+
+    public void TemplateSetup()
+    {
+        
+    }
+
+    public TemplateContext<DiagramNode> Ctx { get; set; }
+}
+
 public static class ViewBindingExtensions
 {
 }
-//public interface IElementViewBinding
-//{
-//    void CreateBinding(TemplateContext<ElementViewNode> ctx, ViewBindingsReference bindingInfo);
-//}
-
-//public class ElementViewBinding : IElementViewBinding
-//{
-//    public TemplateContext<ElementViewNode> Ctx { get; set; }
-//    public ViewBindingsReference Info { get; set; }
-//    public virtual void CreateBinding(TemplateContext<ElementViewNode> ctx, ViewBindingsReference bindingInfo)
-//    {
-//        Ctx = ctx;
-//        Info = bindingInfo;
-
-//    }
-//}
-//public class PropertyBinding : ElementViewBinding
-//{
-//    public override void CreateBinding(TemplateContext<ElementViewNode> ctx, ViewBindingsReference bindingInfo)
-//    {
-//        base.CreateBinding(ctx, bindingInfo);
-//        ctx.RenderTemplateMethod(this, "PropertyChanged");
-//    }
-
-//    [TemplateMethod("")]
-//    public void PropertyChanged(object value)
-//    {
-//        Ctx.Item.Name;
-//    }
-//}

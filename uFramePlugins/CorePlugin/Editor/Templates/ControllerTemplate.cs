@@ -4,6 +4,7 @@ using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.Editor;
 using uFrame.Graphs;
+using UnityEngine;
 
 [TemplateClass("Controllers", MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
 public class ControllerTemplate : Controller, IClassTemplate<ElementNode>
@@ -56,7 +57,28 @@ public class ControllerTemplate : Controller, IClassTemplate<ElementNode>
     public virtual void CommandMethod(ViewModel viewModel)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Data.Name + "ViewModel");
+        DoTransition();
+    }
 
+    private void DoTransition()
+    {
+        if (Ctx.IsDesignerFile)
+        {
+            Debug.Log("YUPYUPYUP");
+            var transition = Ctx.Item.OutputTo<StateMachineTransition>();
+            if (transition != null)
+            {
+                
+                var stateMachineProperty =
+                    Ctx.Data.InheritedProperties.FirstOrDefault(p=>p.RelatedTypeNode is StateMachineNode);
+
+                if (stateMachineProperty != null)
+                {
+                    Ctx._("viewModel.{0}.Transition(\"{1}\")", stateMachineProperty.Name.AsSubscribableProperty(),
+                        transition.Name);
+                }
+            }
+        }
     }
 
     [TemplateMethod("{0}", MemberGeneratorLocation.Both,true)]
@@ -64,7 +86,7 @@ public class ControllerTemplate : Controller, IClassTemplate<ElementNode>
     {
         CommandMethod(viewModel);
         Ctx.CurrentMethod.Parameters[1].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
-
+        DoTransition();
 
     }
 }

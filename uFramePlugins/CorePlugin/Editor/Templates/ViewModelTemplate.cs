@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.StateMachine;
 using Invert.uFrame.Editor;
 using uFrame.Graphs;
 using UnityEngine;
 
 [TemplateClass("ViewModels", MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
-public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
+public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 {
     #region Template Stuff
     public TemplateContext<ElementNode> Ctx { get; set; }
@@ -37,6 +38,9 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         Ctx.AddIterator("CommandMethod", (d) => d.Commands);
         Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
 
+        Ctx.AddIterator("StateMachineProperty", (d)=> StateMachineProperties);
+        Ctx.AddIterator("StateMachineCurrentState", (d) => StateMachineProperties);
+
         foreach (var item in Ctx.Data.ComputedProperties)
         {
             Ctx.CurrentDecleration._private_(typeof(IDisposable), "_{0}Disposable", item.Name);
@@ -60,22 +64,30 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     public override void Bind()
     {
         if (!Ctx.IsDesignerFile) return;
-        foreach (var property in ViewModelProperties)
-        {
-            Ctx._("{0} = new P<{1}>(this, \"{0}\")", property.Name.AsSubscribableField(), property.RelatedTypeName);
-        }
 
         foreach (var property in ViewModelProperties)
         {
-            Ctx._("{0} = new ModelCollection<{1}>(this, \"{0}\")", property.Name.AsField(), property.RelatedTypeName);
+            Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName,property.Name);
+        }
+
+        foreach (var property in Ctx.Data.Collections)
+        {
+            Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName,property.Name);
             Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
         }
+
+        foreach (var item in StateMachineProperties)
+        {
+            Ctx._("{0} = new {1}(this, \"{2}\")", item.Name.AsSubscribableField(), item.RelatedTypeName,item.Name);
+        }
+
         foreach (var item in Ctx.Data.ComputedProperties)
         {
             Ctx._("Reset{0}()", item.Name);
         }
 
     }
+
     [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
     protected override void WireCommands(Controller controller)
     {
@@ -91,7 +103,31 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             Ctx._("this.{0} = new CommandWithSenderAndArgument<{1},{3}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName, command.RelatedTypeName);
         }
     }
+    #region Properties
 
+    [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
+    public virtual float StateMachineProperty
+    {
+        get
+        {
+            return 0;
+        }
+    }
+
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameOnly)]
+    public virtual State StateMachineCurrentState
+    {
+        get
+        {
+            Ctx._("return {0}.Value", Ctx.Item.Name.AsSubscribableProperty());
+            return null;
+        }
+        set
+        {
+            Ctx._("{0}.Value = value", Ctx.Item.Name.AsSubscribableProperty());
+        }
+    }
+    #endregion
     #region Properties
 
     [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
@@ -101,7 +137,7 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         {
             return _viewModelProperty;
         }
-        set { _viewModelProperty = value; }
+        //set { _viewModelProperty = value; }
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType)]
@@ -214,6 +250,7 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     }
 
     #endregion
+
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
     public virtual IEnumerable<IObservableProperty> ComputedDependents()
     {
@@ -263,8 +300,6 @@ public class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         Ctx._("return default({0})", type);
         return false;
     }
-
- 
 
     public static Dictionary<Type, string> AcceptableTypes = new Dictionary<Type, string>
     {

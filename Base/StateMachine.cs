@@ -102,6 +102,11 @@ namespace Invert.StateMachine
                 
         }
 
+        public void SetState<TState>() where TState : State
+        {
+            var state = States.OfType<TState>().FirstOrDefault();
+            CurrentState = state;
+        }
         public void SetState(string stateName)
         {
             var state = States.FirstOrDefault(p => p.Name == stateName);

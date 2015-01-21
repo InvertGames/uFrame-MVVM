@@ -226,6 +226,7 @@ public class uFrameTemplates : DiagramPlugin
     {
         // Grab a reference to the main framework graphs plugin
         Framework = container.Resolve<GameFramework>();
+        //Framework.ElementsGraphRoot.AddCodeTemplate<BackupData>();
         // Register the code templates
         Framework.Element.AddCodeTemplate<ViewModelTemplate>();
         Framework.Element.AddCodeTemplate<ControllerTemplate>();
@@ -233,8 +234,8 @@ public class uFrameTemplates : DiagramPlugin
         Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
         Framework.ElementView.AddCodeTemplate<ViewTemplate>();
         Framework.ElementViewComponent.AddCodeTemplate<ViewComponentTemplate>();
-        //Framework.State.AddCodeTemplate<StateTemplate>();
-        //Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
+        Framework.State.AddCodeTemplate<StateTemplate>();
+        Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
 
         // Register our bindable methods
         container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertyChildItem).DisplayFormat = "{0}Changed";

@@ -15,47 +15,18 @@ public abstract class Controller
     [Inject]
     public ICommandDispatcher CommandDispatcher { get; set; }
 
-    private SceneContext _context;
-
 #if TESTS
 
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
     public IGameContainer Container { get; set; }
-    /// <summary>
-    /// The scene context that contains the View-Models for the current scene.
-    /// </summary>
-    public SceneContext Context
-    {
-        get { return _context; }
-        set
-        {
-            _context = value;
-            if (value != null)
-                Container = value.Container;
-        }
-    }
 
 #else
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
     public IGameContainer Container { get; set; }
-    /// <summary>
-    /// The scene context that contains the View-Models for the current scene.
-    /// </summary>
-    [Obsolete]
-    public SceneContext Context
-    {
-        get { return _context ?? GameManager.ActiveSceneManager.Context; }
-        set
-        {
-            _context = value;
-            if (value != null)
-                Container = value.Container;
-        }
-    }
 
 #endif
 

@@ -31,7 +31,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
         var paths = node.GraphItemObject.Graph.CodePathStrategy;
-        var sceneManagerData = node as SceneManagerViewModel;
+        var sceneManagerData = node as SceneManagerNodeViewModel;
 
         if (!Directory.Exists(paths.ScenesPath))
         {
@@ -58,7 +58,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
     }
 
 
-    private static SceneManager EnsureSceneContainerInScene(SceneManagerViewModel sceneManagerData)
+    private static SceneManager EnsureSceneContainerInScene(SceneManagerNodeViewModel sceneManagerData)
     {
         if (sceneManagerData.CurrentType != null)
         {
@@ -81,7 +81,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
 
     public override string CanPerform(DiagramNodeViewModel node)
     {
-        if (node is SceneManagerViewModel) return null;
+        if (node is SceneManagerNodeViewModel) return null;
         return "Must be a scene manager to perform this action.";
     }
 }
