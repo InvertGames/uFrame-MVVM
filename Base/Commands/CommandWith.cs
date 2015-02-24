@@ -139,21 +139,30 @@ public abstract class CommandBase<TArgument> : ICommandWith<TArgument>
     protected abstract void Execute();
     public abstract bool CanExecute();
 
-    public void Execute(object parameter)
+    public void Execute(TArgument parameter)
     {
-        var arg = (TArgument) parameter;
+        var arg = parameter;
         Parameter = arg;
         OnOnCommandExecuting();
         Execute();
-        
         _executedSubject.OnNext(arg);
         OnOnCommandExecuted();
     }
     
-    public bool CanExecute(object parameter)
+    public bool CanExecute(TArgument parameter) 
     {
-        Parameter = (TArgument)parameter;
+        Parameter = parameter;
         return CanExecute();
+    }
+
+    void ICommand.Execute(object parameter)
+    {
+        Execute((TArgument)parameter);
+    }
+    
+    bool ICommand.CanExecute(object parameter)
+    {
+        return CanExecute((TArgument)parameter);
     }
 
     public IDisposable Subscribe(IObserver<TArgument> observer)
@@ -161,7 +170,19 @@ public abstract class CommandBase<TArgument> : ICommandWith<TArgument>
         return _executedSubject.Subscribe(observer);
     }
 
-    public object Parameter { get; set; }
+    public TArgument Parameter { get; set; }
+
+    object IParameterCommand.Parameter
+    {
+        get
+        {
+            return Parameter;
+        }
+        set
+        {
+            Parameter = (TArgument)value;
+        }
+    }
 }
 
 [Obsolete]
@@ -220,7 +241,7 @@ public class CommandWithSender<TSender> : CommandBase<TSender>
 public class CommandWithSenderAndArgument<TSender,TArgument> : CommandBase<TArgument>
 {
 
-    public object Sender { get; set; }
+    public TSender Sender { get; set; }
     
     protected Action<TSender,TArgument> Delegate { get; set; }
 
@@ -239,7 +260,7 @@ public class CommandWithSenderAndArgument<TSender,TArgument> : CommandBase<TArgu
     protected override void Execute()
     {
         if (Delegate != null)
-            Delegate((TSender) Sender, (TArgument) Parameter);
+            Delegate(Sender, Parameter);
     }
 
     public override bool CanExecute()

@@ -42,25 +42,48 @@ public abstract class UFCommand<T> : ICommandWith<T>
     public event CommandEvent OnCommandExecuting;
 
     public object Sender { get; set; }
-    public object Parameter { get; set; }
+
+    public T Parameter { get; set; }
+
+    object IParameterCommand.Parameter
+    {
+        get
+        {
+            return Parameter;
+        }
+        set
+        {
+            Parameter = (T)value;
+        }
+    }
 
     protected abstract void Perform(T arg);
 
     public void Execute()
     {
         OnOnCommandExecuting();
-        Execute((T)Parameter);
+        Execute(Parameter);
         OnOnCommandComplete();
     }
 
-    public void Execute(object arg)
+    public void Execute(T arg)
     {
         Parameter = arg;
         Execute();
     }
 
-    public virtual bool CanExecute(object parameter)
+    void ICommand.Execute(object arg)
+    {
+        Execute((T) arg);
+    }
+
+    public virtual bool CanExecute(T parameter)
     {
         return true;
+    }
+
+    bool ICommand.CanExecute(object parameter)
+    {
+        return CanExecute((T)parameter);
     }
 }

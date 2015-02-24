@@ -92,6 +92,28 @@ public class YieldCommandWith<T> : ICommandWith<T>
 
         return Disposable.Create(() => OnCommandExecuted -= handler);
     }
+
+    T ICommandWith<T>.Parameter
+    {
+        get
+        {
+            return (T)((IParameterCommand)this).Parameter;
+        }
+        set
+        {
+            ((IParameterCommand)this).Parameter = value;
+        }
+    }
+
+    public void Execute(T parameter)
+    {
+        ((ICommand) this).Execute(parameter);
+    }
+
+    public bool CanExecute(T parameter)
+    {
+        return ((ICommand) this).CanExecute(parameter);
+    }
 }
 /// <summary>
 /// A coroutine command with a parameter.
@@ -118,6 +140,28 @@ public class YieldCommandWithSender<T> : ICommandWith<T>
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
+
+    T ICommandWith<T>.Parameter
+    {
+        get
+        {
+            return (T)((IParameterCommand)this).Parameter;
+        }
+        set
+        {
+            ((IParameterCommand)this).Parameter = value;
+        }
+    }
+
+    public void Execute(T parameter)
+    {
+        ((ICommand) this).Execute(parameter);
+    }
+
+    public bool CanExecute(T parameter)
+    {
+        return ((ICommand) this).CanExecute(parameter);
+    }
 
     protected Func<T, IEnumerator> EnumeratorDelegate
     {
@@ -215,6 +259,28 @@ public class YieldCommandWithSenderAndArgument<TSender, TArgument> : ICommandWit
     public object Sender { get; set; }
 
     public object Parameter { get; set; }
+
+    TArgument ICommandWith<TArgument>.Parameter
+    {
+        get
+        {
+            return (TArgument)((IParameterCommand)this).Parameter;
+        }
+        set
+        {
+            ((IParameterCommand)this).Parameter = value;
+        }
+    }
+
+    public void Execute(TArgument parameter)
+    {
+        ((ICommand) this).Execute(parameter);
+    }
+
+    public bool CanExecute(TArgument parameter)
+    {
+        return ((ICommand) this).CanExecute(parameter);
+    }
 
     protected Func<TSender, TArgument, IEnumerator> EnumeratorDelegate
     {
