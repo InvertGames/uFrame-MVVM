@@ -39,6 +39,11 @@ public interface IParameterCommand : ICommand
 public interface ICommandWith<T> : IParameterCommand
 {
     //IEnumerator Execute(T parameter);
+
+    new T Parameter { get; set; }
+
+    void Execute(T parameter);
+    bool CanExecute(T parameter);
 }
 #if DLL
 }

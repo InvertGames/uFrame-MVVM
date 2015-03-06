@@ -93,7 +93,7 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
             }));
         }
 
-        OnNext(action());
+        //OnNext(action());
 
         return Disposable.Create(() =>
         {
