@@ -12,7 +12,6 @@ using UnityEngine;
 public abstract class SceneManager : ViewContainer, ITypeResolver
 {
     private List<ViewBase> _rootViews;
-    private SceneContext _context;
 
     [Inject]
     public ICommandDispatcher CommandDispatcher
@@ -36,15 +35,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         }
     }
 
-    /// <summary>
-    /// The scene context for the current running scene.  Used for Saving and loading a scenes state.
-    /// </summary>
-    [Obsolete("No longer used")]
-    public SceneContext Context
-    {
-        get { return _context ?? (_context = new SceneContext(Container)); }
-        set { _context = value; }
-    }
 
     /// <summary>
     /// This method should do any set up necessary to load the controller and is invoked when you call

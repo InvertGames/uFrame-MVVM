@@ -1,15 +1,12 @@
 using System.IO;
 using System.Linq;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
-using Invert.uFrame.Editor.ElementDesigner;
-using Invert.uFrame.Editor.ElementDesigner.Commands;
-using Invert.uFrame.Editor.ViewModels;
+using Invert.uFrame.MVVM;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramNodeCommand
+public class CreateSceneCommand : EditorCommand<SceneManagerNode>, IDiagramNodeCommand
 {
     public override string Group
     {
@@ -26,12 +23,12 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
         get { return "Create Scene"; }
     }
 
-    public override void Perform(DiagramNodeViewModel node)
+    public override void Perform(SceneManagerNode node)
     {
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
-        var paths = node.GraphItemObject.Graph.CodePathStrategy;
-        var sceneManagerData = node as SceneManagerNodeViewModel;
+        var paths = node.Graph.CodePathStrategy;
+        var sceneManagerData = node as SceneManagerNode;
 
         if (!Directory.Exists(paths.ScenesPath))
         {
@@ -58,7 +55,7 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
     }
 
 
-    private static SceneManager EnsureSceneContainerInScene(SceneManagerNodeViewModel sceneManagerData)
+    private static SceneManager EnsureSceneContainerInScene(SceneManagerNode sceneManagerData)
     {
         if (sceneManagerData.CurrentType != null)
         {
@@ -79,9 +76,8 @@ public class CreateSceneCommand : EditorCommand<DiagramNodeViewModel>, IDiagramN
         return null;
     }
 
-    public override string CanPerform(DiagramNodeViewModel node)
+    public override string CanPerform(SceneManagerNode node)
     {
-        if (node is SceneManagerNodeViewModel) return null;
-        return "Must be a scene manager to perform this action.";
+        return null;
     }
 }

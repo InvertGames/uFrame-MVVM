@@ -122,7 +122,7 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
     {
 
         var transition = Ctx.ItemAs<SceneTransitionsReference>();
-        var transitionCommand = transition.SourceItem as CommandsChildItem;
+//        var transitionCommand = transition.SourceItem as CommandsChildItem;
         var transitionOutput = transition.OutputTo<SceneManagerNode>();
         if (transitionOutput != null)
         {

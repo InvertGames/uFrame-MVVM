@@ -1,12 +1,12 @@
 using System;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
-using Invert.uFrame.Editor.ElementDesigner;
-using Invert.uFrame.Editor.ElementDesigner.Commands;
+using Invert.uFrame.MVVM;
+using uFrame.Graphs;
 using UnityEditor;
 using UnityEngine;
 
-public class AddManagerToSceneCommand : EditorCommand<IDiagramNode>, IDiagramNodeCommand
+public class AddManagerToSceneCommand : EditorCommand<SceneManagerNode>, IDiagramNodeCommand
 {
     public override string Group
     {
@@ -23,15 +23,13 @@ public class AddManagerToSceneCommand : EditorCommand<IDiagramNode>, IDiagramNod
         get { return "Add To/Scene"; }
     }
 
-    public override void Perform(IDiagramNode node)
+    public override void Perform(SceneManagerNode node)
     {
       
-        var sceneManagerData = node as SceneManagerData;
+        var sceneManagerData = node as SceneManagerNode;
         if (sceneManagerData == null) 
             return;
-        var sceneManagerAssemblyName = uFrameEditor.UFrameTypes.ViewModel.AssemblyQualifiedName.Replace("ViewModel",
-            sceneManagerData.NameAsSceneManager);
-        var type = Type.GetType(sceneManagerAssemblyName);
+        var type = InvertApplication.FindType(node.FullName.AsSceneManager());
         if (type == null)
         {
             EditorUtility.DisplayDialog("Can't add to scene", "The diagram must be saved and have no compiler errors.",
@@ -43,9 +41,8 @@ public class AddManagerToSceneCommand : EditorCommand<IDiagramNode>, IDiagramNod
         obj.AddComponent(type);
     }
 
-    public override string CanPerform(IDiagramNode node)
+    public override string CanPerform(SceneManagerNode node)
     {
-        if (node is SceneManagerData) return null;
-        return "Must be a scene manager to perform this action.";
+        return null;
     }
 }

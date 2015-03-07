@@ -1,11 +1,8 @@
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
-using Invert.uFrame.Editor.ElementDesigner;
-using Invert.uFrame.Editor.ElementDesigner.Commands;
-using Invert.uFrame.Editor.ViewModels;
+using Invert.uFrame.MVVM;
 using UnityEditor;
 
-public class AddViewToSceneSelectionCommand : EditorCommand<ElementViewNode>, IDiagramNodeCommand
+public class AddViewToSceneSelectionCommand : EditorCommand<ViewNode>, IDiagramNodeCommand
 {
     public override string Name
     {
@@ -17,7 +14,7 @@ public class AddViewToSceneSelectionCommand : EditorCommand<ElementViewNode>, ID
         get { return "Add To/Selection"; }
     }
 
-    public override void Perform(ElementViewNode view)
+    public override void Perform(ViewNode view)
     {
     
         if (view == null) return;
@@ -31,7 +28,7 @@ public class AddViewToSceneSelectionCommand : EditorCommand<ElementViewNode>, ID
         Selection.activeGameObject.AddComponent(view.CurrentType);
     }
 
-    public override string CanPerform(ElementViewNode node)
+    public override string CanPerform(ViewNode node)
     {
         
         if (Selection.activeGameObject == null) return "No selection currently active.";

@@ -30,14 +30,54 @@ public class uFrameTemplates : DiagramPlugin
         Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
 
         // Register our bindable methods
-        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertiesChildItem).DisplayFormat = "{0}Changed";
-        container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionsChildItem).DisplayFormat = "{0}Changed";
+        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertiesChildItem)
+            .SetNameFormat("{0} Changed");
+        container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.OutputTo<StateMachineNode>() != null)
+
+            .SetNameFormat("{0} State Changed")
+            .ImplementWith(args =>
+            {
+                var stateMachine = args.SourceItem.OutputTo<StateMachineNode>();
+
+                foreach (var state in stateMachine.States)
+                {
+                    var method = new CodeMemberMethod()
+                    {
+                        Name = "On" + state.Name,
+                        Attributes = MemberAttributes.Public
+                    };
+
+
+                    //if ()
+                    //{
+                    //    method.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+                    //    method.Statements.Add(new CodeSnippetExpression(string.Format("base.{0}()", method.Name)));
+
+                    //}
+                    //else
+                    //{
+                        var conditionStatement =
+                        new CodeConditionStatement(
+                            new CodeSnippetExpression(string.Format("value is {0}", state.Name)));
+                        conditionStatement.TrueStatements.Add(
+                            new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), method.Name));
+
+                        args.Method.Statements.Add(conditionStatement);
+                    //}
+
+                    args.Decleration.Members.Add(method);
+
+                }
+            });
+
+        container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionsChildItem)
+            .SetNameFormat("{0} Collection Changed");
 
         container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionsChildItem)
-            .DisplayFormat = " Changed With View";
+            .DisplayFormat = "{0} View Collection Changed";
 
         container.AddBindingMethod(typeof(ViewBindings), "BindCommandExecuted", _ => _ is CommandsChildItem)
-            .SetNameFormat("{0}Executed")
+            .SetNameFormat("{0} Executed")
             .ImplementWith(args =>
             {
                 args.Method.Comments.Add(new CodeCommentStatement("BLABLABLABLA"));

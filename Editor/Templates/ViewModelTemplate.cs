@@ -102,6 +102,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     protected override void WireCommands(Controller controller)
     {
         //base.WireCommands(controller);
+        if (!Ctx.Data.Commands.Any()) return;
         var varName = Ctx.Data.Name.ToLower();
         Ctx._("var {0} = controller as {1}", varName, Ctx.Data.Name.AsController());
         foreach (var command in Ctx.Data.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)))
@@ -143,11 +144,8 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
     public virtual P<float> ViewModelProperty
     {
-        get
-        {
-            return _viewModelProperty;
-        }
-        //set { _viewModelProperty = value; }
+        get { return null; }
+     
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType)]
@@ -417,5 +415,4 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         {typeof(Quaternion),"Quaternion" },
     };
 
-    private P<float> _viewModelProperty;
 }

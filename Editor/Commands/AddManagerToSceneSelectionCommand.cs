@@ -1,11 +1,13 @@
 using System;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.Editor;
 using Invert.uFrame.Editor.ElementDesigner;
 using Invert.uFrame.Editor.ElementDesigner.Commands;
+using uFrame.Graphs;
 using UnityEditor;
 
-public class AddManagerToSceneSelectionCommand : EditorCommand<IDiagramNode>, IDiagramNodeCommand
+public class AddManagerToSceneSelectionCommand : EditorCommand<SceneManagerNode>, IDiagramNodeCommand
 {
     public override string Group
     {
@@ -22,15 +24,13 @@ public class AddManagerToSceneSelectionCommand : EditorCommand<IDiagramNode>, ID
         get { return "Add To/Selection"; }
     }
 
-    public override void Perform(IDiagramNode node)
+    public override void Perform(SceneManagerNode node)
     {
         //var paths = EditorWindow.GetWindow<ElementsDesigner>().Diagram.Data.Settings.CodePathStrategy;
-        var sceneManagerData = node as SceneManagerData;
+        var sceneManagerData = node as SceneManagerNode;
         if (sceneManagerData == null)
             return;
-        var sceneManagerAssemblyName = uFrameEditor.UFrameTypes.ViewModel.AssemblyQualifiedName.Replace("ViewModel",
-            sceneManagerData.NameAsSceneManager);
-        var type = Type.GetType(sceneManagerAssemblyName);
+        var type = InvertApplication.FindType(node.FullName.AsSceneManager());
         if (type == null)
         {
             EditorUtility.DisplayDialog("Can't add to scene", "The diagram must be saved and have no compiler errors.",
@@ -38,15 +38,15 @@ public class AddManagerToSceneSelectionCommand : EditorCommand<IDiagramNode>, ID
             return;
         }
 
-        
+
         Selection.activeGameObject.AddComponent(type);
     }
 
-    public override string CanPerform(IDiagramNode node)
+    public override string CanPerform(SceneManagerNode node)
     {
         if (Selection.activeGameObject == null) return "Make a selection first";
-        if (node is SceneManagerData) return null;
-        
-        return "Must be a scene manager to perform this action.";
+        return null;
+
+
     }
 }
