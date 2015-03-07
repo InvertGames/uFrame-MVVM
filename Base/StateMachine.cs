@@ -9,6 +9,7 @@ namespace Invert.StateMachine
     public class StateMachine : P<State>
     {
         private List<State> _states;
+        private List<StateTransition> _transitions;
 
         public StateMachine()
         {
@@ -65,26 +66,27 @@ namespace Invert.StateMachine
         
         public virtual void Compose(List<State> states)
         {
-            
+            Transitions.Clear();
         }
-        
 
 
-        public StateTransition[] Transitions { get; set; }
+        public virtual List<StateTransition> Transitions
+        {
+            get { return _transitions ?? (_transitions = new List<StateTransition>()); }
+            set { _transitions = value; }
+        }
 
         public void Transition(string name)
         {
             StateTransition transition = null;
-            for (int index = 0; index < Transitions.Length; index++)
+            foreach (var t in Transitions)
             {
-                StateTransition p = Transitions[index];
-                if (p.From == CurrentState && p.Name == name)
+                if (t.From == CurrentState && t.Name == name)
                 {
-                    transition = p;
+                    transition = t;
                     break;
                 }
             }
-
             if (transition != null)
             {
                 Transition(transition);
@@ -95,7 +97,6 @@ namespace Invert.StateMachine
         {
             if (transition.From == CurrentState)
             {
-                
                 CurrentState = transition.To;
                 LastTransition = transition;
             }

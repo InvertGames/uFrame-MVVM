@@ -5,15 +5,25 @@ using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
-using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEngine;
 
-[TemplateClass("ViewModels", MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
+[TemplateClass( MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
 public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 {
     #region Template Stuff
     public TemplateContext<ElementNode> Ctx { get; set; }
+
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "ViewModels"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
 
     public void TemplateSetup()
     {
@@ -181,26 +191,119 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod]
     public override void Read(ISerializerStream stream)
     {
-        foreach (var property in Ctx.Data.Properties.Where(x => x.RelatedTypeName != null && x.Type != null && AcceptableTypes.ContainsKey(x.Type)))
+        foreach (var viewModelPropertyData in Ctx.Data.Properties)
         {
-            Ctx._("stream.Deserialize{0}(\"{1}\")", AcceptableTypes[property.Type], property.Name);
+
+            var relatedNode = viewModelPropertyData.RelatedTypeNode;
+            if (relatedNode is EnumNode)
+            {
+                Ctx._("this.{0} = ({1})stream.DeserializeInt(\"{0}\");", viewModelPropertyData.Name, viewModelPropertyData.RelatedTypeName);
+            }
+            else if (relatedNode is ElementNode)
+            {
+                var elementNode = relatedNode as ElementNode;
+                Ctx._("\t\tif (stream.DeepSerialize) this.{0} = stream.DeserializeObject<{1}>(\"{0}\");", viewModelPropertyData.Name, elementNode.Name.AsViewModel());
+                
+            }
+            else if (relatedNode is StateMachineNode)
+            {
+                Ctx._("this.{0}.SetState(stream.DeserializeString(\"{1}\"))", viewModelPropertyData.FieldName, viewModelPropertyData.Name);
+            }
+            else
+            {
+
+                if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
+                Ctx._("this.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]);
+            }
         }
-        foreach (var property in Ctx.Data.Collections.Where(x => x.RelatedTypeName != null && x.Type != null && AcceptableTypes.ContainsKey(x.Type)))
+        foreach (var collection in Ctx.Data.Collections)
         {
-            Ctx._("stream.DeserializeArray<{0}>(\"{1}\")", AcceptableTypes[property.Type], property.Name);
+            var relatedNode = collection.RelatedTypeNode;
+            if (relatedNode is EnumNode)
+            {
+                //var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeInt(\"{0}\", (int)this.{0});", viewModelPropertyData.Name));
+                //writeMethod.Statements.Add(statement);
+
+                //var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = ({1})stream.DeserializeInt(\"{0}\");", viewModelPropertyData.Name, viewModelPropertyData.RelatedTypeName));
+                //readMethod.Statements.Add(dstatement);
+            }
+            else if (relatedNode is ElementNode)
+            {
+                var elementNode = relatedNode as ElementNode;
+
+                Ctx.PushStatements(Ctx._if("stream.DeepSerialize").TrueStatements);
+                Ctx._("this.{0}.Clear()", collection.Name);
+                Ctx._("this.{0}.AddRange(stream.DeserializeObjectArray<{1}>(\"{0}\"))", collection.Name, elementNode.Name.AsViewModel());
+                Ctx.PopStatements();
+            }
+            else
+            {
+                //if (collection.Type == null) continue;
+                //if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
+                //viewModelPropertyData.IsEnum(data.OwnerData);
+                //var statement = new CodeSnippetStatement(string.Format("\t\tstream.Serialize{0}(\"{1}\", this.{1});", AcceptableTypes[viewModelPropertyData.Type], viewModelPropertyData.Name));
+                //writeMethod.Statements.Add(statement);
+
+                //var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]));
+                //readMethod.Statements.Add(dstatement);
+            }
         }
     }
 
     [TemplateMethod]
     public override void Write(ISerializerStream stream)
     {
-        foreach (var property in Ctx.Data.Properties.Where(x => x.Type != null && AcceptableTypes.ContainsKey(x.Type)))
+        foreach (var viewModelPropertyData in Ctx.Data.Properties)
         {
-            Ctx._("stream.Serialize{0}(\"{1}\", this.{1})", AcceptableTypes[property.Type], property.Name);
+
+            var relatedNode = viewModelPropertyData.RelatedTypeNode;
+            if (relatedNode is EnumNode)
+            {
+                Ctx._("stream.SerializeInt(\"{0}\", (int)this.{0});", viewModelPropertyData.Name);
+
+            }
+            else if (relatedNode is ElementNode)
+            {
+                Ctx._("if (stream.DeepSerialize) stream.SerializeObject(\"{0}\", this.{0});", viewModelPropertyData.Name);
+            }
+            else if (relatedNode is StateMachineNode)
+            {
+
+                Ctx._("stream.SerializeString(\"{0}\", this.{0}.Name);", viewModelPropertyData.Name);
+            }
+            else
+            {
+                if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
+                Ctx._("stream.Serialize{0}(\"{1}\", this.{1})", AcceptableTypes[viewModelPropertyData.Type], viewModelPropertyData.Name);
+            }
         }
-        foreach (var property in Ctx.Data.Collections.Where(x => x.Type != null && AcceptableTypes.ContainsKey(x.Type)))
+        foreach (var collection in Ctx.Data.Collections)
         {
-            Ctx._("stream.SerializeArray(\"{0}\", this.{0})", property.Name);
+            var relatedNode = collection.RelatedTypeNode;
+            if (relatedNode is EnumNode)
+            {
+                //var statement = new CodeSnippetStatement(string.Format("\t\tstream.SerializeInt(\"{0}\", (int)this.{0});", viewModelPropertyData.Name));
+                //writeMethod.Statements.Add(statement);
+
+                //var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = ({1})stream.DeserializeInt(\"{0}\");", viewModelPropertyData.Name, viewModelPropertyData.RelatedTypeName));
+                //readMethod.Statements.Add(dstatement);
+            }
+            else if (relatedNode is ElementNode)
+            {
+                Ctx._("if (stream.DeepSerialize) stream.SerializeArray(\"{0}\", this.{0})",
+                            collection.Name);
+            }
+            else
+            {
+                //if (collection.Type == null) continue;
+                //if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
+                //viewModelPropertyData.IsEnum(data.OwnerData);
+                //var statement = new CodeSnippetStatement(string.Format("\t\tstream.Serialize{0}(\"{1}\", this.{1});", AcceptableTypes[viewModelPropertyData.Type], viewModelPropertyData.Name));
+                //writeMethod.Statements.Add(statement);
+
+                //var dstatement = new CodeSnippetStatement(string.Format("\t\tthis.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]));
+                //readMethod.Statements.Add(dstatement);
+            }
         }
     }
     #endregion
@@ -228,22 +331,23 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         //base.FillProperties(list);
         foreach (var property in Ctx.Data.AllProperties)
         {
-            Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}))",
+            Ctx._comment(property.GetType().Name);
+            Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}, {4}))",
                property.Name.AsSubscribableField(),
                property.RelatedNode() is ElementNode ? "true" : "false",
-               "false", // TODO FOR ENUMS
                "false",
-               property is ElementComputedPropertyNode ? "true" : "false"
+               property.RelatedNode() is EnumNode ? "true" : "false", // TODO FOR ENUMS
+               property is ComputedPropertyNode ? "true" : "false"
 
             );
         }
         foreach (var property in Ctx.Data.Collections)
         {
-            Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}))",
+            Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}, {4}))",
                property.Name.AsField(),
                property.RelatedNode() is ElementNode ? "true" : "false",
                "true",
-               "false", // TODO FOR ENUMS
+               property.RelatedNode() is EnumNode ? "true" : "false", // TODO FOR ENUMS
                "false"
             );
         }
@@ -254,8 +358,8 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
     public virtual IEnumerable<IObservableProperty> ComputedDependents()
     {
-        var computed = Ctx.ItemAs<ElementComputedPropertyNode>();
-        foreach (var item in computed.InputsFrom<PropertyChildItem>())
+        var computed = Ctx.ItemAs<ComputedPropertyNode>();
+        foreach (var item in computed.InputsFrom<PropertiesChildItem>())
         {
            
 
@@ -264,7 +368,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             {
                 var conditionStatements = Ctx._if("{0}.Value != null", item.Name.AsSubscribableProperty())
                     .TrueStatements;
-                foreach (var p in computed.Properties.Where(p => p.SourceItem.Node == relatedNode))
+                foreach (var p in computed.SubProperties.Where(p => p.SourceItem.Node == relatedNode))
                 {
                     conditionStatements._("yield return {0}.Value.{1}", item.Name.AsSubscribableProperty(), p.Name.AsSubscribableProperty());
                 }
@@ -285,7 +389,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Reset{0}")]
     public virtual void ResetComputed()
     {
-        var computed = Ctx.ItemAs<ElementComputedPropertyNode>();
+        var computed = Ctx.ItemAs<ComputedPropertyNode>();
         Ctx._if("_{0}Disposable != null", computed.Name)
             .TrueStatements._("_{0}Disposable.Dispose()",computed.Name);
         Ctx._("_{0}Disposable = {1}.ToComputed(Compute{0}, this.Get{0}Dependents().ToArray()).DisposeWith(this)",computed.Name, computed.Name.AsSubscribableField());
@@ -295,7 +399,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Compute{0}")]
     public virtual Boolean Compute()
     {
-        var type = Ctx.ItemAs<ElementComputedPropertyNode>().RelatedTypeName;
+        var type = Ctx.ItemAs<ComputedPropertyNode>().RelatedTypeName;
         Ctx.SetType(type);
         Ctx._("return default({0})", type);
         return false;

@@ -1,13 +1,24 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
-using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
-[TemplateClass("Machines","{0}",MemberGeneratorLocation.DesignerFile)]
+[TemplateClass(MemberGeneratorLocation.DesignerFile)]
 public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemplate<StateMachineNode>
 {
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "Machines"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("Invert.StateMachine");
@@ -28,7 +39,7 @@ public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemp
     {
         get
         {
-            Ctx._("return this.{0}",Ctx.Data.StartOutputSlot.OutputTo<StateNode>().Name);
+            Ctx._("return this.{0}",Ctx.Data.StartStateOutputSlot.OutputTo<StateNode>().Name);
             return null;
         }
     }
@@ -69,17 +80,19 @@ public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemp
         //base.Compose(states);
         foreach (var state in Ctx.Data.States)
         {
-            foreach (var transition in state.Transitions)
+            foreach (var transition in state.StateTransitions)
             {
                 var to = transition.OutputTo<StateNode>();
 
                 Ctx._("{0}.{1} = new StateTransition(\"{1}\", {0}, {2})",state.Name,transition.Name,to.Name);
+                Ctx._("Transitions.Add({0}.{1})",state.Name,transition.Name);
             }
-            foreach (var transition in state.Transitions)
+            foreach (var transition in state.StateTransitions)
             {
                 //var to = transition.OutputTo<StateNode>();
                 Ctx._("{0}.AddTrigger({1}, {0}.{1})",state.Name,transition.Name);
             }
+            Ctx._("{0}.StateMachine = this",state.Name);
             Ctx._("states.Add({0})",state.Name);
 
         }

@@ -1,17 +1,28 @@
 using System;
 using System.CodeDom;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEngine;
 
-[TemplateClass("Views",uFrameFormats.VIEW_FORMAT, MemberGeneratorLocation.Both)]
-public partial class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
-{  
+[TemplateClass( MemberGeneratorLocation.Both)]
+public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
+{
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "Views"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
     public void TemplateSetup()
     {
        this.Ctx.TryAddNamespace("UniRx");
@@ -30,7 +41,7 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
     }
 
-    public TemplateContext<ElementViewNode> Ctx { get; set; }
+    public TemplateContext<ViewNode> Ctx { get; set; }
 
     #region SceneProperties
 
@@ -186,7 +197,7 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     }
 }
 
-[TemplateClass("Backups", "{0}Backup",MemberGeneratorLocation.DesignerFile)]
+[TemplateClass(MemberGeneratorLocation.DesignerFile,"{0}Backup")]
 public class BackupData : IClassTemplate<DiagramNode>
 {
     public string Identifier
@@ -204,6 +215,16 @@ public class BackupData : IClassTemplate<DiagramNode>
             Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Serialize().ToString())));
             return null;
         }
+    }
+
+    public string OutputPath
+    {
+        get { return Path2.Combine("Editor", "Backups"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
     }
 
     public void TemplateSetup()

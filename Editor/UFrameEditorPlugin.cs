@@ -23,7 +23,7 @@ public class UFrameEditorPlugin : DiagramPlugin
     {
         InvertApplication.CachedAssemblies.Add(typeof(ViewModel).Assembly);
         InvertApplication.CachedAssemblies.Add(typeof(UFrameEditorPlugin).Assembly);
-        Debug.Log("Added assembly");
+
     }
 
     public override void Initialize(uFrameContainer container)
@@ -211,49 +211,3 @@ public class UFrameEditorPlugin : DiagramPlugin
 
 }
 
-public class uFrameTemplates : DiagramPlugin
-{
-    // Make sure this plugin loads after the framework plugin loads
-    public override decimal LoadPriority
-    {
-        get { return 1; }
-    }
-
-   
-    private GameFramework Framework { get; set; }
-
-    public override void Initialize(uFrameContainer container)
-    {
-        // Grab a reference to the main framework graphs plugin
-        Framework = container.Resolve<GameFramework>();
-        //Framework.ElementsGraphRoot.AddCodeTemplate<BackupData>();
-        // Register the code templates
-        Framework.Element.AddCodeTemplate<ViewModelTemplate>();
-        Framework.Element.AddCodeTemplate<ControllerTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
-        Framework.ElementView.AddCodeTemplate<ViewTemplate>();
-        Framework.ElementViewComponent.AddCodeTemplate<ViewComponentTemplate>();
-        Framework.State.AddCodeTemplate<StateTemplate>();
-        Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
-
-        // Register our bindable methods
-        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertyChildItem).DisplayFormat = "{0}Changed";
-        container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionChildItem).DisplayFormat = "{0}Changed";
-
-        container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionChildItem)
-            .DisplayFormat = " Changed With View";
-
-        container.AddBindingMethod(typeof (ViewBindings), "BindCommandExecuted", _ => _ is CommandChildItem)
-            .SetNameFormat("{0}Executed")
-            .ImplementWith(args =>
-            {
-                args.Method.Comments.Add(new CodeCommentStatement("BLABLABLABLA"));
-            })
-            ;
-        
-
-        //container.RegisterGraphItem<SubsystemNode, SubsystemNodeViewModel, SubsystemNodeDrawer>();
-
-    }
-}
