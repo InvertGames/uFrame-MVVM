@@ -11,7 +11,7 @@ using uFrame.Graphs;
 using UnityEngine;
 
 [TemplateClass( MemberGeneratorLocation.Both)]
-public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
+public partial class ViewTemplate :  IClassTemplate<ViewNode>
 {
     public string OutputPath
     {
@@ -26,6 +26,10 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
     public void TemplateSetup()
     {
        this.Ctx.TryAddNamespace("UniRx");
+        if (Ctx.IsDesignerFile && Ctx.Data.BaseNode == null)
+        {
+            Ctx.SetBaseType(typeof(ViewBase));
+        }
         // Add namespaces based on the types used for properties
         foreach (var property in Ctx.Data.Element.AllProperties)
         {
@@ -75,7 +79,7 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
     #endregion
 
     [TemplateProperty]
-    public override Type ViewModelType
+    public virtual Type ViewModelType
     {
         get
         {
@@ -98,8 +102,9 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
     }
 
     [TemplateMethod(CallBase = false)]
-    public override ViewModel CreateModel()
+    public virtual ViewModel CreateModel()
     {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         //var property = Context.Get<IDiagramNodeItem>();
         Ctx._("return this.RequestViewModel(GameManager.Container.Resolve<{0}>())",Ctx.Data.Element.Name.AsController());
 
@@ -107,8 +112,9 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both)]
-    protected override void InitializeViewModel(ViewModel model)
+    protected virtual void InitializeViewModel(ViewModel model)
     {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
         var variableName = Ctx.Data.Name.ToLower();
         Ctx._("var {0} = (({1})model)",variableName,Ctx.Data.Element.Name.AsViewModel());
@@ -137,8 +143,9 @@ public partial class ViewTemplate : ViewBase , IClassTemplate<ViewNode>
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, true)]
-    public override void Bind()
+    public virtual void Bind()
     {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
         // Let the Dll Know about uFrame Binding Specific Types
         uFrameBindingType.ObservablePropertyType = typeof (IObservableProperty);

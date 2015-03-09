@@ -114,6 +114,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             Ctx._("this.{0} = new CommandWithSenderAndArgument<{1},{3}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName, command.RelatedTypeName);
         }
     }
+
     #region Properties
 
     [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
@@ -139,6 +140,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         }
     }
     #endregion
+
     #region Properties
 
     [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
@@ -209,7 +211,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             }
             else
             {
-
+                if (viewModelPropertyData.Type == null) continue;
                 if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
                 Ctx._("this.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]);
             }
@@ -271,6 +273,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             }
             else
             {
+                if (viewModelPropertyData.Type == null) continue;
                 if (!AcceptableTypes.ContainsKey(viewModelPropertyData.Type)) continue;
                 Ctx._("stream.Serialize{0}(\"{1}\", this.{1})", AcceptableTypes[viewModelPropertyData.Type], viewModelPropertyData.Name);
             }
