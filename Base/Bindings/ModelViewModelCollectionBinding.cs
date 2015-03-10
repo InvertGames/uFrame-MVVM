@@ -235,7 +235,7 @@ public class ModelViewModelCollectionBinding : Binding
         }
         else
         {
-            var targetTransform = Parent ?? SourceView.transform;
+            var targetTransform = Parent != null ? Parent : SourceView.transform;
             if (targetTransform != null)
             {
                 for (var i = 0; i < targetTransform.childCount; i++)
@@ -277,7 +277,7 @@ public class ModelViewModelCollectionBinding : Binding
             GameObjectLookup.Clear();
             return;
         }
-        var targetTransform = Parent ?? SourceView.transform;
+        var targetTransform = Parent != null ? Parent : SourceView.transform;
         if (changeArgs.NewItems != null)
             foreach (var item in changeArgs.NewItems)
             {
