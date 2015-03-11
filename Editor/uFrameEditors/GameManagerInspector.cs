@@ -77,36 +77,37 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
             p = serializedObject.FindProperty("_ShowLogs");
             EditorGUILayout.PropertyField(p);
 
-            //EditorGUILayout.HelpBox("The render settings that will apply when the scene loads.", MessageType.None);
+            EditorGUILayout.HelpBox("The render settings that will apply when the scene loads.", MessageType.None);
             //_RenderSettingsOpen = Toggle("Render Settings", _RenderSettingsOpen);
-            //if (_RenderSettingsOpen)
-            //{
-            //    p = serializedObject.FindProperty("_Fog");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_FogColor");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_FogMode");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_FogDensity");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_LinearFogStart");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_LinearFogEnd");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_AmbientLight");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_SkyboxMaterial");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_HaloStrength");
-            //    EditorGUILayout.PropertyField(p);
-            //    p = serializedObject.FindProperty("_FlareStrength");
-            //    EditorGUILayout.PropertyField(p);
-            //    if (GUILayout.Button("Load From Scene"))
-            //    {
-            //        var t = Target as GameManager;
-            //        t.LoadRenderSettings();
-            //    }
-            //}
+            if (GUIHelpers.DoToolbarEx("Render Settings"))
+            {
+                p = serializedObject.FindProperty("_Fog");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_FogColor");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_FogMode");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_FogDensity");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_LinearFogStart");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_LinearFogEnd");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_AmbientLight");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_SkyboxMaterial");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_HaloStrength");
+                EditorGUILayout.PropertyField(p);
+                p = serializedObject.FindProperty("_FlareStrength");
+                EditorGUILayout.PropertyField(p);
+                if (GUILayout.Button("Load From Scene"))
+                {
+                    var t = Target as GameManager;
+                    t.LoadRenderSettings();
+
+                }
+            }
 
         }
 
@@ -132,7 +133,11 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
     {
         //base.OnAdd(typeName);
         var go = new GameObject("_" + typeName);
-        go.AddComponent(typeName);
+#if UNITY_5_0
+        UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(go, "Assets/uFrameComplete/uFrame/Editor/uFrameEditors/GameManagerInspector.cs (135,9)", typeName);
+#else
+       go.AddComponent(typeName);
+#endif
         go.transform.parent = null;
         Selection.objects = new Object[] { go };
     }

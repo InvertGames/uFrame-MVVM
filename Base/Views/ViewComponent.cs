@@ -8,7 +8,7 @@ public abstract class ViewComponent : MonoBehaviour, IBindingProvider
 
     public ViewBase View
     {
-        get { return _view ?? (this.GetView()); }
+        get { return _view != null ? _view : this.GetView(); }
         set { _view = value; }
     }
 

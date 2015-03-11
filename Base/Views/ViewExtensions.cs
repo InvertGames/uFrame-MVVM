@@ -141,9 +141,13 @@ public static class ViewExtensions
         {
             view.Identifier = model.Identifier;
         }
-
+#if (UNITY_4_6 || UNITY_5_0)
+        view.transform.SetParent(parent,false);
+#else
         view.transform.parent = parent;
-        view.ParentView = parent.GetView();
+#endif
+        // Pre cache the parent view
+        view.ParentView = view.ParentView;
         view.ViewName = name;
 
         if (model != null)
@@ -187,7 +191,11 @@ public static class ViewExtensions
     {
         // Create the view object from the specified prefab
         var viewObject = (GameObject)Object.Instantiate(prefab, position, rotation);
-        viewObject.transform.parent = parent;
+#if (UNITY_4_6 || UNITY_5_0)
+		viewObject.transform.SetParent(parent,false);
+#else
+		viewObject.transform.parent = parent;
+#endif
         var view = InitializeView(parent, prefab.name, model, viewObject,identifier);
 
         return view;
