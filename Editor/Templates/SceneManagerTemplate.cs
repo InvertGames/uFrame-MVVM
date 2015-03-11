@@ -1,16 +1,26 @@
 using System.CodeDom;
 using System.Linq;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
-[TemplateClass("SceneManagers", uFrameFormats.SCENE_MANAGER_FORMAT, MemberGeneratorLocation.Both)]
-public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNode>
+[TemplateClass( MemberGeneratorLocation.Both, uFrameFormats.SCENE_MANAGER_FORMAT)]
+public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNode>
 {
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "SceneManagers"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("UniRx");
-        foreach (var transition in Ctx.Data.Transitions)
+        foreach (var transition in Ctx.Data.SceneTransitions)
         {
             var to = transition.OutputTo<SceneManagerNode>();
             if (to == null) continue;
@@ -21,9 +31,9 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
 
         Ctx.AddIterator("InstanceProperty", node=>node.ImportedItems);
         Ctx.AddIterator("ControllerProperty", node => node.IncludedElements);
-        Ctx.AddIterator("GetTransitionScenes", node => node.Transitions);
-        Ctx.AddIterator("TransitionMethod", node => node.Transitions);
-        Ctx.AddIterator("TransitionComplete", node => node.Transitions);
+        Ctx.AddIterator("GetTransitionScenes", node => node.SceneTransitions);
+        Ctx.AddIterator("TransitionMethod", node => node.SceneTransitions);
+        Ctx.AddIterator("TransitionComplete", node => node.SceneTransitions);
     }
 
     public TemplateContext<SceneManagerNode> Ctx { get; set; }
@@ -34,7 +44,7 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
     public virtual ViewModel InstanceProperty {
         get
         {
-            var instance = Ctx.ItemAs<RegisteredInstanceReference>();
+            var instance = Ctx.ItemAs<InstancesReference>();
             Ctx.SetType(instance.SourceItem.Name.AsViewModel());
 
             Ctx.AddAttribute(typeof (InjectAttribute))
@@ -78,7 +88,7 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
     // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
     // the 'Inject' attribute on any controller or view-model will automatically be set by uFrame. 
     // </summary>
-    [TemplateMethod()]
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
     public override void Setup() {
         base.Setup();
         foreach (var item in Ctx.Data.ImportedItems)
@@ -111,8 +121,8 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
     public virtual void TransitionMethod()
     {
 
-        var transition = Ctx.ItemAs<SceneManagerTransitionReference>();
-        var transitionCommand = transition.SourceItem as CommandChildItem;
+        var transition = Ctx.ItemAs<SceneTransitionsReference>();
+//        var transitionCommand = transition.SourceItem as CommandsChildItem;
         var transitionOutput = transition.OutputTo<SceneManagerNode>();
         if (transitionOutput != null)
         {
@@ -127,7 +137,7 @@ public class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNod
     public virtual void TransitionComplete(object sceneManager)
     {
         //if (!Ctx.IsDesignerFile) return;
-        var transition = Ctx.ItemAs<SceneManagerTransitionReference>();
+        var transition = Ctx.ItemAs<SceneTransitionsReference>();
         var transitionOutput = transition.OutputTo<SceneManagerNode>();
         if (transition == null) return;
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(transitionOutput.Name.AsSceneManager());

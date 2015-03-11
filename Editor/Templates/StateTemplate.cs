@@ -1,16 +1,26 @@
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
-using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 
-[TemplateClass("Machines","{0}",MemberGeneratorLocation.DesignerFile)]
+[TemplateClass(MemberGeneratorLocation.DesignerFile)]
 public class StateTemplate : Invert.StateMachine.State, IClassTemplate<StateNode>
 {
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "Machines"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("Invert.StateMachine");
 
-        Ctx.AddIterator("TransitionProperty",_=>_.Transitions);
-        Ctx.AddIterator("TransitionInvoker", _ => _.Transitions);
+        Ctx.AddIterator("TransitionProperty",_=>_.StateTransitions);
+        Ctx.AddIterator("TransitionInvoker", _ => _.StateTransitions);
     }
 
     public TemplateContext<StateNode> Ctx { get; set; }

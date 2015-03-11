@@ -361,6 +361,19 @@ public static class ViewBindings
 
         return bindable.AddBinding(property.Subscribe(changed));
     }
+    /// <summary>
+    /// A wrapper of BindProperty for bindings in the diagram
+    /// </summary>
+    /// <typeparam name="TBindingType"></typeparam>
+    /// <param name="bindable"></param>
+    /// <param name="property"></param>
+    /// <param name="changed"></param>
+    /// <param name="onlyWhenChanged"></param>
+    /// <returns></returns>
+    public static IDisposable BindStateProperty<TBindingType>(this IBindable bindable, P<TBindingType> property, Action<TBindingType> changed, bool onlyWhenChanged = true)
+    {
+        return BindProperty(bindable, property, changed, onlyWhenChanged);
+    }
 
     public static IDisposable BindEnum<TBindingType>(this IBindable bindable, P<TBindingType> property,
         Action<TBindingType> enumChanged, Action<TBindingType> enumChanged2)

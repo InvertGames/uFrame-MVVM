@@ -35,7 +35,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         }
     }
 
-    /// <summary>
+ /// <summary>
     /// This method should do any set up necessary to load the controller and is invoked when you call
     /// GameStateManager.SwitchGame().  This should call StartCoroutine(Controller.Load) on any
     /// regular controller in the scene.

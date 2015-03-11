@@ -256,8 +256,7 @@ public class GameContainer : IGameContainer
             }
             catch (InvalidCastException castIssue)
             {
-                throw new Exception(string.Format("Resolve Relation couldn't cast to {0} from {1}", typeof(TBase).Name, tfor.Name));
-                return default(TBase);
+                throw new Exception(string.Format("Resolve Relation couldn't cast  to {0} from {1}", typeof(TBase).Name, tfor.Name), castIssue);
             }
         }
         public void InjectAll()

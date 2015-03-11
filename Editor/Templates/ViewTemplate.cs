@@ -1,20 +1,35 @@
 using System;
 using System.CodeDom;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEngine;
 
-[TemplateClass("Views",uFrameFormats.VIEW_FORMAT, MemberGeneratorLocation.Both)]
-public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
-{  
+[TemplateClass( MemberGeneratorLocation.Both)]
+public partial class ViewTemplate :  IClassTemplate<ViewNode>
+{
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "Views"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
     public void TemplateSetup()
     {
        this.Ctx.TryAddNamespace("UniRx");
+        if (Ctx.IsDesignerFile && Ctx.Data.BaseNode == null)
+        {
+            Ctx.SetBaseType(typeof(ViewBase));
+        }
         // Add namespaces based on the types used for properties
         foreach (var property in Ctx.Data.Element.AllProperties)
         {
@@ -30,7 +45,8 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
     }
 
-    public TemplateContext<ElementViewNode> Ctx { get; set; }
+    public TemplateContext<ViewNode> Ctx { get; set; }
+
     #region SceneProperties
 
     [TemplateMethod("Reset{0}",MemberGeneratorLocation.DesignerFile, false)]
@@ -63,7 +79,7 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     #endregion
 
     [TemplateProperty]
-    public override Type ViewModelType
+    public virtual Type ViewModelType
     {
         get
         {
@@ -86,21 +102,27 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     }
 
     [TemplateMethod(CallBase = false)]
-    public override ViewModel CreateModel()
+    public virtual ViewModel CreateModel()
     {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         //var property = Context.Get<IDiagramNodeItem>();
         Ctx._("return this.RequestViewModel(GameManager.Container.Resolve<{0}>())",Ctx.Data.Element.Name.AsController());
 
         return null;
     }
+
     [TemplateMethod(MemberGeneratorLocation.Both)]
-    protected override void InitializeViewModel(ViewModel model)
+    protected virtual void InitializeViewModel(ViewModel model)
     {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
         var variableName = Ctx.Data.Name.ToLower();
         Ctx._("var {0} = (({1})model)",variableName,Ctx.Data.Element.Name.AsViewModel());
+        
         foreach (var property in Ctx.Data.Element.Properties)
         {
+            if (property.RelatedTypeNode is StateMachineNode) continue;
+
             var field = Ctx.CurrentDecleration._public_(property.RelatedTypeName, property.Name.AsField());
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)),
@@ -121,8 +143,9 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, true)]
-    public override void Bind()
+    public virtual void Bind()
     {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
         // Let the Dll Know about uFrame Binding Specific Types
         uFrameBindingType.ObservablePropertyType = typeof (IObservableProperty);
@@ -180,36 +203,45 @@ public class ViewTemplate : ViewBase , IClassTemplate<ElementViewNode>
         Ctx._("this.ExecuteCommand({0}.{1}, arg)", Ctx.Data.Element.Name, Ctx.Item.Name);
     }
 }
+
+[TemplateClass(MemberGeneratorLocation.DesignerFile,"{0}Backup")]
+public class BackupData : IClassTemplate<DiagramNode>
+{
+    public string Identifier
+    {
+        get
+        {
+            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Identifier)));
+            return null;
+        }
+    }
+    public string Data
+    {
+        get
+        {
+            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Serialize().ToString())));
+            return null;
+        }
+    }
+
+    public string OutputPath
+    {
+        get { return Path2.Combine("Editor", "Backups"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
+    public void TemplateSetup()
+    {
+        
+    }
+
+    public TemplateContext<DiagramNode> Ctx { get; set; }
+}
+
 public static class ViewBindingExtensions
 {
 }
-//public interface IElementViewBinding
-//{
-//    void CreateBinding(TemplateContext<ElementViewNode> ctx, ViewBindingsReference bindingInfo);
-//}
-
-//public class ElementViewBinding : IElementViewBinding
-//{
-//    public TemplateContext<ElementViewNode> Ctx { get; set; }
-//    public ViewBindingsReference Info { get; set; }
-//    public virtual void CreateBinding(TemplateContext<ElementViewNode> ctx, ViewBindingsReference bindingInfo)
-//    {
-//        Ctx = ctx;
-//        Info = bindingInfo;
-
-//    }
-//}
-//public class PropertyBinding : ElementViewBinding
-//{
-//    public override void CreateBinding(TemplateContext<ElementViewNode> ctx, ViewBindingsReference bindingInfo)
-//    {
-//        base.CreateBinding(ctx, bindingInfo);
-//        ctx.RenderTemplateMethod(this, "PropertyChanged");
-//    }
-
-//    [TemplateMethod("")]
-//    public void PropertyChanged(object value)
-//    {
-//        Ctx.Item.Name;
-//    }
-//}

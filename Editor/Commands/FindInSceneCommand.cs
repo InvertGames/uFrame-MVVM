@@ -1,10 +1,10 @@
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor.ElementDesigner;
+using Invert.uFrame.MVVM;
 using UnityEngine;
 
-public class FindInSceneCommand : EditorCommand<ViewData>
+public class FindInSceneCommand : EditorCommand<ViewNode>
 {
-    public override void Perform(ViewData node)
+    public override void Perform(ViewNode node)
     {
         var currentViewType = node.CurrentType;
         if (currentViewType != null)
@@ -17,7 +17,7 @@ public class FindInSceneCommand : EditorCommand<ViewData>
         }
     }
 
-    public override string CanPerform(ViewData node)
+    public override string CanPerform(ViewNode node)
     {
         if (node == null) return "Must be a View";
         return null;

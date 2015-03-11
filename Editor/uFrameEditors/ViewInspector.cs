@@ -3,19 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
+
 using Invert.Common;
 using Invert.Common.UI;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame;
+using Invert.Core.GraphDesigner.Unity;
 using Invert.uFrame.Editor;
-using Invert.uFrame.Editor.ViewModels;
+using Invert.uFrame.MVVM;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using State = Invert.StateMachine.State;
 using UniRx;
+using StateNodeViewModel = Invert.uFrame.MVVM.StateNodeViewModel;
+
 [CustomEditor(typeof(ViewBase), true)]
 public class ViewInspector : uFrameInspector
 {
@@ -303,11 +305,6 @@ public class ViewInspector : uFrameInspector
             Info("The name that is used to share this instance among others (if any).");
 
             EditorGUILayout.PropertyField(resolveNameProperty, new GUIContent("Resolve Name"));
-            //if (!t.IsMultiInstance && !string.IsNullOrEmpty(resolveNameProperty.stringValue))
-            //{
-            //    Warning(
-            //        "When using a 'ResolveName' on a single instance element, the element must be initialized manually in the scene manager's setup method.");
-            //}
         }
 
 
@@ -497,7 +494,7 @@ public class ViewInspector : uFrameInspector
         else if (property.Property.ValueType == typeof(State))
         {
             EditorGUILayout.LabelField(property.Property.PropertyName, property.Property.ObjectValue.ToString());
-            var _designerWidnow = uFrameEditor.DesignerWindow;
+            var _designerWidnow = InvertGraphEditor.DesignerWindow;
             if (_designerWidnow != null && _designerWidnow.DiagramDrawer != null)
             {
                 var items = _designerWidnow.DiagramDrawer.DiagramViewModel.GraphItems;
@@ -509,7 +506,7 @@ public class ViewInspector : uFrameInspector
 
                     foreach (var item in items)
                     {
-                        var stateNode = item as StateMachineStateNodeViewModel;
+                        var stateNode = item as StateNodeViewModel;
                         if (stateNode != null)
                         {
                             stateNode.IsCurrentState = item.Name == objectValue.Name;
@@ -528,9 +525,8 @@ public class ViewInspector : uFrameInspector
 
                     }
                 }
-
-
-                _designerWidnow.Repaint();
+                
+                //EditorWindow.GetWindow<ElementsDesigner>().Repaint();
             }
 
             return;

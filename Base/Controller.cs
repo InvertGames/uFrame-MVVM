@@ -15,10 +15,12 @@ public abstract class Controller
     [Inject]
     public ICommandDispatcher CommandDispatcher { get; set; }
 
+
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
     public IGameContainer Container { get; set; }
+
 
     protected Controller()
     {

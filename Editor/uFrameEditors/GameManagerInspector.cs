@@ -131,7 +131,6 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
 
     protected override void OnAdd(string typeName)
     {
-        //base.OnAdd(typeName);
         var go = new GameObject("_" + typeName);
 #if UNITY_5_0
         UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(go, "Assets/uFrameComplete/uFrame/Editor/uFrameEditors/GameManagerInspector.cs (135,9)", typeName);
