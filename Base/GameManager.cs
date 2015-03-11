@@ -103,8 +103,10 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         get {
             if (_activeSceneManager != null)
                 return _activeSceneManager;
+            
+            if (Instance != null)
+                _activeSceneManager = Instance._Start;
 
-            _activeSceneManager = Instance._Start;
             if (_activeSceneManager != null)
                 return _activeSceneManager;
 

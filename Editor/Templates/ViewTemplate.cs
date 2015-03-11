@@ -156,9 +156,10 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
         // Let the Dll Know about uFrame Binding Specific Types
         uFrameBindingType.ObservablePropertyType = typeof (IObservableProperty);
         uFrameBindingType.UFGroupType = typeof (UFGroup);
+        uFrameBindingType.ICommandType = typeof (ICommand);
         // For each binding lets do some magic
         foreach (var item in Ctx.Data.Bindings)
-        {
+        {    
             // Cast the source of our binding (ie: Property, Collection, Command..etc)
             var source = item.SourceItem as ITypedItem;
             // Create a boolean field for each property that has a binding this will serve the condition

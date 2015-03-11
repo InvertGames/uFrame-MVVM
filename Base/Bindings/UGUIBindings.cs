@@ -23,7 +23,7 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, CommandBase<T> command)
+        public static IDisposable BindButtonToCommand(this ViewBase viewBase, Button button, ICommand command)
         {
             var d = button.AsClickObservable().Subscribe(_ =>
             {
@@ -39,6 +39,24 @@ using UnityEngine.UI;
                     viewBase.ExecuteCommand(command, selector());
             }).DisposeWith(viewBase);
             return d;
+        }
+        public static IDisposable BindInputFieldToProperty(this ViewBase viewBase, InputField input, P<string> property)
+        {
+            var d1 = input.AsValueChangedObservable().Subscribe(value =>
+            {
+                property.OnNext(value);
+            }).DisposeWith(viewBase);
+
+            var d2 = property.Subscribe(value =>
+            {
+                input.text = value;
+            });
+
+            return Disposable.Create(() =>
+            {
+                d1.Dispose();
+                d2.Dispose();
+            }).DisposeWith(viewBase);
         }
 
         public static IDisposable BindInputFieldToProperty<TO>(this ViewBase viewBase, InputField inputField, P<TO> property, Func<string, TO> i2pSelector, Func<TO,string> p2iSelector)
@@ -59,26 +77,7 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
-
-        public static IDisposable BindInputFieldToProperty(this ViewBase viewBase, InputField inputField, P<string> property)
-        {
-            var d1 = inputField.AsValueChangedObservable().Subscribe(value =>
-            {
-                    property.OnNext(value);
-            }).DisposeWith(viewBase);
-
-            var d2 = property.Subscribe(value =>
-            {
-                inputField.text = value;
-            });
-
-            return Disposable.Create(() =>
-            {
-                d1.Dispose();
-                d2.Dispose();
-            }).DisposeWith(viewBase);
-        }
-
+ 
         public static IDisposable BindInputFieldToHandler(this ViewBase viewBase, InputField inputField, Action<string> handler)
         {
             var d = inputField.AsValueChangedObservable().Subscribe(value =>
@@ -208,6 +207,25 @@ using UnityEngine.UI;
             return d;
         }
 
+        public static IDisposable BindToggleToProperty(this ViewBase viewBase, Toggle toggle, P<bool> property)
+        {
+            var d1 = toggle.AsValueChangedObservable().Subscribe(value =>
+            {
+                property.OnNext(value); 
+            }).DisposeWith(viewBase);
+
+            var d2 = property.Subscribe(value =>
+            {
+                toggle.isOn = value;
+            });
+
+            return Disposable.Create(() =>
+            {
+                d1.Dispose();
+                d2.Dispose();
+            }).DisposeWith(viewBase);
+        }
+
         public static IDisposable BindToggleToProperty<TO>(this ViewBase viewBase, Toggle toggle, P<TO> property, Func<bool, TO> i2pSelector, Func<TO, bool> p2iSelector)
         {
             var d1 = toggle.AsValueChangedObservable().Subscribe(value =>
@@ -218,25 +236,6 @@ using UnityEngine.UI;
             var d2 = property.Subscribe(value =>
             {
                 toggle.isOn = p2iSelector(value);
-            });
-
-            return Disposable.Create(() =>
-            {
-                d1.Dispose();
-                d2.Dispose();
-            }).DisposeWith(viewBase);
-        }
-
-        public static IDisposable BindToggleToProperty(this ViewBase viewBase, Toggle toggle, P<bool> property)
-        {
-            var d1 = toggle.AsValueChangedObservable().Subscribe(value =>
-            {
-                property.OnNext(value);
-            }).DisposeWith(viewBase);
-
-            var d2 = property.Subscribe(value =>
-            {
-                toggle.isOn = value;
             });
 
             return Disposable.Create(() =>

@@ -510,7 +510,12 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     public virtual void OnDestroy()
     {
          Initialized = false; // Some weird bug where unity keeps this value at true between runs
-        SceneManager.UnRegisterView(this);
+        var sm = SceneManager;
+        if (sm != null)
+        {
+            sm.UnRegisterView(this);
+        }
+      
         Unbind();
         var pv = ParentView;
         if (pv != null)

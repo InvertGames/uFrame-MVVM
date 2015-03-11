@@ -100,11 +100,16 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} Executed")
             .ImplementWith(args =>
             {
-                args.Method.Comments.Add(new CodeCommentStatement("BLABLABLABLA"));
+                
             })
             ;
 
-
+        container.AddBindingMethod(typeof(UGUIExtensions), "BindInputFieldToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
+            .SetNameFormat("{0} To Input Field"); 
+        container.AddBindingMethod(typeof(UGUIExtensions), "BindButtonToCommand", _ => _ is CommandsChildItem)
+            .SetNameFormat("{0} To Button");
+        container.AddBindingMethod(typeof(UGUIExtensions), "BindToggleToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(bool).Name)
+            .SetNameFormat("{0} To Toggle");
         //container.RegisterGraphItem<SubsystemNode, SubsystemNodeViewModel, SubsystemNodeDrawer>();
 
     }
