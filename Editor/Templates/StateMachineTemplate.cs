@@ -22,8 +22,8 @@ public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemp
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("Invert.StateMachine");
-        Ctx.AddIterator("TriggerProperty", _ => _.Transitions);
-        Ctx.AddIterator("StateProperty", _ => _.States);
+        Ctx.AddIterator("TriggerProperty", _ => _.Transitions.Distinct());
+        Ctx.AddIterator("StateProperty", _ => _.States.Distinct());
     }
 
     public TemplateContext<StateMachineNode> Ctx { get; set; }

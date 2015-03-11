@@ -245,6 +245,7 @@ public class GameContainer : IGameContainer
                 }
                 return Resolve(p.ParameterType) ?? Resolve(p.ParameterType,p.Name);
             }).ToArray();
+        
             return Activator.CreateInstance(type, args);
         }
 

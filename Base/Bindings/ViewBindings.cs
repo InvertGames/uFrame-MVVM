@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using UniRx;
 /// <summary>
@@ -361,6 +362,26 @@ public static class ViewBindings
 
         return bindable.AddBinding(property.Subscribe(changed));
     }
+    /// <summary>
+    /// Binds a property to a view, this is the standard property binding extension method.
+    /// </summary>
+    /// <typeparam name="TBindingType"></typeparam>
+    /// <param name="property"></param>
+    /// <param name="bindable"></param>
+    /// <param name="changed"></param>
+    /// <param name="onlyWhenChanged"></param>
+    /// <returns></returns>
+    public static IDisposable BindTwoWay<TBindingType>(this IBindable bindable, P<TBindingType> property, Action<TBindingType> changed, bool onlyWhenChanged = true)
+    {
+        changed(property.Value);
+        if (onlyWhenChanged)
+        {
+            return bindable.AddBinding(property.Where(p => property.LastValue != property.ObjectValue).Subscribe(changed));
+        }
+
+        return bindable.AddBinding(property.Subscribe(changed));
+    }
+
     /// <summary>
     /// A wrapper of BindProperty for bindings in the diagram
     /// </summary>

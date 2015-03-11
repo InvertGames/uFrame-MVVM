@@ -1,6 +1,7 @@
 using System.CodeDom;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.StateMachine;
 using Invert.uFrame.MVVM;
 
 public class uFrameTemplates : DiagramPlugin
@@ -31,7 +32,26 @@ public class uFrameTemplates : DiagramPlugin
 
         // Register our bindable methods
         container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertiesChildItem)
-            .SetNameFormat("{0} Changed");
+            .SetNameFormat("{0} Changed")
+            .ImplementWith(args =>
+            {
+                if (args.SourceItem.OutputTo<StateMachineNode>() != null)
+                {
+                    args.Method.Parameters.Clear();
+                    args.Method.Parameters.Add(new CodeParameterDeclarationExpression(typeof (State), "State"));
+                }
+            })
+            ;
+        container.AddBindingMethod(typeof(ViewBindings), "BindTwoWay", _ => _ is PropertiesChildItem)
+            .SetNameFormat("{0} Two Way")
+            .ImplementWith(args =>
+            {
+                if (args.SourceItem.OutputTo<StateMachineNode>() != null)
+                {
+                    args.Method.Parameters.Clear();
+                    args.Method.Parameters.Add(new CodeParameterDeclarationExpression(typeof (State), "State"));
+                }
+            });
         container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.OutputTo<StateMachineNode>() != null)
 
             .SetNameFormat("{0} State Changed")

@@ -28,8 +28,8 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
         Ctx.AddIterator("CommandMethod", _ => _.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("CommandMethodWithArg", _ => _.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)));
-        Ctx.AddIterator("InstanceProperty", _ => _.GetParentNodes().OfType<SubsystemNode>().SelectMany(p => p.Instances));
-        Ctx.AddIterator("ControllerProperty", _=>_.GetParentNodes().OfType<SubsystemNode>().SelectMany(p=>p.GetContainingNodesInProject(p.Project)).OfType<ElementNode>());
+        Ctx.AddIterator("InstanceProperty", _ => _.GetParentNodes().OfType<SubsystemNode>().SelectMany(p => p.Instances).Distinct());
+        Ctx.AddIterator("ControllerProperty", _=>_.GetParentNodes().OfType<SubsystemNode>().SelectMany(p=>p.GetContainingNodesInProject(p.Project)).OfType<ElementNode>().Distinct());
     }
 
     public string NameAsViewModel { get { return Ctx.Data.Name.AsViewModel(); }}
@@ -48,7 +48,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
         set
         {
-            
+
         }
     }
 

@@ -51,7 +51,7 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
                 .Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(instance.Name)));
 
             Ctx._if("this.{0} == null",instance.Name.AsField())
-                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>({2}, \"{0}\")",instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.SourceItem.Name.AsController());
+                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>({2}, \"{3}\")",instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.SourceItem.Name.AsController(),instance.Name);
 
             Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, instance.Name.AsField());
             Ctx._("return {0}",instance.Name.AsField());
@@ -75,7 +75,7 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
             Ctx.SetType(Ctx.Item.Name.AsController());
             Ctx.AddAttribute(typeof (InjectAttribute));
             Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, Ctx.Item.Name.AsController().AsField());
-            Ctx.LazyGet(Ctx.Item.Name.AsController().AsField(), "new {0}() {{ Container = Container }}", Ctx.Item.Name.AsController());
+            Ctx.LazyGet(Ctx.Item.Name.AsController().AsField(), "Container.CreateInstance(typeof({0})) as {0};", Ctx.Item.Name.AsController());
             return null;
         }
         set {

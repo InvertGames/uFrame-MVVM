@@ -125,18 +125,24 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
 
             var field = Ctx.CurrentDecleration._public_(property.RelatedTypeName, property.Name.AsField());
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
-            field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UFGroup)),
-                  new CodeAttributeArgument(new CodePrimitiveExpression("View Model Properties"))));
+            field.CustomAttributes.Add(
+                new CodeAttributeDeclaration(
+                    new CodeTypeReference(typeof(UFGroup)),
+                    new CodeAttributeArgument(
+                        new CodePrimitiveExpression("View Model Properties"))));
+
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(HideInInspector))));
             var relatedNode = property.RelatedTypeNode;
             var relatedViewModel = relatedNode as ElementNode;
 
             if (relatedViewModel == null) // Non ViewModel Properties
             {
+                
                Ctx._("{0}.{1} = this.{2}",variableName,property.Name,property.Name.AsField());
             }
             else
             {
+                field.Type = new CodeTypeReference(typeof(ViewBase));
                 Ctx._("{0}.{1} = this.{2} == null ? null : this.{2}.ViewModelObject as {3}", variableName, property.Name, property.Name.AsField(), relatedViewModel.Name.AsViewModel());
             }
         }
@@ -204,43 +210,43 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
     }
 }
 
-[TemplateClass(MemberGeneratorLocation.DesignerFile,"{0}Backup")]
-public class BackupData : IClassTemplate<DiagramNode>
-{
-    public string Identifier
-    {
-        get
-        {
-            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Identifier)));
-            return null;
-        }
-    }
-    public string Data
-    {
-        get
-        {
-            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Serialize().ToString())));
-            return null;
-        }
-    }
+//[TemplateClass(MemberGeneratorLocation.DesignerFile,"{0}Backup")]
+//public class BackupData : IClassTemplate<DiagramNode>
+//{
+//    public string Identifier
+//    {
+//        get
+//        {
+//            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Identifier)));
+//            return null;
+//        }
+//    }
+//    public string Data
+//    {
+//        get
+//        {
+//            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Serialize().ToString())));
+//            return null;
+//        }
+//    }
 
-    public string OutputPath
-    {
-        get { return Path2.Combine("Editor", "Backups"); }
-    }
+//    public string OutputPath
+//    {
+//        get { return Path2.Combine("Editor", "Backups"); }
+//    }
 
-    public bool CanGenerate
-    {
-        get { return true; }
-    }
+//    public bool CanGenerate
+//    {
+//        get { return true; }
+//    }
 
-    public void TemplateSetup()
-    {
+//    public void TemplateSetup()
+//    {
         
-    }
+//    }
 
-    public TemplateContext<DiagramNode> Ctx { get; set; }
-}
+//    public TemplateContext<DiagramNode> Ctx { get; set; }
+//}
 
 public static class ViewBindingExtensions
 {
