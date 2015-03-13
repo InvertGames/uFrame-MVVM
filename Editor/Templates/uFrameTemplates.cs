@@ -38,25 +38,16 @@ public class uFrameTemplates : DiagramPlugin
                 if (args.SourceItem.OutputTo<StateMachineNode>() != null)
                 {
                     args.Method.Parameters.Clear();
-                    args.Method.Parameters.Add(new CodeParameterDeclarationExpression(typeof (State), "State"));
+                    args.Method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(State), "State"));
                 }
             })
             ;
-        container.AddBindingMethod(typeof(ViewBindings), "BindTwoWay", _ => _ is PropertiesChildItem)
-            .SetNameFormat("{0} Two Way")
-            .ImplementWith(args =>
-            {
-                if (args.SourceItem.OutputTo<StateMachineNode>() != null)
-                {
-                    args.Method.Parameters.Clear();
-                    args.Method.Parameters.Add(new CodeParameterDeclarationExpression(typeof (State), "State"));
-                }
-            });
         container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.OutputTo<StateMachineNode>() != null)
 
             .SetNameFormat("{0} State Changed")
             .ImplementWith(args =>
             {
+                args.Method.Parameters[0].Type = typeof(State).ToCodeReference();
                 var stateMachine = args.SourceItem.OutputTo<StateMachineNode>();
 
                 foreach (var state in stateMachine.States)
@@ -76,13 +67,13 @@ public class uFrameTemplates : DiagramPlugin
                     //}
                     //else
                     //{
-                        var conditionStatement =
-                        new CodeConditionStatement(
-                            new CodeSnippetExpression(string.Format("value is {0}", state.Name)));
-                        conditionStatement.TrueStatements.Add(
-                            new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), method.Name));
+                    var conditionStatement =
+                    new CodeConditionStatement(
+                        new CodeSnippetExpression(string.Format("arg1 is {0}", state.Name)));
+                    conditionStatement.TrueStatements.Add(
+                        new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), method.Name));
 
-                        args.Method.Statements.Add(conditionStatement);
+                    args.Method.Statements.Add(conditionStatement);
                     //}
 
                     args.Decleration.Members.Add(method);
@@ -100,16 +91,18 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} Executed")
             .ImplementWith(args =>
             {
-                
+
             })
             ;
 
         container.AddBindingMethod(typeof(UGUIExtensions), "BindInputFieldToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
-            .SetNameFormat("{0} To Input Field"); 
+            .SetNameFormat("{0} To Input Field");
         container.AddBindingMethod(typeof(UGUIExtensions), "BindButtonToCommand", _ => _ is CommandsChildItem)
             .SetNameFormat("{0} To Button");
         container.AddBindingMethod(typeof(UGUIExtensions), "BindToggleToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(bool).Name)
             .SetNameFormat("{0} To Toggle");
+        container.AddBindingMethod(typeof(UGUIExtensions), "BindTextToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
+            .SetNameFormat("{0} To Text");
         //container.RegisterGraphItem<SubsystemNode, SubsystemNodeViewModel, SubsystemNodeDrawer>();
 
     }

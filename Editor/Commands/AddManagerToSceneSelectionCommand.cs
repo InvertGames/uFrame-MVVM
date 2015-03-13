@@ -1,9 +1,7 @@
 using System;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
-using Invert.uFrame.Editor;
-using Invert.uFrame.Editor.ElementDesigner;
-using Invert.uFrame.Editor.ElementDesigner.Commands;
+using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEditor;
 

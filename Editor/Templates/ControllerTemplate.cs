@@ -5,7 +5,7 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEngine;
 
-[TemplateClass( MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
+[TemplateClass(MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
 public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>
 {
     public TemplateContext<ElementNode> Ctx { get; set; }
@@ -29,10 +29,10 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         Ctx.AddIterator("CommandMethod", _ => _.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("CommandMethodWithArg", _ => _.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("InstanceProperty", _ => _.GetParentNodes().OfType<SubsystemNode>().SelectMany(p => p.Instances).Distinct());
-        Ctx.AddIterator("ControllerProperty", _=>_.GetParentNodes().OfType<SubsystemNode>().SelectMany(p=>p.GetContainingNodesInProject(p.Project)).OfType<ElementNode>().Distinct());
+        Ctx.AddIterator("ControllerProperty", _ => _.GetParentNodes().OfType<SubsystemNode>().SelectMany(p => p.GetContainingNodesInProject(p.Project)).OfType<ElementNode>().Distinct());
     }
 
-    public string NameAsViewModel { get { return Ctx.Data.Name.AsViewModel(); }}
+    public string NameAsViewModel { get { return Ctx.Data.Name.AsViewModel(); } }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
     public ViewModel InstanceProperty
@@ -40,10 +40,10 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         get
         {
             Ctx.CurrentProperty.CustomAttributes.Add(new CodeAttributeDeclaration(
-                typeof (InjectAttribute).ToCodeReference(),
+                typeof(InjectAttribute).ToCodeReference(),
                 new CodeAttributeArgument(new CodePrimitiveExpression(Ctx.ItemAs<InstancesReference>().Name))
                 ));
-            
+
             return null;
         }
         set
@@ -74,7 +74,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     {
         if (!Ctx.IsDesignerFile) return;
         Ctx.CurrentMethodAttribute.CallBase = Ctx.Data.BaseNode != null;
-        Ctx._("this.Initialize{0}((({1})(viewModel)))",Ctx.Data.Name,NameAsViewModel);
+        Ctx._("this.Initialize{0}((({1})(viewModel)))", Ctx.Data.Name, NameAsViewModel);
     }
 
     [TemplateMethod("Create{0}", MemberGeneratorLocation.DesignerFile, false)]
@@ -85,14 +85,14 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         return null;
     }
 
-    [TemplateMethod( MemberGeneratorLocation.DesignerFile, false)]
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, false)]
     public override ViewModel CreateEmpty()
     {
         Ctx._("return new {0}(this)", NameAsViewModel);
         return null;
     }
 
-    [TemplateMethod("Initialize{0}",MemberGeneratorLocation.Both,true)]
+    [TemplateMethod("Initialize{0}", MemberGeneratorLocation.Both, true)]
     public virtual void InitializeElement(ViewModel viewModel)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(NameAsViewModel);
@@ -112,9 +112,9 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             var transition = Ctx.Item.OutputTo<TransitionsChildItem>();
             if (transition != null)
             {
-                
+
                 var stateMachineProperty =
-                    Ctx.Data.InheritedProperties.FirstOrDefault(p=>p.RelatedTypeNode is StateMachineNode);
+                    Ctx.Data.InheritedProperties.FirstOrDefault(p => p.RelatedTypeNode is StateMachineNode);
 
                 if (stateMachineProperty != null)
                 {
@@ -125,7 +125,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
     }
 
-    [TemplateMethod("{0}", MemberGeneratorLocation.Both,true)]
+    [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void CommandMethodWithArg(ViewModel viewModel, object arg)
     {
         CommandMethod(viewModel);

@@ -40,6 +40,18 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
             return d;
         }
+        public static IDisposable BindTextToProperty(this ViewBase viewBase, Text input, P<string> property)
+        {
+     
+            var d1 = property.Subscribe(value =>
+            {
+                input.text = value;
+            });
+
+            return d1.DisposeWith(viewBase);
+        }
+
+        
         public static IDisposable BindInputFieldToProperty(this ViewBase viewBase, InputField input, P<string> property)
         {
             var d1 = input.AsValueChangedObservable().Subscribe(value =>

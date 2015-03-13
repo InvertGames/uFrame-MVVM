@@ -10,8 +10,8 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEngine;
 
-[TemplateClass( MemberGeneratorLocation.Both)]
-public partial class ViewTemplate :  IClassTemplate<ViewNode>
+[TemplateClass(MemberGeneratorLocation.Both)]
+public partial class ViewTemplate : IClassTemplate<ViewNode>
 {
     public string OutputPath
     {
@@ -25,7 +25,7 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
 
     public void TemplateSetup()
     {
-       this.Ctx.TryAddNamespace("UniRx");
+        this.Ctx.TryAddNamespace("UniRx");
         if (Ctx.IsDesignerFile && Ctx.Data.BaseNode == null)
         {
             Ctx.SetBaseType(typeof(ViewBase));
@@ -49,7 +49,7 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
 
     #region SceneProperties
 
-    [TemplateMethod("Reset{0}",MemberGeneratorLocation.DesignerFile, false)]
+    [TemplateMethod("Reset{0}", MemberGeneratorLocation.DesignerFile, false)]
     public virtual void ResetProperty()
     {
         // Make sure the disposable is created
@@ -57,23 +57,23 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
         Ctx._if("_{0}Disposable != null", Ctx.Item.Name)
             .TrueStatements
             ._("_{0}Disposable.Dispose()", Ctx.Item.Name);
-        Ctx._("_{0}Disposable = Get{0}Observable().Subscribe({1}.{2}).DisposeWith(this)",Ctx.Item.Name,Ctx.Data.Element.Name, Ctx.Item.Name.AsSubscribableProperty());
+        Ctx._("_{0}Disposable = Get{0}Observable().Subscribe({1}.{2}).DisposeWith(this)", Ctx.Item.Name, Ctx.Data.Element.Name, Ctx.Item.Name.AsSubscribableProperty());
 
     }
 
-    [TemplateMethod("Calculate{0}",MemberGeneratorLocation.Both, true)]
+    [TemplateMethod("Calculate{0}", MemberGeneratorLocation.Both, true)]
     protected virtual String CalculateProperty()
     {
         Ctx.SetType(Ctx.TypedItem.RelatedTypeName);
-        Ctx._("return default({0})",Ctx.TypedItem.RelatedTypeName);
+        Ctx._("return default({0})", Ctx.TypedItem.RelatedTypeName);
         return default(String);
     }
 
-    [TemplateMethod("Get{0}Observable",MemberGeneratorLocation.DesignerFile,false)]
+    [TemplateMethod("Get{0}Observable", MemberGeneratorLocation.DesignerFile, false)]
     protected virtual UniRx.IObservable<String> GetPropertyObservable()
     {
         this.Ctx.SetTypeArgument(Ctx.TypedItem.RelatedTypeName);
-        Ctx._("return this.UpdateAsObservable().Select(p=>Calculate{0}())",Ctx.Item.Name);
+        Ctx._("return this.UpdateAsObservable().Select(p=>Calculate{0}())", Ctx.Item.Name);
         return null;
     }
     #endregion
@@ -84,13 +84,13 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
         get
         {
             Ctx.CurrentProperty.Attributes |= MemberAttributes.Override;
-            Ctx._("return typeof({0})",Ctx.Data.Element.Name.AsViewModel());
+            Ctx._("return typeof({0})", Ctx.Data.Element.Name.AsViewModel());
             return null;
         }
     }
 
     [TemplateProperty]
-    public  Type ViewModelProperty
+    public Type ViewModelProperty
     {
         get
         {
@@ -106,7 +106,7 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         //var property = Context.Get<IDiagramNodeItem>();
-        Ctx._("return this.RequestViewModel(GameManager.Container.Resolve<{0}>())",Ctx.Data.Element.Name.AsController());
+        Ctx._("return this.RequestViewModel(GameManager.Container.Resolve<{0}>())", Ctx.Data.Element.Name.AsController());
 
         return null;
     }
@@ -116,9 +116,11 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
+        Ctx.CurrentMethod.invoke_base(true);
+        if (!Ctx.Data.Element.Properties.Any()) return;
         var variableName = Ctx.Data.Name.ToLower();
-        Ctx._("var {0} = (({1})model)",variableName,Ctx.Data.Element.Name.AsViewModel());
-        
+        Ctx._("var {0} = (({1})model)", variableName, Ctx.Data.Element.Name.AsViewModel());
+
         foreach (var property in Ctx.Data.Element.Properties)
         {
             if (property.RelatedTypeNode is StateMachineNode) continue;
@@ -137,8 +139,8 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
 
             if (relatedViewModel == null) // Non ViewModel Properties
             {
-                
-               Ctx._("{0}.{1} = this.{2}",variableName,property.Name,property.Name.AsField());
+
+                Ctx._("{0}.{1} = this.{2}", variableName, property.Name, property.Name.AsField());
             }
             else
             {
@@ -153,18 +155,21 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
+
+        Ctx.CurrentMethod.invoke_base(true);
+
         // Let the Dll Know about uFrame Binding Specific Types
-        uFrameBindingType.ObservablePropertyType = typeof (IObservableProperty);
-        uFrameBindingType.UFGroupType = typeof (UFGroup);
-        uFrameBindingType.ICommandType = typeof (ICommand);
+        uFrameBindingType.ObservablePropertyType = typeof(IObservableProperty);
+        uFrameBindingType.UFGroupType = typeof(UFGroup);
+        uFrameBindingType.ICommandType = typeof(ICommand);
         // For each binding lets do some magic
         foreach (var item in Ctx.Data.Bindings)
-        {    
+        {
             // Cast the source of our binding (ie: Property, Collection, Command..etc)
             var source = item.SourceItem as ITypedItem;
             // Create a boolean field for each property that has a binding this will serve the condition
             // in the bind method to turn the binding on or off.
-            var bindingField = Ctx.CurrentDecleration._public_(typeof (bool), "_Bind{0}", source.Name);
+            var bindingField = Ctx.CurrentDecleration._public_(typeof(bool), "_Bind{0}", source.Name);
             // Bindings should always be on by default
             bindingField.InitExpression = new CodePrimitiveExpression(true);
             // Add a toggle group attribute to it, this hides and shows anything within the same group
@@ -178,8 +183,8 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
             var bindingType = item.BindingType;
             // Create the binding signature based on the Method Info
             var bindingStatement = bindingType.CreateBindingSignature(
-                Ctx.CurrentDecleration, 
-                _ => source.RelatedTypeName.ToCodeReference(), 
+                Ctx.CurrentDecleration,
+                _ => source.RelatedTypeName.ToCodeReference(),
                 Ctx.Data, source);
             // Add the binding statement to the condition
             bindingCondition.TrueStatements.Add(bindingStatement);
@@ -187,7 +192,7 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
 
         foreach (var property in Ctx.Data.SceneProperties)
         {
-            Ctx._("Reset{0}()",property.Name);
+            Ctx._("Reset{0}()", property.Name);
         }
         //var bindingStatement = ViewBindingExtensions.CreateBindingSignature(Ctx.CurrentDecleration,
         //    typeof (ViewBindings).GetMethods(BindingFlags.Public | BindingFlags.Static)
@@ -196,7 +201,7 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
         //Ctx.CurrentStatements.Add(bindingStatement);
     }
 
-    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile,false,AutoFill = AutoFillType.NameOnly)]
+    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
     public void ExecuteCommand()
     {
         Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
@@ -243,7 +248,7 @@ public partial class ViewTemplate :  IClassTemplate<ViewNode>
 
 //    public void TemplateSetup()
 //    {
-        
+
 //    }
 
 //    public TemplateContext<DiagramNode> Ctx { get; set; }

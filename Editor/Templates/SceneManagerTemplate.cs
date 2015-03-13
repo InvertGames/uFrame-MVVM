@@ -4,8 +4,8 @@ using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
-[TemplateClass( MemberGeneratorLocation.Both, uFrameFormats.SCENE_MANAGER_FORMAT)]
-public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneManagerNode>
+[TemplateClass(MemberGeneratorLocation.Both, uFrameFormats.SCENE_MANAGER_FORMAT)]
+public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
 {
     public string OutputPath
     {
@@ -20,16 +20,20 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("UniRx");
+        if (Ctx.IsDesignerFile)
+        {
+            Ctx.SetBaseType(typeof(SceneManager));
+        }
         foreach (var transition in Ctx.Data.SceneTransitions)
         {
             var to = transition.OutputTo<SceneManagerNode>();
             if (to == null) continue;
-            Ctx._("public {0} {1}Transition = new {0}();",to.Name.AsSceneManagerSettings(), transition.Name.AsField());
+            Ctx._("public {0} {1}Transition = new {0}();", to.Name.AsSceneManagerSettings(), transition.Name.AsField());
         }
         if (Ctx.IsDesignerFile)
-        Ctx._("public {0} {1} = new {0}();", Ctx.Data.Name.AsSceneManagerSettings(), Ctx.Data.Name.AsSceneManagerSettings().AsField());
+            Ctx._("public {0} {1} = new {0}();", Ctx.Data.Name.AsSceneManagerSettings(), Ctx.Data.Name.AsSceneManagerSettings().AsField());
 
-        Ctx.AddIterator("InstanceProperty", node=>node.ImportedItems);
+        Ctx.AddIterator("InstanceProperty", node => node.ImportedItems);
         Ctx.AddIterator("ControllerProperty", node => node.IncludedElements);
         Ctx.AddIterator("GetTransitionScenes", node => node.SceneTransitions);
         Ctx.AddIterator("TransitionMethod", node => node.SceneTransitions);
@@ -38,23 +42,24 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
 
     public TemplateContext<SceneManagerNode> Ctx { get; set; }
 
-    
+
     //[Inject("LocalPlayer")]
-    [TemplateProperty("{0}",AutoFillType.NameOnly)]
-    public virtual ViewModel InstanceProperty {
+    [TemplateProperty("{0}", AutoFillType.NameOnly)]
+    public virtual ViewModel InstanceProperty
+    {
         get
         {
             var instance = Ctx.ItemAs<InstancesReference>();
             Ctx.SetType(instance.SourceItem.Name.AsViewModel());
 
-            Ctx.AddAttribute(typeof (InjectAttribute))
+            Ctx.AddAttribute(typeof(InjectAttribute))
                 .Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(instance.Name)));
 
-            Ctx._if("this.{0} == null",instance.Name.AsField())
-                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>({2}, \"{3}\")",instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.SourceItem.Name.AsController(),instance.Name);
+            Ctx._if("this.{0} == null", instance.Name.AsField())
+                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>({2}, \"{3}\")", instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.SourceItem.Name.AsController(), instance.Name);
 
             Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, instance.Name.AsField());
-            Ctx._("return {0}",instance.Name.AsField());
+            Ctx._("return {0}", instance.Name.AsField());
 
             //if ((this._LocalPlayer == null)) {
             //    this._LocalPlayer = CreateInstanceViewModel<FPSPlayerViewModel>(FPSPlayerController, "LocalPlayer");
@@ -62,38 +67,42 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
             //return this._LocalPlayer;
             return null;
         }
-        set {
+        set
+        {
             //_LocalPlayer = value;
         }
     }
-    
+
     //[Inject()]
     [TemplateProperty(uFrameFormats.CONTROLLER_FORMAT, AutoFillType.NameOnly)]
-    public virtual Controller ControllerProperty {
+    public virtual Controller ControllerProperty
+    {
         get
         {
             Ctx.SetType(Ctx.Item.Name.AsController());
-            Ctx.AddAttribute(typeof (InjectAttribute));
+            Ctx.AddAttribute(typeof(InjectAttribute));
             Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, Ctx.Item.Name.AsController().AsField());
             Ctx.LazyGet(Ctx.Item.Name.AsController().AsField(), "Container.CreateInstance(typeof({0})) as {0};", Ctx.Item.Name.AsController());
             return null;
         }
-        set {
+        set
+        {
             Ctx._("{0} = value", Ctx.Item.Name.AsController().AsField());
         }
     }
-   
+
     // <summary>
     // This method is the first method to be invoked when the scene first loads. Anything registered here with 'Container' will effectively 
     // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
     // the 'Inject' attribute on any controller or view-model will automatically be set by uFrame. 
     // </summary>
     [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
-    public override void Setup() {
-        base.Setup();
+    public virtual void Setup()
+    {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         foreach (var item in Ctx.Data.ImportedItems)
         {
-            Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")",item.SourceItem.Name.AsViewModel(),item.Name,item.Name);
+            Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
         }
         foreach (var item in Ctx.Data.IncludedElements)
         {
@@ -111,7 +120,8 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
     #region Transitions
 
     [TemplateMethod("Get{0}Scenes", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
-    public virtual System.Collections.Generic.IEnumerable<string> GetTransitionScenes() {
+    public virtual System.Collections.Generic.IEnumerable<string> GetTransitionScenes()
+    {
         Ctx._("return {0}Transition._Scenes", Ctx.Item.Name.AsField());
         //return this._QuitGameTransition._Scenes;
         return null;
@@ -122,18 +132,18 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
     {
 
         var transition = Ctx.ItemAs<SceneTransitionsReference>();
-//        var transitionCommand = transition.SourceItem as CommandsChildItem;
+        //        var transitionCommand = transition.SourceItem as CommandsChildItem;
         var transitionOutput = transition.OutputTo<SceneManagerNode>();
         if (transitionOutput != null)
         {
             Ctx._("GameManager.TransitionLevel<{0}>((container) =>{{container.{1} = _{2}Transition; {2}TransitionComplete(container); }}, this.Get{2}Scenes().ToArray())",
-                transitionOutput.Name.AsSceneManager(), transitionOutput.Name.AsSceneManagerSettings().AsField(),transition.Name);
+                transitionOutput.Name.AsSceneManager(), transitionOutput.Name.AsSceneManagerSettings().AsField(), transition.Name);
         }
-        
+
         //GameManager.TransitionLevel<FPSMainMenuManager>((container) =>{container._FPSMainMenuManagerSettings = _QuitGameTransition; QuitGameTransitionComplete(container); }, this.GetQuitGameScenes().ToArray());
     }
 
-    [TemplateMethod("{0}TransitionComplete", MemberGeneratorLocation.Both,true)]
+    [TemplateMethod("{0}TransitionComplete", MemberGeneratorLocation.Both, true)]
     public virtual void TransitionComplete(object sceneManager)
     {
         //if (!Ctx.IsDesignerFile) return;
@@ -142,22 +152,22 @@ public partial class SceneManagerTemplate : SceneManager, IClassTemplate<SceneMa
         if (transition == null) return;
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(transitionOutput.Name.AsSceneManager());
     }
-    
-    public override void Initialize()
-    {
-        base.Initialize();
 
-        //foreach (var item in Ctx.Data.Trnasitions)
-        //{
+    //public override void Initialize()
+    //{
+    //    base.Initialize();
+    //    if (Ctx.)
+    //    //foreach (var item in Ctx.Data.Trnasitions)
+    //    //{
 
-        //    Ctx._("{0}.{1}.Subscribe(_=> {2}()).DisposeWith(this.gameObject)",item);
-        //}
-        // FPSGame.MainMenu.Subscribe(_=> MainMenu()).DisposeWith(this.gameObject);
-        // FPSGame.QuitGame.Subscribe(_=> QuitGame()).DisposeWith(this.gameObject);
-    }
+    //    //    Ctx._("{0}.{1}.Subscribe(_=> {2}()).DisposeWith(this.gameObject)",item);
+    //    //}
+    //    // FPSGame.MainMenu.Subscribe(_=> MainMenu()).DisposeWith(this.gameObject);
+    //    // FPSGame.QuitGame.Subscribe(_=> QuitGame()).DisposeWith(this.gameObject);
+    //}
 
     #endregion
 
 
- 
+
 }

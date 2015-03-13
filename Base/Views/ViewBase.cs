@@ -664,7 +664,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <buildflag>Exclude from Online</buildflag>
     /// <buildflag>Exclude from Booklet</buildflag>
     /// <param name="model">The model to initialize.</param>
-    protected abstract void InitializeViewModel(ViewModel model);
+    protected virtual void InitializeViewModel(ViewModel model) { }
 
     /// <summary>
     /// Just calls the apply method.
