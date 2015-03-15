@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UnityEngine;
 
 /// <summary>
@@ -20,6 +21,20 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         set;
     }
 
+    public IEventAggregator EventAggregator
+    {
+        get { return GameManager.EventAggregator; }
+    }
+
+    public IObservable<TEvent> OnEvent<TEvent>()
+    {
+        return EventAggregator.GetEvent<TEvent>();
+    }
+
+    public void Publish(object eventMessage)
+    {
+        EventAggregator.Publish(eventMessage);
+    }
     /// <summary>
     /// The Dependency container for this scene.  If unset then it will use "GameManager.Container".
     /// </summary>
@@ -51,6 +66,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// </summary>
     public virtual void OnLoaded()
     {
+        GameManager.EventAggregator.Publish(new LoadedEvent());
     }
 
     /// <summary>
@@ -75,6 +91,8 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     public virtual void Setup()
     {
     }
+
+
 
     /// <summary>
     /// This method should be used to property unload a scene when transitioning to another scene.
@@ -281,14 +299,11 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
     public virtual void Initialize()
     {
-        //var vms = Container.ResolveAll<ViewModel>();
-        //foreach (var vm in vms)
-        //{
-        //    if (vm.Controller != null)
-        //    {
-        //        vm.Controller.Initialize(vm);
-        //    }
-        //}
+        var systemControllers = Container.ResolveAll<ISystemController>();
+        foreach (var systemController in systemControllers)
+        {
+            systemController.Setup();
+        }
         
     }
 
@@ -331,6 +346,10 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     }
 }
 
+public class LoadedEvent
+{
+}
+
 public static class SceneManagerExtensions
 {
     public static void FromJson(this SceneManager sceneManager, string stateData)
@@ -364,12 +383,20 @@ public static class ContainerExtensions
     public static void RegisterController<TController>(this IGameContainer container, TController controller) where TController : Controller
     {
         container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
+        container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
+        container.RegisterInstance<ISystemController>(controller,controller.GetType().Name,false);
         container.RegisterInstance<TController>(controller,false);
     }
-
+    
+    public static void RegisterViewModelManager<TViewModel>(this IGameContainer container, 
+        IViewModelManager<TViewModel> manager)
+    {
+        container.RegisterInstance<IViewModelManager>(manager,typeof(TViewModel).Name.Replace("ViewModel", ""));
+    }
     public static void RegisterViewModelController<TController, TViewModel>(this IGameContainer container, TController controller) where TController : Controller
     {
         
         // Nothing yet
     }
 }
+

@@ -107,15 +107,28 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
         foreach (var item in Ctx.Data.IncludedElements)
         {
             Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
+            Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
         }
+        
         Ctx._("Container.InjectAll()");
-        foreach (var item in Ctx.Data.ImportedItems)
+    }
+
+    [TemplateMethod(MemberGeneratorLocation.Both)]
+    public virtual void Initialize()
+    {
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
+        Ctx.CurrentMethodAttribute.CallBase = true;
+        Ctx.CurrentMethod.invoke_base();
+        Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("This method is called right after setup is invoked."));
+        if (Ctx.IsDesignerFile)
         {
-            Ctx._("{0}.Initialize({1})", item.SourceItem.Name.AsController(), item.Name);
+            foreach (var item in Ctx.Data.ImportedItems)
+            {
+                Ctx._("{0}.Initialize({1})", item.SourceItem.Name.AsController(), item.Name);
+            }
         }
 
     }
-
 
     #region Transitions
 

@@ -1,5 +1,6 @@
 #if UNITY_4_6 || UNITY_5_0
 using System;
+using Invert.MVVMTest;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,6 +33,15 @@ using UnityEngine.UI;
             return d;
         }
 
+        public static IDisposable BindButtonToCommand<TSignalType>(this ViewBase viewBase, Button button, Signal<TSignalType> command) 
+            where TSignalType : ViewModelCommand, new()
+        {
+            var d = button.AsClickObservable().Subscribe(_ =>
+            {
+                command.OnNext(new TSignalType());
+            }).DisposeWith(viewBase);
+            return d;
+        }
         public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, CommandBase<T> command, Func<T> selector)
         {
             var d = button.AsClickObservable().Subscribe(_ =>
@@ -221,6 +231,7 @@ using UnityEngine.UI;
 
         public static IDisposable BindToggleToProperty(this ViewBase viewBase, Toggle toggle, P<bool> property)
         {
+            toggle.isOn = property.Value;
             var d1 = toggle.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(value); 

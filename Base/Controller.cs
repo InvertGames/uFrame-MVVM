@@ -2,19 +2,55 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
+
 #if DLL
 namespace Invert.Common.MVVM
 {
 #endif
 
+public interface ISystemController
+{
+    IEventAggregator EventAggregator { get; set; }
+
+    /// <summary>
+    /// The setup method is called when the controller is first created and has been injected.  Use this
+    /// to subscribe to any events on the EventAggregator
+    /// </summary>
+    void Setup();
+}
+
+public static class SystemControllerExtensions
+{
+    public static IObservable<TEvent> OnEvent<TEvent>(this ISystemController systemController)
+    {
+        return systemController.EventAggregator.GetEvent<TEvent>();
+    }
+
+    public static void Publish(this ISystemController systemController, object eventMessage)
+    {
+        systemController.EventAggregator.Publish(eventMessage);
+    }
+}
+
 /// <summary>
 /// A controller is a group of commands usually to provide an abstract level
 /// </summary>
-public abstract class Controller
+public abstract class Controller : ISystemController
 {
+    private List<ViewModel> _viewModels = new List<ViewModel>();
+
+    public List<ViewModel> ViewModels
+    {
+        get { return _viewModels; }
+        set { _viewModels = value; }
+    }
+
     [Inject]
     public ICommandDispatcher CommandDispatcher { get; set; }
 
+    [Inject]
+    public IEventAggregator EventAggregator { get; set; }
 
     /// <summary>
     /// The dependency container that this controller will use
@@ -73,7 +109,19 @@ public abstract class Controller
     [Obsolete("Game event is not longer used for transitions.  Regenerate your diagram.")]
     public void GameEvent(string name) { }
 
-    public abstract void Initialize(ViewModel viewModel);
+    /// <summary>
+    /// The setup method is called when the controller is first created and has been injected.  Use this
+    /// to subscribe to any events on the EventAggregator
+    /// </summary>
+    public virtual void Setup()
+    {
+        
+    }
+
+    public virtual void Initialize(ViewModel viewModel)
+    {
+        
+    }
 
     public void ExecuteCommand(ICommand command, object argument)
     {
@@ -90,9 +138,84 @@ public abstract class Controller
         CommandDispatcher.ExecuteCommand(command, argument);
     }
 
+    public virtual void DisposingViewModel(ViewModel viewModel)
+    {
+        
+    }
+    
+
 };
 
+public interface IViewModelManager : IEnumerable<ViewModel>
+{
+    void Add(ViewModel viewModel);
+    void Remove(ViewModel viewModel);
+}
 
+public interface IViewModelManager<T> : IViewModelManager
+{
+    
+}
+
+public class ViewModelManager<T> : IViewModelManager<T> where T : ViewModel
+{
+    private List<T> _viewModels = new List<T>();
+
+    [Inject]
+    public IEventAggregator Aggregator { get; set; }
+
+    public List<T> ViewModels
+    {
+        get { return _viewModels; }
+        set { _viewModels = value; }
+    }
+
+    public IEnumerator<ViewModel> GetEnumerator()
+    {
+        return ViewModels.Cast<ViewModel>().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Add(ViewModel viewModel)
+    {
+        ViewModels.Add((T)viewModel);
+        if (Aggregator != null)
+        {
+            Aggregator.Publish(new ViewModelCreatedEvent() { ViewModel = viewModel });
+        }
+    }
+
+    public void Remove(ViewModel viewModel)
+    {
+        ViewModels.Remove((T)viewModel);
+        if (Aggregator != null)
+        {
+            Aggregator.Publish(new ViewModelDestroyedEvent() { ViewModel = viewModel });
+        }
+    }
+
+   
+}
+
+public class ViewModelCreatedEvent
+{
+    public ViewModelCreatedEvent()
+    {
+    }
+
+    public ViewModel ViewModel { get; set; }
+    
+}
+public class ViewModelDestroyedEvent
+{
+
+    public ViewModel ViewModel { get; set; }
+
+}
 #if DLL
 }
 #endif

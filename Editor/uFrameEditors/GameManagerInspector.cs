@@ -129,16 +129,4 @@ public class GameManagerInspector : ManagerInspector<SceneManager>
         return name + "Game";
     }
 
-    protected override void OnAdd(string typeName)
-    {
-        var go = new GameObject("_" + typeName);
-#if UNITY_5_0
-        UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(go, "Assets/uFrameComplete/uFrame/Editor/uFrameEditors/GameManagerInspector.cs (135,9)", typeName);
-#else
-       go.AddComponent(typeName);
-#endif
-        go.transform.parent = null;
-        Selection.objects = new Object[] { go };
-    }
-
 }

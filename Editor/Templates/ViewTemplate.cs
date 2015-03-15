@@ -23,9 +23,11 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         get { return true; }
     }
 
-    public void TemplateSetup()
+    public virtual void TemplateSetup()
     {
         this.Ctx.TryAddNamespace("UniRx");
+        this.Ctx.TryAddNamespace("UnityEngine");
+
         if (Ctx.IsDesignerFile && Ctx.Data.BaseNode == null)
         {
             Ctx.SetBaseType(typeof(ViewBase));
@@ -117,11 +119,11 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
         Ctx.CurrentMethod.invoke_base(true);
-        if (!Ctx.Data.Element.Properties.Any()) return;
+        if (!Ctx.Data.Element.LocalProperties.Any()) return;
         var variableName = Ctx.Data.Name.ToLower();
         Ctx._("var {0} = (({1})model)", variableName, Ctx.Data.Element.Name.AsViewModel());
 
-        foreach (var property in Ctx.Data.Element.Properties)
+        foreach (var property in Ctx.Data.Element.LocalProperties)
         {
             if (property.RelatedTypeNode is StateMachineNode) continue;
 
@@ -214,46 +216,4 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
 
         Ctx._("this.ExecuteCommand({0}.{1}, arg)", Ctx.Data.Element.Name, Ctx.Item.Name);
     }
-}
-
-//[TemplateClass(MemberGeneratorLocation.DesignerFile,"{0}Backup")]
-//public class BackupData : IClassTemplate<DiagramNode>
-//{
-//    public string Identifier
-//    {
-//        get
-//        {
-//            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Identifier)));
-//            return null;
-//        }
-//    }
-//    public string Data
-//    {
-//        get
-//        {
-//            Ctx.CurrentStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(Ctx.Data.Graph.Serialize().ToString())));
-//            return null;
-//        }
-//    }
-
-//    public string OutputPath
-//    {
-//        get { return Path2.Combine("Editor", "Backups"); }
-//    }
-
-//    public bool CanGenerate
-//    {
-//        get { return true; }
-//    }
-
-//    public void TemplateSetup()
-//    {
-
-//    }
-
-//    public TemplateContext<DiagramNode> Ctx { get; set; }
-//}
-
-public static class ViewBindingExtensions
-{
 }

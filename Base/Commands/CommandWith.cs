@@ -296,3 +296,24 @@ public static partial class ObservableExtensions
         return source.Subscribe(Observer.Create(onNext, onError, onCompleted));
     }
 }
+
+public class EventCommand<TEventClass> : Command where TEventClass : ViewModelCommand
+{
+    public IEventAggregator EventAggregator { get; set; }
+
+    public EventCommand() 
+    {
+        this.Delegate = Publish;
+    }
+
+    private void Publish()
+    {
+        EventAggregator.Publish(EventAggregator);
+    }
+}
+
+public class ViewModelCommand
+{
+    public ViewModel Sender { get; set; }
+
+}

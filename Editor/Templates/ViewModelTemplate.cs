@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
@@ -43,9 +44,9 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         Ctx.AddIterator("ComputedDependents", (d) => d.ComputedProperties);
         Ctx.AddIterator("ViewModelProperty", (d) => ViewModelProperties);
         Ctx.AddIterator("ViewModelValueProperty", (d) => ViewModelProperties);
-        Ctx.AddIterator("CollectionProperty", (d) => d.Collections);
-        Ctx.AddIterator("CommandItems", (d) => d.Commands);
-        Ctx.AddIterator("CommandMethod", (d) => d.Commands);
+        Ctx.AddIterator("CollectionProperty", (d) => d.LocalCollections);
+        Ctx.AddIterator("CommandItems", (d) => d.LocalCommands);
+        Ctx.AddIterator("CommandMethod", (d) => d.LocalCommands);
         Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
 
         Ctx.AddIterator("StateMachineProperty", (d)=> StateMachineProperties);
@@ -80,7 +81,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName,property.Name);
         }
 
-        foreach (var property in Ctx.Data.Collections)
+        foreach (var property in Ctx.Data.LocalCollections)
         {
             Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName,property.Name);
             Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
@@ -191,7 +192,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod]
     public override void Read(ISerializerStream stream)
     {
-        foreach (var viewModelPropertyData in Ctx.Data.Properties)
+        foreach (var viewModelPropertyData in Ctx.Data.LocalProperties)
         {
 
             var relatedNode = viewModelPropertyData.RelatedTypeNode;
@@ -216,7 +217,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
                 Ctx._("this.{0} = stream.Deserialize{1}(\"{0}\");", viewModelPropertyData.Name, AcceptableTypes[viewModelPropertyData.Type]);
             }
         }
-        foreach (var collection in Ctx.Data.Collections)
+        foreach (var collection in Ctx.Data.LocalCollections)
         {
             var relatedNode = collection.RelatedTypeNode;
             if (relatedNode is EnumNode)
@@ -253,7 +254,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     [TemplateMethod]
     public override void Write(ISerializerStream stream)
     {
-        foreach (var viewModelPropertyData in Ctx.Data.Properties)
+        foreach (var viewModelPropertyData in Ctx.Data.LocalProperties)
         {
 
             var relatedNode = viewModelPropertyData.RelatedTypeNode;
@@ -278,7 +279,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
                 Ctx._("stream.Serialize{0}(\"{1}\", this.{1})", AcceptableTypes[viewModelPropertyData.Type], viewModelPropertyData.Name);
             }
         }
-        foreach (var collection in Ctx.Data.Collections)
+        foreach (var collection in Ctx.Data.LocalCollections)
         {
             var relatedNode = collection.RelatedTypeNode;
             if (relatedNode is EnumNode)
@@ -342,7 +343,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
             );
         }
-        foreach (var property in Ctx.Data.Collections)
+        foreach (var property in Ctx.Data.LocalCollections)
         {
             Ctx._("list.Add(new ViewModelPropertyInfo({0}, {1}, {2}, {3}, {4}))",
                property.Name.AsField(),
@@ -418,4 +419,111 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         {typeof(Quaternion),"Quaternion" },
     };
 
+}
+
+/// <summary>
+/// A class template for the SimpleClass Node.  The below attribute is required and determines how the ouput should be generated.
+/// Both = Editable + Designer File
+/// EditableFile
+/// DesignerFile
+/// </summary>
+[TemplateClass(MemberGeneratorLocation.Both)]
+public class SimpleClassTemplate : IClassTemplate<SimpleClassNode>
+{
+    /// <summary>
+    /// Designer file = "SimpleClasses.designer.cs"
+    /// Editable file = "SimpleClasses/NodeName.cs"
+    /// </summary>
+    public string OutputPath
+    {
+        get { return "SimpleClasses"; }
+    }
+
+    /// <summary>
+    /// Run any validation on the node data to determine if this
+    /// template should be generated for the node.
+    /// </summary>
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
+    /// <summary>
+    /// Tell the template system how it should read each member of this class.  Also,
+    /// this can be used to add custom namespaces, add base classes or modify the decleration
+    /// of the output class.
+    /// </summary>
+    public void TemplateSetup()
+    {
+        
+
+        // Change the base type of the output class to something special.
+        // Note if this class dervies from a pre-existing class this wont be needed and is highly recommended
+        // Ctx.SetBaseType(typeof(MyPocoBaseClass));
+        
+        // Modify the output decleration by adding an interface
+        Ctx.CurrentDecleration.BaseTypes.Add(typeof(INotifyPropertyChanged));
+
+        // Tell the templating system, that the member "Property" defined in this template, should be generated
+        // for every Property that is inside the node
+        Ctx.AddIterator("Property", node=>node.Properties);
+        // Lets do the same for collections
+        Ctx.AddIterator("Collection", node=>node.Collections);
+
+    }
+
+
+    /// <summary>
+    /// This property is our context, it provides access to our node data, and the current
+    /// context that the generator is in.
+    /// </summary>
+    public TemplateContext<SimpleClassNode> Ctx { get; set; }
+
+
+    /// We specified The attribute so the template system can read it
+    /// The template system uses reflection to mimic this property in the output code.
+    [TemplateProperty(
+        // We only want to generate properties inside of the designer file
+        MemberGeneratorLocation.DesignerFile
+        // The templating system understands items in the diagram that are typed, and can automatically set the name and type for you, only if you want to.
+        , AutoFillType.NameAndTypeWithBackingField
+        )]
+    public string Property
+    {
+        // The getter will be invoked by the template system so that you can output and implementation for the output get accessor
+        get
+        {
+            
+            // If the AutoFillType is set to none, we can always do things manually like this
+            //Ctx.CurrentProperty.Type = typeof (int);
+            // Output the return statement 
+            // NOTE: We use Ctx.Item instead of Ctx.Data because we specified a Iterator in the "TemplateSetup" method.
+            Ctx._("return _{0}",Ctx.Item.Name);
+            // Just because we have to, you can return anything, its not used
+            return null;
+        }
+        set
+        {
+            // If we have a set accessor, so will the outputed class so lets output what should go in it.
+            Ctx._("_{0} = value", Ctx.Item.Name);
+        }
+    }
+
+    [TemplateProperty(
+        // We only want to generate properties inside of the designer file
+        MemberGeneratorLocation.DesignerFile
+        // The templating system understands items in the diagram that are typed, and can automatically set the name and type for you, only if you want to.
+        , AutoFillType.NameAndTypeWithBackingField
+        )]
+    public List<String> Collection // We use a list here because the templating system, will fill in the generic type argument instead of replacing the type
+    {
+        // The getter will be invoked by the template system so that you can output and implementation for the output get accessor
+        get
+        {
+
+            Ctx._("return _{0}", Ctx.Item.Name);
+            return null;
+        }
+        // Collections don't get a set accessor because we don't want the output class to have a set accessor
+    }
 }

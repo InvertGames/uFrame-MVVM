@@ -292,6 +292,10 @@ public abstract class ViewModel
 
     public void Dispose()
     {
+        if (Controller != null)
+        {
+            Controller.DisposingViewModel(this);
+        }
         Unbind();
     }
 

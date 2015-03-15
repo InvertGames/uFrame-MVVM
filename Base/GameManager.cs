@@ -36,13 +36,13 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
 
     public string _StartupScene;
 
-
     private static SceneManager _activeSceneManager;
     private static IGameContainer _container;
     private static LevelLoadViewModel _loadingViewModel;
     private static LevelLoadViewModel _progress;
     private static IViewResolver _viewResolver;
     private static ICommandDispatcher _commandDispatcher;
+    private static IEventAggregator _eventAggregator;
     private List<SceneManager> _sceneManagers = new List<SceneManager>();
     private SimpleSubject<CommandInfo> _commandsAsObservable;
 
@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
             this.gameObject.AddComponent<MainThreadDispatcher>();
     }
+
     /// <summary>
     /// The current running game
     /// </summary>
@@ -124,10 +125,18 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
             {
                 _container = new GameContainer();
                 _container.RegisterInstance(Progress);
+                _container.RegisterInstance<IEventAggregator>(EventAggregator);
+                
                 uFrameBootstraper.Configure(Instance, _container);
             }
             return _container;
         }
+    }
+
+    public static IEventAggregator EventAggregator
+    {
+        get { return _eventAggregator ?? (_eventAggregator = new EventAggregator()); }
+        set { _eventAggregator = value; }
     }
 
     public static IViewResolver ViewResolver
@@ -596,3 +605,46 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         _FlareStrength = RenderSettings.flareStrength;
     }
 }
+
+
+public interface IEventAggregator
+{
+    IObservable<TEvent> GetEvent<TEvent>();
+    void Publish<TEvent>(TEvent evt);
+}
+public class EventAggregator : IEventAggregator
+{
+    bool isDisposed;
+    readonly Subject<object> eventsSubject = new Subject<object>();
+
+    public IObservable<TEvent> GetEvent<TEvent>()
+    {
+        return eventsSubject.Where(p =>
+        {
+            return p is TEvent;
+        }).Select(delegate(object p)
+        {
+            return (TEvent) p;
+        });
+    }
+
+    public void Publish<TEvent>(TEvent evt)
+    {
+        eventsSubject.OnNext(evt);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (isDisposed) return;
+        eventsSubject.Dispose();
+        isDisposed = true;
+    }
+    
+}
+
+

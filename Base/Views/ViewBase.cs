@@ -9,6 +9,21 @@ using UnityEngine;
 /// </summary>
 public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 {
+    public IEventAggregator EventAggregator
+    {
+        get { return GameManager.EventAggregator; }
+    }
+
+    public IObservable<TEvent> OnEvent<TEvent>()
+    {
+        return EventAggregator.GetEvent<TEvent>();
+    }
+
+    public void Publish(object eventMessage)
+    {
+        EventAggregator.Publish(eventMessage);
+    }
+
     public T AddComponentBinding<T>() where T : ObservableComponent
     {
         var component = gameObject.AddComponent<T>();

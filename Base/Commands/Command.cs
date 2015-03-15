@@ -18,6 +18,9 @@ public class Command : ICommand
     protected Action Delegate { get; set; }
 
 
+    public Command()
+    {
+    }
 
     public Command(Action @delegate)
     {
@@ -42,7 +45,7 @@ public class Command : ICommand
 
     public bool CanExecute(object parameter)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     protected virtual void OnOnCommandComplete()
