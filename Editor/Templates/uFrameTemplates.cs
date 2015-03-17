@@ -21,8 +21,12 @@ public class uFrameTemplates : DiagramPlugin
         Framework = container.Resolve<uFrameMVVM>();
         //Framework.ElementsGraphRoot.AddCodeTemplate<BackupData>();
         // Register the code templates
-        Framework.Element.AddCodeTemplate<ViewModelTemplate>();
+        Framework.Service.AddCodeTemplate<ServiceTemplate>();
+        Framework.SimpleClass.AddCodeTemplate<SimpleClassTemplate>();
         Framework.Element.AddCodeTemplate<ControllerTemplate>();
+        Framework.Element.AddCodeTemplate<ViewModelTemplate>();
+        RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandsChildItem, ViewModelCommandClassTemplate>();
+        RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandNode, CommandClassTemplate>();
         Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
         Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
         Framework.View.AddCodeTemplate<ViewTemplate>();
@@ -57,16 +61,6 @@ public class uFrameTemplates : DiagramPlugin
                         Name = "On" + state.Name,
                         Attributes = MemberAttributes.Public
                     };
-
-
-                    //if ()
-                    //{
-                    //    method.Attributes = MemberAttributes.Public | MemberAttributes.Override;
-                    //    method.Statements.Add(new CodeSnippetExpression(string.Format("base.{0}()", method.Name)));
-
-                    //}
-                    //else
-                    //{
                     var conditionStatement =
                     new CodeConditionStatement(
                         new CodeSnippetExpression(string.Format("arg1 is {0}", state.Name)));
@@ -74,8 +68,6 @@ public class uFrameTemplates : DiagramPlugin
                         new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), method.Name));
 
                     args.Method.Statements.Add(conditionStatement);
-                    //}
-
                     args.Decleration.Members.Add(method);
 
                 }
@@ -95,15 +87,17 @@ public class uFrameTemplates : DiagramPlugin
             })
             ;
 
-        container.AddBindingMethod(typeof(UGUIExtensions), "BindInputFieldToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
-            .SetNameFormat("{0} To Input Field");
+        container.AddBindingMethod(typeof(UGUIExtensions), "BindInputFieldToProperty", // Registration
+            _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name) // Validation
+            .SetNameFormat("{0} To Input Field")// Configuration
+            ;
+
         container.AddBindingMethod(typeof(UGUIExtensions), "BindButtonToCommand", _ => _ is CommandsChildItem)
             .SetNameFormat("{0} To Button");
         container.AddBindingMethod(typeof(UGUIExtensions), "BindToggleToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(bool).Name)
             .SetNameFormat("{0} To Toggle");
         container.AddBindingMethod(typeof(UGUIExtensions), "BindTextToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
             .SetNameFormat("{0} To Text");
-        //container.RegisterGraphItem<SubsystemNode, SubsystemNodeViewModel, SubsystemNodeDrawer>();
 
     }
 }

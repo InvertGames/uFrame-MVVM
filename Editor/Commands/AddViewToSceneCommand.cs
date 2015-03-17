@@ -39,9 +39,14 @@ public class AddViewToSceneCommand : EditorCommand<ViewNode>, IDiagramNodeComman
         obj.AddComponent(view.CurrentType);
     }
 
+    public override bool CanProcessMultiple
+    {
+        get { return false; }
+    }
+
     public override bool ShowAsDiabled
     {
-        get { return true; }
+        get { return false; }
     }
 
     public override string CanPerform(ViewNode node)

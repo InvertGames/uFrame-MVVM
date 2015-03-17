@@ -1,6 +1,5 @@
 #if UNITY_4_6 || UNITY_5_0
 using System;
-using Invert.MVVMTest;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;

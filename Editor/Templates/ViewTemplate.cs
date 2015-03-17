@@ -27,6 +27,13 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
     {
         this.Ctx.TryAddNamespace("UniRx");
         this.Ctx.TryAddNamespace("UnityEngine");
+        foreach (var property in Ctx.Data.Element.AllProperties)
+        {
+            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+            if (type == null) continue;
+
+            Ctx.TryAddNamespace(type.Namespace);
+        }
 
         if (Ctx.IsDesignerFile && Ctx.Data.BaseNode == null)
         {
@@ -41,7 +48,8 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         }
         // Add the iterators for template method/property
         Ctx.AddIterator("ExecuteCommand", _ => _.Element.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
-        Ctx.AddIterator("ExecuteCommandWithArg", _ => _.Element.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)));
+        Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.Commands);
+        Ctx.AddIterator("ExecuteCommandWithArg", _ => _.Element.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
         Ctx.AddIterator("ResetProperty", _ => _.SceneProperties);
         Ctx.AddIterator("CalculateProperty", _ => _.SceneProperties);
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
@@ -206,14 +214,22 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
     [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
     public void ExecuteCommand()
     {
-        Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
+        Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0} }})", Ctx.Data.Element.Name, Ctx.Item.Name);
+        //Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
     }
-
+    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
+    public void ExecuteCommandOverload(ViewModelCommand command)
+    {
+        Ctx.CurrentMethod.Parameters[0].Type = (Ctx.Item.Name + "Command").ToCodeReference();
+        Ctx._("command.Sender = {0}", Ctx.Data.Element.Name);
+        Ctx._("{0}.{1}.OnNext(command)", Ctx.Data.Element.Name, Ctx.Item.Name);
+        //Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
+    }
     [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
     public void ExecuteCommandWithArg(object arg)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
-
-        Ctx._("this.ExecuteCommand({0}.{1}, arg)", Ctx.Data.Element.Name, Ctx.Item.Name);
+        Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0}, Argument = arg }})", Ctx.Data.Element.Name, Ctx.Item.Name);
     }
+
 }

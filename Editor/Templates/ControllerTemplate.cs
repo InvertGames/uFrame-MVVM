@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
@@ -28,7 +29,14 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("UniRx");
-        
+        foreach (var property in Ctx.Data.AllProperties)
+        {
+            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+            if (type == null) continue;
+
+            Ctx.TryAddNamespace(type.Namespace);
+        }
+
         if (Ctx.IsDesignerFile)
         {
             Ctx.CurrentDecleration.Attributes = MemberAttributes.Abstract;
@@ -38,8 +46,14 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             //}
         }
 
-        Ctx.AddIterator("CommandMethod", _ => _.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
-        Ctx.AddIterator("CommandMethodWithArg", _ => _.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)));
+        Ctx.AddIterator("CommandMethod", _ => _.AllCommandHandlers.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
+        Ctx.AddIterator("CommandMethodWithArg", _ => _.AllCommandHandlers.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)));
+
+
+        Ctx.AddIterator("OnCommandMethod",
+            _ => _.LocalCommands.Cast<ITypedItem>().Concat(_.Handlers.Select(p => p.SourceItem).OfType<ITypedItem>()));
+
+
         if (Ctx.Data.BaseNode == null)
         {
             Ctx.AddIterator("InstanceProperty",
@@ -47,17 +61,17 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
         else
         {
-            Ctx.AddCondition("InstanceProperty",_=>false);
+            Ctx.AddCondition("InstanceProperty", _ => false);
         }
 
-        
+
         //Ctx.AddIterator("ControllerProperty", _ =>{});
     }
 
     public string NameAsViewModel { get { return Ctx.Data.Name.AsViewModel(); } }
 
-    
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndTypeWithBackingField,NameFormat = "{0}Manager")]
+
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndTypeWithBackingField, NameFormat = "{0}Manager")]
     public IViewModelManager ViewModelManager
     {
         get
@@ -109,6 +123,17 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     {
         base.Setup();
         Ctx._comment("This is called when the controller is created");
+        if (Ctx.IsDesignerFile)
+        {
+            foreach (var command in Ctx.Data.AllCommandHandlers)
+            {
+                Ctx._("this.OnEvent<{0}Command>().Subscribe(this.{0}Handler)", command.Name);
+            }
+            foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
+            {
+                Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
+            }
+        }
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType, NameFormat = "{0}ViewModels")]
@@ -117,11 +142,11 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         get
         {
             Ctx.SetTypeArgument(Ctx.Data.Name.AsViewModel());
-            Ctx._("return {1}Manager.OfType<{0}>()",Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
+            Ctx._("return {1}Manager.OfType<{0}>()", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
             return null;
         }
     }
-    
+
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, CallBase = true)]
     public override void Initialize(ViewModel viewModel)
     {
@@ -154,20 +179,54 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             Ctx._("{0}Manager.Add(viewModel)", Ctx.Data.Name);
     }
 
-    [TemplateMethod( MemberGeneratorLocation.DesignerFile, true)]
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, true)]
     public override void DisposingViewModel(ViewModel viewModel)
     {
         base.DisposingViewModel(viewModel);
-        Ctx._("{0}Manager.Remove(viewModel)",Ctx.Data.Name);
+        Ctx._("{0}Manager.Remove(viewModel)", Ctx.Data.Name);
     }
 
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void CommandMethod(ViewModel viewModel)
     {
-        Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Data.Name + "ViewModel");
+        Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Node.Name + "ViewModel");
         DoTransition();
     }
 
+    [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
+    public virtual void OnCommandMethod(ViewModelCommand command)
+    {
+        var c = Ctx.TypedItem;
+        Ctx.CurrentMethod.Name = c.Name + "Handler";
+        if (Ctx.Item is CommandsChildItem)
+        {
+            Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Name + "Command");
+        }
+        else
+        {
+            Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Name);
+        }
+
+        if (Ctx.IsDesignerFile)
+        {
+            if (Ctx.Item is CommandsChildItem)
+            {
+                if (Ctx.Item.OutputTo<CommandNode>() != null)
+                {
+                    Ctx._("this.{0}(command.Sender as {1}, command)", c.Name, c.Node.Name.AsViewModel());
+                }
+                else if (string.IsNullOrEmpty(c.RelatedType))
+                {
+                    Ctx._("this.{0}(command.Sender as {1})", c.Name, c.Node.Name.AsViewModel());
+                }
+                else
+                {
+                    Ctx._("this.{0}(command.Sender as {1}, command.Argument)", c.Name, c.Node.Name.AsViewModel());
+                }
+            }
+
+        }
+    }
     private void DoTransition()
     {
         if (Ctx.IsDesignerFile)

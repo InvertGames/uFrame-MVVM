@@ -78,6 +78,7 @@ public class CreateSceneCommand : EditorCommand<SceneManagerNode>, IDiagramNodeC
 
     public override string CanPerform(SceneManagerNode node)
     {
+
         return null;
     }
 }

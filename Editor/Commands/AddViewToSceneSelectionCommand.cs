@@ -14,6 +14,11 @@ public class AddViewToSceneSelectionCommand : EditorCommand<ViewNode>, IDiagramN
         get { return "Add To/Selection"; }
     }
 
+    public override bool CanProcessMultiple
+    {
+        get { return false; }
+    }
+
     public override void Perform(ViewNode view)
     {
     

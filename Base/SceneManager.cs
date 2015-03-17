@@ -299,7 +299,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
     public virtual void Initialize()
     {
-        var systemControllers = Container.ResolveAll<ISystemController>();
+        var systemControllers = Container.ResolveAll<ISystemService>();
         foreach (var systemController in systemControllers)
         {
             systemController.Setup();
@@ -384,7 +384,7 @@ public static class ContainerExtensions
     {
         container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
         container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
-        container.RegisterInstance<ISystemController>(controller,controller.GetType().Name,false);
+        container.RegisterInstance<ISystemService>(controller,controller.GetType().Name,false);
         container.RegisterInstance<TController>(controller,false);
     }
     

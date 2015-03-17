@@ -9,7 +9,7 @@ namespace Invert.Common.MVVM
 {
 #endif
 
-public interface ISystemController
+public interface ISystemService
 {
     IEventAggregator EventAggregator { get; set; }
 
@@ -20,14 +20,21 @@ public interface ISystemController
     void Setup();
 }
 
+public abstract class SystemService : ISystemService
+{
+    [Inject]
+    public IEventAggregator EventAggregator { get; set; }
+
+    public abstract void Setup();
+}
 public static class SystemControllerExtensions
 {
-    public static IObservable<TEvent> OnEvent<TEvent>(this ISystemController systemController)
+    public static IObservable<TEvent> OnEvent<TEvent>(this ISystemService systemController)
     {
         return systemController.EventAggregator.GetEvent<TEvent>();
     }
 
-    public static void Publish(this ISystemController systemController, object eventMessage)
+    public static void Publish(this ISystemService systemController, object eventMessage)
     {
         systemController.EventAggregator.Publish(eventMessage);
     }
@@ -36,7 +43,7 @@ public static class SystemControllerExtensions
 /// <summary>
 /// A controller is a group of commands usually to provide an abstract level
 /// </summary>
-public abstract class Controller : ISystemController
+public abstract class Controller : SystemService
 {
     private List<ViewModel> _viewModels = new List<ViewModel>();
 
@@ -46,11 +53,10 @@ public abstract class Controller : ISystemController
         set { _viewModels = value; }
     }
 
+
     [Inject]
     public ICommandDispatcher CommandDispatcher { get; set; }
 
-    [Inject]
-    public IEventAggregator EventAggregator { get; set; }
 
     /// <summary>
     /// The dependency container that this controller will use
@@ -113,7 +119,7 @@ public abstract class Controller : ISystemController
     /// The setup method is called when the controller is first created and has been injected.  Use this
     /// to subscribe to any events on the EventAggregator
     /// </summary>
-    public virtual void Setup()
+    public override void Setup()
     {
         
     }

@@ -13,25 +13,6 @@ using UniRx;
 /// </summary>
 public static class ViewBindings
 {
-    /// <summary>
-    /// Bind to a ViewModel collection.
-    /// </summary>
-    /// <typeparam name="TCollectionItemType">The type that the collection contains.</typeparam>
-    /// <param name="t">This</param>
-    /// <param name="collectionSelector">Select a model collection.</param>
-    /// <returns>The binding class that allows chaining extra options.</returns>
-    [Obsolete]
-    public static ModelCollectionBinding<TCollectionItemType> BindCollection<TCollectionItemType>(this ViewModel t, ModelCollection<TCollectionItemType> collectionSelector)
-    {
-        var binding = new ModelCollectionBinding<TCollectionItemType>()
-        {
-            ModelPropertySelector = () => collectionSelector,
-        };
-
-        t.AddBinding(binding);
-        binding.Bind();
-        return binding;
-    }
 
     /// <summary>
     /// Bind to a ViewModel collection.
@@ -45,20 +26,21 @@ public static class ViewBindings
     public static IDisposable BindCollection<TCollectionItemType>(this IBindable t, ObservableCollection<TCollectionItemType> collection, Action<TCollectionItemType> added, Action<TCollectionItemType> removed)
     {
         NotifyCollectionChangedEventHandler collectionChanged = delegate(NotifyCollectionChangedEventArgs args)
-         {
-             if (added != null && args.NewItems != null)
-                 foreach (var item in args.NewItems)
-                     added((TCollectionItemType)item);
+        {
+            if (added != null && args.NewItems != null)
+                foreach (var item in args.NewItems)
+                    added((TCollectionItemType)item);
 
-             if (removed != null && args.OldItems != null)
-                 foreach (var item in args.OldItems)
-                     removed((TCollectionItemType)item);
-         };
+            if (removed != null && args.OldItems != null)
+                foreach (var item in args.OldItems)
+                    removed((TCollectionItemType)item);
+        };
 
         collection.CollectionChanged += collectionChanged;
         collectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, collection.ToArray()));
         return t.AddBinding(Disposable.Create(() => collection.CollectionChanged -= collectionChanged));
     }
+
 
     /// <summary>
     /// Bind to a ViewModel collection.

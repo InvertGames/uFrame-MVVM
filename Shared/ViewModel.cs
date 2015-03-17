@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 #if DLL
 using Invert.MVVM;
 using Invert.uFrame.Editor;
@@ -335,16 +336,24 @@ public abstract class ViewModel
 
 public class ViewModelCommandInfo
 {
+    public ISignal Signal { get; private set; }
     public ICommand Command { get; set; }
 
     public string Name { get; set; }
 
     public Type ParameterType { get; set; }
 
+    [Obsolete]
     public ViewModelCommandInfo(string name, ICommand command)
     {
         Name = name;
         Command = command;
+    }
+
+    public ViewModelCommandInfo(string name, ISignal signal)
+    {
+        Signal = signal;
+        Name = name;
     }
 
     public ViewModelCommandInfo(Type parameterType, string name, ICommand command)
@@ -355,6 +364,62 @@ public class ViewModelCommandInfo
     }
 }
 
+public interface ISignal
+{
+    Type SignalType { get; }
+    void Publish(object data);
+    void Publish();
+}
+public class Signal<TClass> : ISubject<TClass>, ISignal where TClass : ViewModelCommand, new()
+{
+    private readonly IEventAggregator _aggregator;
+    private readonly ViewModel _viewModel;
+
+    public Signal(ViewModel viewModel, IEventAggregator aggregator)
+    {
+        _aggregator = aggregator;
+        _viewModel = viewModel;
+    }
+
+    public void OnCompleted()
+    {
+
+    }
+
+    public void OnError(Exception error)
+    {
+
+    }
+
+    public void OnNext(TClass value)
+    {
+        value.Sender = _viewModel;
+        _aggregator.Publish(value);
+    }
+
+    public IDisposable Subscribe(IObserver<TClass> observer)
+    {
+        return _aggregator.GetEvent<TClass>().Subscribe(observer);
+    }
+
+    public Type SignalType
+    {
+        get { return typeof (TClass); }
+    }
+
+    public void Publish(object data)
+    {
+        OnNext(data as TClass);
+    }
+
+    public void Publish()
+    {
+        OnNext(new TClass()
+        {
+            Sender = _viewModel
+        });
+    }
+}
 public class ViewModelPropertyInfo
 {
     public bool IsComputed { get; set; }

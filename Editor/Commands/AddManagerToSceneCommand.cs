@@ -18,6 +18,11 @@ public class AddManagerToSceneCommand : EditorCommand<SceneManagerNode>, IDiagra
         get { return "Create Scene"; }
     }
 
+    public override bool CanProcessMultiple
+    {
+        get { return false; }
+    }
+
     public override string Path
     {
         get { return "Add To/Scene"; }

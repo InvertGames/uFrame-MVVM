@@ -29,13 +29,15 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     public void TemplateSetup()
     {
         // Ensure the namespaces for each property type are property set up
-        
+        Ctx.TryAddNamespace("UnityEngine");
         foreach (var property in Ctx.Data.AllProperties)
         {
             var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
             if (type == null) continue;
+            
             Ctx.TryAddNamespace(type.Namespace);
         }
+
         StateMachineProperties = Ctx.Data.AllProperties.Where(p => (p.RelatedNode() is StateMachineNode)).ToArray();
         ViewModelProperties = Ctx.Data.AllProperties.Where(p => !StateMachineProperties.Contains(p)).ToArray();
          
@@ -75,7 +77,10 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     public override void Bind()
     {
         if (!Ctx.IsDesignerFile) return;
-
+        foreach (var command in Ctx.Data.Commands)
+        {
+            Ctx._("this.{0} = new Signal<{0}Command>(this, Controller.EventAggregator)",command.Name);
+        }
         foreach (var property in ViewModelProperties)
         {
             Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName,property.Name);
@@ -99,7 +104,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
     }
 
-    [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
+    //[TemplateMethod(MemberGeneratorLocation.DesignerFile)]
     protected override void WireCommands(Controller controller)
     {
         //base.WireCommands(controller);
@@ -185,7 +190,17 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
     #region Commands
     [TemplateProperty("{0}", AutoFillType.NameOnlyWithBackingField)]
-    public virtual ICommand CommandItems { get; set; }
+    public virtual ICommand CommandItems {
+        get
+        {
+            Ctx.SetType("Signal<{0}Command>",Ctx.Item.Name);
+            return null;
+        }
+        set
+        {
+            
+        }
+    }
     #endregion
 
     #region Serialization
@@ -421,109 +436,115 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
 }
 
-/// <summary>
-/// A class template for the SimpleClass Node.  The below attribute is required and determines how the ouput should be generated.
-/// Both = Editable + Designer File
-/// EditableFile
-/// DesignerFile
-/// </summary>
-[TemplateClass(MemberGeneratorLocation.Both)]
-public class SimpleClassTemplate : IClassTemplate<SimpleClassNode>
+[TemplateClass(MemberGeneratorLocation.DesignerFile, ClassNameFormat = "{0}Command")]
+public class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<CommandsChildItem>
 {
-    /// <summary>
-    /// Designer file = "SimpleClasses.designer.cs"
-    /// Editable file = "SimpleClasses/NodeName.cs"
-    /// </summary>
     public string OutputPath
     {
-        get { return "SimpleClasses"; }
-    }
-
-    /// <summary>
-    /// Run any validation on the node data to determine if this
-    /// template should be generated for the node.
-    /// </summary>
-    public bool CanGenerate
-    {
-        get { return true; }
-    }
-
-    /// <summary>
-    /// Tell the template system how it should read each member of this class.  Also,
-    /// this can be used to add custom namespaces, add base classes or modify the decleration
-    /// of the output class.
-    /// </summary>
-    public void TemplateSetup()
-    {
-        
-
-        // Change the base type of the output class to something special.
-        // Note if this class dervies from a pre-existing class this wont be needed and is highly recommended
-        // Ctx.SetBaseType(typeof(MyPocoBaseClass));
-        
-        // Modify the output decleration by adding an interface
-        Ctx.CurrentDecleration.BaseTypes.Add(typeof(INotifyPropertyChanged));
-
-        // Tell the templating system, that the member "Property" defined in this template, should be generated
-        // for every Property that is inside the node
-        Ctx.AddIterator("Property", node=>node.Properties);
-        // Lets do the same for collections
-        Ctx.AddIterator("Collection", node=>node.Collections);
-
-    }
-
-
-    /// <summary>
-    /// This property is our context, it provides access to our node data, and the current
-    /// context that the generator is in.
-    /// </summary>
-    public TemplateContext<SimpleClassNode> Ctx { get; set; }
-
-
-    /// We specified The attribute so the template system can read it
-    /// The template system uses reflection to mimic this property in the output code.
-    [TemplateProperty(
-        // We only want to generate properties inside of the designer file
-        MemberGeneratorLocation.DesignerFile
-        // The templating system understands items in the diagram that are typed, and can automatically set the name and type for you, only if you want to.
-        , AutoFillType.NameAndTypeWithBackingField
-        )]
-    public string Property
-    {
-        // The getter will be invoked by the template system so that you can output and implementation for the output get accessor
         get
         {
-            
-            // If the AutoFillType is set to none, we can always do things manually like this
-            //Ctx.CurrentProperty.Type = typeof (int);
-            // Output the return statement 
-            // NOTE: We use Ctx.Item instead of Ctx.Data because we specified a Iterator in the "TemplateSetup" method.
-            Ctx._("return _{0}",Ctx.Item.Name);
-            // Just because we have to, you can return anything, its not used
+            return Path2.Combine(Ctx.Data.Node.Graph.Name, "Commands");
+        }
+    }
+
+    public bool CanGenerate
+    {
+        get { return Ctx.Data.OutputTo<CommandNode>() == null; }
+    }
+
+    public void TemplateSetup()
+    {
+        Ctx.CurrentDecleration.IsPartial = true;
+        Ctx.CurrentDecleration.Name = Ctx.Data.Name + "Command";
+        Ctx.AddCondition("Argument",_=>!string.IsNullOrEmpty(_.RelatedType));
+    }
+
+    public TemplateContext<CommandsChildItem> Ctx { get; set; }
+
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile,AutoFillType.NameOnlyWithBackingField)]
+    public object Argument {
+        get
+        {
+            Ctx.SetType(Ctx.Data.RelatedTypeName);
+            Ctx.CurrentProperty.Name = "Argument";
             return null;
         }
         set
         {
-            // If we have a set accessor, so will the outputed class so lets output what should go in it.
-            Ctx._("_{0} = value", Ctx.Item.Name);
+            
         }
     }
 
-    [TemplateProperty(
-        // We only want to generate properties inside of the designer file
-        MemberGeneratorLocation.DesignerFile
-        // The templating system understands items in the diagram that are typed, and can automatically set the name and type for you, only if you want to.
-        , AutoFillType.NameAndTypeWithBackingField
-        )]
-    public List<String> Collection // We use a list here because the templating system, will fill in the generic type argument instead of replacing the type
+}
+[TemplateClass(Location = MemberGeneratorLocation.DesignerFile, AutoInherit = true, ClassNameFormat = "{0}Command")]
+public class CommandClassTemplateBase : IClassTemplate<CommandNode>
+{
+
+    private Invert.Core.GraphDesigner.TemplateContext<CommandNode> _Ctx;
+
+    public virtual string OutputPath
     {
-        // The getter will be invoked by the template system so that you can output and implementation for the output get accessor
         get
         {
-
-            Ctx._("return _{0}", Ctx.Item.Name);
-            return null;
+            return "";
         }
-        // Collections don't get a set accessor because we don't want the output class to have a set accessor
+    }
+
+    public virtual bool CanGenerate
+    {
+        get
+        {
+            return true;
+        }
+    }
+
+    public Invert.Core.GraphDesigner.TemplateContext<CommandNode> Ctx
+    {
+        get
+        {
+            return _Ctx;
+        }
+        set
+        {
+            _Ctx = value;
+        }
+    }
+
+    public virtual void TemplateSetup()
+    {
+        if (Ctx.IsDesignerFile)
+        {
+            Ctx.CurrentDecleration.BaseTypes.Clear();
+            Ctx.CurrentDecleration.BaseTypes.Add(new CodeTypeReference("ViewModelCommand"));
+        }
+    }
+}
+public class CommandClassTemplate : CommandClassTemplateBase
+{
+    public override string OutputPath
+    {
+        get
+        {
+            return Path2.Combine(Ctx.Data.Node.Graph.Name, "Commands");
+        }
+    }
+    public override void TemplateSetup()
+    {
+        base.TemplateSetup();
+        Ctx.AddIterator("Property", node => node.Properties);
+        Ctx.AddIterator("Collection", node => node.Collections);
+    }
+
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
+    public object Property
+    {
+        get;
+        set;
+    }
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
+    public List<object> Collection
+    {
+        get;
+        set;
     }
 }

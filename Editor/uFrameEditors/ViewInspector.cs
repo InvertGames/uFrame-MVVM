@@ -391,6 +391,7 @@ public class ViewInspector : uFrameInspector
 
                             if (type != null && type != typeof (void))
                             {
+                                if (!(command.Command is IParameterCommand)) continue;
                                 EditorGUI.BeginChangeCheck();
                                 object newValue = null;
                                 object currentValue = ((IParameterCommand)command.Command).Parameter ?? GetDefaultValue(type);//Activator.CreateInstance(type);
@@ -407,7 +408,7 @@ public class ViewInspector : uFrameInspector
                             if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), command.Name,
                                 ElementDesignerStyles.ButtonStyle))
                             {
-                                GameManager.CommandDispatcher.ExecuteCommand(command.Command, ((IParameterCommand)command.Command).Parameter);
+                                command.Signal.Publish();
                             }
                         }
                         //foreach (var command in Commands)

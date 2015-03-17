@@ -216,14 +216,18 @@ public class GameContainer : IGameContainer
             if (constructorArgs != null && constructorArgs .Length > 0)
             {
                 //return Activator.CreateInstance(type,BindingFlags.Public | BindingFlags.Instance,Type.DefaultBinder, constructorArgs,CultureInfo.CurrentCulture);
-                return Activator.CreateInstance(type,constructorArgs);
+                var obj2 = Activator.CreateInstance(type,constructorArgs);
+                Inject(obj2);
+                return obj2;
             }
             ConstructorInfo[] constructor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
        
             
             if (constructor.Length < 1)
             {
-                return Activator.CreateInstance(type);
+                var obj2 = Activator.CreateInstance(type);
+                Inject(obj2);
+                return obj2;
             }
 
             var maxParameters = constructor.First().GetParameters();
@@ -246,7 +250,9 @@ public class GameContainer : IGameContainer
                 return Resolve(p.ParameterType) ?? Resolve(p.ParameterType,p.Name);
             }).ToArray();
         
-            return Activator.CreateInstance(type, args);
+            var obj =  Activator.CreateInstance(type, args);
+            Inject(obj);
+            return obj;
         }
 
         public TBase ResolveRelation<TBase>(Type tfor, params object[] args)
