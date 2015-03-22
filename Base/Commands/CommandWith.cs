@@ -90,7 +90,7 @@ using UniRx;
 //        return Disposable.Create(() => OnCommandExecuted -= handler);
 //    }
 //}
-
+[Obsolete]
 public abstract class CommandBase<TArgument> : ICommandWith<TArgument>
 {
     private SimpleSubject<TArgument> _executedSubject = new SimpleSubject<TArgument>();
@@ -206,7 +206,7 @@ public class CommandWith<TArgument> : CommandBase<TArgument>
         throw new NotImplementedException();
     }
 }
-
+[Obsolete]
 public class CommandWithSender<TSender> : CommandBase<TSender>
 {
  
@@ -237,7 +237,7 @@ public class CommandWithSender<TSender> : CommandBase<TSender>
 
     }
 }
-
+[Obsolete]
 public class CommandWithSenderAndArgument<TSender,TArgument> : CommandBase<TArgument>
 {
 
@@ -271,44 +271,30 @@ public class CommandWithSenderAndArgument<TSender,TArgument> : CommandBase<TArgu
 
 public static partial class ObservableExtensions
 {
+    [Obsolete]
     public static IDisposable Subscribe<T>(this CommandBase<T> source)
     {
         return source.Subscribe(Observer.Create<T>(Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop));
     }
-
+    [Obsolete]
     public static IDisposable Subscribe<T>(this CommandBase<T> source, Action<T> onNext)
     {
         return source.Subscribe(Observer.Create(onNext, Stubs.Throw, Stubs.Nop));
     }
-
+    [Obsolete]
     public static IDisposable Subscribe<T>(this CommandBase<T> source, Action<T> onNext, Action<Exception> onError)
     {
         return source.Subscribe(Observer.Create(onNext, onError, Stubs.Nop));
     }
-
+    [Obsolete]
     public static IDisposable Subscribe<T>(this CommandBase<T> source, Action<T> onNext, Action onCompleted)
     {
         return source.Subscribe(Observer.Create(onNext, Stubs.Throw, onCompleted));
     }
-
+    [Obsolete]
     public static IDisposable Subscribe<T>(this CommandBase<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
     {
         return source.Subscribe(Observer.Create(onNext, onError, onCompleted));
-    }
-}
-
-public class EventCommand<TEventClass> : Command where TEventClass : ViewModelCommand
-{
-    public IEventAggregator EventAggregator { get; set; }
-
-    public EventCommand() 
-    {
-        this.Delegate = Publish;
-    }
-
-    private void Publish()
-    {
-        EventAggregator.Publish(EventAggregator);
     }
 }
 

@@ -83,9 +83,10 @@ public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemp
             foreach (var transition in state.StateTransitions)
             {
                 var to = transition.OutputTo<StateNode>();
-
+                if (to == null) continue;
+               
                 Ctx._("{0}.{1} = new StateTransition(\"{1}\", {0}, {2})",state.Name,transition.Name,to.Name);
-                Ctx._("Transitions.Add({0}.{1})",state.Name,transition.Name);
+                Ctx._("Transitions.Add({0}.{1})", state.Name, transition.Name); 
             }
             foreach (var transition in state.StateTransitions)
             {

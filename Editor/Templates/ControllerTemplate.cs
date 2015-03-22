@@ -133,7 +133,12 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             {
                 Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
             }
+            Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(this.Initialize);", Ctx.Data.Name.AsViewModel());
+            Ctx._("this.EventAggregator.OnViewModelDestroyed<{0}>().Subscribe(this.DisposingViewModel);", Ctx.Data.Name.AsViewModel());
+        
         }
+
+   
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType, NameFormat = "{0}ViewModels")]
@@ -166,7 +171,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, false)]
     public override ViewModel CreateEmpty()
     {
-        Ctx._("return new {0}(this)", NameAsViewModel);
+        Ctx._("return new {0}(this.EventAggregator)", NameAsViewModel);
         return null;
     }
 

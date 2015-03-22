@@ -23,6 +23,25 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         get { return true; }
     }
 
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
+    public string DefaultIdentifier
+    {
+        get
+        {
+            this.Ctx.CurrentProperty.Attributes = MemberAttributes.Override | MemberAttributes.Public;
+            var instance = Ctx.Data.Element.RegisteredInstances.FirstOrDefault();
+            if (instance != null)
+            {
+                Ctx._("return \"{0}\"", instance.Name);
+            }
+            else
+            {
+                Ctx._("return base.DefaultIdentifier");
+            }
+            
+            return null;
+        }
+    }
     public virtual void TemplateSetup()
     {
         this.Ctx.TryAddNamespace("UniRx");
@@ -47,9 +66,9 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
             Ctx.TryAddNamespace(type.Namespace);
         }
         // Add the iterators for template method/property
-        Ctx.AddIterator("ExecuteCommand", _ => _.Element.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
-        Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.Commands);
-        Ctx.AddIterator("ExecuteCommandWithArg", _ => _.Element.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
+        Ctx.AddIterator("ExecuteCommand", _ => _.Element.LocalCommands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
+        Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.LocalCommands);
+        Ctx.AddIterator("ExecuteCommandWithArg", _ => _.Element.LocalCommands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
         Ctx.AddIterator("ResetProperty", _ => _.SceneProperties);
         Ctx.AddIterator("CalculateProperty", _ => _.SceneProperties);
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
@@ -116,8 +135,7 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         //var property = Context.Get<IDiagramNodeItem>();
-        Ctx._("return this.RequestViewModel(GameManager.Container.Resolve<{0}>())", Ctx.Data.Element.Name.AsController());
-
+        Ctx._("return this.RequestViewModel()");
         return null;
     }
 
@@ -171,7 +189,7 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         // Let the Dll Know about uFrame Binding Specific Types
         uFrameBindingType.ObservablePropertyType = typeof(IObservableProperty);
         uFrameBindingType.UFGroupType = typeof(UFGroup);
-        uFrameBindingType.ICommandType = typeof(ICommand);
+        uFrameBindingType.ICommandType = typeof(ISignal);
         // For each binding lets do some magic
         foreach (var item in Ctx.Data.Bindings)
         {

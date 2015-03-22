@@ -6,6 +6,7 @@ using UniRx;
 /// A ViewModel command that can be executed.
 /// IEnumerator is always used so that any command can be a coroutine.
 /// </summary>
+[Obsolete]
 public class Command : ICommand
 {
     public event CommandEvent OnCommandExecuted;

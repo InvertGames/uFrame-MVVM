@@ -15,7 +15,7 @@ using Debug = UnityEngine.Debug;
 /// 	<para></para>
 /// 	<para>The game manager also has a static ActiveSceneManager property that can be used to access the current Scene's Manager class.</para>
 /// </summary>
-public class GameManager : MonoBehaviour, ICommandDispatcher
+public class GameManager : MonoBehaviour
 {
     /// <summary>
     /// Do not use async loading on "TransitionLevel"
@@ -41,10 +41,10 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
     private static LevelLoadViewModel _loadingViewModel;
     private static LevelLoadViewModel _progress;
     private static IViewResolver _viewResolver;
-    private static ICommandDispatcher _commandDispatcher;
+
     private static IEventAggregator _eventAggregator;
     private List<SceneManager> _sceneManagers = new List<SceneManager>();
-    private SimpleSubject<CommandInfo> _commandsAsObservable;
+
 
     #region Render Settings
 
@@ -145,11 +145,6 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         set { _viewResolver = value; }
     }
 
-    public static ICommandDispatcher CommandDispatcher
-    {
-        get { return _commandDispatcher ?? (_commandDispatcher = Container.Resolve<ICommandDispatcher>()); }
-        set { _commandDispatcher = value; }
-    }
 
     /// <summary>
     /// The current instance of GameManager
@@ -564,25 +559,8 @@ public class GameManager : MonoBehaviour, ICommandDispatcher
         ActiveSceneManager.OnLoaded();
     }
 
-    public void ExecuteCommand(ICommand command, object argument, bool isChained = false)
-    {
-        command.Execute(argument);
-        if (_commandsAsObservable != null)
-        {
-            _commandsAsObservable.OnNext(new CommandInfo(command,argument,isChained));
-        }
-    }
 
-    public IObservable<CommandInfo> CommandsAsObservable
-    {
-        get { return _commandsAsObservable ?? (_commandsAsObservable = new SimpleSubject<CommandInfo>()); }
-        
-    }
 
-    public IDisposable Subscribe(IObserver<CommandInfo> observer)
-    {
-        return CommandsAsObservable.Subscribe(observer);
-    }
 
     /// <summary>
     /// Loads the current render settings of a scene.
@@ -612,7 +590,7 @@ public interface IEventAggregator
     IObservable<TEvent> GetEvent<TEvent>();
     void Publish<TEvent>(TEvent evt);
 }
-public class EventAggregator : IEventAggregator
+public class EventAggregator : IEventAggregator, ISubject<object>
 {
     bool isDisposed;
     readonly Subject<object> eventsSubject = new Subject<object>();
@@ -644,7 +622,36 @@ public class EventAggregator : IEventAggregator
         eventsSubject.Dispose();
         isDisposed = true;
     }
-    
+
+    public void OnCompleted()
+    {
+        eventsSubject.OnCompleted();
+    }
+
+    public void OnError(Exception error)
+    {
+        eventsSubject.OnError(error);
+    }
+
+    public void OnNext(object value)
+    {
+       eventsSubject.OnNext(value);
+    }
+
+    public IDisposable Subscribe(IObserver<object> observer)
+    {
+        return eventsSubject.Subscribe(observer);
+    }
 }
 
-
+public static class AggregatorExtensions
+{
+    public static IObservable<TViewModel> OnViewModelCreated<TViewModel>(this IEventAggregator ea) where TViewModel : ViewModel
+    {
+        return ea.GetEvent<ViewModelCreatedEvent>().Where(p => p.ViewModel is TViewModel).Select(p=>(TViewModel)p.ViewModel);
+    }
+    public static IObservable<TViewModel> OnViewModelDestroyed<TViewModel>(this IEventAggregator ea) where TViewModel : ViewModel
+    {
+        return ea.GetEvent<ViewModelDestroyedEvent>().Where(p => p.ViewModel is TViewModel).Select(p => (TViewModel)p.ViewModel);
+    }
+}

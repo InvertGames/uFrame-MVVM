@@ -54,10 +54,6 @@ public abstract class Controller : SystemService
     }
 
 
-    [Inject]
-    public ICommandDispatcher CommandDispatcher { get; set; }
-
-
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
@@ -76,7 +72,9 @@ public abstract class Controller : SystemService
     /// <returns></returns>
     public virtual ViewModel Create()
     {
-        return Create(Guid.NewGuid().ToString());
+        var result =  Create(Guid.NewGuid().ToString());
+        EventAggregator.Publish(new ViewModelCreatedEvent() {ViewModel = result });
+        return result;
     }
 
     /// <summary>
@@ -129,19 +127,20 @@ public abstract class Controller : SystemService
         
     }
 
+    [Obsolete("Use Publish")]
     public void ExecuteCommand(ICommand command, object argument)
     {
-        CommandDispatcher.ExecuteCommand(command, argument);
+        //CommandDispatcher.ExecuteCommand(command, argument);
     }
-
+    [Obsolete("Use Publish")]
     public virtual void ExecuteCommand(ICommand command)
     {
-        CommandDispatcher.ExecuteCommand(command, null);
+        //CommandDispatcher.ExecuteCommand(command, null);
     }
-
+    [Obsolete("Use Publish")]
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        CommandDispatcher.ExecuteCommand(command, argument);
+        //CommandDispatcher.ExecuteCommand(command, argument);
     }
 
     public virtual void DisposingViewModel(ViewModel viewModel)
@@ -167,9 +166,6 @@ public class ViewModelManager<T> : IViewModelManager<T> where T : ViewModel
 {
     private List<T> _viewModels = new List<T>();
 
-    [Inject]
-    public IEventAggregator Aggregator { get; set; }
-
     public List<T> ViewModels
     {
         get { return _viewModels; }
@@ -189,19 +185,13 @@ public class ViewModelManager<T> : IViewModelManager<T> where T : ViewModel
     public void Add(ViewModel viewModel)
     {
         ViewModels.Add((T)viewModel);
-        if (Aggregator != null)
-        {
-            Aggregator.Publish(new ViewModelCreatedEvent() { ViewModel = viewModel });
-        }
+   
     }
 
     public void Remove(ViewModel viewModel)
     {
         ViewModels.Remove((T)viewModel);
-        if (Aggregator != null)
-        {
-            Aggregator.Publish(new ViewModelDestroyedEvent() { ViewModel = viewModel });
-        }
+ 
     }
 
    

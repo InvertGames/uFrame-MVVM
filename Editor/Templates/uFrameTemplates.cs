@@ -3,6 +3,7 @@ using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
+using UnityEngine;
 
 public class uFrameTemplates : DiagramPlugin
 {
@@ -12,7 +13,6 @@ public class uFrameTemplates : DiagramPlugin
         get { return 5; }
     }
 
-
     private uFrameMVVM Framework { get; set; }
 
     public override void Initialize(uFrameContainer container)
@@ -21,10 +21,13 @@ public class uFrameTemplates : DiagramPlugin
         Framework = container.Resolve<uFrameMVVM>();
         //Framework.ElementsGraphRoot.AddCodeTemplate<BackupData>();
         // Register the code templates
+        container.AddItemFlag<PropertiesChildItem>("SINI-AWESOMENESS", Color.red);
+        container.AddItemFlag<PropertiesChildItem>("uFrame-AWESOMENESS", Color.blue);
         Framework.Service.AddCodeTemplate<ServiceTemplate>();
         Framework.SimpleClass.AddCodeTemplate<SimpleClassTemplate>();
         Framework.Element.AddCodeTemplate<ControllerTemplate>();
         Framework.Element.AddCodeTemplate<ViewModelTemplate>();
+        Framework.Element.AddCodeTemplate<ViewModelConstructorTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandsChildItem, ViewModelCommandClassTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandNode, CommandClassTemplate>();
         Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
@@ -35,7 +38,7 @@ public class uFrameTemplates : DiagramPlugin
         Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
 
         // Register our bindable methods
-        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertiesChildItem)
+        container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertiesChildItem || _ is ComputedPropertyNode)
             .SetNameFormat("{0} Changed")
             .ImplementWith(args =>
             {
@@ -46,8 +49,8 @@ public class uFrameTemplates : DiagramPlugin
                 }
             })
             ;
-        container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.OutputTo<StateMachineNode>() != null)
 
+        container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.OutputTo<StateMachineNode>() != null)
             .SetNameFormat("{0} State Changed")
             .ImplementWith(args =>
             {
@@ -77,13 +80,28 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} Collection Changed");
 
         container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionsChildItem)
-            .DisplayFormat = "{0} View Collection Changed";
+            .SetNameFormat("{0} View Collection Changed")
+            .ImplementWith(args =>
+            {
+                if (args.Method.Name.EndsWith("CreateView"))
+                {
+                    args.Method.Parameters[0].Name = "viewModel";
+                    args.Method._("return InstantiateView(viewModel)");
+                }
+                else
+                {
+                    args.Method.Parameters[0].Name = "view";
+                }
+            })
+            ;
 
         container.AddBindingMethod(typeof(ViewBindings), "BindCommandExecuted", _ => _ is CommandsChildItem)
             .SetNameFormat("{0} Executed")
             .ImplementWith(args =>
             {
-
+                args.Method.Parameters[0].Name = "command";
+                var commandItem = args.SourceItem as CommandsChildItem;
+                args.Method.Parameters[0].Type = commandItem.ClassName.ToCodeReference();
             })
             ;
 
@@ -100,4 +118,5 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} To Text");
 
     }
+
 }

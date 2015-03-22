@@ -13,8 +13,7 @@ public static class uFrameBootstraper
     {
         // The view resolver is the class that will find a view-prefab from a view-model
         container.RegisterInstance<IViewResolver>(new ViewResolver());
-        // The game manager is the default command dispatcher
-        container.RegisterInstance<ICommandDispatcher>(manager);
+
     
 
     }

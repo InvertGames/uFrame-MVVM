@@ -449,9 +449,10 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// view-model of this view) this method can be used. e.g. ExecuteCommand(command, argument)</summary>
     /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
     /// <param name="argument">The argument to pass along if needed.</param>
+    [Obsolete("Regenerate Project")]
     public void ExecuteCommand(ICommand command, object argument)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command, argument);
+        
     }
 
     /// <summary>
@@ -460,9 +461,10 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// method can be used. e.g. ExecuteCommand(MyGameViewModel.MainMenuCommand)
     /// </summary>
     /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
+    [Obsolete("Regenerate Project")]
     public virtual void ExecuteCommand(ICommand command)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command, null);
+       
     }
 
     /// <summary>
@@ -472,9 +474,10 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <param name="command">The command instance to execute.</param>
     /// <param name="sender">The sender of the command.</param>
     /// <param name="argument">The argument required by the command.</param>
+    [Obsolete("Regenerate Project")]
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, ViewModel sender, TArgument argument)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command, null);
+       
     }
 
     /// <summary>
@@ -483,9 +486,10 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <typeparam name="TArgument"></typeparam>
     /// <param name="command">The command instance to execute.</param>
     /// <param name="argument">The argument required by the command.</param>
+    [Obsolete("Regenerate Project")]
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
-        GameManager.CommandDispatcher.ExecuteCommand(command, argument);
+       
     }
 
     /// <summary>
@@ -713,14 +717,17 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
             return ((this.InstantiateView(prefab, value)));
         }
     }
-
+    [Obsolete]
+    protected ViewModel RequestViewModel(Controller controller)
+    {
+        return null;
+    }
     /// <summary>
     /// Request a view-model with a given controller if any.
     /// </summary>
-    /// <param name="controller"></param>
     /// <returns></returns>
-    protected ViewModel RequestViewModel(Controller controller)
+    protected ViewModel RequestViewModel()
     {
-        return SceneManager.RequestViewModel(this, controller);
+        return SceneManager.RequestViewModel(this);
     }
 }

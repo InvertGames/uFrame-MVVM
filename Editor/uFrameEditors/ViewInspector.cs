@@ -391,19 +391,20 @@ public class ViewInspector : uFrameInspector
 
                             if (type != null && type != typeof (void))
                             {
-                                if (!(command.Command is IParameterCommand)) continue;
-                                EditorGUI.BeginChangeCheck();
-                                object newValue = null;
-                                object currentValue = ((IParameterCommand)command.Command).Parameter ?? GetDefaultValue(type);//Activator.CreateInstance(type);
+                                // TODO REWRITE PARAMETERS
+                                //if (!(command.Command is IParameterCommand)) continue;
+                                //EditorGUI.BeginChangeCheck();
+                                //object newValue = null;
+                                //object currentValue = ((IParameterCommand)command.Command).Parameter ?? GetDefaultValue(type);//Activator.CreateInstance(type);
 
-                                var propertyName = "Parameter";
-                                var isEnum = false;
-                                newValue = DoTypeInspector(type, propertyName, currentValue, isEnum);
+                                //var propertyName = "Parameter";
+                                //var isEnum = false;
+                                //newValue = DoTypeInspector(type, propertyName, currentValue, isEnum);
 
-                                if (EditorGUI.EndChangeCheck())
-                                {
-                                    ((IParameterCommand) command.Command).Parameter = newValue;
-                                }
+                                //if (EditorGUI.EndChangeCheck())
+                                //{
+                                //    ((IParameterCommand) command.Command).Parameter = newValue;
+                                //}
                             }
                             if (GUI.Button(GUIHelpers.GetRect(ElementDesignerStyles.ButtonStyle), command.Name,
                                 ElementDesignerStyles.ButtonStyle))

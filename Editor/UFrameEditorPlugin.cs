@@ -98,7 +98,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         {
             get { return typeof(UpdateProgressDelegate); }
         }
-
+        [Obsolete]
         public Type CommandWithSenderT
         {
             get { return typeof(CommandWithSender<>); }
@@ -108,7 +108,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         {
             get { return null; }
         }
-
+        [Obsolete]
         public Type CommandWithSenderAndArgument
         {
             get { return typeof(CommandWithSenderAndArgument<,>); }
@@ -133,12 +133,12 @@ public class UFrameEditorPlugin : DiagramPlugin
         //{
         //    get { return typeof (YieldCommand); }
         //}
-
+        [Obsolete]
         public Type Command
         {
             get { return typeof(Command); }
         }
-
+        [Obsolete]
         public Type ICommand
         {
             get { return typeof(ICommand); }

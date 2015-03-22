@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using UniRx;
-
+[Obsolete]
 public abstract class UFCommand<T> : ICommandWith<T>
 {
     public void OnCompleted()

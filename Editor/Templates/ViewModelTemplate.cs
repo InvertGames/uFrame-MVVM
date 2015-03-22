@@ -29,6 +29,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     public void TemplateSetup()
     {
         // Ensure the namespaces for each property type are property set up
+        Ctx.CurrentDecleration.IsPartial = true;
         Ctx.TryAddNamespace("UnityEngine");
         foreach (var property in Ctx.Data.AllProperties)
         {
@@ -66,12 +67,18 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
     #endregion
 
-    [TemplateConstructor(MemberGeneratorLocation.Both, "controller", "initialize")]
-    public void ControllerConstructor(Controller controller, bool initialize)
+
+    [TemplateConstructor(MemberGeneratorLocation.DesignerFile, "aggregator")]
+    public void AggregatorConstructor(IEventAggregator aggregator)
     {
-        Ctx.CurrentConstructor.Parameters[0].Type = (Ctx.Data.Name.AsController() + "Base").ToCodeReference();
-        Ctx.CurrentConstructor.Parameters[1].Name = "initialize = true";
+       
     }
+    //[TemplateConstructor(MemberGeneratorLocation.Both, "controller", "initialize")]
+    //public void ControllerConstructor(Controller controller, bool initialize)
+    //{
+    //    Ctx.CurrentConstructor.Parameters[0].Type = (Ctx.Data.Name.AsController() + "Base").ToCodeReference();
+    //    Ctx.CurrentConstructor.Parameters[1].Name = "initialize = true";
+    //}
 
     [TemplateMethod(MemberGeneratorLocation.Both, true)]
     public override void Bind()
@@ -79,18 +86,18 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         if (!Ctx.IsDesignerFile) return;
         foreach (var command in Ctx.Data.Commands)
         {
-            Ctx._("this.{0} = new Signal<{0}Command>(this, Controller.EventAggregator)",command.Name);
+            Ctx._("this.{0} = new Signal<{0}Command>(this, this.Aggregator)",command.Name);
         }
         foreach (var property in ViewModelProperties)
         {
             Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName,property.Name);
         }
-
-        foreach (var property in Ctx.Data.LocalCollections)
-        {
-            Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName,property.Name);
-            Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
-        }
+        // No more parents so no need to bind to the collection change, this was bad anyways
+        //foreach (var property in Ctx.Data.LocalCollections)
+        //{
+        //    Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName,property.Name);
+        //    Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
+        //}
 
         foreach (var item in StateMachineProperties)
         {
@@ -190,7 +197,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
 
     #region Commands
     [TemplateProperty("{0}", AutoFillType.NameOnlyWithBackingField)]
-    public virtual ICommand CommandItems {
+    public virtual object CommandItems {
         get
         {
             Ctx.SetType("Signal<{0}Command>",Ctx.Item.Name);
@@ -435,7 +442,34 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
     };
 
 }
+[TemplateClass(MemberGeneratorLocation.DesignerFile, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
+public partial class ViewModelConstructorTemplate : IClassTemplate<ElementNode>
+{
+    public TemplateContext<ElementNode> Ctx { get; set; }
 
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "ViewModels"); }
+    }
+    [TemplateConstructor(MemberGeneratorLocation.Both, "aggregator")]
+    public void AggregatorConstructor(IEventAggregator aggregator)
+    {
+
+    }
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
+    public void TemplateSetup()
+    {
+        // Ensure the namespaces for each property type are property set up
+        Ctx.CurrentDecleration.BaseTypes.Clear();
+        Ctx.CurrentDecleration.IsPartial = true;
+        Ctx.CurrentDecleration.Name = string.Format(uFrameFormats.VIEW_MODEL_FORMAT,Ctx.Data.Name);
+    }
+
+}
 [TemplateClass(MemberGeneratorLocation.DesignerFile, ClassNameFormat = "{0}Command")]
 public class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<CommandsChildItem>
 {
@@ -454,6 +488,7 @@ public class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<Co
 
     public void TemplateSetup()
     {
+        
         Ctx.CurrentDecleration.IsPartial = true;
         Ctx.CurrentDecleration.Name = Ctx.Data.Name + "Command";
         Ctx.AddCondition("Argument",_=>!string.IsNullOrEmpty(_.RelatedType));

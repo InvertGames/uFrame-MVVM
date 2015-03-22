@@ -15,6 +15,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     private List<ViewBase> _rootViews;
 
     [Inject]
+    [Obsolete]
     public ICommandDispatcher CommandDispatcher
     {
         get;
@@ -145,21 +146,40 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// <param name="controller">The controller that the view-model should be initialized with</param>
     /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
+    [Obsolete]
     public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
     {
+        return null;
+    }
+    /// <summary>
+    /// Used by the SceneManager when creating an instance before the scene loads.  This allows a view-model instance to be ready
+    /// before a view-initializes it. This is used by the uFrame generators to initialize single isntance view-models.
+    /// </summary>
+    /// <typeparam name="TViewModel">The type of view-model to create.</typeparam>
+    /// <param name="controller">The controller that the view-model should be initialized with</param>
+    /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
+    /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
+  
+    public TViewModel SetupViewModel<TViewModel>( string identifier) where TViewModel : ViewModel
+    {
         // Create the ViewModel
-        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), controller, false) as TViewModel;
+        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), EventAggregator) as TViewModel;
         contextViewModel.Identifier = identifier;
         // Register the instance under "ViewModel" so any single instance view-model can be accessed with ResolveAll<ViewModel>();
         Container.RegisterViewModel<TViewModel>(contextViewModel, identifier);
         return contextViewModel;
     }
-
-    public TViewModel CreateInstanceViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
+    
+    public TViewModel CreateInstanceViewModel<TViewModel>( string identifier) where TViewModel : ViewModel
     {
-        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), controller, false) as TViewModel;
+        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), EventAggregator) as TViewModel;
         contextViewModel.Identifier = identifier;
         return contextViewModel;
+    }
+    [Obsolete]
+    public TViewModel CreateInstanceViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
+    {
+        return null;
     }
     /// <summary>
     /// All of the views that have registered
@@ -233,7 +253,11 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
         //vm.Identifier = view.Identifier;
     }
-
+    [Obsolete]
+    public ViewModel RequestViewModel(ViewBase viewBase, Controller controller)
+    {
+        return null;
+    }
     /// <summary>
     /// This is method is called by each view in order to get it's view-model as well as place it in
     /// the SceneContext if the "Save & Load" option is checked in it's inspector
@@ -241,7 +265,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// <param name="viewBase">The view that is requesting it's view-model.</param>
     /// <param name="controller">The controller that should be assigned to the view-model if any.</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
-    public ViewModel RequestViewModel(ViewBase viewBase, Controller controller)
+    public ViewModel RequestViewModel(ViewBase viewBase)
     {
         if (viewBase.InjectView)
         {
@@ -253,12 +277,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         if (contextViewModel == null)
         {
             // Either use the controller to create it or create it ourselves
-            contextViewModel = controller == null ? Activator.CreateInstance(viewBase.ViewModelType) as ViewModel : 
-                controller.CreateEmpty(viewBase.Identifier);
-            
-            // Make sure the initialized is called on the controller
-            //if (controller != null)
-            //    controller.Initialize(contextViewModel);
+            contextViewModel = Activator.CreateInstance(viewBase.ViewModelType, EventAggregator) as ViewModel;
 
             if (viewBase.ForceResolveViewModel)
             {   
@@ -268,11 +287,16 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
                 // Register it under the generic view-model type
                 Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
             }
-            else
+            //else
+            //{
+            //    // Inject the View-Model
+            //    Container.Inject(contextViewModel);
+            //}
+
+            Publish(new ViewModelCreatedEvent()
             {
-                // Inject the View-Model
-                Container.Inject(contextViewModel);
-            }
+                ViewModel = contextViewModel
+            });
         }
         // If we found a view-model
         if (contextViewModel != null)

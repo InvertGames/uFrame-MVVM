@@ -216,6 +216,7 @@ public static class ViewBindings
     /// <param name="commandSelector">The command to bind the input to</param>
     /// <param name="buttonName">The name of the input button to bind to.</param>
     /// <returns>The binding class that allows chaining extra options.</returns>
+    [Obsolete]
     public static IDisposable BindInputButton(this ViewBase t, ICommand commandSelector, string buttonName, InputButtonEventType buttonEventType = InputButtonEventType.ButtonDown)
     {
         if (buttonEventType == InputButtonEventType.Button)
@@ -237,6 +238,18 @@ public static class ViewBindings
     /// <param name="commandSelector"></param>
     /// <param name="key"></param>
     /// <returns>The binding class that allows chaining extra options.</returns>
+    public static IDisposable BindKey<TCommandType>(this ViewBase t, Signal<TCommandType> commandSelector, KeyCode key, TCommandType parameter = null) where TCommandType : ViewModelCommand, new()
+    {
+        return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetKey(key)).Subscribe(_ => commandSelector.OnNext(parameter ?? new TCommandType() {Sender = t.ViewModelObject})));
+    }
+    /// <summary>
+    /// Bind a key to a ViewModel Command
+    /// </summary>
+    /// <param name="t">The view that owns the binding</param>
+    /// <param name="commandSelector"></param>
+    /// <param name="key"></param>
+    /// <returns>The binding class that allows chaining extra options.</returns>
+    [Obsolete]
     public static IDisposable BindKey(this ViewBase t, ICommand commandSelector, KeyCode key, object parameter = null)
     {
         return t.AddBinding(t.UpdateAsObservable().Where(p => Input.GetKey(key)).Subscribe(_ => t.ExecuteCommand(commandSelector, parameter)));
@@ -384,6 +397,19 @@ public static class ViewBindings
 
         return null;
     }
+
+    /// <summary>
+    /// Binds to a commands execution and is diposed with the bindable
+    /// </summary>
+    /// <param name="bindable"></param>
+    /// <param name="sourceCommand"></param>
+    /// <param name="executed"></param>
+    /// <returns></returns>
+    public static IDisposable BindCommandExecuted<TCommandType>(this ViewBase bindable, Signal<TCommandType> sourceCommand, Action<TCommandType> executed) where TCommandType : ViewModelCommand, new()
+    {
+        return bindable.AddBinding(bindable.OnEvent<TCommandType>().Subscribe(executed));
+    } 
+
     /// <summary>
     /// Binds to a commands execution and is diposed with the bindable
     /// </summary>
@@ -391,6 +417,7 @@ public static class ViewBindings
     /// <param name="sourceCommand"></param>
     /// <param name="onExecuted"></param>
     /// <returns></returns>
+    [Obsolete]
     public static IDisposable BindCommandExecuted(this IBindable bindable, ICommand sourceCommand, Action onExecuted)
     {
         return bindable.AddBinding(sourceCommand.Subscribe(delegate { onExecuted(); }));

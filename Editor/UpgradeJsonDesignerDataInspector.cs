@@ -8,31 +8,48 @@ using Invert.uFrame.MVVM;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(UnityGraphData),true)]
+[CustomEditor(typeof(UnityGraphData), true)]
 public class GraphDataInspector : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        if (GUILayout.Button("Convert to Text Asset"))
-        {
-            var t = target as IGraphData;
-//            var property = serializedObject.FindProperty("_jsonData");
-            var jsonData = InvertGraph.Serialize(t).ToString();
-            var path = AssetDatabase.GetAssetPath(target);
-            File.WriteAllText(path.Replace(".asset",".txt"),jsonData);
-            AssetDatabase.Refresh();
-        }
+//        if (GUILayout.Button("Convert to Text Asset"))
+//        {
+//            var t = target as IGraphData;
+////            var property = serializedObject.FindProperty("_jsonData");
+//            var jsonData = InvertGraph.Serialize(t).ToString();
+//            var path = AssetDatabase.GetAssetPath(target);
+//            File.WriteAllText(path.Replace(".asset",".txt"),jsonData);
+//            AssetDatabase.Refresh();
+//        }
         if (GUILayout.Button("Upgrade Format"))
         {
             var oldGraph = target as IGraphData;
-            //var newGraph = new Invert.uFrame.Editor.ElementsGraph()
-            //{
-            //    Name = oldGraph.Name,
-                
-            //};
 
+            IGraphData graphData = null;
+            var graph = ScriptableObject.CreateInstance<UnityGraphData>();
+            if (oldGraph is ExternalStateMachineGraph)
+            {
+                graph.Graph = new StateMachineGraph();
+            }
+            else if (oldGraph is ExternalSubsystemGraph)
+            {
+                graph.Graph = new StateMachineGraph();
+
+            }
+            else
+            {
+                graph.Graph = new MVVMGraph();
+            }
+
+            
+
+            graphData = graph;
+            graph.name = oldGraph.Name;
+            graph.Identifier = oldGraph.Identifier;
+            graph.Graph.Identifier = oldGraph.Identifier;
 
             // Convert all the nodes
             Dictionary<DiagramNode,DiagramNode> converted = new Dictionary<DiagramNode, DiagramNode>();
@@ -55,7 +72,7 @@ public class GraphDataInspector : Editor
                     connections.Add(new ConnectionData(item.Identifier,item.ToIdentifier));
                 }
                 converted.Add(oldNode,node);
-    
+                
             }
             foreach (var oldNode in oldGraph.NodeItems.OfType<SubSystemData>())
             {
@@ -75,12 +92,27 @@ public class GraphDataInspector : Editor
                     Name = oldNode.Name,
                     Type = oldNode.RelatedType
                 };
-                // TODO output to transition?
+                
                 foreach (var item in oldNode.DependantProperties)
                 {
                     connections.Add(new ConnectionData(item.Identifier,node.Identifier));
                 }
-                // TODO sub properties
+      
+                foreach (var x in oldNode.DependantNodes)
+                {
+                    foreach (var item in x.AllProperties)
+                    {
+                        if (x[item.Identifier])
+                        {
+                            node.ChildItems.Add(new SubPropertiesReference()
+                            {
+                                SourceIdentifier = item.Identifier,
+                                Node = node,
+                            });
+                        }
+                    }
+                }
+            
                 converted.Add(oldNode, node);
 
             }
@@ -104,7 +136,10 @@ public class GraphDataInspector : Editor
                         Name = item.Name,
                         RelatedType = item.RelatedType
                     });
+
+   
                     
+
                 }
                 foreach (var item in oldNode.Collections)
                 {
@@ -115,6 +150,8 @@ public class GraphDataInspector : Editor
                         Node = node,
                         RelatedType = item.RelatedType
                     });
+                 
+            
 
                 }
                 foreach (var item in oldNode.Commands)
@@ -126,8 +163,11 @@ public class GraphDataInspector : Editor
                         Node = node,
                         RelatedType = item.RelatedType
                     });
+                    
                     if (!string.IsNullOrEmpty(item.TransitionToIdentifier))
-                    connections.Add(new ConnectionData(item.Identifier,item.TransitionToIdentifier));
+                        connections.Add(new ConnectionData(item.Identifier, item.TransitionToIdentifier));
+
+                
                 }
                 converted.Add(oldNode, node);
      
@@ -189,10 +229,18 @@ public class GraphDataInspector : Editor
                 var node = new StateMachineNode()
                 {
                     Identifier = oldNode.Identifier,
+                    
                     Name = oldNode.Name
                 };
+                if (oldNode.StartState != null)
+                {
+                    connections.Add(new ConnectionData(node.StartStateOutputSlot.Identifier, oldNode.StartState.Identifier));
+                }
+                
+
                 foreach (var transition in oldNode.Transitions)
                 {
+                    
                     node.ChildItems.Add(new TransitionsChildItem()
                     {
                         Name = transition.Name,
@@ -202,6 +250,7 @@ public class GraphDataInspector : Editor
                     connections.Add(new ConnectionData(transition.PropertyIdentifier,transition.Identifier));
                     //connections.Add();
                 }
+                connections.Add(new ConnectionData(oldNode.StatePropertyIdentifier, oldNode.Identifier));
                 converted.Add(oldNode, node);
             }
 
@@ -222,6 +271,7 @@ public class GraphDataInspector : Editor
                     });
                     connections.Add(new ConnectionData(transition.Identifier, transition.TransitionToIdentifier));
                 }
+                
                 converted.Add(oldNode, node);
             }
 
@@ -232,19 +282,55 @@ public class GraphDataInspector : Editor
             ConvertElements(converted, connections);
             ConvertStateMachines(converted, connections);
             ConvertViews(converted, connections);
+            foreach (var item in converted.Values)
+            {
+                graphData.AddNode(item);
+            }
+            
+
             foreach (var item in connections)
             {
-                Debug.Log(item.OutputIdentifier + " -> " + item.InputIdentifier);
+                if (item == null) continue;
+                if (item.OutputIdentifier == item.InputIdentifier)
+                {
+                    continue;
+                }
+                    graphData.AddConnection(item.OutputIdentifier, item.InputIdentifier);
+                    Debug.Log(string.Format("Added connection {0} - {1}", item.OutputIdentifier, item.InputIdentifier));
+                
+                
+                
             }
             // Reconstruct the filters
+            var oldElementGraph = oldGraph as IGraphData;
+            if (oldElementGraph != null)
+            {
+                foreach (var node in converted.Keys)
+                {
+                    var newNOde = converted[node];
+
+                    if (oldGraph.PositionData.HasPosition(oldGraph.RootFilter, node))
+                    {
+                        graph.SetItemLocation(newNOde, oldGraph.GetItemLocation(node));
+                    }
+                }
+         
+                
+                foreach (var item in oldElementGraph.PositionData.Positions)
+                {
+                    graph.PositionData.Positions.Add(item.Key,item.Value);
+                }
+            }
 
 
+            AssetDatabase.CreateAsset(graph,AssetDatabase.GetAssetPath(Selection.activeObject).Replace(".asset","-new.asset"));
+            AssetDatabase.SaveAssets();
         }
     }
 
     private void ConvertElements(Dictionary<DiagramNode, DiagramNode> converted, List<ConnectionData> connections)
     {
-        
+
     }
     private void ConvertStateMachines(Dictionary<DiagramNode, DiagramNode> converted, List<ConnectionData> connections)
     {
@@ -252,7 +338,50 @@ public class GraphDataInspector : Editor
     }
     private void ConvertViews(Dictionary<DiagramNode, DiagramNode> converted, List<ConnectionData> connections)
     {
+        var dictionary = new Dictionary<string, string>()
+        {
+            {"StateMachinePropertyBindingGenerator", "BindStateProperty"},
+            {"StandardPropertyBindingGenerator", "BindProperty"},
+            {"DefaultCollectionBindingGenerator", "BindCollection"},
+            {"ViewCollectionBindingGenerator", "BindToViewCollection"},
+            {"CommandExecutedBindingGenerator", "BindCommandExecuted"},
+            {"ComputedPropertyBindingGenerator", "BindProperty"},
 
+        };
+        foreach (var old in converted.Keys.OfType<ViewData>())
+        {
+            var newItem = converted[old] as ViewNode;
+            if (newItem == null) continue;
+            connections.Add(new ConnectionData(old.ViewForElement.Identifier, newItem.Identifier)
+            {
+                Output = converted.Values.FirstOrDefault(p => p.Identifier == old.ViewForElement.Identifier),
+                Input = newItem,
+            });
+            foreach (var item in old.SceneProperties)
+            {
+                connections.Add(new ConnectionData(item.Identifier, newItem.ScenePropertiesInputSlot.Identifier));
+            }
+            foreach (var binding in old.Bindings)
+            {
+                if (!dictionary.ContainsKey(binding.GeneratorType))
+                {
+                    Debug.Log(string.Format("Couldn't convert binding {0}", binding.GeneratorType));
+                    continue;
+                }
+                var bindingType = dictionary[binding.GeneratorType];
+
+                var newBinding = new BindingsReference()
+                {
+                    Node = newItem,
+                    Identifier = binding.Identifier,
+                    SourceIdentifier = binding.PropertyIdentifier,
+                    BindingName = bindingType
+                };
+
+                newItem.ChildItems.Add(newBinding);
+            }
+
+        }
     }
     private void ConvertSubsystems(Dictionary<DiagramNode, DiagramNode> converted, List<ConnectionData> connections)
     {
@@ -275,69 +404,47 @@ public class GraphDataInspector : Editor
             connections.AddRange(GetSubsystemConnections(converted, o, n));
         }
 
-        // Grab all the connections
-        foreach (var o in converted.Keys.OfType<SubSystemData>())
-        {
-            var n = converted[o] as SubsystemNode;
-            // Convert Instances
-            foreach (var instance in o.Instances)
-            {
-                var nInstance = new InstancesReference()
-                {
-                    Node = n,
-                    Name = o.Name,
-                    SourceIdentifier = instance.RelatedType
-                };
-
-                n.ChildItems.Add(nInstance);
-            }
-            // Convert connections
-            connections.AddRange(GetSubsystemConnections(converted, o, n));
-        }
     }
     private void ConvertSceneManagers(Dictionary<DiagramNode, DiagramNode> converted, List<ConnectionData> connections)
     {
-        foreach (var o in converted.Keys.OfType<SubSystemData>())
+        foreach (var o in converted.Keys.OfType<SceneManagerData>())
         {
-            var n = converted[o] as SubsystemNode;
-            // Convert Instances
-            foreach (var instance in o.Instances)
+            var n = converted[o] as SceneManagerNode;
+            var subsystemIdentifier = o.SubSystemIdentifier;
+            var subsystem = converted.Values.OfType<SubsystemNode>().FirstOrDefault(p => p.Identifier == subsystemIdentifier);
+            if (subsystem != null)
             {
-                var nInstance = new InstancesReference()
+                connections.Add(
+                    new ConnectionData(subsystem.ExportOutputSlot.Identifier, n.SubsystemInputSlot.Identifier)
+                    {
+                        Input = n.SubsystemInputSlot,
+                        Output = subsystem.ExportOutputSlot
+                    });
+            }
+            foreach (var item in o.Transitions)
+            {
+                var newTransition = new SceneTransitionsReference
                 {
                     Node = n,
-                    Name = o.Name,
-                    SourceIdentifier = instance.RelatedType
+                    Identifier = item.Identifier,
+                    SourceIdentifier = item.CommandIdentifier
                 };
+                n.ChildItems.Add(newTransition);
 
-                n.ChildItems.Add(nInstance);
-            }
-            // Convert connections
-            connections.AddRange(GetSubsystemConnections(converted, o, n));
-        }
-
-        // Grab all the connections
-        foreach (var o in converted.Keys.OfType<SubSystemData>())
-        {
-            var n = converted[o] as SubsystemNode;
-            // Convert Instances
-            foreach (var instance in o.Instances)
-            {
-                var nInstance = new InstancesReference()
+                connections.Add(new ConnectionData(item.Identifier, item.ToIdentifier)
                 {
-                    Node = n,
-                    Name = o.Name,
-                    SourceIdentifier = instance.RelatedType
-                };
+                    Output = newTransition,
 
-                n.ChildItems.Add(nInstance);
+                });
             }
-            // Convert connections
-            connections.AddRange(GetSubsystemConnections(converted, o, n));
+
         }
+
+
+
     }
 
-    private IEnumerable<ConnectionData> GetSubsystemConnections(Dictionary<DiagramNode,DiagramNode> converted, SubSystemData o, SubsystemNode n)
+    private IEnumerable<ConnectionData> GetSubsystemConnections(Dictionary<DiagramNode, DiagramNode> converted, SubSystemData o, SubsystemNode n)
     {
         foreach (var item in o.Imports)
         {
@@ -345,7 +452,7 @@ public class GraphDataInspector : Editor
             if (oldImport == null) continue;
             var newImport = converted[oldImport] as SubsystemNode;
 
-            yield return new ConnectionData(newImport.ExportOutputSlot.Identifier,n.ImportInputSlot.Identifier)
+            yield return new ConnectionData(newImport.ExportOutputSlot.Identifier, n.ImportInputSlot.Identifier)
             {
                 Output = newImport.ExportOutputSlot,
                 Input = n.ImportInputSlot

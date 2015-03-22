@@ -56,7 +56,7 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
                 .Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(instance.Name)));
 
             Ctx._if("this.{0} == null", instance.Name.AsField())
-                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>({2}, \"{3}\")", instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.SourceItem.Name.AsController(), instance.Name);
+                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>( \"{2}\")", instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.Name);
 
             Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, instance.Name.AsField());
             Ctx._("return {0}", instance.Name.AsField());
@@ -124,7 +124,7 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
         {
             foreach (var item in Ctx.Data.ImportedItems)
             {
-                Ctx._("{0}.Initialize({1})", item.SourceItem.Name.AsController(), item.Name);
+                Ctx._("Publish(new ViewModelCreatedEvent() {{ ViewModel = {0} }});", item.Name);
             }
         }
 

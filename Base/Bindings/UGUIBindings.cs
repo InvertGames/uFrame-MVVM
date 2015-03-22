@@ -23,14 +23,6 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindButtonToCommand(this ViewBase viewBase, Button button, ICommand command)
-        {
-            var d = button.AsClickObservable().Subscribe(_ =>
-            {
-                    viewBase.ExecuteCommand(command);
-            }).DisposeWith(viewBase);
-            return d;
-        }
 
         public static IDisposable BindButtonToCommand<TSignalType>(this ViewBase viewBase, Button button, Signal<TSignalType> command) 
             where TSignalType : ViewModelCommand, new()
@@ -41,6 +33,16 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
             return d;
         }
+        [Obsolete]
+        public static IDisposable BindButtonToCommand(this ViewBase viewBase, Button button, ICommand command)
+        {
+            var d = button.AsClickObservable().Subscribe(_ =>
+            {
+                viewBase.ExecuteCommand(command);
+            }).DisposeWith(viewBase);
+            return d;
+        }
+        [Obsolete]
         public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, CommandBase<T> command, Func<T> selector)
         {
             var d = button.AsClickObservable().Subscribe(_ =>
@@ -63,6 +65,8 @@ using UnityEngine.UI;
         
         public static IDisposable BindInputFieldToProperty(this ViewBase viewBase, InputField input, P<string> property)
         {
+            if (property.Value != null)
+            input.text = property.Value;
             var d1 = input.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(value);
@@ -82,6 +86,8 @@ using UnityEngine.UI;
 
         public static IDisposable BindInputFieldToProperty<TO>(this ViewBase viewBase, InputField inputField, P<TO> property, Func<string, TO> i2pSelector, Func<TO,string> p2iSelector)
         {
+            if (property.Value != null)
+            inputField.text = p2iSelector(property.Value);
             var d1 = inputField.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(i2pSelector(value));
@@ -108,20 +114,23 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField, CommandBase<T> command)
+        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField, Signal<T> command) where T : ViewModelCommand, new()
         {
             var d = inputField.AsEndEditObservable().Subscribe(_ =>
             {
-                viewBase.ExecuteCommand(command);
+                command.OnNext(new T() {Sender = viewBase.ViewModelObject});
             }).DisposeWith(viewBase);
             return d;
         }
 
-        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField, CommandBase<T> command, Func<T> selector)
+        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField, Signal<T> command, Func<T> selector) where T : ViewModelCommand, new()
         {
             var d = inputField.AsEndEditObservable().Subscribe(_ =>
             {
-                viewBase.ExecuteCommand(command, selector());
+                var selected = selector();
+                selected.Sender = viewBase.ViewModelObject;
+                command.OnNext(selected);
+                
             }).DisposeWith(viewBase);
             return d;
         }
@@ -267,41 +276,41 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
         }
 
-        public static IDisposable BindToggleOnToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command)
-        {
-            var d = toggle.AsValueChangedObservable().Subscribe(_ =>
-            {
-                viewBase.ExecuteCommand(command);
-            }).DisposeWith(viewBase);
-            return d;
-        }
+        //public static IDisposable BindToggleOnToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command)
+        //{
+        //    var d = toggle.AsValueChangedObservable().Subscribe(_ =>
+        //    {
+        //        viewBase.ExecuteCommand(command);
+        //    }).DisposeWith(viewBase);
+        //    return d;
+        //}
 
-        public static IDisposable BindToggleOnToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command, Func<T> selector)
-        {
-            var d = toggle.AsValueChangedObservable().Where(v=>v).Subscribe(_ =>
-            {
-                viewBase.ExecuteCommand(command, selector());
-            }).DisposeWith(viewBase);
-            return d;
-        }
+        //public static IDisposable BindToggleOnToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command, Func<T> selector)
+        //{
+        //    var d = toggle.AsValueChangedObservable().Where(v=>v).Subscribe(_ =>
+        //    {
+        //        viewBase.ExecuteCommand(command, selector());
+        //    }).DisposeWith(viewBase);
+        //    return d;
+        //}
 
-        public static IDisposable BindToggleOffToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command)
-        {
-            var d = toggle.AsValueChangedObservable().Where(v => v == false).Subscribe(_ =>
-            {
-                viewBase.ExecuteCommand(command);
-            }).DisposeWith(viewBase);
-            return d;
-        }
+        //public static IDisposable BindToggleOffToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command)
+        //{
+        //    var d = toggle.AsValueChangedObservable().Where(v => v == false).Subscribe(_ =>
+        //    {
+        //        viewBase.ExecuteCommand(command);
+        //    }).DisposeWith(viewBase);
+        //    return d;
+        //}
 
-        public static IDisposable BindToggleOffToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command, Func<T> selector)
-        {
-            var d = toggle.AsValueChangedObservable().Where(v=>v==false).Subscribe(_ =>
-            {
-                viewBase.ExecuteCommand(command, selector());
-            }).DisposeWith(viewBase);
-            return d;
-        }
+        //public static IDisposable BindToggleOffToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command, Func<T> selector)
+        //{
+        //    var d = toggle.AsValueChangedObservable().Where(v=>v==false).Subscribe(_ =>
+        //    {
+        //        viewBase.ExecuteCommand(command, selector());
+        //    }).DisposeWith(viewBase);
+        //    return d;
+        //}
     
         public static IObservable<Unit> AsClickObservable(this Button button)
         {

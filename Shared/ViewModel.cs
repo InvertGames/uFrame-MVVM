@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 #if DLL
 using Invert.MVVM;
 using Invert.uFrame.Editor;
@@ -28,7 +27,6 @@ public abstract class ViewModel
     public bool Dirty { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
     private Dictionary<int, List<IDisposable>> _bindings;
-    private Dictionary<string, ICommand> _commands;
     private Controller _controller;
     private List<ViewModelPropertyInfo> _modelProperties;
     private string _identifier;
@@ -36,18 +34,36 @@ public abstract class ViewModel
     protected ViewModel()
     {
 #if !UNITY_EDITOR
-        Controller = null;
+        BindInternal();
 #endif
     }
 
+    protected IEventAggregator Aggregator { get; set; }
 
-    protected ViewModel(Controller controller, bool initialize = true)
+    protected ViewModel(IEventAggregator aggregator)
     {
-        Controller = controller;
-        if (initialize)
+        if (aggregator == null) throw new ArgumentNullException("aggregator");
+        Aggregator = aggregator;
+        BindInternal();
+    }
+
+    public virtual void MethodAccessException()
+    {
+        
+    }
+    private void BindInternal()
+    {
+        if (!_isBound)
         {
-            controller.Initialize(this);
+            Bind();
+            _isBound = true;
         }
+
+    }
+    [Obsolete("Use new ViewModel(EventAggregator) instead.")]
+    protected ViewModel(Controller controller, bool initialize = true) :this(controller.EventAggregator)
+    {
+      
     }
 
     /// <summary>
@@ -78,52 +94,17 @@ public abstract class ViewModel
         set { _bindings = value; }
     }
 
-    [Obsolete("Use GetViewModelCommands")]
-    public Dictionary<string, ICommand> Commands
-    {
+
+    [Obsolete("Controllers are no longer needed on viewmodels.")]
+    public Controller Controller {
         get
         {
-            foreach (var key in Bindings.Keys)
-            {
-                if (key < 0) continue;
-                
-            }
-            if (_commands == null)
-            {
-                var dictionary = new Dictionary<string, ICommand>();
-                foreach (KeyValuePair<string, PropertyInfo> command in GetReflectedCommands(this.GetType()))
-                    dictionary.Add(command.Key, (ICommand)command.Value.GetValue(this, null));
-                _commands = dictionary;
-            }
-            return _commands;
+            throw new Exception("You should not be accessing controllers from the viewmodel.  It also obsolete in 1.6");
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public Controller Controller
-    {
-        get { return _controller; }
         set
         {
             
-            if (value != null && _controller == value)
-                return;
-
-            if (value != null)
-            {
-                WireCommands(value);
-            }
-            _controller = value;
-            if (!_isBound)
-            {
-                Bind();
-                _isBound = true;
-            }
-           
-        }
-    }
+        } }
 
     private bool _isBound;
     public virtual void Bind()
@@ -243,19 +224,10 @@ public abstract class ViewModel
     public virtual void Read(ISerializerStream stream)
     {
         Identifier = stream.DeserializeString("Identifier");
-        var controllerName = stream.DeserializeString("Controller");
-        if (controllerName != null)
-        {
-            var controller = stream.DependencyContainer.Resolve(stream.TypeResolver.GetType(controllerName)) as Controller;
-            Controller = controller;
-        }
-  
     }
     public virtual void Write(ISerializerStream stream)
     {
         stream.SerializeString("Identifier", Identifier);
-        if (Controller != null)
-            stream.SerializeString("Controller", Controller.GetType().AssemblyQualifiedName);
     }
 
     [Obsolete]
@@ -293,10 +265,12 @@ public abstract class ViewModel
 
     public void Dispose()
     {
-        if (Controller != null)
+        if (Aggregator != null)
+        Aggregator.Publish(new ViewModelDestroyedEvent()
         {
-            Controller.DisposingViewModel(this);
-        }
+            ViewModel = this
+        });
+
         Unbind();
     }
 
@@ -337,6 +311,7 @@ public abstract class ViewModel
 public class ViewModelCommandInfo
 {
     public ISignal Signal { get; private set; }
+    [Obsolete]
     public ICommand Command { get; set; }
 
     public string Name { get; set; }
@@ -355,7 +330,7 @@ public class ViewModelCommandInfo
         Signal = signal;
         Name = name;
     }
-
+    [Obsolete]
     public ViewModelCommandInfo(Type parameterType, string name, ICommand command)
     {
         ParameterType = parameterType;

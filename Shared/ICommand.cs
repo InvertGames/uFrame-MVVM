@@ -4,14 +4,14 @@ using System.Collections;
 namespace Invert.MVVM
 {
 #endif
-using System.Collections.Generic;
 using UniRx;
-
+[Obsolete("Due to AOT issues this has been deprecated.")]
 public delegate void CommandEvent();
 
 /// <summary>
 /// The base command interface for implementing a command in a ViewModel
 /// </summary>
+[Obsolete("Due to AOT issues this has been deprecated.")]
 public interface ICommand : ISubject<Unit>
 {
    
@@ -28,6 +28,7 @@ public interface ICommand : ISubject<Unit>
     bool CanExecute(object parameter);
 }
 
+[Obsolete("Due to AOT issues this has been deprecated.")]
 public interface IParameterCommand : ICommand
 {
     object Parameter { get; set; }
@@ -36,6 +37,7 @@ public interface IParameterCommand : ICommand
 /// A base command interface for implementing a command with a parameter in a ViewModel
 /// </summary>
 /// <typeparam name="T"></typeparam>
+[Obsolete("Due to AOT issues this has been deprecated.")]
 public interface ICommandWith<T> : IParameterCommand
 {
     //IEnumerator Execute(T parameter);
@@ -48,49 +50,3 @@ public interface ICommandWith<T> : IParameterCommand
 #if DLL
 }
 #endif
-
-public class SimpleSubject<T> : ISubject<T>
-{
-    private List<IObserver<T>> _observers;
-
-    public List<IObserver<T>> Observers
-    {
-        get { return _observers ?? (_observers = new List<IObserver<T>>()); }
-        set { _observers = value; }
-    }
-
-    public void OnCompleted()
-    {
-        foreach (var observer in Observers.ToArray())
-        {
-            if (observer == null) continue;
-            observer.OnCompleted();
-        }
-        Observers.Clear();
-    }
-
-    public void OnError(Exception error)
-    {
-        foreach (var observer in Observers.ToArray())
-        {
-            if (observer == null) continue;
-            observer.OnError(error);
-        }
-    }
-
-    public void OnNext(T value)
-    {
-        foreach (var observer in Observers)
-        {
-            if (observer == null) continue;
-            observer.OnNext(value);
-        }
-    }
-
-    public IDisposable Subscribe(IObserver<T> observer)
-    {
-        Observers.Add(observer);
-        return Disposable.Create(() => Observers.Remove(observer));
-    }
-}
-
