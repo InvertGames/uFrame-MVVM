@@ -31,6 +31,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         // Ensure the namespaces for each property type are property set up
         Ctx.CurrentDecleration.IsPartial = true;
         Ctx.TryAddNamespace("UnityEngine");
+        Ctx.TryAddNamespace("UniRx");
         foreach (var property in Ctx.Data.AllProperties)
         {
             var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
@@ -102,12 +103,35 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         foreach (var item in StateMachineProperties)
         {
             Ctx._("{0} = new {1}(this, \"{2}\")", item.Name.AsSubscribableField(), item.RelatedTypeName,item.Name);
-        }
-
+        } 
         foreach (var item in Ctx.Data.ComputedProperties)
         {
             Ctx._("Reset{0}()", item.Name);
         }
+        //_StateMachineProperty.B.AddComputer(IsCorrectPasswordProperty);
+        foreach (var item in Ctx.Data.ComputedProperties)
+        {
+            
+            var transition = item.OutputTo<TransitionsChildItem>();
+            if (transition == null) continue;
+            var stateMachineNode = transition.Node as IClassTypeNode;
+            var property = stateMachineNode.ReferencesOf<PropertiesChildItem>().FirstOrDefault(p => p.Node == Ctx.Data);
+            if (property == null) continue;
+            Ctx._("{0}.{1}.AddComputer({2})", property.Name.AsSubscribableProperty(), transition.Name, item.Name.AsSubscribableProperty());
+
+        }
+        foreach (var item in Ctx.Data.LocalCommands)
+        {
+            //Transition.Subscribe(_ => StateMachineProperty.B.OnNext(true));
+            var transition = item.OutputTo<TransitionsChildItem>();
+            if (transition == null) continue;
+            var stateMachineNode = transition.Node as IClassTypeNode;
+            var property = stateMachineNode.ReferencesOf<PropertiesChildItem>().FirstOrDefault(p => p.Node == Ctx.Data);
+            if (property == null) continue;
+            Ctx._("{0}.Subscribe(_ => {1}.{2}.OnNext(true))", item.Name, property.Name.AsSubscribableProperty(), transition.Name);
+
+        }
+       
 
     }
 
@@ -483,7 +507,7 @@ public class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<Co
 
     public bool CanGenerate
     {
-        get { return Ctx.Data.OutputTo<CommandNode>() == null; }
+        get { return Ctx.Data.OutputCommand == null; }
     }
 
     public void TemplateSetup()

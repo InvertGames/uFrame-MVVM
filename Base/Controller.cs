@@ -18,6 +18,7 @@ public interface ISystemService
     /// to subscribe to any events on the EventAggregator
     /// </summary>
     void Setup();
+    
 }
 
 public abstract class SystemService : ISystemService
@@ -26,6 +27,10 @@ public abstract class SystemService : ISystemService
     public IEventAggregator EventAggregator { get; set; }
 
     public abstract void Setup();
+    public virtual void Dispose()
+    {
+        
+    }
 }
 public static class SystemControllerExtensions
 {
@@ -86,6 +91,7 @@ public abstract class Controller : SystemService
     {
 
         var vm = CreateEmpty(identifier);
+        vm.Identifier = identifier;
         return vm;
     }
 

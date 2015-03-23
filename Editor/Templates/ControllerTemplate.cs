@@ -216,7 +216,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         {
             if (Ctx.Item is CommandsChildItem)
             {
-                if (Ctx.Item.OutputTo<CommandNode>() != null)
+                if (Ctx.ItemAs<CommandsChildItem>().OutputCommand != null)
                 {
                     Ctx._("this.{0}(command.Sender as {1}, command)", c.Name, c.Node.Name.AsViewModel());
                 }
@@ -234,22 +234,22 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     }
     private void DoTransition()
     {
-        if (Ctx.IsDesignerFile)
-        {
-            var transition = Ctx.Item.OutputTo<TransitionsChildItem>();
-            if (transition != null)
-            {
+        //if (Ctx.IsDesignerFile)
+        //{
+        //    var transition = Ctx.Item.OutputTo<TransitionsChildItem>();
+        //    if (transition != null)
+        //    {
 
-                var stateMachineProperty =
-                    Ctx.Data.LocalProperties.FirstOrDefault(p => p.RelatedTypeNode is StateMachineNode);
+        //        var stateMachineProperty =
+        //            Ctx.Data.LocalProperties.FirstOrDefault(p => p.RelatedTypeNode is StateMachineNode);
 
-                if (stateMachineProperty != null)
-                {
-                    Ctx._("viewModel.{0}.Transition(\"{1}\")", stateMachineProperty.Name.AsSubscribableProperty(),
-                        transition.Name);
-                }
-            }
-        }
+        //        if (stateMachineProperty != null)
+        //        {
+        //            Ctx._("viewModel.{0}.Transition(\"{1}\")", stateMachineProperty.Name.AsSubscribableProperty(),
+        //                transition.Name);
+        //        }
+        //    }
+        //}
     }
 
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]

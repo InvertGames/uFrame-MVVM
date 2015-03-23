@@ -3,6 +3,7 @@ using System.Linq;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
@@ -16,28 +17,37 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
         get
         {
             Ctx.CurrentProperty.Name = "EventAggregator";
-            Ctx.AddAttribute(typeof (InjectAttribute));
+            Ctx.AddAttribute(typeof(InjectAttribute));
 
             return null;
         }
-        set {  }
+        set { }
     }
     [TemplateMethod(MemberGeneratorLocation.Both)]
     public virtual void Setup()
     {
-        Ctx._comment("This is called when the controller is created");
-        
+
+        Ctx.TryAddNamespace("UniRx");
         if (Ctx.IsDesignerFile)
         {
-            Ctx.SetBaseType(typeof(ISystemService));
-            foreach (var command in Ctx.Data.Handlers.Select(p=>p.SourceItem).OfType<CommandsChildItem>())
+            Ctx.CurrentDecleration.BaseTypes.Clear();
+            if (Ctx.Data.MonoBehaviour)
             {
-                Ctx._("this.OnEvent<{0}Command>().Subscribe(this.{0}Handler)", command.Name);
+                Ctx.SetBaseType(typeof(MonoBehaviour));
+
+                Ctx.TryAddNamespace("UnityEngine");
+
             }
-            foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
+            Ctx.CurrentDecleration.BaseTypes.Add(typeof(ISystemService).ToCodeReference());
+
+            foreach (var command in Ctx.Data.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>())
             {
-                Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
+                Ctx._("this.OnEvent<{0}>().Subscribe(this.{1}Handler)", command.ClassName, command.Name);
             }
+            //foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
+            //{
+            //    Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
+            //}
         }
     }
 
@@ -63,7 +73,7 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
 
 
         Ctx.AddIterator("OnCommandMethod",
-            _ => _.Handlers.Select(p=>p.SourceItem));
+            _ => _.Handlers.Select(p => p.SourceItemObject));
 
 
     }
@@ -79,40 +89,9 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void OnCommandMethod(ViewModelCommand data)
     {
-        var c = Ctx.TypedItem;
-        Ctx.CurrentMethod.Name = c.Name + "Handler";
-        if (Ctx.Item is CommandsChildItem)
-        {
-            Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Name + "Command");
-        }
-        else
-        {
-            Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Name);
-        }
-        
-        //if (Ctx.IsDesignerFile)
-        //{
-        //    if (Ctx.Item is CommandsChildItem)
-        //    {
-        //        if (string.IsNullOrEmpty(c.RelatedType))
-        //        {
-        //            Ctx._("this.{0}(command.Sender as {1})", c.Name, c.Node.Name.AsViewModel());
-        //        }
-        //        else
-        //        {
-        //            if (Ctx.Item.OutputTo<CommandNode>() == null)
-        //            {
-        //                Ctx._("this.{0}(command.Sender as {1}, command.Argument)", c.Name, c.Node.Name.AsViewModel());
-        //            }
-        //            else
-        //            {
-        //                Ctx._("this.{0}(command.Sender as {1}, command)", c.Name, c.Node.Name.AsViewModel());
-        //            }
-
-        //        }
-        //    }
-
-        //}
+   
+        Ctx.CurrentMethod.Name = Ctx.Item.Name + "Handler";
+        Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.ItemAs<IClassTypeNode>().ClassName);
     }
 
 

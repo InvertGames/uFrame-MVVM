@@ -3,6 +3,7 @@ using System.Linq;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
+using UnityEngine;
 
 [TemplateClass(MemberGeneratorLocation.Both, uFrameFormats.SCENE_MANAGER_FORMAT)]
 public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
@@ -23,15 +24,14 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
         if (Ctx.IsDesignerFile)
         {
             Ctx.SetBaseType(typeof(SceneManager));
-        }
-        foreach (var transition in Ctx.Data.SceneTransitions)
-        {
-            var to = transition.OutputTo<SceneManagerNode>();
-            if (to == null) continue;
-            Ctx._("public {0} {1}Transition = new {0}();", to.Name.AsSceneManagerSettings(), transition.Name.AsField());
-        }
-        if (Ctx.IsDesignerFile)
+            foreach (var transition in Ctx.Data.SceneTransitions)
+            {
+                var to = transition.OutputTo<SceneManagerNode>();
+                if (to == null) continue;
+                Ctx._("public {0} {1}Transition = new {0}();", to.Name.AsSceneManagerSettings(), transition.Name.AsField());
+            }
             Ctx._("public {0} {1} = new {0}();", Ctx.Data.Name.AsSceneManagerSettings(), Ctx.Data.Name.AsSceneManagerSettings().AsField());
+        }
 
         Ctx.AddIterator("InstanceProperty", node => node.ImportedItems);
         Ctx.AddIterator("ControllerProperty", node => node.IncludedElements);
@@ -106,11 +106,13 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
         }
         foreach (var item in Ctx.Data.IncludedElements)
         {
-            Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
             Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
+            Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
         }
         
         Ctx._("Container.InjectAll()");
+
+        
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both)]
@@ -118,7 +120,8 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         Ctx.CurrentMethodAttribute.CallBase = true;
-        Ctx.CurrentMethod.invoke_base();
+        if (Ctx.IsDesignerFile)
+            Ctx.CurrentMethod.invoke_base(); 
         Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("This method is called right after setup is invoked."));
         if (Ctx.IsDesignerFile)
         {
@@ -126,6 +129,25 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
             {
                 Ctx._("Publish(new ViewModelCreatedEvent() {{ ViewModel = {0} }});", item.Name);
             }
+               
+             
+            foreach (var item in Ctx.Data.SceneTransitions)
+            {
+                var command = item.SourceItem as CommandsChildItem;
+                if (command == null)
+                {
+                    Debug.Log("command is null");
+                    continue;
+                }
+                var transitionTo = item.OutputTo<SceneManagerNode>();
+                if (transitionTo == null)
+                {
+                    Debug.Log("Transition is null");
+                    continue;
+                }
+                Ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this.gameObject);", command.ClassName, command.Name);
+            }
+
         }
 
     }
@@ -141,10 +163,15 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
     }
 
     [TemplateMethod(AutoFill = AutoFillType.NameOnly)]
-    public virtual void TransitionMethod()
+    public virtual void TransitionMethod(object command)
     {
-
+        
         var transition = Ctx.ItemAs<SceneTransitionsReference>();
+        var c = transition.SourceItem as CommandsChildItem;
+        if (c == null) return;
+
+        this.Ctx.CurrentMethod.Parameters[0].Type = c.ClassName.ToCodeReference();
+
         //        var transitionCommand = transition.SourceItem as CommandsChildItem;
         var transitionOutput = transition.OutputTo<SceneManagerNode>();
         if (transitionOutput != null)

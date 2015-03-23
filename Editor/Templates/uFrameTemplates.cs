@@ -42,7 +42,9 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} Changed")
             .ImplementWith(args =>
             {
-                if (args.SourceItem.OutputTo<StateMachineNode>() != null)
+                var sourceItem = args.SourceItem as ITypedItem;
+
+                if (sourceItem.RelatedNode() is StateMachineNode)
                 {
                     args.Method.Parameters.Clear();
                     args.Method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(State), "State"));
@@ -50,12 +52,13 @@ public class uFrameTemplates : DiagramPlugin
             })
             ;
 
-        container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.OutputTo<StateMachineNode>() != null)
+        container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.RelatedNode() is StateMachineNode)
             .SetNameFormat("{0} State Changed")
             .ImplementWith(args =>
             {
                 args.Method.Parameters[0].Type = typeof(State).ToCodeReference();
-                var stateMachine = args.SourceItem.OutputTo<StateMachineNode>();
+                var sourceItem = args.SourceItem as ITypedItem;
+                var stateMachine = sourceItem.RelatedNode() as StateMachineNode;
 
                 foreach (var state in stateMachine.States)
                 {

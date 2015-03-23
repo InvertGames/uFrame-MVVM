@@ -91,6 +91,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     /// </summary>
     public virtual void Setup()
     {
+
     }
 
 
@@ -278,7 +279,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         {
             // Either use the controller to create it or create it ourselves
             contextViewModel = Activator.CreateInstance(viewBase.ViewModelType, EventAggregator) as ViewModel;
-
+            contextViewModel.Identifier = viewBase.Identifier;
             if (viewBase.ForceResolveViewModel)
             {   
                 // Register it, this is usually when a non registered element is treated like a single-instance anways
