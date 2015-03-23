@@ -20,9 +20,7 @@ public class uFrameTemplates : DiagramPlugin
         // Grab a reference to the main framework graphs plugin
         Framework = container.Resolve<uFrameMVVM>();
         //Framework.ElementsGraphRoot.AddCodeTemplate<BackupData>();
-        // Register the code templates
-        container.AddItemFlag<PropertiesChildItem>("SINI-AWESOMENESS", Color.red);
-        container.AddItemFlag<PropertiesChildItem>("uFrame-AWESOMENESS", Color.blue);
+        // Register the code template
         Framework.Service.AddCodeTemplate<ServiceTemplate>();
         Framework.SimpleClass.AddCodeTemplate<SimpleClassTemplate>();
         Framework.Element.AddCodeTemplate<ControllerTemplate>();

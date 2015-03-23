@@ -337,7 +337,7 @@ public class GraphDataInspector : Editor
         {
             var newItem = converted[old] as ViewNode;
             if (newItem == null) continue;
-            connections.Add(new ConnectionData(old.ViewForElement.Identifier, newItem.Identifier)
+            connections.Add(new ConnectionData(old.ViewForElement.Identifier, newItem.ElementInputSlot.Identifier)
             {
                 Output = converted.Values.FirstOrDefault(p => p.Identifier == old.ViewForElement.Identifier),
                 Input = newItem,
