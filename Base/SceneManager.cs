@@ -377,6 +377,7 @@ public class LoadedEvent
 
 public static class SceneManagerExtensions
 {
+
     public static void FromJson(this SceneManager sceneManager, string stateData)
     {
         var stringStorage = new StringSerializerStorage()
@@ -397,7 +398,12 @@ public static class SceneManagerExtensions
 
 public static class ContainerExtensions
 {
-    
+    public static void RegisterService<TService>(this IGameContainer container, ISystemService service)
+    {
+        container.RegisterInstance<ISystemService>(service, service.GetType().Name, false);
+        container.RegisterInstance(typeof(TService), service, false);
+    }
+
     public static void RegisterViewModel<TViewModel>(this IGameContainer container, TViewModel viewModel, string identifier) where TViewModel : ViewModel
     {
         container.Register<TViewModel,TViewModel>();

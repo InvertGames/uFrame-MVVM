@@ -14,10 +14,17 @@ namespace uFrame.Graphs
         public const string SCENE_MANAGER_SETTINGS_FORMAT = "{0}Settings";
         public const string CONTROLLER_FORMAT = "{0}Controller";
 
+        public const string SERVICE_FORMAT = "{0}";
+
         public const string SUBSCRIBABLE_FIELD_FORMAT = "_{0}Property";
         public const string SUBSCRIBABLE_PROPERTY_FORMAT = "{0}Property";
         public const string PROPERTY_FORMAT = "{0}";
         public const string FIELD_FORMAT = "_{0}";
+
+        public static string AsService(this string s)
+        {
+            return string.Format(SERVICE_FORMAT, s);
+        }
 
         public static string AsView(this string s)
         {

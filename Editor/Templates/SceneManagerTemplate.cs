@@ -32,7 +32,7 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
             }
             Ctx._("public {0} {1} = new {0}();", Ctx.Data.Name.AsSceneManagerSettings(), Ctx.Data.Name.AsSceneManagerSettings().AsField());
         }
-
+        Ctx.AddIterator("ServiceProperty", node => node.IncludedServices);
         Ctx.AddIterator("InstanceProperty", node => node.ImportedItems);
         Ctx.AddIterator("ControllerProperty", node => node.IncludedElements);
         Ctx.AddIterator("GetTransitionScenes", node => node.SceneTransitions);
@@ -42,6 +42,22 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
 
     public TemplateContext<SceneManagerNode> Ctx { get; set; }
 
+    [TemplateProperty(uFrameFormats.SERVICE_FORMAT, AutoFillType.NameOnly)]
+    public virtual ISystemService ServiceProperty
+    {
+        get
+        {
+            Ctx.SetType(Ctx.Item.Name.AsService());
+            Ctx.AddAttribute(typeof(InjectAttribute));
+            Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, Ctx.Item.Name.AsService().AsField());
+            Ctx.LazyGet(Ctx.Item.Name.AsService().AsField(), "Container.CreateInstance(typeof({0})) as {0};", Ctx.Item.Name.AsService());
+            return null;
+        }
+        set
+        {
+            Ctx._("{0} = value", Ctx.Item.Name.AsService().AsField());
+        }
+    }
 
     //[Inject("LocalPlayer")]
     [TemplateProperty("{0}", AutoFillType.NameOnly)]
@@ -100,6 +116,11 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
     public virtual void Setup()
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
+        foreach (var item in Ctx.Data.IncludedServices)
+        {
+            Ctx._("Container.RegisterService<{0}>({0})", item.Name.AsService());
+        }
+
         foreach (var item in Ctx.Data.ImportedItems)
         {
             Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
@@ -109,7 +130,7 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
             Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
             Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
         }
-        
+
         Ctx._("Container.InjectAll()");
 
         
@@ -190,6 +211,7 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
         var transition = Ctx.ItemAs<SceneTransitionsReference>();
         var transitionOutput = transition.OutputTo<SceneManagerNode>();
         if (transition == null) return;
+        
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(transitionOutput.Name.AsSceneManager());
     }
 

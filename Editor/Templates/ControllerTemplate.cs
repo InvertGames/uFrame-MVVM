@@ -51,7 +51,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
 
         Ctx.AddIterator("OnCommandMethod",
-            _ => _.LocalCommands.Cast<ITypedItem>().Concat(_.Handlers.Select(p => p.SourceItem).OfType<ITypedItem>()));
+            _ => _.LocalCommands.Cast<IClassTypeNode>().Concat(_.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>()));
 
 
         if (Ctx.Data.BaseNode == null)
@@ -201,8 +201,8 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void OnCommandMethod(ViewModelCommand command)
     {
-        var c = Ctx.TypedItem;
-        Ctx.CurrentMethod.Name = c.Name + "Handler";
+   
+        Ctx.CurrentMethod.Name = Ctx.Item.Name + "Handler";
         if (Ctx.Item is CommandsChildItem)
         {
             Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Name + "Command");
@@ -216,6 +216,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         {
             if (Ctx.Item is CommandsChildItem)
             {
+                var c = Ctx.TypedItem;
                 if (Ctx.ItemAs<CommandsChildItem>().OutputCommand != null)
                 {
                     Ctx._("this.{0}(command.Sender as {1}, command)", c.Name, c.Node.Name.AsViewModel());

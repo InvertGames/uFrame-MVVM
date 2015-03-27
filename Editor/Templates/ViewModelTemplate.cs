@@ -94,11 +94,11 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
             Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName,property.Name);
         }
         // No more parents so no need to bind to the collection change, this was bad anyways
-        //foreach (var property in Ctx.Data.LocalCollections)
-        //{
-        //    Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName,property.Name);
-        //    Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
-        //}
+        foreach (var property in Ctx.Data.LocalCollections)
+        {
+            Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName, property.Name);
+         //   Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
+        }
 
         foreach (var item in StateMachineProperties)
         {
