@@ -1,5 +1,6 @@
 using System.CodeDom;
 using System.Linq;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
@@ -68,6 +69,15 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
         {
             Ctx.SetType("ISystemService");
         }
+
+        foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
+        {
+            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+            if (type == null) continue;
+
+            Ctx.TryAddNamespace(type.Namespace);
+        }
+
         //Ctx.AddIterator("CommandMethod", _ => _.Handlers.Select(p=>p.SourceItem).OfType<CommandsChildItem>());
         //Ctx.AddIterator("CommandMethodWithArg", _ => _.Handlers.Select(p => p.SourceItem).OfType<CommandsChildItem>().Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)));
 

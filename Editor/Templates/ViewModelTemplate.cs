@@ -32,11 +32,12 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         Ctx.CurrentDecleration.IsPartial = true;
         Ctx.TryAddNamespace("UnityEngine");
         Ctx.TryAddNamespace("UniRx");
-        foreach (var property in Ctx.Data.AllProperties)
+
+        foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
         {
             var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
             if (type == null) continue;
-            
+
             Ctx.TryAddNamespace(type.Namespace);
         }
 

@@ -46,7 +46,9 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
     {
         this.Ctx.TryAddNamespace("UniRx");
         this.Ctx.TryAddNamespace("UnityEngine");
-        foreach (var property in Ctx.Data.Element.AllProperties)
+
+
+        foreach (var property in Ctx.Data.Element.PersistedItems.OfType<ITypedItem>())
         {
             var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
             if (type == null) continue;
@@ -59,12 +61,7 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
             Ctx.SetBaseType(typeof(ViewBase));
         }
         // Add namespaces based on the types used for properties
-        foreach (var property in Ctx.Data.Element.AllProperties)
-        {
-            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
-            if (type == null) continue;
-            Ctx.TryAddNamespace(type.Namespace);
-        }
+
         // Add the iterators for template method/property
         Ctx.AddIterator("ExecuteCommand", _ => _.Element.LocalCommands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.LocalCommands);
