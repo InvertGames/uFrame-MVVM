@@ -29,7 +29,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("UniRx");
-        foreach (var property in Ctx.Data.AllProperties)
+        foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
         {
             var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
             if (type == null) continue;
