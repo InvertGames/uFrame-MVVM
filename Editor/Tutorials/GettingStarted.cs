@@ -165,45 +165,24 @@ public class GettingStarted : uFrameMVVMPage
     }
 }
 
-public class SiniDocs : uFrameMVVMPage
-{
-    public override string Name
-    {
-        get { return "Sini's Page"; }
-    }
-
-    public override void GetContent(IDocumentationBuilder builder)
-    {
-        base.GetContent(builder);
-        builder.Title("SINI IS THE SHIT!");
-        builder.BeginTutorial("Sinis Tutorial");
-        DoTutorial(builder);
-        builder.EndTutorial();
-    }
-
-    private void DoTutorial(IDocumentationBuilder builder)
-    {
-        var project = DoCreateNewProjectStep(builder);
-
-        // Create the graph
-        var graph = DoGraphStep<Invert.uFrame.MVVM.StateMachineGraph>(builder);
-        if (graph == null) return;
-        var stateMachineNode = graph.RootFilter as StateMachineNode;
-
-        //  Create Idle State Node
-        var idleStateNode = DoNamedNodeStep<StateNode>(builder, "Idle");
-        if (idleStateNode == null) return;
-
-        // Connect them
-        var connection = DoCreateConnectionStep(builder, stateMachineNode.StartStateOutputSlot, idleStateNode);
-
-
-
-    }
-}
-
 public class ChangeLogPage : uFrameMVVMPage
 {
+    private TextAsset _changeLog;
+    private string[] _lines;
+
+    public TextAsset ChangeLog
+    {
+        get { return _changeLog ?? (_changeLog = Resources.Load("uFrameReadme", typeof(TextAsset)) as TextAsset); }
+        set { _changeLog = value; }
+    }
+
+    public string[] Lines
+    {
+        get
+        {
+            return _lines ?? (_lines = ChangeLog.text.Split(Environment.NewLine.ToCharArray()));
+        }
+    }
     public override string Name
     {
         get { return "Change Log"; }
@@ -214,19 +193,13 @@ public class ChangeLogPage : uFrameMVVMPage
     {
         get { return -4; }
     }
-    
-}
-
-public class uFrame1_6ChangeLog : uFrameMVVMPage
-{
-    public override string Name
-    {
-        get { return "uFrame 1.6"; }
-        set { base.Name = value; }
-    }
 
     public override void GetContent(IDocumentationBuilder _)
     {
         base.GetContent(_);
+        foreach (var line in Lines)
+        {
+            _.Paragraph(line);
+        }
     }
 }

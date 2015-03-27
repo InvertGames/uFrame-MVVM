@@ -32,7 +32,7 @@ public class ViewInspector : uFrameInspector
         set { uFrameEditor.ShowInfoLabels = value; }
     }
 
-    [MenuItem("Tools/[u]Frame/Info Labels")]
+    [MenuItem("uFrame/Info Labels")]
     public static void ShowHideInfoLabels()
     {
         ShowInfoLabels = !ShowInfoLabels;
