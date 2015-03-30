@@ -1,4 +1,5 @@
 using System.CodeDom;
+using System.Collections.Generic;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
@@ -119,5 +120,6 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} To Text");
 
     }
+
 
 }
