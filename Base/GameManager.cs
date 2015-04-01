@@ -481,10 +481,22 @@ public class GameManager : MonoBehaviour
             SwitchLevelSettings.InvokeControllerSetup(sceneManager);
         }
         Container.Inject(sceneManager);
+#if UNITY_5
         foreach (var item in sceneManager.GetComponentsInChildren<ISystemService>())
         {
             Container.RegisterInstance<ISystemService>(item, item.GetType().Name);
         }
+        
+#else
+        for (var i = 0; i < sceneManager.transform.childCount; i++)
+        {
+            var service = sceneManager.transform.GetChild(i).GetComponent<ISystemService>();
+            if (service != null)
+            {
+                Container.RegisterInstance<ISystemService>(service, service.GetType().Name);
+            }
+        }
+#endif
         sceneManager.Setup();
 
         sceneManager.Initialize();
