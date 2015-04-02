@@ -20,7 +20,7 @@ public interface ISystemLoader
 
 }
 
-public class SystemLoader
+public class SystemLoader : MonoBehaviour,ISystemLoader
 {
     public virtual void Load()
     {

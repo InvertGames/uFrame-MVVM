@@ -178,7 +178,7 @@ public class uFrameKernel : MonoBehaviour {
     private IEnumerator Startup()
     {
 
-        var attachedServices = gameObject.GetComponentsInChildren(typeof(ISystemService)).OfType<ISystemService>();
+        var attachedServices = gameObject.GetComponentsInChildren(typeof(SystemServiceMonoBehavior)).OfType<SystemServiceMonoBehavior>();
         foreach (var service in attachedServices)
         {
             Container.RegisterService(service);

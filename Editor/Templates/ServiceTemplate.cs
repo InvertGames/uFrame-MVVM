@@ -46,7 +46,7 @@ public class ServiceTemplate :  IClassTemplate<ServiceNode>
         
         if (Ctx.IsDesignerFile)
         {
-            Ctx.SetBaseType(typeof(SystemServiceMonoBehaior));
+            Ctx.SetBaseType(typeof(SystemServiceMonoBehavior));
         }
 
         foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())

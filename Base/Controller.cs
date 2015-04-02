@@ -43,7 +43,7 @@ public abstract class SystemService : ISystemService
         
     }
 }
-public abstract class SystemServiceMonoBehaior : UnityEngine.MonoBehaviour, ISystemService
+public abstract class SystemServiceMonoBehavior : UnityEngine.MonoBehaviour, ISystemService
 {
     [Inject]
     public IEventAggregator EventAggregator { get; set; }
