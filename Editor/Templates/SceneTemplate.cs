@@ -47,20 +47,24 @@ public partial class SceneLoaderTemplate : IClassTemplate<SceneManagerNode>
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, CallBase = false)]
-    protected virtual void LoadScene(object scene)
+    protected virtual void LoadScene(object scene, object progressDelegate)
     {
-        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Data.Name);
+        Ctx.CurrentMethod.Parameters[1].Type = new CodeTypeReference("Action<float, string>");
+        Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;        
         Ctx.CurrentMethod.ReturnType = "IEnumerator".ToCodeReference();
         Ctx._("yield break");
     }
     
     [TemplateMethod(MemberGeneratorLocation.Both,CallBase = false)]
-    protected virtual void UnloadScene(object scene)
+    protected virtual void UnloadScene(object scene, object progressDelegate)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Data.Name);
+        Ctx.CurrentMethod.Parameters[1].Type = new CodeTypeReference("Action<float, string>");
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         Ctx.CurrentMethod.ReturnType = "IEnumerator".ToCodeReference();
+        
+
         Ctx._("yield break");
     }
 
@@ -104,16 +108,24 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
 
-        foreach (var item in Ctx.Data.Instances)
+        if (!Ctx.IsDesignerFile)
+            Ctx.CurrentMethod.invoke_base();
+
+        if (Ctx.IsDesignerFile)
         {
-            Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
+            foreach (var item in Ctx.Data.Instances)
+            {
+                Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
+            }
+
+            foreach (var item in Ctx.Data.GetContainingNodes(Ctx.Data.Project).OfType<ElementNode>())
+            {
+                Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
+                Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
+                Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
+            }
         }
         
-        foreach (var item in Ctx.Data.GetContainingNodes(Ctx.Data.Project).OfType<ElementNode>())
-        {
-            Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
-            Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
-        }
     }
 
 

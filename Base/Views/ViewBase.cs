@@ -11,7 +11,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 {
     public IEventAggregator EventAggregator
     {
-        get { return GameManager.EventAggregator; }
+        get { return uFrameKernel.EventAggregator; }
     }
 
     public IObservable<TEvent> OnEvent<TEvent>()
