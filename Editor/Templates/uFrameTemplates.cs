@@ -28,8 +28,11 @@ public class uFrameTemplates : DiagramPlugin
         Framework.Element.AddCodeTemplate<ViewModelConstructorTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandsChildItem, ViewModelCommandClassTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandNode, CommandClassTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
+        //Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
+        //Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
+        Framework.SceneManager.AddCodeTemplate<SceneTemplate>();
+        Framework.Subsystem.AddCodeTemplate<SystemLoaderTemplate>();
+        Framework.SceneManager.AddCodeTemplate<SceneLoaderTemplate>();
         Framework.View.AddCodeTemplate<ViewTemplate>();
         Framework.ViewComponent.AddCodeTemplate<ViewComponentTemplate>();
         Framework.State.AddCodeTemplate<StateTemplate>();

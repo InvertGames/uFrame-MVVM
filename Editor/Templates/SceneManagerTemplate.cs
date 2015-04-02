@@ -17,7 +17,7 @@ public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
     {
         get { return true; }
     }
-
+      
     public void TemplateSetup()
     {
         Ctx.TryAddNamespace("UniRx");

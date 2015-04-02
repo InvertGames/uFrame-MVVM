@@ -18,7 +18,9 @@ public interface ISystemService
     /// to subscribe to any events on the EventAggregator
     /// </summary>
     void Setup();
-    
+
+    IEnumerator SetupAsync();
+
 }
 
 public abstract class SystemService : ISystemService
@@ -26,12 +28,42 @@ public abstract class SystemService : ISystemService
     [Inject]
     public IEventAggregator EventAggregator { get; set; }
 
-    public abstract void Setup();
+    public virtual void Setup()
+    {
+        
+    }
+
+    public virtual IEnumerator SetupAsync()
+    {
+        yield break;
+    }
+
     public virtual void Dispose()
     {
         
     }
 }
+public abstract class SystemServiceMonoBehaior : UnityEngine.MonoBehaviour, ISystemService
+{
+    [Inject]
+    public IEventAggregator EventAggregator { get; set; }
+
+    public virtual void Setup()
+    {
+        
+    }
+
+    public virtual IEnumerator SetupAsync()
+    {
+        yield break;
+    }
+
+    public virtual void Dispose()
+    {
+        
+    }
+}
+
 public static class SystemControllerExtensions
 {
     public static IObservable<TEvent> OnEvent<TEvent>(this ISystemService systemController)

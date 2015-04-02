@@ -177,11 +177,13 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
         contextViewModel.Identifier = identifier;
         return contextViewModel;
     }
+
     [Obsolete]
     public TViewModel CreateInstanceViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
     {
         return null;
     }
+
     /// <summary>
     /// All of the views that have registered
     /// </summary>
@@ -398,10 +400,24 @@ public static class SceneManagerExtensions
 
 public static class ContainerExtensions
 {
+    public static void RegisterService(this IGameContainer container, ISystemService service)
+    {
+        container.RegisterInstance<ISystemService>(service, service.GetType().Name, false);
+        //container.RegisterInstance(typeof(TService), service, false);
+        container.RegisterInstance(service.GetType(), service, false);
+    }    
+    
     public static void RegisterService<TService>(this IGameContainer container, ISystemService service)
     {
         container.RegisterInstance<ISystemService>(service, service.GetType().Name, false);
         container.RegisterInstance(typeof(TService), service, false);
+    }    
+    
+    public static void RegisterSceneLoader(this IGameContainer container, ISceneLoader sceneLoader)
+    {
+        container.RegisterInstance<ISceneLoader>(sceneLoader, sceneLoader.GetType().Name, false);
+        //container.RegisterInstance(typeof(TService), service, false);
+        container.RegisterInstance(sceneLoader.GetType(), sceneLoader, false);
     }
 
     public static void RegisterViewModel<TViewModel>(this IGameContainer container, TViewModel viewModel, string identifier) where TViewModel : ViewModel

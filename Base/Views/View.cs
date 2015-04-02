@@ -39,4 +39,7 @@ public abstract class View<TModel> : ViewBase where TModel : ViewModel, new()
     protected virtual void InitializeViewModel(TModel viewModel)
     {
     }
+
+
+
 }

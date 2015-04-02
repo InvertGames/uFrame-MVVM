@@ -132,7 +132,7 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         //var property = Context.Get<IDiagramNodeItem>();
-        Ctx._("return this.RequestViewModel()");
+        Ctx._("return this.RequestViewModel(this)");
         return null;
     }
 

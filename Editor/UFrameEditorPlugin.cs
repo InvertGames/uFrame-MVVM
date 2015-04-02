@@ -7,6 +7,7 @@ using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame.Editor;
+using Invert.uFrame.MVVM;
 using UniRx;
 using UnityEditor;
 using UnityEngine;

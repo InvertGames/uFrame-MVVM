@@ -311,10 +311,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     }
 
 
-    public SceneManager SceneManager
-    {
-        get { return GameManager.ActiveSceneManager; }
-    }
 
     public virtual ViewModel ViewModelObject
     {
@@ -528,19 +524,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void OnDestroy()
     {
-         Initialized = false; // Some weird bug where unity keeps this value at true between runs
-        var sm = SceneManager;
-        if (sm != null)
-        {
-            sm.UnRegisterView(this);
-        }
-      
-        Unbind();
-        var pv = ParentView;
-        if (pv != null)
-        {
-            pv.ChildViews.Remove(this);
-        }
     }
 
     public virtual void OnDisable()
@@ -607,15 +590,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void Start()
     {
-        if (this.Save)
-        {
-            var sm = SceneManager;
-            if (sm != null)
-            {
-                sm.RegisterView(this);
-            }
-        }
-
         var pv = ParentView;
         if (pv != null)
         {
@@ -717,17 +691,52 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
             return ((this.InstantiateView(prefab, value)));
         }
     }
-    [Obsolete]
-    protected ViewModel RequestViewModel(Controller controller)
+
+    public ViewModel RequestViewModel(ViewBase viewBase)
     {
-        return null;
+        if (viewBase.InjectView)
+        {
+            uFrameKernel.Container.Inject(viewBase);
+        }
+        // Attempt to resolve it by the identifier 
+        var contextViewModel = uFrameKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
+        // If it doesn't resolve by the identifier we need to create it
+        if (contextViewModel == null)
+        {
+            // Either use the controller to create it or create it ourselves
+            contextViewModel = Activator.CreateInstance(viewBase.ViewModelType, EventAggregator) as ViewModel;
+            contextViewModel.Identifier = viewBase.Identifier;
+            if (viewBase.ForceResolveViewModel)
+            {
+                // Register it, this is usually when a non registered element is treated like a single-instance anways
+                uFrameKernel.Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
+                    string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
+                // Register it under the generic view-model type
+                uFrameKernel.Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
+            }
+            //else
+            //{
+            //    // Inject the View-Model
+            //    Container.Inject(contextViewModel);
+            //}
+
+            Publish(new ViewModelCreatedEvent()
+            {
+                ViewModel = contextViewModel
+            });
+        }
+        // If we found a view-model
+        if (contextViewModel != null)
+        {
+            // If the view needs to be overriden it will initialize with the inspector values
+            if (viewBase.OverrideViewModel)
+            {
+                viewBase.InitializeData(contextViewModel);
+            }
+        }
+
+        return contextViewModel;
     }
-    /// <summary>
-    /// Request a view-model with a given controller if any.
-    /// </summary>
-    /// <returns></returns>
-    protected ViewModel RequestViewModel()
-    {
-        return SceneManager.RequestViewModel(this);
-    }
+
+
 }

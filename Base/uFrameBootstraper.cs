@@ -12,7 +12,6 @@ public static class uFrameBootstraper
     public static void Configure(GameManager manager, IGameContainer container)
     {
         // The view resolver is the class that will find a view-prefab from a view-model
-        container.RegisterInstance<IViewResolver>(new ViewResolver());
 
     
 
