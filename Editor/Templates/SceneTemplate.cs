@@ -122,7 +122,6 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
             {
                 Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
                 Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
-                Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
             }
         }
         
