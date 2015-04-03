@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public abstract class Scene : MonoBehaviour, IScene
+public class Scene : MonoBehaviour, IScene
 {
     private const string KERNEL_SCENE_NAME = "uFrameMVVMKernelScene";
 

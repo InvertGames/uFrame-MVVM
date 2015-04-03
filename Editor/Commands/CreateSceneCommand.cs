@@ -90,7 +90,7 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
             Directory.CreateDirectory(paths.ScenesPath);
         }
 
-        if (!File.Exists(sceneNameWithPath))
+        if (File.Exists(sceneNameWithPath))
         {
             EditorApplication.OpenScene(sceneNameWithPath);
         }

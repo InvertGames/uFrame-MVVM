@@ -15,9 +15,12 @@ public class ServiceTemplate :  IClassTemplate<ServiceNode>
     [TemplateMethod(MemberGeneratorLocation.Both)]
     public void Setup()
     {
+
+
         Ctx.TryAddNamespace("UniRx");
         if (Ctx.IsDesignerFile)
         {
+            Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
             foreach (var command in Ctx.Data.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>())
             {
                 Ctx._("this.OnEvent<{0}>().Subscribe(this.{1}Handler)", command.ClassName, command.Name);

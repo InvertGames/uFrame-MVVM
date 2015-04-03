@@ -146,6 +146,7 @@ public class uFrameMVVMKernel : MonoBehaviour {
         ScenesQueue.Add(LoadSceneInternal(sceneName, settings));
     }
 
+
     public void QueueScenesLoad(params string[] sceneNames)
     {
         foreach (var sceneName in sceneNames)
@@ -170,10 +171,10 @@ public class uFrameMVVMKernel : MonoBehaviour {
 
     public IEnumerator SetupScene(IScene sceneRoot)
     {
-
+        while (string.IsNullOrEmpty(sceneRoot.Name)) yield return null;
         this.Publish(new SceneLoaderEvent()
         {
-            State = SceneState.Instantiating,
+            State = SceneState.Instantiated,
             SceneRoot = sceneRoot
         });
 
@@ -280,8 +281,8 @@ public class uFrameMVVMKernel : MonoBehaviour {
         foreach (var service in attachedServices)
         {
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loading, Service = service });
-            Container.RegisterService(service);
             service.Setup();
+            Container.RegisterService(service);
             yield return StartCoroutine(service.SetupAsync());
             Services.Add(service); //TODO: is that really needed??
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loaded, Service = service });
@@ -317,6 +318,7 @@ public class uFrameMVVMKernel : MonoBehaviour {
 
         this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
         {
+
             this.LoadScene(_.SceneNames,_.Settings);
         });      
         
