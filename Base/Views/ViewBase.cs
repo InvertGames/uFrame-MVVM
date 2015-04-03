@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UniRx;
 using UnityEngine;
 
@@ -11,7 +13,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 {
     public IEventAggregator EventAggregator
     {
-        get { return uFrameKernel.EventAggregator; }
+        get { return uFrameMVVMKernel.EventAggregator; }
     }
 
     public IObservable<TEvent> OnEvent<TEvent>()
@@ -30,6 +32,7 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         AddBinding(component);
         return component;
     }
+
     public IDisposable AddComponentBinding(ObservableComponent component)
     {
         return AddBinding(component);
@@ -74,8 +77,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <summary>
     /// Should we log an event for each View event that occurs.
     /// </summary>
+
+
+    #region Props
     [HideInInspector]
     public bool _LogEvents;
+
+    public bool _BindOnAwake = true;
 
     private List<IBindingProvider> _bindingProviders;
 
@@ -91,13 +99,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     [SerializeField, HideInInspector, UFGroup("View Model Properties")]
     private bool _forceResolveViewModel = false;
 
-    [HideInInspector]
-    private string _id;
+    [SerializeField,HideInInspector]
+    private string _viewModelId = "";
 
     [SerializeField, HideInInspector]
     private bool _InjectView = false;
 
-    private int _instanceId;
+    private int _ViewId;
 
     //[HideInInspector]
     //public string _ViewModelControllerType;
@@ -128,6 +136,8 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
     private IObservable<Transform> _transformChangedObservable;
 
+    #endregion
+
     public List<IBindingProvider> BindingProviders
     {
         get { return _bindingProviders ?? (_bindingProviders = new List<IBindingProvider>()); }
@@ -142,29 +152,14 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     {
         get
         {
-            if (!ViewModelObject.Bindings.ContainsKey(InstanceId))
+            if (!ViewModelObject.Bindings.ContainsKey(ViewId))
             {
-                ViewModelObject.Bindings.Add(InstanceId, new List<IDisposable>());
+                ViewModelObject.Bindings.Add(ViewId, new List<IDisposable>());
             }
 
-            return ViewModelObject.Bindings[InstanceId];
+            return ViewModelObject.Bindings[ViewId];
         }
     }
-
-    public IEnumerable<ViewModel> ChildViewModels
-    {
-        get
-        {
-            return ChildViews.Select(p => p.ViewModelObject);
-        }
-    }
-
-    public List<ViewBase> ChildViews
-    {
-        get { return _children ?? (_children = new List<ViewBase>()); }
-        set { _children = value; }
-    }
-
 
     /// <summary>
     /// This is the default identifier to use when "ResolveName" is not specified and it's a single instance.
@@ -176,12 +171,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         {
             return null;
         }
-    }
-
-    public bool ForceResolveViewModel
-    {
-        get { return _forceResolveViewModel; }
-        set { _forceResolveViewModel = value; }
     }
 
     /// <summary>
@@ -199,19 +188,23 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     {
         get
         {
-
-            if (ForceResolveViewModel)
+            if (String.IsNullOrEmpty(_viewModelId))
             {
-                if (string.IsNullOrEmpty(_resolveName)) return null;
-                return _resolveName;
+                _viewModelId = Guid.NewGuid().ToString();
             }
-            if (!string.IsNullOrEmpty(_id))
-            {
-                return _id;
-            }
-            return _id = Guid.NewGuid().ToString();
+            return _viewModelId;
         }
-        set { _id = value; }
+        set
+        {
+            if(ViewModelObject != null && ViewModelObject.Identifier == value) return;
+            _viewModelId = value;
+            ViewModelObject = FetchViewModel(Identifier,ViewModelType);
+        }
+    }
+
+    public virtual void SetIdentifierSilently(string id)
+    {
+        _viewModelId = id;
     }
 
     public bool InjectView
@@ -223,27 +216,17 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// <summary>
     /// A lazy loaded property for "GetInstanceId" on the game-object.
     /// </summary>
-    public int InstanceId
+    public int ViewId
     {
         get
         {
-            if (_instanceId == 0)
+            if (_ViewId == 0)
             {
-                _instanceId = this.gameObject.GetInstanceID();
+                _ViewId = this.gameObject.GetInstanceID();
             }
-            return _instanceId;
+            return _ViewId;
         }
     }
-
-    public bool Instantiated { get; set; }
-
-    //public virtual bool IsMultiInstance
-    //{
-    //    get
-    //    {
-    //        return true;
-    //    }
-    //}
 
     public bool IsBound
     {
@@ -251,92 +234,46 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
         set { _bound = value; }
     }
 
-    [Obsolete]
-    public virtual bool IsMultiInstance
-    {
-        get { return true; }
-    }
-
-    public bool OverrideViewModel
-    {
-        get { return _overrideViewModel; }
-        set { _overrideViewModel = value; }
-    }
-
-    public ViewBase ParentView
-    {
-        get
-        {
-
-            if (_parentView == null)
-            {
-                var parent = this.transform.parent;
-                if (parent == null) return null;
-                while (parent != null)
-                {
-                    var view = parent.GetView();
-                    if (view != null)
-                    {
-                        _parentView = view;
-                        break;
-                    }
-                    parent = parent.parent;
-                }
-            }
-            return _parentView;
-        }
-        set
-        {
-            _parentView = value;
-        }
-    }
-
-    public ViewModel ParentViewModel
-    {
-        get
-        {
-            var pv = ParentView;
-            if (pv == null) return null;
-            return pv.ViewModelObject;
-        }
-    }
-
-    /// <summary>
-    /// Should this view be saved in the "SceneContext"
-    /// </summary>
-    public bool Save
-    {
-        get { return _Save; }
-        set { _Save = value; }
-    }
-
-
-
     public virtual ViewModel ViewModelObject
     {
         get
         {
-            return _Model ?? (_Model = CreateModel());
+            return _Model;
         }
         set
         {
-            // Skip if its that same
+            
             if (_Model == value) return;
-
-            if (value == null) return;
-
+            if (value == null || IsBound) Unbind();
+            
             _Model = value;
-            // Should we rebind?
-            if (IsBound)
+
+            if (_Model == null)
             {
-                Unbind();
-                SetupBindings();
+                return;
             }
+
+            SetIdentifierSilently(_Model.Identifier);
+
+            if (OverrideViewModel)
+            {
+                InitializeData(_Model);
+            }
+
+            SetupBindings(); //Star binding procedure
+
             //Bind();
         }
     }
 
+    private void Reset()
+    {
+       
+    }
+
     public abstract Type ViewModelType { get; }
+
+    #region Observables
 
     public IObservable<Vector3> PositionAsObservable
     {
@@ -374,11 +311,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
             return TransformChangedObservable.Select(p => p.transform.localScale).DistinctUntilChanged();
         }
     }
+
+    #endregion
+
     /// <summary>
     /// The name of the prefab that created this view
     /// </summary>
     public string ViewName { get; set; }
-
 
     /// <summary>
     /// Observable that notifies its subscribers only when the transform has changed.
@@ -418,8 +357,30 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     public virtual void Awake()
     {
 
+        StartCoroutine(InternalAwake());
 
+        //Make sure the kernel is loaded
     }
+
+    public IEnumerator InternalAwake()
+    {
+        var t = this.transform;
+        while (!uFrameMVVMKernel.IsKernelLoaded || t.parent == null) yield return null;
+        if (ParentScene == null) throw new Exception(string.Format("View must belong to a scene ({0})", gameObject.name));
+        //TODO: wait for scene loaded
+        if (InjectView) uFrameMVVMKernel.Container.Inject(this);
+        if (_BindOnAwake)
+        {
+            ViewModelObject = FetchViewModel(Identifier, ViewModelType);
+        }
+    } 
+
+    public IScene ParentScene
+    {
+        get { return _parentScene ?? (_parentScene = (GetComponentInParent(typeof(IScene)) as IScene)); }
+        set { _parentScene = value; }
+    }
+
 
     /// <summary>
     /// 	<para>This method is the primary method of a view.  It's purpose is to provide a safe place to create subscriptions/bindings to it's view-model.  When
@@ -437,56 +398,9 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
     /// <summary>
     /// This method is called in order to create a model for this view.  In a uFrame Designer generated
-    /// view it will implement this method and call the "RequestViewModel" on the scene manager.
+    /// view it will implement this method and call the "FetchViewModel" on the scene manager.
     /// </summary>
     public abstract ViewModel CreateModel();
-
-    /// <summary>All of the designer generated "Execute{CommandName}" ultimately use this method. So when you need to execute a command on an outside view-model(meaning not the
-    /// view-model of this view) this method can be used. e.g. ExecuteCommand(command, argument)</summary>
-    /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
-    /// <param name="argument">The argument to pass along if needed.</param>
-    [Obsolete("Regenerate Project")]
-    public void ExecuteCommand(ICommand command, object argument)
-    {
-        
-    }
-
-    /// <summary>
-    /// All of the designer generated "Execute{CommandName}" ultimately use this method.  So when
-    /// need to execute a command on an outside view-model(meaning not the view-model of this view) this
-    /// method can be used. e.g. ExecuteCommand(MyGameViewModel.MainMenuCommand)
-    /// </summary>
-    /// <param name="command">The command to execute e.g. MyGameViewModel.MainMenuCommand</param>
-    [Obsolete("Regenerate Project")]
-    public virtual void ExecuteCommand(ICommand command)
-    {
-       
-    }
-
-    /// <summary>
-    /// Executes a command of type ICommand.
-    /// </summary>
-    /// <typeparam name="TArgument"></typeparam>
-    /// <param name="command">The command instance to execute.</param>
-    /// <param name="sender">The sender of the command.</param>
-    /// <param name="argument">The argument required by the command.</param>
-    [Obsolete("Regenerate Project")]
-    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, ViewModel sender, TArgument argument)
-    {
-       
-    }
-
-    /// <summary>
-    /// Executes a command of type ICommand.
-    /// </summary>
-    /// <typeparam name="TArgument"></typeparam>
-    /// <param name="command">The command instance to execute.</param>
-    /// <param name="argument">The argument required by the command.</param>
-    [Obsolete("Regenerate Project")]
-    public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
-    {
-       
-    }
 
     /// <summary>
     /// 	<para>A wrapper for "InitializeViewModel" which takes the information supplied in the inspector and applies it to the view-model.</para>
@@ -510,8 +424,11 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
         Initialized = true;
     }
+    
     [NonSerialized]
     private bool _initialized = false;
+
+    private IScene _parentScene;
 
     public bool Initialized {
         get { return _initialized; } 
@@ -524,92 +441,42 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void OnDestroy()
     {
+        if(IsBound) Unbind();
     }
 
     public virtual void OnDisable()
     {
-
     }
 
     public virtual void OnEnable()
     {
-        Initialized = false; // Some weird bug where unity keeps this value at true between runs
-        if (_shouldRebindOnEnable)
-            SetupBindings();
     }
 
     /// <summary>This method will ensure that a view-model exists and then call the bind method when it's appropriate.</summary>
     public void SetupBindings()
     {
-        if (ViewModelObject == null)
-        {
-            _Model = CreateModel();
-        }
-
-
-        if (IsBound)
-            return;
-        // Initialize the model
         if (ViewModelObject != null)
         {
             ViewModelObject.References++;
         }
 
-        // Loop through and binding providers and let them add bindings
         foreach (var bindingProvider in BindingProviders)
             bindingProvider.Bind(this);
 
-        // Add any programming bindings
         PreBind();
         Bind();
-
-        //// Initialize the bindings
-        for (var i = 0; i < transform.childCount; i++)
-        {
-            var view = transform.GetChild(i).GetView();
-            if (view == null) continue;
-            view.SetupBindings();
-        }
-
-        foreach (var childView in ChildViews)
-        {
-            if (childView.transform != this.transform)
-            {
-                childView.SetupBindings();
-            }
-        }
-
-        // Mark this view as bound
         IsBound = true;
-
         AfterBind();
-    }
-
-    /// <summary>
-    /// The start method approparitely initializes the "ChildViews" collection.
-    /// </summary>
-    public virtual void Start()
-    {
-        var pv = ParentView;
-        if (pv != null)
-        {
-            pv.ChildViews.Add(this);
-        }
-
-        if (ViewModelObject == null)
-            _Model = CreateModel();
-
-        // If its instantiated then we dont want to recall
-        // the bindings init because instantiate does that already
-        if (Instantiated) return;
-        if (ParentView == null || ParentView.IsBound)
-        {
-            SetupBindings();
-        }
     }
 
     /// <summary>Unbind any binding or disposable that has been added via the "AddBinding" method.</summary>
     public virtual void Unbind()
+    {
+        DisposeBindings();
+        IsBound = false;
+    }
+
+    public virtual void DisposeBindings()
     {
         if (_Model != null)
         {
@@ -622,8 +489,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 
         foreach (var bindingProvider in BindingProviders)
             bindingProvider.Unbind(this);
-
-        IsBound = false;
     }
 
     public virtual void Write(ISerializerStream stream)
@@ -637,17 +502,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     public virtual void Read(ISerializerStream stream)
     {
         this.Identifier = stream.DeserializeString("Identifier");
-
-
-    }
-    /// <summary>
-    /// Overriden by the the uFrame designer to apply any two-way/reverse properties.
-    /// </summary>
-    /// <buildflag>Exclude from Online</buildflag>
-    /// <buildflag>Exclude from Booklet</buildflag>
-    [Obsolete("No longer used by uFrame designer. You most likely need to Save and Compile your diagram")]
-    protected virtual void Apply()
-    {
     }
 
     /// <summary>
@@ -660,14 +514,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     protected virtual void InitializeViewModel(ViewModel model) { }
 
     /// <summary>
-    /// Just calls the apply method.
-    /// </summary>
-    public virtual void LateUpdate()
-    {
-
-    }
-
-    /// <summary>
     /// This method is called immediately before "Bind".  This method is used
     /// by uFrames designer generated code to set-up defined bindings.
     /// </summary>
@@ -675,68 +521,40 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     {
     }
 
-    /// <summary>This method will destroy a view if it exists, then replace it with another view.</summary>
-    protected virtual ViewBase ReplaceView(ViewBase current, ViewModel value, GameObject prefab)
+    public ViewModel FetchViewModel(string identifier,Type viewModelType)
     {
-        if (value == null && current != null && current.gameObject != null)
-        {
-            Destroy(current.gameObject);
-        }
-        if (prefab == null)
-        {
-            return ((this.InstantiateView(value)));
-        }
-        else
-        {
-            return ((this.InstantiateView(prefab, value)));
-        }
-    }
 
-    public ViewModel RequestViewModel(ViewBase viewBase)
-    {
-        if (viewBase.InjectView)
-        {
-            uFrameKernel.Container.Inject(viewBase);
-        }
+        if (ViewModelObject != null && ViewModelObject.Identifier == Identifier) return ViewModelObject;
+
         // Attempt to resolve it by the identifier 
-        var contextViewModel = uFrameKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
+        var contextViewModel = uFrameMVVMKernel.Container.Resolve<ViewModel>(identifier);
+        
         // If it doesn't resolve by the identifier we need to create it
         if (contextViewModel == null)
         {
             // Either use the controller to create it or create it ourselves
-            contextViewModel = Activator.CreateInstance(viewBase.ViewModelType, EventAggregator) as ViewModel;
-            contextViewModel.Identifier = viewBase.Identifier;
-            if (viewBase.ForceResolveViewModel)
-            {
-                // Register it, this is usually when a non registered element is treated like a single-instance anways
-                uFrameKernel.Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
-                    string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
-                // Register it under the generic view-model type
-                uFrameKernel.Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
-            }
-            //else
-            //{
-            //    // Inject the View-Model
-            //    Container.Inject(contextViewModel);
-            //}
-
+            contextViewModel = Activator.CreateInstance(viewModelType, EventAggregator) as ViewModel;
+            contextViewModel.Identifier = Identifier;
+            uFrameMVVMKernel.Container.RegisterViewModel(contextViewModel, Identifier);
             Publish(new ViewModelCreatedEvent()
             {
                 ViewModel = contextViewModel
             });
         }
-        // If we found a view-model
-        if (contextViewModel != null)
-        {
-            // If the view needs to be overriden it will initialize with the inspector values
-            if (viewBase.OverrideViewModel)
-            {
-                viewBase.InitializeData(contextViewModel);
-            }
-        }
 
         return contextViewModel;
     }
 
+    public bool OverrideViewModel { get; set; }
+
+    public void ExecuteCommand(ICommand command)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ExecuteCommand(ICommand command, object selector)
+    {
+        throw new NotImplementedException();
+    }
 
 }

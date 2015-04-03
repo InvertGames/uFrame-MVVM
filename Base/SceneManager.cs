@@ -282,14 +282,14 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
             // Either use the controller to create it or create it ourselves
             contextViewModel = Activator.CreateInstance(viewBase.ViewModelType, EventAggregator) as ViewModel;
             contextViewModel.Identifier = viewBase.Identifier;
-            if (viewBase.ForceResolveViewModel)
-            {   
-                // Register it, this is usually when a non registered element is treated like a single-instance anways
-                Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
-                    string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
-                // Register it under the generic view-model type
-                Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
-            }
+//            if (viewBase.ForceResolveViewModel)
+//            {   
+//                // Register it, this is usually when a non registered element is treated like a single-instance anways
+//                Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
+//                    string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
+//                // Register it under the generic view-model type
+//                Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
+//            }
             //else
             //{
             //    // Inject the View-Model
@@ -311,11 +311,11 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
             }
         }
         // Save if the "Save" checkbox in the view inspector is checked
-        if (viewBase.Save)
-        {
-            // Register a view for persistance
-            RegisterView(viewBase, contextViewModel);
-        }
+//        if (viewBase.Save)
+//        {
+//            // Register a view for persistance
+//            RegisterView(viewBase, contextViewModel);
+//        }
         return contextViewModel;
     }
 

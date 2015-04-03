@@ -6,7 +6,8 @@ using System.Linq;
 using JetBrains.Annotations;
 using UniRx;
 
-public class uFrameKernel : MonoBehaviour {
+public class uFrameMVVMKernel : MonoBehaviour {
+
     private static GameContainer _container;
     private static IEventAggregator _eventAggregator;
     private static IViewResolver _viewResolver;
@@ -14,34 +15,16 @@ public class uFrameKernel : MonoBehaviour {
     private List<IScene> _loadedScenes;
     private List<ISceneLoader> _sceneLoaders;
     private List<ISystemService> _services;
+    private List<ISystemLoader> _systemLoaders;
     private List<IEnumerator> _scenesQueue;
-
-
-    public bool _enableKernelEventsLogging = false;
-
-    void Awake()
-    {
-        Debug.Log("Kernel is about to load");
-
-        if (Instance != null)
-        {
-            throw new Exception("Loading Kernel twice is not a good practice!");
-        }
-        else
-        {
-            Instance = this;
-            if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
-                this.gameObject.AddComponent<MainThreadDispatcher>();
-            DontDestroyOnLoad(gameObject);
-            StartCoroutine(Startup());
-        }
-    }
-
+    private DefaultSceneLoader _defaultSceneLoader;
     public static bool IsKernelLoaded
     {
         get { return _isKernelLoaded; }
         set { _isKernelLoaded = value; }
     }
+
+    public static uFrameMVVMKernel Instance { get; set; }
 
     public static IGameContainer Container
     {
@@ -73,13 +56,23 @@ public class uFrameKernel : MonoBehaviour {
     {
         get { return _loadedScenes ?? (_loadedScenes = new List<IScene>()); }
     }
+
     public List<ISceneLoader> SceneLoaders
     {
         get
         {
             return _sceneLoaders ?? (_sceneLoaders = new List<ISceneLoader>());
         }
+    }  
+    
+    public List<ISystemLoader> SystemLoaders
+    {
+        get
+        {
+            return _systemLoaders ?? (_systemLoaders = new List<ISystemLoader>());
+        }
     }
+
     public List<ISystemService> Services
     {
         get
@@ -88,36 +81,62 @@ public class uFrameKernel : MonoBehaviour {
         }
     }
 
-    public static IEnumerator LoadSceneAsyncAdditively(string sceneName)
-    {
-        var time = System.DateTime.Now;
-        var asyncOperation = Application.LoadLevelAdditiveAsync(sceneName);
-        
-        while (!asyncOperation.isDone)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-        var timeSpan = System.DateTime.Now - time;
-        Debug.Log(string.Format("Loaded scene {0} in {1}ms",sceneName,timeSpan.TotalMilliseconds));
-
-
-    }
-
     public List<IEnumerator> ScenesQueue
     {
         get { return _scenesQueue ?? (_scenesQueue = new List<IEnumerator>()); }
     }
 
+    void Awake()
+    {
+        if (Instance != null)
+        {
+            throw new Exception("Loading Kernel twice is not a good practice!");
+        }
+        else
+        {
+            Instance = this;
+            if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
+                this.gameObject.AddComponent<MainThreadDispatcher>();
+            DontDestroyOnLoad(gameObject);
+            StartCoroutine(Startup());
+        }
+    }
+
+    public static IEnumerator IstantiateSceneAsyncAdditively(string sceneName)
+    {
+        var asyncOperation = Application.LoadLevelAdditiveAsync(sceneName);
+        float lastProgress = -1;
+        while (!asyncOperation.isDone)
+        {
+            if (lastProgress != asyncOperation.progress)
+            {
+                EventAggregator.Publish(new SceneLoaderEvent()
+                {
+                    State = SceneState.Instantiating,
+                    Name = sceneName,
+                    Progress = asyncOperation.progress
+                });
+                lastProgress = asyncOperation.progress;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     public IEnumerator LoadSceneInternal(string sceneName)
     {
-        yield return StartCoroutine(LoadSceneAsyncAdditively(sceneName));
+        yield return StartCoroutine(IstantiateSceneAsyncAdditively(sceneName));
         var sceneRoot = FindObjectsOfType<Scene>()
-                        .FirstOrDefault(scene => string.IsNullOrEmpty(scene.Name));
+            .FirstOrDefault(scene => string.IsNullOrEmpty(scene.Name));
 
         if (sceneRoot == null) throw new Exception(string.Format("No IScene root is defined for {0} scene", sceneName));
         else
         {
             sceneRoot.Name = sceneName;
+            this.Publish(new SceneLoaderEvent()
+            {
+                State = SceneState.Instantiated,
+                SceneRoot = sceneRoot
+            });
         }
     }
 
@@ -153,7 +172,7 @@ public class uFrameKernel : MonoBehaviour {
 
         this.Publish(new SceneLoaderEvent()
         {
-            State = SceneState.Loading,
+            State = SceneState.Instantiating,
             SceneRoot = sceneRoot
         });
 
@@ -167,9 +186,7 @@ public class uFrameKernel : MonoBehaviour {
             });
         };
 
-        var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType());
-
-        if (sceneLoader == null) throw new Exception("No scene loader is defined for scene of type " + sceneRoot.GetType());
+        var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType()) ?? _defaultSceneLoader;
 
         yield return StartCoroutine(sceneLoader.Load(sceneRoot,updateDelegate));
 
@@ -193,8 +210,9 @@ public class uFrameKernel : MonoBehaviour {
 
     protected IEnumerator UnloadSceneAsync(IScene sceneRoot)
     {
-        var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType());
-        if (sceneLoader == null) throw new Exception("No scene loader is defined for scene of type " + sceneRoot.GetType());
+        
+        var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType()) ?? _defaultSceneLoader;
+        
         Action<float, string> updateDelegate = (v, m) =>
         {
             this.Publish(new SceneLoaderEvent()
@@ -206,8 +224,15 @@ public class uFrameKernel : MonoBehaviour {
         };
 
         yield return StartCoroutine(sceneLoader.Unload(sceneRoot,updateDelegate));
+        
+        this.Publish(new SceneLoaderEvent() { State = SceneState.Unloaded, SceneRoot = sceneRoot });
+        
         LoadedScenes.Remove(sceneRoot);
-        GameObject.Destroy((sceneRoot as MonoBehaviour).gameObject);
+        Destroy((sceneRoot as MonoBehaviour).gameObject);
+        
+        this.Publish(new SceneLoaderEvent() { State = SceneState.Destructed, SceneRoot = sceneRoot });
+
+
     }
 
     public void UnloadScene(string name)
@@ -218,37 +243,43 @@ public class uFrameKernel : MonoBehaviour {
     public void UnloadScene(IScene sceneRoot)
     {
         StartCoroutine(UnloadSceneAsync(sceneRoot));
+    }    
+    
+    public void LoadScene(string name)
+    {
+        this.QueueSceneLoad(name);
+        this.ExecuteLoad();
+    }
+    public void LoadScenes(params string[] sceneNames)
+    {
+        this.QueueScenesLoad(sceneNames);
+        this.ExecuteLoad();
     }
 
     private IEnumerator Startup()
     {
 
-        if (_enableKernelEventsLogging)
-        {
-            EventAggregator.GetEvent<SceneLoaderEvent>().Subscribe(_ =>
-            {
-                Debug.Log(string.Format("[Scene Loader]: {0} is {1}", _.SceneRoot.GetType(), _.State));
-            });
-        }
-
-
         var attachedServices = gameObject.GetComponentsInChildren(typeof(SystemServiceMonoBehavior)).OfType<SystemServiceMonoBehavior>();
         foreach (var service in attachedServices)
         {
+            this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loading, Service = service });
             Container.RegisterService(service);
             service.Setup();
-            Debug.Log("Starting to load: "+service.GetType());        
             yield return StartCoroutine(service.SetupAsync());
             Services.Add(service); //TODO: is that really needed??
+            this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loaded, Service = service });
+        
         }
-
 
         var attachedSystemLoaders = gameObject.GetComponentsInChildren(typeof (ISystemLoader)).OfType<ISystemLoader>();
         foreach (var systemLoader in attachedSystemLoaders)
         {
+            this.Publish(new SystemLoaderEvent() { State = SystemState.Loading, Loader = systemLoader});
             systemLoader.Container = Container;
             systemLoader.EventAggregator = EventAggregator;
             systemLoader.Load();
+            SystemLoaders.Add(systemLoader);
+            this.Publish(new SystemLoaderEvent() { State = SystemState.Loaded, Loader = systemLoader });
         }
         
         var attachedSceneLoaders = gameObject.GetComponentsInChildren(typeof(ISceneLoader)).OfType<ISceneLoader>();
@@ -258,24 +289,30 @@ public class uFrameKernel : MonoBehaviour {
             Container.Inject(sceneLoader);
             SceneLoaders.Add(sceneLoader);
         }
+        _defaultSceneLoader = gameObject.GetComponent<DefaultSceneLoader>() ?? gameObject.AddComponent<DefaultSceneLoader>();
 
         Container.InjectAll();
-
-//
+  
         foreach (var controller in Container.ResolveAll<Controller>())
         {
-            Debug.Log(string.Format("Setting up for {0}", controller.GetType()));
             controller.Setup();
         }
 
         _isKernelLoaded = true;
     
-        
-    
     }
+}
 
-    public static uFrameKernel Instance { get; set; }
+public class SystemLoaderEvent
+{
+    public SystemState State { get; set; }
+    public ISystemLoader Loader { get; set; }
+}
 
+public class ServiceLoaderEvent
+{
+    public ServiceState State { get; set; }
+    public SystemServiceMonoBehavior Service { get; set; }
 }
 
 public class SceneLoaderEvent
@@ -284,6 +321,7 @@ public class SceneLoaderEvent
     public IScene SceneRoot { get; set; }
     public float Progress { get; set; }
     public string ProgressMessage { get; set; }
+    public string Name { get; set; }
 }
 
 public enum SceneState
@@ -292,15 +330,30 @@ public enum SceneState
     Update,
     Loaded,
     Unloading,
-    Unloaded
+    Unloaded,
+    Instantiating,
+    Instantiated,
+    Destructed
 }
 
+public enum ServiceState
+{
+    Loading,
+    Loaded,
+    Unloaded,
+}
+public enum SystemState
+{
+    Loading,
+    Loaded,
+    Unloaded,
+}
 
 public static class uFrameKernelExtensions
 {
-    public static void Publish(this uFrameKernel kernel, object evt)
+    public static void Publish(this uFrameMVVMKernel mvvmKernel, object evt)
     {
-        uFrameKernel.EventAggregator.Publish(evt);
+        uFrameMVVMKernel.EventAggregator.Publish(evt);
     }
 }
 

@@ -147,14 +147,14 @@ public static class ViewExtensions
         view.transform.parent = parent;
 #endif
         // Pre cache the parent view
-        view.ParentView = view.ParentView;
+       // view.ParentView = view.ParentView;
         view.ViewName = name;
 
         if (model != null)
         {
             model.Identifier = view.Identifier;
             view.OverrideViewModel = false;
-            view.ForceResolveViewModel = false;   
+         //   view.ForceResolveViewModel = false;   
             view.ViewModelObject = model;
             view.SetupBindings();
         }
@@ -190,15 +190,17 @@ public static class ViewExtensions
     public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position, Quaternion rotation,string identifier = null)
     {
         // Create the view object from the specified prefab
+        var prefabView = prefab.GetComponent<ViewBase>();
+        var idCache = prefabView.Identifier;
+        prefabView.SetIdentifierSilently(model.Identifier);
         var viewObject = (GameObject)Object.Instantiate(prefab, position, rotation);
+        prefabView.SetIdentifierSilently(idCache);
 #if (UNITY_4_6 || UNITY_5_0)
 		viewObject.transform.SetParent(parent,false);
 #else
 		viewObject.transform.parent = parent;
 #endif
-        var view = InitializeView(parent, prefab.name, model, viewObject,identifier);
-
-        return view;
+        return viewObject.GetComponent<ViewBase>();
     }
 
     public static ViewBase InstantiateView(this Transform parent, ViewModel model, string identifier = null)
@@ -213,7 +215,7 @@ public static class ViewExtensions
 
     public static ViewBase InstantiateView(this Transform parent, ViewModel model, Vector3 position, Quaternion rotation, string identifier = null)
     {
-        return InstantiateView(parent, GameManager.ViewResolver.FindView(model), model, position, rotation,identifier);
+        return InstantiateView(parent, uFrameMVVMKernel.ViewResolver.FindView(model), model, position, rotation,identifier);
     }
 
     public static bool IsView<TView>(this Transform go) where TView : ViewBase

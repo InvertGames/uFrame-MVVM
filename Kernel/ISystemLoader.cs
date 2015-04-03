@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public interface ISystemLoader
@@ -37,6 +38,13 @@ public class SystemLoader : MonoBehaviour,ISystemLoader
     {
         get;
         set;
+    }
+
+    public TViewModel CreateInstanceViewModel<TViewModel>(string identifier) where TViewModel : ViewModel
+    {
+        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), EventAggregator) as TViewModel;
+        contextViewModel.Identifier = identifier;
+        return contextViewModel;
     }
 
 }

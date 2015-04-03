@@ -164,7 +164,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     public ViewModel CreateElement()
     {
         Ctx.SetType(NameAsViewModel);
-        Ctx._("return (({0})(this.Create()))", NameAsViewModel);
+        Ctx._("return (({0})(this.Create(Guid.NewGuid().ToString())))", NameAsViewModel);
         return null;
     }
 

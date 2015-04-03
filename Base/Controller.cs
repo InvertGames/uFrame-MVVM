@@ -136,6 +136,7 @@ public abstract class Controller : SystemService
     {
         var vm = CreateEmpty();
         vm.Identifier = identifier;
+        uFrameMVVMKernel.Container.RegisterViewModel(vm,identifier);
         return vm;
     }
 

@@ -230,18 +230,6 @@ public abstract class ViewModel
         stream.SerializeString("Identifier", Identifier);
     }
 
-    [Obsolete]
-    protected ICommand Command(Action command)
-    {
-        return new Command(command);
-    }
-
-    [Obsolete]
-    protected ICommand Command(Func<IEnumerator> command)
-    {
-        return new YieldCommand(command);
-    }
-
 #endif
 
     public IDisposable Subscribe(IObserver<IObservableProperty> observer)
@@ -318,25 +306,12 @@ public class ViewModelCommandInfo
 
     public Type ParameterType { get; set; }
 
-    [Obsolete]
-    public ViewModelCommandInfo(string name, ICommand command)
-    {
-        Name = name;
-        Command = command;
-    }
-
     public ViewModelCommandInfo(string name, ISignal signal)
     {
         Signal = signal;
         Name = name;
     }
-    [Obsolete]
-    public ViewModelCommandInfo(Type parameterType, string name, ICommand command)
-    {
-        ParameterType = parameterType;
-        Name = name;
-        Command = command;
-    }
+
 }
 
 public interface ISignal

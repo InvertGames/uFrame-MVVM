@@ -280,52 +280,28 @@ public class ViewInspector : uFrameInspector
     private void DoInitializationSection(ViewBase t)
     {
         EditorGUILayout.Space();
-        var resolveProperty = serializedObject.FindProperty("_forceResolveViewModel");
+        
         var resolveNameProperty = serializedObject.FindProperty("_resolveName");
+        var resolutionNameProperty = serializedObject.FindProperty("_viewModelId");
+        var injectProperty = serializedObject.FindProperty("_InjectView");
+        var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
 
-        if (!string.IsNullOrEmpty(t.DefaultIdentifier) && (resolveNameProperty.stringValue != t.DefaultIdentifier || !resolveProperty.boolValue))
+
+        if (!string.IsNullOrEmpty(t.DefaultIdentifier) && (resolveNameProperty.stringValue != t.DefaultIdentifier))
             if (GUILayout.Button(string.Format("Use Registered \"{0}\" Instance", t.DefaultIdentifier)))
             {
-                resolveProperty.boolValue = true;
                 serializedObject.FindProperty("_resolveName").stringValue = t.DefaultIdentifier;
             }
 
-        Info("Store the ViewModel instance in the container.  So other views can use the same instance.");
+        Info("If you leave this empty, View will fetch a new viewmodel on awake.\n" +
+             "Otherwise it is going to always use the viewmodel with given identifier.\n" +
+             "If viewmodel with given id does not exist, one will be automatically created and registered.");
+        EditorGUILayout.PropertyField(resolutionNameProperty, new GUIContent("ViewModel Identidier"));
 
-        EditorGUILayout.PropertyField(resolveProperty, new GUIContent("Force Resolve"));
-
-
-        Info(
-            "The Identifier is used for persisting this view and should be unique.  This identifier should always be the same each time the scene loads.  If instantiating prefabs you'll want to override the 'Identifier' property and make it unique.");
-        if (t != null)
-            EditorGUILayout.LabelField("Id", t.Identifier);
-
-        if (t.ForceResolveViewModel)
-        {
-            Info("The name that is used to share this instance among others (if any).");
-
-            EditorGUILayout.PropertyField(resolveNameProperty, new GUIContent("Resolve Name"));
-        }
-
-
-        var saveProperty = serializedObject.FindProperty("_Save");
-        Info(
-            "Should this field be saved and loaded when saving a scene's in-game state. e.g. GameManager.ActiveSceneManager.Load(...); GameManger.ActiveSceneManager.Save(...);");
-        EditorGUILayout.PropertyField(saveProperty, new GUIContent("Save & Load"));
-
-        var injectProperty = serializedObject.FindProperty("_InjectView");
-        Info(
-            "Should this view be injected with Dependencies defined in the GameContainer.  e.g.GameManager.Resolve<MyViewModel>(ResolveName);");
+        Info("Should this view be injected with Dependencies defined in the GameContainer.  e.g.GameManager.Resolve<MyViewModel>(ResolveName);");
         EditorGUILayout.PropertyField(injectProperty, new GUIContent("Inject This View"));
 
-        //var useHashCode = serializedObject.FindProperty("_UseHashcodeAsIdentifier");
-        //Info(
-        //    "Should this view use it's hash code as it's unique identifier.  Use if this is a prefab that will be place in a scene through the editor.");
-        //EditorGUILayout.PropertyField(useHashCode, new GUIContent("Use Hash As Identifier"));
-
-        Info(
-                   "This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
-        var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
+        Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
         EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));
     }
 
@@ -360,24 +336,6 @@ public class ViewInspector : uFrameInspector
                     EditorGUILayout.LabelField("Id", t.ViewModelObject.Identifier);
                     EditorGUILayout.LabelField("# References", t.ViewModelObject.References.ToString());
                     DoViewModelGUI(t.ViewModelObject);
-
-                    //foreach (var p in t.ViewModelObject.Properties)
-                    //{
-                    //    var serialized = p.Value.Serialize().ToString();
-                    //    if (serialized.Length > 100)
-                    //    {
-                    //        serialized = serialized.Substring(0, 100);
-                    //    }
-                    //    EditorGUILayout.LabelField(p.Key.Replace("_", "").Replace("Property", ""), serialized);
-                    //    //if (p.Value.ValueType.IsPrimitive)
-                    //    //{
-                    //    //    EditorGUILayout.LabelField(p.Key, p.Value.ObjectValue.ToString());
-                    //    //}
-                    //    //else
-                    //    //{
-                    //    //    EditorGUILayout.LabelField(p.Key, p.Value.Serialize());
-                    //    //}
-                    //}
                 }
 
                 if (Commands != null)

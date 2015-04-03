@@ -9,31 +9,6 @@ using UnityEngine;
 /// </summary>
 public class ViewContainer : MonoBehaviour
 {
-    public virtual TView CreateView<TView>() where TView : ViewBase
-    {
-        return CreateView<TView>(null);
-    }
-
-    public virtual TView CreateView<TView>(ViewModel model) where TView : ViewBase
-    {
-        return CreateView<TView>(model, Vector3.zero);
-    }
-
-    public virtual TView CreateView<TView>(ViewModel model, Vector3 position) where TView : ViewBase
-    {
-        return CreateView<TView>(model, position, new Quaternion());
-    }
-
-    public virtual TView CreateView<TView>(ViewModel model, Vector3 position, Quaternion rotation) where TView : ViewBase
-    {
-        var viewGo = new GameObject(typeof(TView).Name, typeof(TView));
-
-        viewGo.transform.position = position;
-        viewGo.transform.rotation = rotation;
-        var view = transform.InitializeView(viewGo.name, model, viewGo);
-
-        return view as TView;
-    }
 
     public ViewBase InstantiateView(ViewModel model)
     {

@@ -102,7 +102,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         [Obsolete]
         public Type CommandWithSenderT
         {
-            get { return typeof(CommandWithSender<>); }
+            get { return typeof(ViewModelCommand); }
         }
 
         public Type CommandWith
@@ -112,7 +112,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         [Obsolete]
         public Type CommandWithSenderAndArgument
         {
-            get { return typeof(CommandWithSenderAndArgument<,>); }
+            get { return typeof(ViewModelCommand); }
         }
 
         //public Type YieldCommandWithSenderT
@@ -137,7 +137,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         [Obsolete]
         public Type Command
         {
-            get { return typeof(Command); }
+            get { return typeof(ViewModelCommand); }
         }
         [Obsolete]
         public Type ICommand

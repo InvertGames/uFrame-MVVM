@@ -43,11 +43,13 @@ using UnityEngine.UI;
             return d;
         }
         [Obsolete]
-        public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, CommandBase<T> command, Func<T> selector)
+        public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, ViewModelCommand command, Func<T> selector)
         {
+            throw new Exception("Must be fixed");
             var d = button.AsClickObservable().Subscribe(_ =>
             {
-                    viewBase.ExecuteCommand(command, selector());
+                   
+                //    viewBase.ExecuteCommand(command, selector());
             }).DisposeWith(viewBase);
             return d;
         }

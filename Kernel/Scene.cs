@@ -14,17 +14,17 @@ public abstract class Scene : MonoBehaviour, IScene
 
     public IEnumerator InternalAwake()
     {
-        if (!uFrameKernel.IsKernelLoaded)
+        if (!uFrameMVVMKernel.IsKernelLoaded)
         {
             Name = Application.loadedLevelName;
-            yield return StartCoroutine(uFrameKernel.LoadSceneAsyncAdditively(KERNEL_SCENE_NAME));
-            while (!uFrameKernel.IsKernelLoaded)
+            yield return StartCoroutine(uFrameMVVMKernel.IstantiateSceneAsyncAdditively(KERNEL_SCENE_NAME));
+            while (!uFrameMVVMKernel.IsKernelLoaded)
             {
                 yield return null;
             }
         }
 
-        yield return StartCoroutine(uFrameKernel.Instance.SetupScene(this));
+        yield return StartCoroutine(uFrameMVVMKernel.Instance.SetupScene(this));
     }
 
 }
