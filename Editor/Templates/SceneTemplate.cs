@@ -12,6 +12,9 @@ using uFrame.Graphs;
 [TemplateClass(MemberGeneratorLocation.Both, "{0}")]
 public partial class SceneTemplate : IClassTemplate<SceneManagerNode>
 {
+
+  
+
     public void TemplateSetup()
     {
         if (Ctx.IsDesignerFile)
@@ -31,6 +34,24 @@ public partial class SceneTemplate : IClassTemplate<SceneManagerNode>
         get { return true; }
     }
     public TemplateContext<SceneManagerNode> Ctx { get; set; }
+
+
+    [TemplateProperty("Settings", AutoFillType.NameOnly)]
+    public virtual object InstanceProperty
+    {
+        get
+        {
+            //Ctx.SetType("{0}Settings");
+            Ctx.SetType(string.Format("{0}Settings", Ctx.Data.Name).ToCodeReference());
+            Ctx._(string.Format("return _SettingsObject as {0}Settings", Ctx.Data.Name));
+            return null;
+        }
+        set
+        {
+            Ctx._(string.Format("_SettingsObject = value"));
+        }
+    }
+
 }
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}Loader")]
@@ -77,6 +98,33 @@ public partial class SceneLoaderTemplate : IClassTemplate<SceneManagerNode>
     {
         get { return true; }
     }
+    public TemplateContext<SceneManagerNode> Ctx { get; set; }
+}
+
+[TemplateClass(MemberGeneratorLocation.Both, "{0}Settings")]
+public partial class SceneSettingsTemplate : IClassTemplate<SceneManagerNode>
+{
+    public void TemplateSetup()
+    {
+        if (Ctx.IsDesignerFile)
+        {
+            Ctx.CurrentDecleration.BaseTypes.Clear();
+            Ctx.SetBaseType("SceneSettings<{0}>", Ctx.Data.Name);
+        }
+    }
+
+    public string OutputPath
+    {
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "ScenesSettings"); }
+    }
+
+    public bool CanGenerate
+    {
+        get { return true; }
+    }
+
+
+
     public TemplateContext<SceneManagerNode> Ctx { get; set; }
 }
 

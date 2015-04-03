@@ -122,7 +122,7 @@ public class uFrameMVVMKernel : MonoBehaviour {
         }
     }
 
-    public IEnumerator LoadSceneInternal(string sceneName)
+    public IEnumerator LoadSceneInternal(string sceneName,ISceneSettings settings)
     {
         yield return StartCoroutine(IstantiateSceneAsyncAdditively(sceneName));
         var sceneRoot = FindObjectsOfType<Scene>()
@@ -132,6 +132,7 @@ public class uFrameMVVMKernel : MonoBehaviour {
         else
         {
             sceneRoot.Name = sceneName;
+            sceneRoot._SettingsObject = settings;
             this.Publish(new SceneLoaderEvent()
             {
                 State = SceneState.Instantiated,
@@ -140,16 +141,16 @@ public class uFrameMVVMKernel : MonoBehaviour {
         }
     }
 
-    public void QueueSceneLoad(string sceneName)
+    public void QueueSceneLoad(string sceneName, ISceneSettings settings)
     {
-        ScenesQueue.Add(LoadSceneInternal(sceneName));
+        ScenesQueue.Add(LoadSceneInternal(sceneName, settings));
     }
 
     public void QueueScenesLoad(params string[] sceneNames)
     {
         foreach (var sceneName in sceneNames)
         {
-            ScenesQueue.Add(LoadSceneInternal(sceneName));
+            ScenesQueue.Add(LoadSceneInternal(sceneName,null));//TODO: Decide what to do when loading shit loads of levels with settings
         }
     }
 
@@ -243,11 +244,27 @@ public class uFrameMVVMKernel : MonoBehaviour {
     public void UnloadScene(IScene sceneRoot)
     {
         StartCoroutine(UnloadSceneAsync(sceneRoot));
+    }        
+    
+    public void UnloadScenes(string[] names)
+    {
+        foreach (var name in names)
+        {
+            StartCoroutine(UnloadSceneAsync(name));       
+        }
+    }
+
+    public void UnloadScenes(IScene[] sceneRoots)
+    {
+        foreach (var sceneRoot in sceneRoots)
+        {
+            StartCoroutine(UnloadSceneAsync(sceneRoot));            
+        }
     }    
     
-    public void LoadScene(string name)
+    public void LoadScene(string name, ISceneSettings settings)
     {
-        this.QueueSceneLoad(name);
+        this.QueueSceneLoad(name, settings);
         this.ExecuteLoad();
     }
     public void LoadScenes(params string[] sceneNames)
@@ -298,9 +315,33 @@ public class uFrameMVVMKernel : MonoBehaviour {
             controller.Setup();
         }
 
+        this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
+        {
+            this.LoadScene(_.SceneNames,_.Settings);
+        });      
+        
+        this.OnEvent<UnloadSceneCommand>().Subscribe(_ =>
+        {
+            this.UnloadScene(_.SceneName);
+        });
+
+
         _isKernelLoaded = true;
     
     }
+}
+
+public class LoadSceneCommand
+{
+
+    public string SceneNames { get; set; }
+    public ISceneSettings Settings { get; set; }
+
+}
+
+public class UnloadSceneCommand
+{
+    public string SceneName { get; set; }
 }
 
 public class SystemLoaderEvent
@@ -354,6 +395,11 @@ public static class uFrameKernelExtensions
     public static void Publish(this uFrameMVVMKernel mvvmKernel, object evt)
     {
         uFrameMVVMKernel.EventAggregator.Publish(evt);
+    }
+    
+    public static IObservable<T> OnEvent<T>(this uFrameMVVMKernel mvvmKernel)
+    {
+        return uFrameMVVMKernel.EventAggregator.GetEvent<T>();
     }
 }
 

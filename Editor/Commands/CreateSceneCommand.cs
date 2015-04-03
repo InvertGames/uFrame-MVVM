@@ -29,7 +29,6 @@ public class CreateSceneCommand : EditorCommand<SceneManagerNode>, IDiagramNodeC
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
         var paths = node.Graph.CodePathStrategy;
-        var sceneManagerData = node as SceneManagerNode;
 
         if (!Directory.Exists(paths.ScenesPath))
         {
@@ -59,3 +58,121 @@ public class CreateSceneCommand : EditorCommand<SceneManagerNode>, IDiagramNodeC
     }
 }
 
+public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
+{
+    public override ToolbarPosition Position
+    {
+        get
+        {
+            return ToolbarPosition.BottomRight;
+        }
+    }
+
+    public override string Name
+    {
+        get { return "Scaffold/Update Kernel"; }
+    }
+
+    public override void Perform(DiagramViewModel node)
+    {
+        if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
+        if (!EditorUtility.DisplayDialog("ACHTUNG!", "Before scaffolding the core, make sure you saved and compiled!",
+            "Yes, I saved and compiled!", "Cancel")) return;
+
+        var paths = node.GraphData.CodePathStrategy;
+        var sceneName = "uFrameMVVMKernelScene.unity";
+        var sceneNameWithPath = System.IO.Path.Combine(paths.ScenesPath, sceneName);
+
+        EditorApplication.NewEmptyScene();
+
+        if (!Directory.Exists(paths.ScenesPath))
+        {
+            Directory.CreateDirectory(paths.ScenesPath);
+        }
+
+        if (!File.Exists(sceneNameWithPath))
+        {
+            EditorApplication.OpenScene(sceneNameWithPath);
+        }
+
+        var uFrameMVVMKernel = FindComponentInScene<uFrameMVVMKernel>() ??
+                               new GameObject("_uFrameMVVMKernel").AddComponent<uFrameMVVMKernel>();
+
+        var servicesContainer = uFrameMVVMKernel.transform.FindChild("_Services");
+        if (servicesContainer == null)
+        {
+            servicesContainer = new GameObject("_Services").transform;
+            servicesContainer.SetParent(uFrameMVVMKernel.transform);
+        }
+      
+        var systemLoadersContainer = uFrameMVVMKernel.transform.FindChild("_SystemLoaders");
+        if (systemLoadersContainer == null)
+        {
+            systemLoadersContainer = new GameObject("_SystemLoaders").transform;
+            systemLoadersContainer.SetParent(uFrameMVVMKernel.transform);
+        }        
+        
+        var sceneLoaderContainer = uFrameMVVMKernel.transform.FindChild("_SceneLoaders");
+        if (sceneLoaderContainer == null)
+        {
+            sceneLoaderContainer = new GameObject("_SceneLoaders").transform;
+            sceneLoaderContainer.SetParent(uFrameMVVMKernel.transform);
+        }
+
+        var servicesNodes = node.CurrentRepository.NodeItems.OfType<ServiceNode>();
+        foreach (var serviceNode in servicesNodes)
+        {
+            var type = InvertApplication.FindType(serviceNode.Name);
+            if (type != null && uFrameMVVMKernel.GetComponentInChildren(type) == null)
+            {
+                servicesContainer.gameObject.AddComponent(type);
+            }
+        }
+  
+        var systemNodes = node.CurrentRepository.NodeItems.OfType<SubsystemNode>();
+        foreach (var systemNode in systemNodes)
+        {
+            if (!systemNode.GetContainingNodes(systemNode.Graph.Project).OfType<ElementNode>().Any()) continue;
+            var type = InvertApplication.FindType(string.Format("{0}Loader", systemNode.Name));
+            if (type != null && uFrameMVVMKernel.GetComponentInChildren(type) == null)
+            {
+                systemLoadersContainer.gameObject.AddComponent(type);
+            }
+        }
+
+        var sceneNodes = node.CurrentRepository.NodeItems.OfType<SceneManagerNode>();
+        foreach (var sceneNode in sceneNodes)
+        {
+            var type = InvertApplication.FindType(string.Format("{0}Loader", sceneNode.Name));
+            if (type != null && uFrameMVVMKernel.GetComponentInChildren(type) == null)
+            {
+                sceneLoaderContainer.gameObject.AddComponent(type);
+            }
+        }
+
+
+        EditorUtility.SetDirty(uFrameMVVMKernel);
+
+        EditorApplication.SaveScene(sceneNameWithPath);
+        AssetDatabase.Refresh();
+    }
+
+
+    private T FindComponentInScene<T>() where T : MonoBehaviour
+    {
+        object[] obj = GameObject.FindSceneObjectsOfType(typeof(GameObject));
+        foreach (object o in obj)
+        {
+            GameObject g = (GameObject)o;
+            var c = (T)g.GetComponent(typeof (T));
+            if (c != null) return c;
+        }
+        return null;
+    }
+
+
+    public override string CanPerform(DiagramViewModel node)
+    {
+        return (string)null;
+    }
+}

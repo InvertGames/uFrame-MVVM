@@ -3,9 +3,11 @@ using UnityEngine;
 
 public abstract class Scene : MonoBehaviour, IScene
 {
-    private const string KERNEL_SCENE_NAME = "uFrameKernelScene";
+    private const string KERNEL_SCENE_NAME = "uFrameMVVMKernelScene";
 
     public string Name { get; set; }
+
+    public ISceneSettings _SettingsObject { get; set; }
 
     public void Awake()
     {

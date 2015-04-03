@@ -31,6 +31,7 @@ public class uFrameTemplates : DiagramPlugin
         //Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
         //Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
         Framework.SceneManager.AddCodeTemplate<SceneTemplate>();
+        Framework.SceneManager.AddCodeTemplate<SceneSettingsTemplate>();
         Framework.Subsystem.AddCodeTemplate<SystemLoaderTemplate>();
         Framework.SceneManager.AddCodeTemplate<SceneLoaderTemplate>();
         Framework.View.AddCodeTemplate<ViewTemplate>();

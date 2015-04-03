@@ -96,7 +96,7 @@ public class HelloWorldTutorial : uFrameMVVMPage
             _ => { _.ImageByUrl("http://i.imgur.com/9QSXAPH.png"); });
 
 
-        var viewBase = EnsureComponentInSceneStep<ViewBase>(builder, viewNode, _ =>
+        EnsureComponentInSceneStep<ViewBase>(builder, viewNode, _ =>
         {
             _.ImageByUrl("http://i.imgur.com/JTIeWL8.png");
             _.ImageByUrl("http://i.imgur.com/1CTHigb.png");

@@ -576,24 +576,3 @@ public class ViewInspector : uFrameInspector
 
 }
 
-
-
-
-//public class WireHighlighter : DiagramPlugin
-//{
-//    public override void Initialize(uFrameContainer container)
-//    {
-//        EditorApplication.playmodeStateChanged += PlaymodeStateChanged;
-//    }
-
-//    private void PlaymodeStateChanged()
-//    {
-//        if (EditorApplication.isPlaying)
-//        {
-            
-//        }
-        
-
-//        EditorApplication.playmodeStateChanged -= PlaymodeStateChanged;
-//    }
-//}
