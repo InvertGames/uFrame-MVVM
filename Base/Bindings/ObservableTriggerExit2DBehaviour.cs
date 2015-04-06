@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-
+using System;
 public class ObservableTriggerExit2DBehaviour : ObservableComponent
 {
     private Subject<Collider2D> onTriggerExit2D;

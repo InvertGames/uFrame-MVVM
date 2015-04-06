@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-
+using System.Reflection;
 /// <summary>
 /// The main entry point for a game that is managed and accessible via GameManager. Only one will
 /// available at a time.  This class when derived form should setup the container and load anything needed to properly
@@ -345,7 +345,14 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     object ITypeResolver.CreateInstance(string name, string identifier)
     {
         var type = ((ITypeResolver)this).GetType(name);
+    
+#if NETFX_CORE 
+        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
+#else
         var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+#endif
+        // IsAssignableFrom doesn't work with winRT
+        // typeof(ViewModel).IsAssignableFrom(type);
 
         if (isViewModel)
         {

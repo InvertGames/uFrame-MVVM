@@ -28,6 +28,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
     public void TemplateSetup()
     {
+        
         Ctx.TryAddNamespace("UniRx");
         foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
         {

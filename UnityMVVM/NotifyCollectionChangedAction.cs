@@ -1,5 +1,6 @@
 namespace System.Collections.ObjectModel
 {
+     #if !NETFX_CORE
     public enum NotifyCollectionChangedAction
     {
         Reset,
@@ -8,4 +9,5 @@ namespace System.Collections.ObjectModel
         Remove,
         Replace
     }
+#endif
 }

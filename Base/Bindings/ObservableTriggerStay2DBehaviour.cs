@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-
+using System;
 public class ObservableTriggerStay2DBehaviour : ObservableComponent
 {
     private Subject<Collider2D> onTriggerStay2D;

@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-
+using System;
 public class ObservableCollisionStayBehaviour : ObservableComponent
 {
     private Subject<Collision> onCollisionStay;

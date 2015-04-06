@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-
+using System;
 public class ObservableCollisionExitBehaviour : ObservableComponent
 {
     private Subject<Collision> onCollisionExit;

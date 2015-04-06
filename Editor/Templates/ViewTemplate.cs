@@ -69,6 +69,27 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         Ctx.AddIterator("ResetProperty", _ => _.SceneProperties);
         Ctx.AddIterator("CalculateProperty", _ => _.SceneProperties);
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
+
+        if (!Ctx.IsDesignerFile)
+        {
+            // For each binding lets do some magic
+            foreach (var item in Ctx.Data.Bindings)
+            {
+                // Cast the source of our binding (ie: Property, Collection, Command..etc)
+                var source = item.SourceItem as ITypedItem;
+                if (source == null) continue;
+                // Grab the uFrame Binding Type
+                var bindingType = item.BindingType;
+                // Create the binding signature based on the Method Info
+
+                bindingType.CreateBindingSignature(new CreateBindingSignatureParams(
+                    Ctx.CurrentDecleration, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data, source)
+                {
+                    Ctx = Ctx,
+                    DontImplement = true
+                });
+            }
+        }
     }
 
     public TemplateContext<ViewNode> Ctx { get; set; }
@@ -179,7 +200,12 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
     public virtual void Bind()
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
-        if (!Ctx.IsDesignerFile) return;
+
+        if (!Ctx.IsDesignerFile)
+        {
+
+            return;
+        }
 
         Ctx.CurrentMethod.invoke_base(true);
 
@@ -207,10 +233,14 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
             // Grab the uFrame Binding Type
             var bindingType = item.BindingType;
             // Create the binding signature based on the Method Info
-            var bindingStatement = bindingType.CreateBindingSignature(
-                Ctx.CurrentDecleration,
-                _ => source.RelatedTypeName.ToCodeReference(),
-                Ctx.Data, source);
+            var bindingStatement =
+                bindingType.CreateBindingSignature(new CreateBindingSignatureParams(
+                    Ctx.CurrentDecleration, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data, source)
+                {
+                   Ctx = Ctx
+                });
+            
+            
             // Add the binding statement to the condition
             bindingCondition.TrueStatements.Add(bindingStatement);
         }
@@ -219,11 +249,6 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>
         {
             Ctx._("Reset{0}()", property.Name);
         }
-        //var bindingStatement = ViewBindingExtensions.CreateBindingSignature(Ctx.CurrentDecleration,
-        //    typeof (ViewBindings).GetMethods(BindingFlags.Public | BindingFlags.Static)
-        //        .Where(p => p.Name == "BindProperty")
-        //        .FirstOrDefault(),_=>typeof(string));
-        //Ctx.CurrentStatements.Add(bindingStatement);
     }
 
     [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]

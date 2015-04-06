@@ -2,6 +2,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.Core.GraphDesigner.Unity.Refactoring;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
 using UnityEngine;
@@ -120,6 +121,4 @@ public class uFrameTemplates : DiagramPlugin
             .SetNameFormat("{0} To Text");
 
     }
-
-
 }

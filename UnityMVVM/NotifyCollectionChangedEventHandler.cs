@@ -2,5 +2,7 @@ using System.Collections.Specialized;
 
 namespace System.Collections.ObjectModel
 {
-    public delegate void NotifyCollectionChangedEventHandler(NotifyCollectionChangedEventArgs changeArgs);
+    #if !NETFX_CORE
+    public delegate void NotifyCollectionChangedEventHandler(Object sender, NotifyCollectionChangedEventArgs changeArgs);
+    #endif
 }
