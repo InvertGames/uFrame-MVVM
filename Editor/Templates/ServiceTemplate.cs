@@ -1,4 +1,5 @@
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
@@ -8,7 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
-public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
+public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>, IClassRefactorable
 {
 
 
@@ -32,13 +33,12 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
         if (Ctx.IsDesignerFile)
         {
             Ctx.CurrentDecleration.BaseTypes.Clear();
-            if (Ctx.Data.MonoBehaviour)
-            {
+           
                 Ctx.SetBaseType(typeof(MonoBehaviour));
 
                 Ctx.TryAddNamespace("UnityEngine");
 
-            }
+          
             Ctx.CurrentDecleration.BaseTypes.Add(typeof(ISystemService).ToCodeReference());
 
             foreach (var command in Ctx.Data.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>())
@@ -111,4 +111,12 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>
     //    CommandMethod(viewModel);
     //    Ctx.CurrentMethod.Parameters[1].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
     //}
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+            yield return "{0}Base";
+        }
+    }
 }
