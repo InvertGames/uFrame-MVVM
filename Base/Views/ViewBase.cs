@@ -422,7 +422,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     public virtual void Awake()
     {
 
-
     }
 
     /// <summary>
@@ -607,6 +606,13 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
     /// </summary>
     public virtual void Start()
     {
+
+        this.Publish(new ViewCreatedEvent()
+        {
+            IsInstantiated = false,
+            View = this
+        });
+
         if (this.Save)
         {
             var sm = SceneManager;

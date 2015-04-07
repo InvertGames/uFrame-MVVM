@@ -25,6 +25,7 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>, ICla
         }
         set { }
     }
+
     [TemplateMethod(MemberGeneratorLocation.Both)]
     public virtual void Setup()
     {
@@ -91,11 +92,6 @@ public class ServiceTemplate : ISystemService, IClassTemplate<ServiceNode>, ICla
     public TemplateContext<ServiceNode> Ctx { get; set; }
 
 
-    //[TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
-    //public virtual void CommandMethod(ViewModel viewModel)
-    //{
-    //    Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Item.Node.Name + "ViewModel");
-    //}
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void OnCommandMethod(ViewModelCommand data)
     {

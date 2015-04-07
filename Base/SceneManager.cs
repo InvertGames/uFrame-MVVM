@@ -5,6 +5,8 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using System.Reflection;
+using Invert.MVVMTest;
+
 /// <summary>
 /// The main entry point for a game that is managed and accessible via GameManager. Only one will
 /// available at a time.  This class when derived form should setup the container and load anything needed to properly
@@ -93,8 +95,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     {
 
     }
-
-
 
     /// <summary>
     /// This method should be used to property unload a scene when transitioning to another scene.
@@ -254,6 +254,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
         //vm.Identifier = view.Identifier;
     }
+
     [Obsolete]
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller)
     {
@@ -288,11 +289,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
                 // Register it under the generic view-model type
                 Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
             }
-            //else
-            //{
-            //    // Inject the View-Model
-            //    Container.Inject(contextViewModel);
-            //}
+
 
             Publish(new ViewModelCreatedEvent()
             {
@@ -378,9 +375,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     }
 }
 
-public class LoadedEvent
-{
-}
+
 
 public static class SceneManagerExtensions
 {
@@ -437,4 +432,6 @@ public static class ContainerExtensions
         // Nothing yet
     }
 }
-
+public class LoadedEvent
+{
+}

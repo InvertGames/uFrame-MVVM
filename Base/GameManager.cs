@@ -313,30 +313,7 @@ public class GameManager : MonoBehaviour
         Progress.Progress = progress;
     }
 
-    /// <buildflag>Exclude from Online</buildflag>
-    /// <buildflag>Exclude from Booklet</buildflag>
-    [Obsolete("The method SwitchGame is obsolete.  Use Transition<T> or 'Save & Compile' your diagram.")]
-    public static Coroutine SwitchGame<T>(Action<T> setup, UpdateProgressDelegate progress = null) where T : SceneManager
-    {
-        return null;
-    }
-
-    [Obsolete("The method SwitchGame is obsolete.  Use TransitionLevel<T> or 'Save & Compile' your diagram.")]
-    public static Coroutine SwitchGameAndLevel<TGame>(TGame controller, Action<TGame> setup = null,
-        UpdateProgressDelegate progress = null) where TGame : SceneManager
-    {
-        return null;
-    }
-
-    [Obsolete("The method SwitchGame is obsolete.  Use TransitionLevel<T> or 'Save & Compile' your diagram.")]
-    public static void SwitchGameAndLevel<T>(SwitchLevelSettings<T> settings) where T : SceneManager
-    {
-    }
-
-    [Obsolete("The method SwitchGame is obsolete.  Use TransitionLevel<T> or 'Save & Compile' your diagram.")]
-    public static void SwitchGameAndLevel<T>(Action<T> setup, params string[] levels) where T : SceneManager
-    {
-    }
+  
 
     /// <summary>This method will transition a scene manager from on to the other, or load the first scene manager upon load.</summary>
     public static Coroutine Transition<T>(Action<T> setup, UpdateProgressDelegate progress = null) where T : SceneManager
