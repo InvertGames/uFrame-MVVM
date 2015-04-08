@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Debug = UnityEngine.Debug;
-
+#if NETFX_CORE 
+using System.Reflection;
+#endif
 public class ViewStateResolver : DefaultTypeResolver
 {
     public SceneManager Context { get; set; }
@@ -35,8 +37,12 @@ public class SceneStateResolver : DefaultTypeResolver
     public override object CreateInstance(string name, string identifier)
     {
         var type = GetType(name);
-        var isViewModel = typeof (ViewModel).IsAssignableFrom(type);
-
+       
+#if NETFX_CORE 
+        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
+#else
+        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+#endif
         if (isViewModel)
         {
             var contextViewModel = Context.PersistantViewModels.FirstOrDefault(p => p.Identifier == identifier);

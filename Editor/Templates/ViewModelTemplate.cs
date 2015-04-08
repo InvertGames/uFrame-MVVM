@@ -11,7 +11,7 @@ using uFrame.Graphs;
 using UnityEngine;
 
 [TemplateClass( MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
-public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
+public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>, IClassRefactorable
 {
     #region Template Stuff
     public TemplateContext<ElementNode> Ctx { get; set; }
@@ -466,7 +466,16 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>
         {typeof(Quaternion),"Quaternion" },
     };
 
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}ViewModel";
+            yield return "{0}ViewModelBase";
+        }
+    }
 }
+
 [TemplateClass(MemberGeneratorLocation.DesignerFile, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
 public partial class ViewModelConstructorTemplate : IClassTemplate<ElementNode>
 {
@@ -495,8 +504,9 @@ public partial class ViewModelConstructorTemplate : IClassTemplate<ElementNode>
     }
 
 }
+
 [TemplateClass(MemberGeneratorLocation.DesignerFile, ClassNameFormat = "{0}Command")]
-public class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<CommandsChildItem>
+public partial class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<CommandsChildItem>, IClassRefactorable
 {
     public string OutputPath
     {
@@ -535,7 +545,12 @@ public class ViewModelCommandClassTemplate : ViewModelCommand, IClassTemplate<Co
         }
     }
 
+    public IEnumerable<string> ClassNameFormats
+    {
+        get { yield return "{0}Command"; }
+    }
 }
+
 [TemplateClass(Location = MemberGeneratorLocation.DesignerFile, AutoInherit = true, ClassNameFormat = "{0}Command")]
 public class CommandClassTemplateBase : IClassTemplate<CommandNode>
 {
@@ -579,8 +594,17 @@ public class CommandClassTemplateBase : IClassTemplate<CommandNode>
         }
     }
 }
-public class CommandClassTemplate : CommandClassTemplateBase
+
+[TemplateClass(MemberGeneratorLocation.DesignerFile)]
+public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefactorable
 {
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+        }
+    }
     public override string OutputPath
     {
         get
@@ -591,6 +615,7 @@ public class CommandClassTemplate : CommandClassTemplateBase
     public override void TemplateSetup()
     {
         base.TemplateSetup();
+        Ctx.CurrentDecleration.IsPartial = true;
         Ctx.AddIterator("Property", node => node.Properties);
         Ctx.AddIterator("Collection", node => node.Collections);
     }

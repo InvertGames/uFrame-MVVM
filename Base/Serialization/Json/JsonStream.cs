@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Invert.Json;
+
 using UnityEngine;
 
 public class JsonStream : ISerializerStream
@@ -382,7 +382,7 @@ public class JsonStream : ISerializerStream
 
     public void Load(byte[] readAllBytes)
     {
-        var json = Encoding.UTF8.GetString(readAllBytes);
+        var json = Encoding.UTF8.GetString(readAllBytes, 0, readAllBytes.Length);
         RootNode = JSON.Parse(json);
     }
 

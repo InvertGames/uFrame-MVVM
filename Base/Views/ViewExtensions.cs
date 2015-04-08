@@ -119,47 +119,48 @@ public static class ViewExtensions
     {
         return GetViewModel(go) as T;
     }
-
+    [Obsolete]
     public static ViewBase InitializeView(this Transform parent, string name, ViewModel model, GameObject viewObject,string identifier = null)
     {
-        var view = viewObject.GetComponent<ViewBase>();
+//        var view = viewObject.GetComponent<ViewBase>();
 
-        if (view == null)
-        {
-            Object.Destroy(viewObject);
-            throw new Exception(string.Format("View Object does not have a 'View<{0}>' component.", model.GetType().Name));
-        }
-        if (!string.IsNullOrEmpty(identifier))
-        {
-            view.Identifier = identifier;
-            if (model != null)
-            {
-                model.Identifier = identifier;
-            }
-        }
-        else if (model != null && !string.IsNullOrEmpty(model.Identifier))
-        {
-            view.Identifier = model.Identifier;
-        }
-#if (UNITY_4_6 || UNITY_5_0)
-        view.transform.SetParent(parent,false);
-#else
-        view.transform.parent = parent;
-#endif
-        // Pre cache the parent view
-       // view.ParentView = view.ParentView;
-        view.ViewName = name;
+//        if (view == null)
+//        {
+//            Object.Destroy(viewObject);
+//            throw new Exception(string.Format("View Object does not have a 'View<{0}>' component.", model.GetType().Name));
+//        }
+//        if (!string.IsNullOrEmpty(identifier))
+//        {
+//            view.Identifier = identifier;
+//            if (model != null)
+//            {
+//                model.Identifier = identifier;
+//            }
+//        }
+//        else if (model != null && !string.IsNullOrEmpty(model.Identifier))
+//        {
+//            view.Identifier = model.Identifier;
+//        }
+//#if (UNITY_4_6 || UNITY_5_0)
+//        view.transform.SetParent(parent,false);
+//#else
+//        view.transform.parent = parent;
+//#endif
+//        // Pre cache the parent view
+//       // view.ParentView = view.ParentView;
+//        view.ViewName = name;
 
-        if (model != null)
-        {
-            model.Identifier = view.Identifier;
-            view.OverrideViewModel = false;
-         //   view.ForceResolveViewModel = false;   
-            view.ViewModelObject = model;
-            view.SetupBindings();
-        }
+//        if (model != null)
+//        {
+//            model.Identifier = view.Identifier;
+//            view.OverrideViewModel = false;
+//         //   view.ForceResolveViewModel = false;   
+//            view.ViewModelObject = model;
+//            view.SetupBindings();
+//        }
 
-        return view;
+//        return view;
+        return null;
     }
 
     public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, string identifier = null)
@@ -187,8 +188,25 @@ public static class ViewExtensions
         return InstantiateView(parent, prefab, model, position, Quaternion.identity,identifier);
     }
 
-    public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position, Quaternion rotation,string identifier = null)
+    public static ViewBase InstantiateView(this Transform parent, 
+        GameObject prefab, 
+        ViewModel model, 
+        Vector3 position, 
+        Quaternion rotation,
+        string identifier = null)
     {
+        var parentScene = parent.GetComponent<IScene>();
+        var command = new InstantiateViewCommand()
+        {
+            Identifier = identifier,
+            ViewModelObject = model,
+            Scene = parentScene,
+        };
+        uFrameMVVMKernel.EventAggregator.Publish(command);
+        command.Result.transform.position = position;
+        command.Result.transform.rotation = rotation;
+        return command.Result;
+
         // Create the view object from the specified prefab
         var prefabView = prefab.GetComponent<ViewBase>();
         var idCache = prefabView.Identifier;

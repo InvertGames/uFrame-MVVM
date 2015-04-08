@@ -12,7 +12,7 @@ using UniRx;
 using UnityEngine;
 
 [TemplateClass(MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
-public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>
+public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>, IClassRefactorable
 {
     public TemplateContext<ElementNode> Ctx { get; set; }
 
@@ -28,6 +28,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
     public void TemplateSetup()
     {
+        
         Ctx.TryAddNamespace("UniRx");
         foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
         {
@@ -260,5 +261,15 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         Ctx.CurrentMethod.Parameters[1].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
         DoTransition();
 
+    }
+
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+
+            yield return "{0}Controller";
+            yield return "{0}ControllerBase";
+        }
     }
 }

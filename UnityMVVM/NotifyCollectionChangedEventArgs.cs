@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace System.Collections.Specialized
 {
-
+ #if !NETFX_CORE
     public class NotifyCollectionChangedEventArgs : EventArgs
     {
 
@@ -307,4 +307,5 @@ namespace System.Collections.Specialized
 
         #endregion
     }
+#endif
 }

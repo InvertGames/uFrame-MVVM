@@ -11,7 +11,8 @@ public class StringSerializerStorage : ISerializerStorage
 
     public void Save(ISerializerStream stream)
     {
-        Result = Encoding.UTF8.GetString(stream.Save());
+        var streamSave = stream.Save();
+        Result = Encoding.UTF8.GetString(streamSave,0,streamSave.Length);
     }
 
     public override string ToString()

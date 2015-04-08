@@ -117,7 +117,7 @@ namespace System.Collections.ObjectModel
 
 			base.ClearItems ();
 
-			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset));
+			OnCollectionChanged (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 		}
@@ -128,7 +128,7 @@ namespace System.Collections.ObjectModel
 
 			base.InsertItem (index, item);
 
-			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, item, index));
+			OnCollectionChanged (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, item, index));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 		}
@@ -146,11 +146,11 @@ namespace System.Collections.ObjectModel
 			base.RemoveItem (oldIndex);
 			base.InsertItem (newIndex, item);
 
-			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+			OnCollectionChanged (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 		}
 
-		protected virtual void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
+		protected virtual void OnCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			NotifyCollectionChangedEventHandler eh = CollectionChanged;
 
@@ -158,7 +158,7 @@ namespace System.Collections.ObjectModel
 				// Make sure that the invocation is done before the collection changes,
 				// Otherwise there's a chance of data corruption.
 				using (BlockReentrancy ()) {
-					eh (e);
+					eh (this, e);
 				}
 			}
 		}
@@ -179,7 +179,7 @@ namespace System.Collections.ObjectModel
 
 			base.RemoveItem (index);
 
-			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, item, index));
+			OnCollectionChanged (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, item, index));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 		}
@@ -192,7 +192,7 @@ namespace System.Collections.ObjectModel
 
 			base.SetItem (index, item);
 
-			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Replace, item, oldItem, index));
+			OnCollectionChanged (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Replace, item, oldItem, index));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 		}
 	}

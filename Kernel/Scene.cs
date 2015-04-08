@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-
+using UniRx;
 public class Scene : MonoBehaviour, IScene
 {
     private const string KERNEL_SCENE_NAME = "uFrameMVVMKernelScene";
@@ -8,6 +8,8 @@ public class Scene : MonoBehaviour, IScene
     public string Name { get; set; }
 
     public ISceneSettings _SettingsObject { get; set; }
+
+    public IEventAggregator Aggregator { get; set; }
 
     public void Awake()
     {
@@ -19,14 +21,15 @@ public class Scene : MonoBehaviour, IScene
         if (!uFrameMVVMKernel.IsKernelLoaded)
         {
             Name = Application.loadedLevelName;
-            yield return StartCoroutine(uFrameMVVMKernel.IstantiateSceneAsyncAdditively(KERNEL_SCENE_NAME));
-            while (!uFrameMVVMKernel.IsKernelLoaded)
-            {
-                yield return null;
-            }
+            yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(KERNEL_SCENE_NAME));
         }
-
-        yield return StartCoroutine(uFrameMVVMKernel.Instance.SetupScene(this));
+        uFrameMVVMKernel.EventAggregator.Publish(new SceneAwakeEvent() { Scene = this });
+        
     }
 
+}
+
+public class SceneAwakeEvent
+{
+    public IScene Scene { get; set; }
 }

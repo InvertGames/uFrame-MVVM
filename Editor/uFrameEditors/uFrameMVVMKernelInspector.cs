@@ -74,17 +74,17 @@ public class UFrameMvvmKernelInspector : ManagerInspector<SceneManager>
 
                 }
 
-                foreach (var instance in uFrameMVVMKernel.Instance.SceneLoaders)
-                {
-                    if (GUIHelpers.DoTriggerButton(new UFStyle()
-                    {
-                        BackgroundStyle = ElementDesignerStyles.EventButtonStyleSmall,
-                        Label = string.Format("{0}", instance.GetType().Name)
-                    }))
-                    {
-                        Selection.activeGameObject = (instance as MonoBehaviour).gameObject;
-                    }
-                }
+                //foreach (var instance in uFrameMVVMKernel.Instance.SceneLoaders)
+                //{
+                //    if (GUIHelpers.DoTriggerButton(new UFStyle()
+                //    {
+                //        BackgroundStyle = ElementDesignerStyles.EventButtonStyleSmall,
+                //        Label = string.Format("{0}", instance.GetType().Name)
+                //    }))
+                //    {
+                //        Selection.activeGameObject = (instance as MonoBehaviour).gameObject;
+                //    }
+                //}
             }
 
 

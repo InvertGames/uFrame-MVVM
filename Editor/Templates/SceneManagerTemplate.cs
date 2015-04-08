@@ -1,4 +1,5 @@
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
@@ -6,8 +7,18 @@ using uFrame.Graphs;
 using UnityEngine;
 
 [TemplateClass(MemberGeneratorLocation.Both, uFrameFormats.SCENE_MANAGER_FORMAT)]
-public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>
+public partial class SceneManagerTemplate : IClassTemplate<SceneManagerNode>, IClassRefactorable
 {
+      public IEnumerable<string> ClassNameFormats
+        {
+            get
+            {
+                yield return "{0}";
+                yield return "{0}Base";
+                yield return "{0}Settings";
+                yield return "{0}SettingsBase";
+            }
+        }
     public string OutputPath
     {
         get { return Path2.Combine(Ctx.Data.Graph.Name, "SceneManagers"); }

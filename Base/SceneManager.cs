@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
+using System.Reflection;
+using Invert.MVVMTest;
 
 /// <summary>
 /// The main entry point for a game that is managed and accessible via GameManager. Only one will
@@ -93,8 +95,6 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     {
 
     }
-
-
 
     /// <summary>
     /// This method should be used to property unload a scene when transitioning to another scene.
@@ -256,6 +256,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
 
         //vm.Identifier = view.Identifier;
     }
+
     [Obsolete]
     public ViewModel RequestViewModel(ViewBase viewBase, Controller controller)
     {
@@ -295,6 +296,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
             //    // Inject the View-Model
             //    Container.Inject(contextViewModel);
             //}
+
 
             Publish(new ViewModelCreatedEvent()
             {
@@ -347,7 +349,14 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     object ITypeResolver.CreateInstance(string name, string identifier)
     {
         var type = ((ITypeResolver)this).GetType(name);
+    
+#if NETFX_CORE 
+        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
+#else
         var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+#endif
+        // IsAssignableFrom doesn't work with winRT
+        // typeof(ViewModel).IsAssignableFrom(type);
 
         if (isViewModel)
         {
@@ -373,9 +382,7 @@ public abstract class SceneManager : ViewContainer, ITypeResolver
     }
 }
 
-public class LoadedEvent
-{
-}
+
 
 public static class SceneManagerExtensions
 {
@@ -446,4 +453,6 @@ public static class ContainerExtensions
         // Nothing yet
     }
 }
-
+public class LoadedEvent
+{
+}

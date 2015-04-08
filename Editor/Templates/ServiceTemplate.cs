@@ -1,5 +1,6 @@
 using System.CodeDom;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
@@ -9,7 +10,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
-public class ServiceTemplate :  IClassTemplate<ServiceNode>
+public class ServiceTemplate : IClassTemplate<ServiceNode>, IClassRefactorable
 {
 
     [TemplateMethod(MemberGeneratorLocation.Both)]
@@ -46,7 +47,7 @@ public class ServiceTemplate :  IClassTemplate<ServiceNode>
     {
         Ctx.TryAddNamespace("UnityEngine");
         Ctx.TryAddNamespace("UniRx");
-        
+
         if (Ctx.IsDesignerFile)
         {
             Ctx.SetBaseType(typeof(SystemServiceMonoBehavior));
@@ -72,9 +73,17 @@ public class ServiceTemplate :  IClassTemplate<ServiceNode>
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void OnCommandMethod(ViewModelCommand data)
     {
-   
+
         Ctx.CurrentMethod.Name = Ctx.Item.Name + "Handler";
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.ItemAs<IClassTypeNode>().ClassName);
     }
 
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+            yield return "{0}Base";
+        }
+    }
 }

@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-
+using System;
 public class ObservableTriggerEnter2DBehaviour : ObservableComponent
 {
     private Subject<Collider2D> onTriggerEnter2D;

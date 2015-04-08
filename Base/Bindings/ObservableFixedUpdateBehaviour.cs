@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-
+using System;
 public class ObservableFixedUpdateBehaviour : ObservableComponent
 {
     private Subject<Unit> onFixedUpdate;
