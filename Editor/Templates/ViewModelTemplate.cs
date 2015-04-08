@@ -602,7 +602,7 @@ public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefa
     {
         get
         {
-            yield return "{0}";
+            yield return "{0}Command";
         }
     }
     public override string OutputPath
