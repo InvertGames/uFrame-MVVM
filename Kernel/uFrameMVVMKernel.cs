@@ -143,6 +143,9 @@ public class uFrameMVVMKernel : MonoBehaviour {
         {
             Kernel = this
         });
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        this.Publish(new GameReadyEvent());
     }
 }
 
@@ -156,13 +159,26 @@ public class KernalLoadedEvent
     public uFrameMVVMKernel Kernel;
 }
 
-public class ViewCreatedEvent
+public class ViewEvent
 {
     public bool IsInstantiated { get; set; }
     public IScene Scene { get; set; }
     public ViewBase View { get; set; }
 }
+public class ViewDestroyedEvent : ViewEvent
+{
+   
+}
 
+public class ViewCreatedEvent :ViewEvent
+{
+    
+}
+
+public class GameReadyEvent : ViewEvent
+{
+    
+}
 public class InstantiateViewCommand
 {
     public string Identifier { get; set; }

@@ -69,19 +69,8 @@ public class ViewService : SystemServiceMonoBehavior
     private void ViewCreated(ViewCreatedEvent viewCreatedEvent)
     {
         var view = viewCreatedEvent.View;
-        if (uFrameMVVMKernel.IsKernelLoaded)
-        {
-            var viewModel = FetchViewModel(viewCreatedEvent.View);
-            view.ViewModelObject = viewModel;
-        }
-        else
-        {
-            if (viewCreatedEvent.IsInstantiated)
-            {
-                view.SetupBindings();
-            }
-        }
-
+        var viewModel = FetchViewModel(viewCreatedEvent.View);
+        view.ViewModelObject = viewModel;
         Views.Add(view);
     }
 

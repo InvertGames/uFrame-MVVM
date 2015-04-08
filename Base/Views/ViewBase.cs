@@ -240,20 +240,12 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
 
     public ViewCreatedEvent CreateEventData { get; set; }
 
-    protected virtual void Start()
-    {
-        this.OnEvent<SystemsLoadedEvent>().Subscribe(_ =>
-        {
-            //if(CreateEventData == null)
-            this.Publish(CreateEventData ?? (CreateEventData = new ViewCreatedEvent()
-            {
-                IsInstantiated = false,
-                Scene = ParentScene,
-                View = this
-            }));
-        });
+    
 
-        if (CreateEventData == null)
+    protected virtual IEnumerator Start()
+    {
+        while(!uFrameMVVMKernel.IsKernelLoaded) yield return null;
+
         this.Publish(CreateEventData ?? (CreateEventData = new ViewCreatedEvent()
         {
             IsInstantiated = false,
@@ -262,6 +254,31 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
         }));
     }
 
+    /// <summary>
+    /// When this view is destroy it will decrememnt the ViewModel's reference count.  If the reference count reaches 0
+    /// it will call "Unbind" on the viewmodel properly unbinding anything subscribed to it.
+    /// </summary>
+    protected virtual void OnDestroy()
+    {
+        if (IsBound) Unbind();
+        if (!uFrameMVVMKernel.IsKernelLoaded) return;
+        this.Publish(new ViewDestroyedEvent()
+        {
+            IsInstantiated = CreateEventData.IsInstantiated,
+            Scene = CreateEventData.Scene,
+            View = this
+        });
+    }
+
+    protected virtual void OnDisable()
+    {
+
+    }
+
+    protected virtual void OnEnable()
+    {
+ 
+    }
     public IScene ParentScene
     {
         get { return _parentScene ?? (_parentScene = (GetComponentInParent(typeof(IScene)) as IScene)); }
@@ -315,24 +332,6 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     
 
     private IScene _parentScene;
-
-
-    /// <summary>
-    /// When this view is destroy it will decrememnt the ViewModel's reference count.  If the reference count reaches 0
-    /// it will call "Unbind" on the viewmodel properly unbinding anything subscribed to it.
-    /// </summary>
-    public virtual void OnDestroy()
-    {
-        if(IsBound) Unbind();
-    }
-
-    public virtual void OnDisable()
-    {
-    }
-
-    public virtual void OnEnable()
-    {
-    }
 
     /// <summary>This method will ensure that a view-model exists and then call the bind method when it's appropriate.</summary>
     public void SetupBindings()
@@ -417,6 +416,7 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
         }
     }
 }
+
 
 
 // Observable Stuff
