@@ -164,6 +164,10 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
         set { _bound = value; }
     }
 
+    public void SetViewModelObjectSilently(ViewModel vm)
+    {
+        _Model = vm;
+    }
     public virtual ViewModel ViewModelObject
     {
         get
@@ -238,8 +242,9 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
 
     protected virtual void Start()
     {
-        this.OnEvent<KernalLoadedEvent>().Subscribe(_ =>
+        this.OnEvent<SystemsLoadedEvent>().Subscribe(_ =>
         {
+            //if(CreateEventData == null)
             this.Publish(CreateEventData ?? (CreateEventData = new ViewCreatedEvent()
             {
                 IsInstantiated = false,
@@ -247,6 +252,8 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
                 View = this
             }));
         });
+
+        if (CreateEventData == null)
         this.Publish(CreateEventData ?? (CreateEventData = new ViewCreatedEvent()
         {
             IsInstantiated = false,

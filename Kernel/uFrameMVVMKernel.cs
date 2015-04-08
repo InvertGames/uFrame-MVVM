@@ -114,7 +114,6 @@ public class uFrameMVVMKernel : MonoBehaviour {
             yield return StartCoroutine(service.SetupAsync());
             Services.Add(service); //TODO: is that really needed??
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loaded, Service = service });
-        
         }
 
         var attachedSystemLoaders = gameObject.GetComponentsInChildren(typeof (ISystemLoader)).OfType<ISystemLoader>();

@@ -216,6 +216,17 @@ public class Computed<T> : P<T>
         }
       
     }
+    public Computed(
+       params IObservableProperty[] dependantProperties)
+        : base()
+    {
+
+        foreach (var dependantProperty in dependantProperties)
+        {
+            dependantProperty.SubscribeInternal(DependantPropertyOnValueChanged);
+        }
+      
+    }
     public Computed(ViewModel owner, string propertyName, Func<ViewModel,T> calculator,
         params IObservableProperty[] dependantProperties)
         : base(owner, propertyName)

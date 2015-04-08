@@ -5,7 +5,6 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using System.Reflection;
-using Invert.MVVMTest;
 
 /// <summary>
 /// The main entry point for a game that is managed and accessible via GameManager. Only one will

@@ -595,7 +595,7 @@ public class CommandClassTemplateBase : IClassTemplate<CommandNode>
     }
 }
 
-[TemplateClass(MemberGeneratorLocation.DesignerFile)]
+[TemplateClass(MemberGeneratorLocation.DesignerFile, ClassNameFormat = "{0}Command")]
 public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefactorable
 {
     public IEnumerable<string> ClassNameFormats

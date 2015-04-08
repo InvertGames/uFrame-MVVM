@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 
@@ -55,11 +56,11 @@ public class ViewService : SystemServiceMonoBehavior
 
     private void Loaded(KernalLoadedEvent data)
     {
-        foreach (var view in Views)
+        foreach (var view in Views.Where(p=>!p.CreateEventData.IsInstantiated))
         {
-            view.ViewModelObject = FetchViewModel(view);
+            view.SetViewModelObjectSilently(FetchViewModel(view));
         }
-        foreach (var view in Views)
+        foreach (var view in Views.Where(p => !p.CreateEventData.IsInstantiated))
         {
             view.SetupBindings();
         }
@@ -68,12 +69,19 @@ public class ViewService : SystemServiceMonoBehavior
     private void ViewCreated(ViewCreatedEvent viewCreatedEvent)
     {
         var view = viewCreatedEvent.View;
-        var viewModel = FetchViewModel(viewCreatedEvent.View);
-        view.ViewModelObject = viewModel;
-        if (viewCreatedEvent.IsInstantiated)
+        if (uFrameMVVMKernel.IsKernelLoaded)
         {
-            view.SetupBindings();
+            var viewModel = FetchViewModel(viewCreatedEvent.View);
+            view.ViewModelObject = viewModel;
         }
+        else
+        {
+            if (viewCreatedEvent.IsInstantiated)
+            {
+                view.SetupBindings();
+            }
+        }
+
         Views.Add(view);
     }
 
