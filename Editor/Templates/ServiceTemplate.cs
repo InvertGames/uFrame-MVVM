@@ -26,10 +26,7 @@ public class ServiceTemplate : IClassTemplate<ServiceNode>, IClassRefactorable
             {
                 Ctx._("this.OnEvent<{0}>().Subscribe(this.{1}Handler)", command.ClassName, command.Name);
             }
-            //foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
-            //{
-            //    Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
-            //}
+
         }
     }
 

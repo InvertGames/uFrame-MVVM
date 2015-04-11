@@ -10,7 +10,7 @@ using uFrame.Graphs;
 
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}")]
-public partial class SceneTemplate : IClassTemplate<SceneManagerNode>
+public partial class SceneTemplate : IClassTemplate<SceneTypeNode>
 {
 
   
@@ -33,7 +33,7 @@ public partial class SceneTemplate : IClassTemplate<SceneManagerNode>
     {
         get { return true; }
     }
-    public TemplateContext<SceneManagerNode> Ctx { get; set; }
+    public TemplateContext<SceneTypeNode> Ctx { get; set; }
 
 
     [TemplateProperty("Settings", AutoFillType.NameOnly)]
@@ -55,7 +55,7 @@ public partial class SceneTemplate : IClassTemplate<SceneManagerNode>
 }
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}Loader")]
-public partial class SceneLoaderTemplate : IClassTemplate<SceneManagerNode>
+public partial class SceneLoaderTemplate : IClassTemplate<SceneTypeNode>
 {
     public void TemplateSetup()
     {
@@ -98,11 +98,11 @@ public partial class SceneLoaderTemplate : IClassTemplate<SceneManagerNode>
     {
         get { return true; }
     }
-    public TemplateContext<SceneManagerNode> Ctx { get; set; }
+    public TemplateContext<SceneTypeNode> Ctx { get; set; }
 }
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}Settings")]
-public partial class SceneSettingsTemplate : IClassTemplate<SceneManagerNode>
+public partial class SceneSettingsTemplate : IClassTemplate<SceneTypeNode>
 {
     public void TemplateSetup()
     {
@@ -125,7 +125,7 @@ public partial class SceneSettingsTemplate : IClassTemplate<SceneManagerNode>
 
 
 
-    public TemplateContext<SceneManagerNode> Ctx { get; set; }
+    public TemplateContext<SceneTypeNode> Ctx { get; set; }
 }
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}Loader")]

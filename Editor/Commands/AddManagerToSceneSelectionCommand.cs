@@ -5,7 +5,7 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEditor;
 
-public class AddManagerToSceneSelectionCommand : EditorCommand<SceneManagerNode>, IDiagramNodeCommand
+public class AddManagerToSceneSelectionCommand : EditorCommand<SceneTypeNode>, IDiagramNodeCommand
 {
     public override string Group
     {
@@ -22,10 +22,10 @@ public class AddManagerToSceneSelectionCommand : EditorCommand<SceneManagerNode>
         get { return "Add To/Selection"; }
     }
 
-    public override void Perform(SceneManagerNode node)
+    public override void Perform(SceneTypeNode node)
     {
         //var paths = EditorWindow.GetWindow<ElementsDesigner>().Diagram.Data.Settings.CodePathStrategy;
-        var sceneManagerData = node as SceneManagerNode;
+        var sceneManagerData = node as SceneTypeNode;
         if (sceneManagerData == null)
             return;
         var type = InvertApplication.FindType(node.FullName.AsSceneManager());
@@ -40,7 +40,7 @@ public class AddManagerToSceneSelectionCommand : EditorCommand<SceneManagerNode>
         Selection.activeGameObject.AddComponent(type);
     }
 
-    public override string CanPerform(SceneManagerNode node)
+    public override string CanPerform(SceneTypeNode node)
     {
         if (Selection.activeGameObject == null) return "Make a selection first";
         return null;

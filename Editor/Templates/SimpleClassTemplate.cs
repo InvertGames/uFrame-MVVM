@@ -9,7 +9,7 @@ public class SimpleClassTemplate : IClassTemplate<SimpleClassNode>
 {
     public string OutputPath
     {
-        get { return "SimplesClasses"; }
+        get { return Path2.Combine(Ctx.Data.Graph.Name, "SimplesClasses"); }
     }
 
     public bool CanGenerate { get { return true; } }

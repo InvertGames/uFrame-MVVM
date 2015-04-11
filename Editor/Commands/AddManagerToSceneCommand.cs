@@ -6,7 +6,7 @@ using uFrame.Graphs;
 using UnityEditor;
 using UnityEngine;
 
-public class AddManagerToSceneCommand : EditorCommand<SceneManagerNode>, IDiagramNodeCommand
+public class AddManagerToSceneCommand : EditorCommand<SceneTypeNode>, IDiagramNodeCommand
 {
     public override string Group
     {
@@ -28,10 +28,10 @@ public class AddManagerToSceneCommand : EditorCommand<SceneManagerNode>, IDiagra
         get { return "Add To/Scene"; }
     }
 
-    public override void Perform(SceneManagerNode node)
+    public override void Perform(SceneTypeNode node)
     {
       
-        var sceneManagerData = node as SceneManagerNode;
+        var sceneManagerData = node as SceneTypeNode;
         if (sceneManagerData == null) 
             return;
         var type = InvertApplication.FindType(node.FullName.AsSceneManager());
@@ -46,7 +46,7 @@ public class AddManagerToSceneCommand : EditorCommand<SceneManagerNode>, IDiagra
         obj.AddComponent(type);
     }
 
-    public override string CanPerform(SceneManagerNode node)
+    public override string CanPerform(SceneTypeNode node)
     {
         return null;
     }

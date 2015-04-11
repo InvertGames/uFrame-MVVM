@@ -40,7 +40,7 @@ public class uFrameTemplates : DiagramPlugin
         Framework.ViewComponent.AddCodeTemplate<ViewComponentTemplate>();
         Framework.State.AddCodeTemplate<StateTemplate>();
         Framework.StateMachine.AddCodeTemplate<StateMachineTemplate>();
-
+        
         // Register our bindable methods
         container.AddBindingMethod(typeof(ViewBindings), "BindProperty", _ => _ is PropertiesChildItem || _ is ComputedPropertyNode)
             .SetNameFormat("{0} Changed")
