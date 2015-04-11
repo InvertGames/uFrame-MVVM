@@ -5,7 +5,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 
-public class uFrameMVVMKernel : MonoBehaviour {
+public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
 
     private static GameContainer _container;
     private static IEventAggregator _eventAggregator;
@@ -138,7 +138,9 @@ public class uFrameMVVMKernel : MonoBehaviour {
         {
             controller.Setup();
         }
+
         _isKernelLoaded = true;
+        
         this.Publish(new KernalLoadedEvent()
         {
             Kernel = this
@@ -146,6 +148,48 @@ public class uFrameMVVMKernel : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
         this.Publish(new GameReadyEvent());
+    }
+
+    Type ITypeResolver.GetType(string name)
+    {
+        return Type.GetType(name);
+    }
+
+    string ITypeResolver.SetType(Type type)
+    {
+        return type.AssemblyQualifiedName;
+    }
+
+    object ITypeResolver.CreateInstance(string name, string identifier)
+    {
+        var type = ((ITypeResolver)this).GetType(name);
+
+#if NETFX_CORE 
+        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
+#else
+        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+#endif
+        // IsAssignableFrom doesn't work with winRT
+        // typeof(ViewModel).IsAssignableFrom(type);
+
+        if (isViewModel)
+        {
+            var contextViewModel = Container.Resolve<ViewModel>(identifier);
+            if (contextViewModel != null)
+            {
+                return contextViewModel;
+            }
+            return Activator.CreateInstance(type,new []{EventAggregator});
+        }
+
+//        var view = PersistantViews.FirstOrDefault(p => p.Identifier == identifier);
+//        if (view != null)
+//        {
+//            Debug.Log(string.Format("Loading View: {0} - {1}", name, identifier));
+//            return view;
+//        }
+//        return ViewNotFoundOnLoad(name, identifier);
+        return null;
     }
 }
 
@@ -185,6 +229,7 @@ public class InstantiateViewCommand
     public IScene Scene { get; set; }
     public ViewModel ViewModelObject { get; set; }
     public ViewBase Result { get; set; }
+    public GameObject Prefab { get; set; }
 }
 
 public class LoadSceneCommand

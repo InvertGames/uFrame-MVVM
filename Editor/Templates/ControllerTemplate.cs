@@ -134,7 +134,8 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             {
                 Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
             }
-            Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(this.Initialize);", Ctx.Data.Name.AsViewModel());
+            Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(vm => this.Initialize{1}(vm as {0}));", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
+            //Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(this.Initialize);", Ctx.Data.Name.AsViewModel());
             Ctx._("this.EventAggregator.OnViewModelDestroyed<{0}>().Subscribe(this.DisposingViewModel);", Ctx.Data.Name.AsViewModel());
         
         }
@@ -153,13 +154,13 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
     }
 
-    [TemplateMethod(MemberGeneratorLocation.DesignerFile, CallBase = true)]
-    public override void Initialize(ViewModel viewModel)
-    {
-        Ctx._comment("This is called when a viewmodel is created");
-        if (!Ctx.IsDesignerFile) return;
-        Ctx._("this.Initialize{0}((({1})(viewModel)))", Ctx.Data.Name, NameAsViewModel);
-    }
+//    [TemplateMethod(MemberGeneratorLocation.DesignerFile, CallBase = true)]
+//    public override void Initialize(ViewModel viewModel)
+//    {
+//        Ctx._comment("This is called when a viewmodel is created");
+//        if (!Ctx.IsDesignerFile) return;
+//        Ctx._("this.Initialize{0}((({1})(viewModel)))", Ctx.Data.Name, NameAsViewModel);
+//    }
 
     [TemplateMethod("Create{0}", MemberGeneratorLocation.DesignerFile, false)]
     public ViewModel CreateElement()

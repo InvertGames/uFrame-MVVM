@@ -201,6 +201,7 @@ public static class ViewExtensions
             Identifier = identifier,
             ViewModelObject = model,
             Scene = parentScene,
+            Prefab = prefab
         };
         uFrameMVVMKernel.EventAggregator.Publish(command);
         command.Result.transform.position = position;

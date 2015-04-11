@@ -31,16 +31,34 @@ public class ViewService : SystemServiceMonoBehavior
         var scene = data.Scene as Scene;
         
         GameObject viewPrefab = null;
-        if (data.ViewModelObject != null)
+
+        if (data.Prefab != null)
+        {
+            viewPrefab = data.Prefab;
+        }
+        else if (data.ViewModelObject != null)
         {
             viewPrefab = uFrameMVVMKernel.ViewResolver.FindView(data.ViewModelObject);
         }
         else
         {
-            viewPrefab = uFrameMVVMKernel.ViewResolver.FindView(data.Identifier);
+            throw new Exception("No Prefab or Viewmodel were passed in.");
+           //viewPrefab = uFrameMVVMKernel.ViewResolver.FindView(data.Identifier);
         }
+
         var result = Instantiate(viewPrefab) as GameObject;
         var resultView = result.GetComponent<ViewBase>();
+
+        if (data.ViewModelObject != null)
+        {
+            resultView.Identifier = data.ViewModelObject.Identifier;
+            resultView.ViewModelObject = data.ViewModelObject;
+        }
+        else if (!string.IsNullOrEmpty(data.Identifier))
+        {
+            resultView.Identifier = data.Identifier;
+        }
+
         resultView.CreateEventData = new ViewCreatedEvent()
         {
             IsInstantiated = true,
@@ -68,9 +86,13 @@ public class ViewService : SystemServiceMonoBehavior
 
     private void ViewCreated(ViewCreatedEvent viewCreatedEvent)
     {
+
         var view = viewCreatedEvent.View;
-        var viewModel = FetchViewModel(viewCreatedEvent.View);
-        view.ViewModelObject = viewModel;
+        if (view.ViewModelObject == null)
+        {
+            var viewModel = FetchViewModel(viewCreatedEvent.View);
+            view.ViewModelObject = viewModel;
+        }
         Views.Add(view);
     }
 

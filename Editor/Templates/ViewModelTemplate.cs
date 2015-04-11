@@ -615,9 +615,18 @@ public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefa
     public override void TemplateSetup()
     {
         base.TemplateSetup();
+        foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
+        {
+            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+            if (type == null) continue;
+
+            Ctx.TryAddNamespace(type.Namespace);
+        }
+
         Ctx.CurrentDecleration.IsPartial = true;
         Ctx.AddIterator("Property", node => node.Properties);
         Ctx.AddIterator("Collection", node => node.Collections);
+
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]

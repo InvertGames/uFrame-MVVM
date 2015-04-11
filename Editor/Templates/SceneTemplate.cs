@@ -148,7 +148,7 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
         }
 
         Ctx.AddIterator("InstanceProperty", node => node.Instances);
-        Ctx.AddIterator("ControllerProperty", node => node.GetContainingNodes(Ctx.Data.Project).OfType<ElementNode>());
+        Ctx.AddIterator("ControllerProperty", node => node.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>());
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both,CallBase = true)]
@@ -166,7 +166,7 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
                 Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
             }
 
-            foreach (var item in Ctx.Data.GetContainingNodes(Ctx.Data.Project).OfType<ElementNode>())
+            foreach (var item in Ctx.Data.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>())
             {
                 Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
                 Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
