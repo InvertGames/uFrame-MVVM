@@ -6,7 +6,7 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
 [TemplateClass(MemberGeneratorLocation.Both, uFrameFormats.SCENE_MANAGER_SETTINGS_FORMAT)]
-public sealed class SceneManagerSettingsTemplate : IClassTemplate<SceneManagerNode>
+public sealed class SceneManagerSettingsTemplate : IClassTemplate<SceneTypeNode>
 {
     
     //public string[] _Scenes;
@@ -27,5 +27,5 @@ public sealed class SceneManagerSettingsTemplate : IClassTemplate<SceneManagerNo
         Ctx.CurrentDecleration._public_(typeof (string[]), "_Scenes");
     }
 
-    public TemplateContext<SceneManagerNode> Ctx { get; set; }
+    public TemplateContext<SceneTypeNode> Ctx { get; set; }
 }

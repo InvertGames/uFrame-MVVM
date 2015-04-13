@@ -14,7 +14,7 @@ public class ServicesTutorial : MVVMPage {
 
     public override Type ParentPage
     {
-        get { return typeof (GettingStarted); }
+        get { return typeof (GettingStartedPage); }
     }
 
     public override void GetContent(IDocumentationBuilder builder)
@@ -48,17 +48,17 @@ public class ServicesTutorial : MVVMPage {
 
         if (subsystem== null) return;
 
-        var sceneManager = DoNamedNodeStep<SceneManagerNode>(builder, "ServiceTutorialSceneManager", null, _ =>
+        var sceneManager = DoNamedNodeStep<SceneTypeNode>(builder, "ServiceTutorialSceneManager", null, _ =>
         {
         });
 
         if (sceneManager == null) return;
 
-        var connection = DoCreateConnectionStep(builder, subsystem.ExportOutputSlot,sceneManager.SubsystemInputSlot, _ =>
-        {
-        });
+        //var connection = DoCreateConnectionStep(builder, subsystem.ExportOutputSlot,sceneManager.SubsystemInputSlot, _ =>
+        //{
+        //});
 
-        if (connection == null) return;
+       // if (connection == null) return;
 
         var serviceNode = DoNamedNodeStep<ServiceNode>(builder, "MyService", subsystem, _ =>
         {

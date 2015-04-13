@@ -12,7 +12,7 @@ using UniRx;
 using UnityEngine;
 
 [TemplateClass(MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
-public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>, IClassRefactorable
+public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>, IClassRefactorable, IMethodRefactorable
 {
     public TemplateContext<ElementNode> Ctx { get; set; }
 
@@ -28,7 +28,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
     public void TemplateSetup()
     {
-        
+
         Ctx.TryAddNamespace("UniRx");
         foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
         {
@@ -101,24 +101,6 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
     }
 
-    // Controller properties removed in 1.6
-    //[TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
-    //public ViewModel ControllerProperty
-    //{
-    //    get
-    //    {
-    //        var name = Ctx.Item.Name.AsController();
-    //        Ctx.SetType(name);
-    //        Ctx.CurrentProperty.Name = name;
-    //        Ctx.AddAttribute("Inject");
-    //        return null;
-    //    }
-    //    set
-    //    {
-
-    //    }
-    //}
-
     [TemplateMethod(MemberGeneratorLocation.Both)]
     public override void Setup()
     {
@@ -137,10 +119,10 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(vm => this.Initialize{1}(vm as {0}));", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
             //Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(this.Initialize);", Ctx.Data.Name.AsViewModel());
             Ctx._("this.EventAggregator.OnViewModelDestroyed<{0}>().Subscribe(this.DisposingViewModel);", Ctx.Data.Name.AsViewModel());
-        
+
         }
 
-   
+
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType, NameFormat = "{0}ViewModels")]
@@ -203,7 +185,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void OnCommandMethod(ViewModelCommand command)
     {
-   
+
         Ctx.CurrentMethod.Name = Ctx.Item.Name + "Handler";
         if (Ctx.Item is CommandsChildItem)
         {
@@ -255,6 +237,8 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         //}
     }
 
+
+
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
     public virtual void CommandMethodWithArg(ViewModel viewModel, object arg)
     {
@@ -272,5 +256,10 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             yield return "{0}Controller";
             yield return "{0}ControllerBase";
         }
+    }
+
+    public IEnumerable<string> MethodFormats
+    {
+        get { yield return "Initialize{0}"; }
     }
 }

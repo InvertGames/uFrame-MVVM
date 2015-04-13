@@ -129,42 +129,7 @@ public abstract class ViewModel
 
     public int References { get; set; }
 
-    /// <summary>
-    /// Grabs all the commands available for a viewmodel type
-    /// </summary>
-    /// <param name="modelType"></param>
-    /// <returns></returns>
-    [Obsolete("Use GetViewModelCommands")]
-    public static Dictionary<string, PropertyInfo> GetReflectedCommands(Type modelType)
-    {
-        var modelProperties = new Dictionary<string, PropertyInfo>();
-        var fields = modelType.GetProperties();
-        foreach (var field in fields)
-        {
-            if (typeof(ICommand).IsAssignableFrom(field.PropertyType))
-            {
-                modelProperties.Add(field.Name, field);
-            }
-        }
-        return modelProperties;
-    }
 
-    /// <summary>
-    /// Grab the bindable properties for the view-model
-    /// </summary>
-    /// <param name="modelType"></param>
-    /// <returns></returns>
-    [Obsolete("Use GetViewModelProperties")]
-    public static Dictionary<string, FieldInfo> GetReflectedModelProperties(Type modelType)
-    {
-        var modelProperties = new Dictionary<string, FieldInfo>();
-        var fields = modelType.GetFields();
-        foreach (var field in fields.Where(p => p.IsPublic && p.IsInitOnly))
-        {
-            modelProperties.Add(field.Name, field);
-        }
-        return modelProperties;
-    }
 
 
     public IDisposable AddBinding(IDisposable binding)

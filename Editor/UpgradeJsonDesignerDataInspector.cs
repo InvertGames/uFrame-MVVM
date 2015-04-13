@@ -61,23 +61,23 @@ public class GraphDataInspector : Editor
         List<ConnectionData> connections = new List<ConnectionData>();
         foreach (var oldNode in oldGraph.NodeItems.OfType<SceneManagerData>())
         {
-            var node = new SceneManagerNode
+            var node = new SceneTypeNode
             {
                 Identifier = oldNode.Identifier,
                 Name = oldNode.Name
             };
-            foreach (var item in oldNode.Transitions)
-            {
-                node.ChildItems.Add(new SceneTransitionsReference()
-                {
-                    Node = node,
-                    Identifier = item.Identifier,
-                    SourceIdentifier = item.CommandIdentifier,
-                });
-                if (string.IsNullOrEmpty(item.ToIdentifier)) continue;
-                connections.Add(new ConnectionData(item.Identifier, item.ToIdentifier));
-            }
-            converted.Add(oldNode, node);
+            //foreach (var item in oldNode.Transitions)
+            //{
+            //    node.ChildItems.Add(new SceneTransitionsReference()
+            //    {
+            //        Node = node,
+            //        Identifier = item.Identifier,
+            //        SourceIdentifier = item.CommandIdentifier,
+            //    });
+            //    if (string.IsNullOrEmpty(item.ToIdentifier)) continue;
+            //    connections.Add(new ConnectionData(item.Identifier, item.ToIdentifier));
+            //}
+            //converted.Add(oldNode, node);
         }
         foreach (var oldNode in oldGraph.NodeItems.OfType<SubSystemData>())
         {
@@ -386,63 +386,63 @@ public class GraphDataInspector : Editor
                 n.ChildItems.Add(nInstance);
             }
             // Convert connections
-            connections.AddRange(GetSubsystemConnections(converted, o, n));
+            //connections.AddRange(GetSubsystemConnections(converted, o, n));
         }
 
     }
     private void ConvertSceneManagers(Dictionary<DiagramNode, DiagramNode> converted, List<ConnectionData> connections)
     {
-        foreach (var o in converted.Keys.OfType<SceneManagerData>())
-        {
-            var n = converted[o] as SceneManagerNode;
-            var subsystemIdentifier = o.SubSystemIdentifier;
-            var subsystem = converted.Values.OfType<SubsystemNode>().FirstOrDefault(p => p.Identifier == subsystemIdentifier);
-            if (subsystem != null)
-            {
-                connections.Add(
-                    new ConnectionData(subsystem.ExportOutputSlot.Identifier, n.SubsystemInputSlot.Identifier)
-                    {
-                        Input = n.SubsystemInputSlot,
-                        Output = subsystem.ExportOutputSlot
-                    });
-            }
-            foreach (var item in o.Transitions)
-            {
-                var newTransition = new SceneTransitionsReference
-                {
-                    Node = n,
-                    Identifier = item.Identifier,
-                    SourceIdentifier = item.CommandIdentifier
-                };
-                n.ChildItems.Add(newTransition);
+        //foreach (var o in converted.Keys.OfType<SceneManagerData>())
+        //{
+        //    var n = converted[o] as SceneManagerNode;
+        //    var subsystemIdentifier = o.SubSystemIdentifier;
+        //    //var subsystem = converted.Values.OfType<SubsystemNode>().FirstOrDefault(p => p.Identifier == subsystemIdentifier);
+        //    //if (subsystem != null)
+        //    //{
+        //    //    connections.Add(
+        //    //        new ConnectionData(subsystem.ExportOutputSlot.Identifier, n.SubsystemInputSlot.Identifier)
+        //    //        {
+        //    //            Input = n.SubsystemInputSlot,
+        //    //            Output = subsystem.ExportOutputSlot
+        //    //        });
+        //    //}
+        //    //foreach (var item in o.Transitions)
+        //    //{
+        //    //    var newTransition = new SceneTransitionsReference
+        //    //    {
+        //    //        Node = n,
+        //    //        Identifier = item.Identifier,
+        //    //        SourceIdentifier = item.CommandIdentifier
+        //    //    };
+        //    //    n.ChildItems.Add(newTransition);
 
-                connections.Add(new ConnectionData(item.Identifier, item.ToIdentifier)
-                {
-                    Output = newTransition,
+        //    //    connections.Add(new ConnectionData(item.Identifier, item.ToIdentifier)
+        //    //    {
+        //    //        Output = newTransition,
 
-                });
-            }
+        //    //    });
+        //    //}
 
-        }
+        //}
 
 
 
     }
 
-    private IEnumerable<ConnectionData> GetSubsystemConnections(Dictionary<DiagramNode, DiagramNode> converted, SubSystemData o, SubsystemNode n)
-    {
-        foreach (var item in o.Imports)
-        {
-            var oldImport = converted.Keys.FirstOrDefault(p => p.Identifier == item);
-            if (oldImport == null) continue;
-            var newImport = converted[oldImport] as SubsystemNode;
+    //private IEnumerable<ConnectionData> GetSubsystemConnections(Dictionary<DiagramNode, DiagramNode> converted, SubSystemData o, SubsystemNode n)
+    //{
+    //    //foreach (var item in o.Imports)
+    //    //{
+    //    //    var oldImport = converted.Keys.FirstOrDefault(p => p.Identifier == item);
+    //    //    if (oldImport == null) continue;
+    //    //    var newImport = converted[oldImport] as SubsystemNode;
 
-            yield return new ConnectionData(newImport.ExportOutputSlot.Identifier, n.ImportInputSlot.Identifier)
-            {
-                Output = newImport.ExportOutputSlot,
-                Input = n.ImportInputSlot
-            };
-        }
-    }
+    //    //    //yield return new ConnectionData(newImport.ExportOutputSlot.Identifier, n.ImportInputSlot.Identifier)
+    //    //    //{
+    //    //    //    Output = newImport.ExportOutputSlot,
+    //    //    //    Input = n.ImportInputSlot
+    //    //    //};
+    //    //}
+    //}
 }
 

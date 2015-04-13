@@ -55,11 +55,13 @@ using UnityEngine.UI;
         }
         public static IDisposable BindTextToProperty(this ViewBase viewBase, Text input, P<string> property)
         {
+            if (input != null)
+            {
+                input.text = property.Value ?? string.Empty;
+            }
      
             var d1 = property.Subscribe(value =>
-            {
-                input.text = value;
-            });
+            { if (input != null) input.text = value; });
 
             return d1.DisposeWith(viewBase);
         }
