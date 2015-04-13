@@ -65,6 +65,19 @@ using UnityEngine.UI;
 
             return d1.DisposeWith(viewBase);
         }
+       
+        public static IDisposable BindTextToProperty<T>(this ViewBase viewBase, Text input, P<T> property, Func<T,string> selector)
+        {
+     
+            var d1 = property.Subscribe(value =>
+            {
+                input.text = selector(value);
+            });
+
+            input.text = selector(property.Value);
+
+            return d1.DisposeWith(viewBase);
+        }
 
         
         public static IDisposable BindInputFieldToProperty(this ViewBase viewBase, InputField input, P<string> property)
@@ -215,15 +228,19 @@ using UnityEngine.UI;
 
         public static IDisposable BindSliderToProperty(this ViewBase viewBase, Slider slider, P<float> property)
         {
-            var d1 = slider.AsValueChangedObservable().Subscribe(value =>
+            //Debug.Log("seeting slider to "+property.Value);
+            //slider.value = property.Value;
+
+            var d1 = slider.AsValueChangedObservable().DistinctUntilChanged().Subscribe(value =>
             {
                 property.OnNext(value);
             }).DisposeWith(viewBase);
 
-            var d2 = property.Subscribe(value =>
+            var d2 = property.DistinctUntilChanged().Subscribe(value =>
             {
                 slider.value = value;
             });
+
 
             return Disposable.Create(() =>
             {
