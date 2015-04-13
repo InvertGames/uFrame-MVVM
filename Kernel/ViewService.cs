@@ -16,8 +16,8 @@ public class ViewService : SystemServiceMonoBehavior
         this.OnEvent<ViewCreatedEvent>()
             .Subscribe(ViewCreated);
 
-        this.OnEvent<KernalLoadedEvent>()
-            .Subscribe(Loaded);
+//        this.OnEvent<KernalLoadedEvent>()
+//            .Subscribe(Loaded);
     }
 
     public List<ViewBase> Views
@@ -72,17 +72,17 @@ public class ViewService : SystemServiceMonoBehavior
         data.Result = resultView;
     }
 
-    private void Loaded(KernalLoadedEvent data)
-    {
-        foreach (var view in Views.Where(p=>!p.CreateEventData.IsInstantiated))
-        {
-            view.SetViewModelObjectSilently(FetchViewModel(view));
-        }
-        foreach (var view in Views.Where(p => !p.CreateEventData.IsInstantiated))
-        {
-            view.SetupBindings();
-        }
-    }
+//    private void Loaded(KernalLoadedEvent data)
+//    {
+//        foreach (var view in Views.Where(p=>!p.CreateEventData.IsInstantiated))
+//        {
+//            view.SetViewModelObjectSilently(FetchViewModel(view));
+//        }
+//        foreach (var view in Views.Where(p => !p.CreateEventData.IsInstantiated))
+//        {
+//            view.SetupBindings();
+//        }
+//    }
 
     private void ViewCreated(ViewCreatedEvent viewCreatedEvent)
     {
