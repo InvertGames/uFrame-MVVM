@@ -32,10 +32,10 @@ public class uFrameTemplates : DiagramPlugin
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandNode, CommandClassTemplate>();
         //Framework.SceneManager.AddCodeTemplate<SceneManagerTemplate>();
         //Framework.SceneManager.AddCodeTemplate<SceneManagerSettingsTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneSettingsTemplate>();
+        Framework.SceneType.AddCodeTemplate<SceneTemplate>();
+        Framework.SceneType.AddCodeTemplate<SceneSettingsTemplate>();
         Framework.Subsystem.AddCodeTemplate<SystemLoaderTemplate>();
-        Framework.SceneManager.AddCodeTemplate<SceneLoaderTemplate>();
+        Framework.SceneType.AddCodeTemplate<SceneLoaderTemplate>();
         Framework.View.AddCodeTemplate<ViewTemplate>();
         Framework.ViewComponent.AddCodeTemplate<ViewComponentTemplate>();
         Framework.State.AddCodeTemplate<StateTemplate>();

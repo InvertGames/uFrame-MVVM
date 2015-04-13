@@ -103,6 +103,16 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
 
     private IEnumerator Startup()
     {
+        var attachedSystemLoaders = gameObject.GetComponentsInChildren(typeof(ISystemLoader)).OfType<ISystemLoader>();
+        foreach (var systemLoader in attachedSystemLoaders)
+        {
+            this.Publish(new SystemLoaderEvent() { State = SystemState.Loading, Loader = systemLoader });
+            systemLoader.Container = Container;
+            systemLoader.EventAggregator = EventAggregator;
+            systemLoader.Load();
+            SystemLoaders.Add(systemLoader);
+            this.Publish(new SystemLoaderEvent() { State = SystemState.Loaded, Loader = systemLoader });
+        }
 
         var attachedServices = gameObject.GetComponentsInChildren(typeof(SystemServiceMonoBehavior)).OfType<SystemServiceMonoBehavior>();
         foreach (var service in attachedServices)
@@ -114,17 +124,6 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
             yield return StartCoroutine(service.SetupAsync());
             Services.Add(service); //TODO: is that really needed??
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loaded, Service = service });
-        }
-
-        var attachedSystemLoaders = gameObject.GetComponentsInChildren(typeof (ISystemLoader)).OfType<ISystemLoader>();
-        foreach (var systemLoader in attachedSystemLoaders)
-        {
-            this.Publish(new SystemLoaderEvent() { State = SystemState.Loading, Loader = systemLoader});
-            systemLoader.Container = Container;
-            systemLoader.EventAggregator = EventAggregator;
-            systemLoader.Load();
-            SystemLoaders.Add(systemLoader);
-            this.Publish(new SystemLoaderEvent() { State = SystemState.Loaded, Loader = systemLoader });
         }
 
         this.Publish(new SystemsLoadedEvent()

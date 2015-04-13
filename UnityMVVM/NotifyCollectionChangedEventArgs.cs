@@ -75,6 +75,7 @@ namespace System.Collections.Specialized
             }
         }
 
+
         public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList newItems, IList oldItems)
         {
             this._newStartingIndex = -1;
@@ -250,7 +251,9 @@ namespace System.Collections.Specialized
 
         private void InitializeMoveOrReplace(NotifyCollectionChangedAction action, IList newItems, IList oldItems, int startingIndex, int oldStartingIndex)
         {
+            
             this.InitializeAdd(action, newItems, startingIndex);
+
             this.InitializeRemove(action, oldItems, oldStartingIndex);
         }
 

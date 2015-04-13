@@ -439,6 +439,8 @@ public static class ContainerExtensions
         container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
         container.RegisterInstance<ISystemService>(controller,controller.GetType().Name,false);
         container.RegisterInstance<TController>(controller,false);
+        // Todo Convention hack make it prettier :)
+        container.RegisterInstance<Controller>(controller, typeof(TController).Name.Replace("Controller", "ViewModel"));
     }
     
     public static void RegisterViewModelManager<TViewModel>(this IGameContainer container, 
@@ -449,7 +451,6 @@ public static class ContainerExtensions
     public static void RegisterViewModelController<TController, TViewModel>(this IGameContainer container, TController controller) where TController : Controller
     {
         
-        // Nothing yet
     }
 }
 public class LoadedEvent

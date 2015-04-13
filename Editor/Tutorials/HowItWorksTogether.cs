@@ -1,6 +1,6 @@
 using Invert.Core.GraphDesigner;
 
-public class HowItWorksTogether : uFrameMVVMPage<MVCVMInDepth>
+public class HowItWorksTogether : uFrameMVVMPage<uFrameInDepth>
 {
     public override void GetContent(IDocumentationBuilder _)
     {

@@ -25,7 +25,7 @@ public class UFrameMvvmKernelInspector : ManagerInspector<SceneManager>
 
         if (!UnityEditor.EditorBuildSettings.scenes.Any(s =>
         {
-            return s.path.EndsWith("uFrameMVVMKernelScene.unity");
+            return s.path.EndsWith("KernelScene.unity");
         }))
         {
             Warning("Please add this scene to the build settings!");
@@ -146,5 +146,22 @@ public class UFrameMvvmKernelInspector : ManagerInspector<SceneManager>
     {
         return name + "Game";
     }
+
+}
+[CustomEditor(typeof(Scene), true)]
+public class SceneInspector :Editor
+{
+
+    public Scene Target
+    {
+        get { return target as Scene; }
+    }
+
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        EditorGUILayout.HelpBox(string.Format("Leave the 'Kernel Scene' property blank to use the default '{0}'",Target.DefaultKernelScene), MessageType.Info);
+    }
+
 
 }

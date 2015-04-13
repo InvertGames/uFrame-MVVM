@@ -12,8 +12,16 @@ using uFrame.Graphs;
 [TemplateClass(MemberGeneratorLocation.Both, "{0}")]
 public partial class SceneTemplate : IClassTemplate<SceneTypeNode>
 {
-
-  
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
+    public virtual string DefaultKernelScene
+    {
+        get
+        {
+            Ctx.CurrentProperty.Attributes = MemberAttributes.Override | MemberAttributes.Public;
+            Ctx._("return \"{0}KernelScene\"",Ctx.Data.Graph.Project.Name);
+            return null;
+        }
+    }
 
     public void TemplateSetup()
     {

@@ -31,7 +31,7 @@ public class SceneManagementServiceInspector : ManagerInspector<SceneManagementS
     {
         GUIHelpers.IsInsepctor = true;
         //base.OnInspectorGUI();
-        DrawTitleBar("View Service");
+        DrawTitleBar("Scene Management Service");
         serializedObject.Update();
 
         if (!UnityEditor.EditorBuildSettings.scenes.Any(s =>

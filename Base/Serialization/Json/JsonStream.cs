@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using uFrame;
 using UnityEngine;
 
 public class JsonStream : ISerializerStream

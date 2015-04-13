@@ -1,6 +1,6 @@
 using Invert.Core.GraphDesigner;
 
-public class ImportantNotes : uFrameMVVMPage<GettingStartedPage>
+public class ImportantNotes : uFrameMVVMPage<uFrameInDepth>
 {
 
 

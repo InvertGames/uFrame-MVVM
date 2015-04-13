@@ -75,12 +75,6 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     {
        
     }
-    //[TemplateConstructor(MemberGeneratorLocation.Both, "controller", "initialize")]
-    //public void ControllerConstructor(Controller controller, bool initialize)
-    //{
-    //    Ctx.CurrentConstructor.Parameters[0].Type = (Ctx.Data.Name.AsController() + "Base").ToCodeReference();
-    //    Ctx.CurrentConstructor.Parameters[1].Name = "initialize = true";
-    //}
 
     [TemplateMethod(MemberGeneratorLocation.Both, true)]
     public override void Bind()
@@ -88,7 +82,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         if (!Ctx.IsDesignerFile) return;
         foreach (var command in Ctx.Data.Commands)
         {
-            Ctx._("this.{0} = new Signal<{0}Command>(this, this.Aggregator)",command.Name);
+            Ctx._("this.{0} = new Signal<{0}Command>(this)",command.Name);
         }
         foreach (var property in ViewModelProperties)
         {
@@ -404,14 +398,15 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
     #endregion
 
+
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
     public virtual IEnumerable<IObservableProperty> ComputedDependents()
     {
         var computed = Ctx.ItemAs<ComputedPropertyNode>();
         foreach (var item in computed.InputsFrom<PropertiesChildItem>())
         {
-           
 
+            Ctx._("yield return {0}", item.Name.AsSubscribableField());
             var relatedNode = item.RelatedTypeNode;
             if (relatedNode != null)
             {
@@ -424,10 +419,10 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
             }
             else
             {
-                Ctx._("yield return {0}", item.Name.AsSubscribableField());
+                
             }
-            
 
+          
         }
        
 

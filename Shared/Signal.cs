@@ -3,39 +3,56 @@ using UniRx;
 
 public class Signal<TClass> : ISubject<TClass>, ISignal where TClass : ViewModelCommand, new()
 {
-    private readonly IEventAggregator _aggregator;
-    private readonly ViewModel _viewModel;
 
-    public Signal(ViewModel viewModel, IEventAggregator aggregator)
+    private readonly SimpleSubject<TClass> _signalSubject = new SimpleSubject<TClass>();
+    private readonly ViewModel _viewModel;
+    private Action<TClass> _action;
+
+    public Signal(ViewModel viewModel) : this(viewModel, null)
     {
-        _aggregator = aggregator;
+    }
+
+    public Signal(ViewModel viewModel, Action<TClass> action)
+    {
+        _action = action;
         _viewModel = viewModel;
     }
 
     public void OnCompleted()
     {
-
+        _signalSubject.OnCompleted();
     }
 
     public void OnError(Exception error)
     {
-
+        _signalSubject.OnError(error);
     }
 
     public void OnNext(TClass value)
     {
         value.Sender = _viewModel;
-        _aggregator.Publish(value);
+
+        if (Action != null)
+            Action(value);
+
+        _signalSubject.OnNext(value);
+
     }
 
     public IDisposable Subscribe(IObserver<TClass> observer)
     {
-        return _aggregator.GetEvent<TClass>().Subscribe(observer);
+        return _signalSubject.Subscribe(observer);
     }
 
     public Type SignalType
     {
-        get { return typeof (TClass); }
+        get { return typeof(TClass); }
+    }
+
+    public Action<TClass> Action
+    {
+        get { return _action; }
+        set { _action = value; }
     }
 
     public void Publish(object data)

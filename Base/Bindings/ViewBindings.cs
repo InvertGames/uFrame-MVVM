@@ -27,13 +27,23 @@ public static class ViewBindings
     {
         NotifyCollectionChangedEventHandler collectionChanged = delegate(object sender, NotifyCollectionChangedEventArgs args)
         {
-            if (added != null && args.NewItems != null)
-                foreach (var item in args.NewItems)
-                    added((TCollectionItemType)item);
-
-            if (removed != null && args.OldItems != null)
-                foreach (var item in args.OldItems)
+            if (args.Action == NotifyCollectionChangedAction.Reset)
+            {
+                if (removed != null)
+                foreach (var item in collection.ToArray())
                     removed((TCollectionItemType)item);
+            }
+            else
+            {
+                if (added != null && args.NewItems != null)
+                    foreach (var item in args.NewItems)
+                        added((TCollectionItemType)item);
+
+                if (removed != null && args.OldItems != null)
+                    foreach (var item in args.OldItems)
+                        removed((TCollectionItemType)item);    
+            }
+            
         };
 
         collection.CollectionChanged += collectionChanged;

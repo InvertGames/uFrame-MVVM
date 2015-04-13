@@ -26,6 +26,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace System.Collections.ObjectModel
 {
@@ -114,12 +115,13 @@ namespace System.Collections.ObjectModel
 		protected override void ClearItems ()
 		{
 			CheckReentrancy ();
+			
 
-			base.ClearItems ();
 
 			OnCollectionChanged (this, new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Count"));
 			OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+            base.ClearItems();
 		}
 
 		protected override void InsertItem (int index, T item)

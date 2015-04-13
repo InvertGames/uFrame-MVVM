@@ -52,7 +52,8 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
 
         Ctx.AddIterator("OnCommandMethod",
-            _ => _.LocalCommands.Cast<IClassTypeNode>().Concat(_.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>()));
+            _ => _.LocalCommands.Cast<IClassTypeNode>());
+                //.Concat(_.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>()));
 
 
         if (Ctx.Data.BaseNode == null)
@@ -112,13 +113,13 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             {
                 Ctx._("this.OnEvent<{0}Command>().Subscribe(this.{0}Handler)", command.Name);
             }
-            foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
-            {
-                Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
-            }
-            Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(vm => this.Initialize{1}(vm as {0}));", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
-            //Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(this.Initialize);", Ctx.Data.Name.AsViewModel());
-            Ctx._("this.EventAggregator.OnViewModelDestroyed<{0}>().Subscribe(this.DisposingViewModel);", Ctx.Data.Name.AsViewModel());
+            //foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
+            //{
+            //    Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
+            //}
+
+            //Ctx._("this.EventAggregator.OnViewModelCreated<{0}>().Subscribe(vm => this.Initialize{1}(vm as {0}));", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
+            //Ctx._("this.EventAggregator.OnViewModelDestroyed<{0}>().Subscribe(this.DisposingViewModel);", Ctx.Data.Name.AsViewModel());
 
         }
 
@@ -136,13 +137,13 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
     }
 
-//    [TemplateMethod(MemberGeneratorLocation.DesignerFile, CallBase = true)]
-//    public override void Initialize(ViewModel viewModel)
-//    {
-//        Ctx._comment("This is called when a viewmodel is created");
-//        if (!Ctx.IsDesignerFile) return;
-//        Ctx._("this.Initialize{0}((({1})(viewModel)))", Ctx.Data.Name, NameAsViewModel);
-//    }
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile, CallBase = true)]
+    public override void Initialize(ViewModel viewModel)
+    {
+        Ctx._comment("This is called when a viewmodel is created");
+        if (!Ctx.IsDesignerFile) return;
+        Ctx._("this.Initialize{0}((({1})(viewModel)))", Ctx.Data.Name, NameAsViewModel);
+    }
 
     [TemplateMethod("Create{0}", MemberGeneratorLocation.DesignerFile, false)]
     public ViewModel CreateElement()
@@ -165,7 +166,14 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         Ctx._comment("This is called when a {0} is created", NameAsViewModel);
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(NameAsViewModel);
         if (Ctx.IsDesignerFile)
+        {
+            foreach (var command in Ctx.Data.Commands)
+            {
+                Ctx._("viewModel.{0}.Action = this.{0}Handler", command.Name);
+            }
             Ctx._("{0}Manager.Add(viewModel)", Ctx.Data.Name);
+        }
+            
     }
 
     [TemplateMethod(MemberGeneratorLocation.DesignerFile, true)]
@@ -236,7 +244,6 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         //    }
         //}
     }
-
 
 
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]

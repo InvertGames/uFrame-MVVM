@@ -49,6 +49,8 @@ using System.Text;
 using UnityEngine;
 #if UNITY_DLL
 namespace Invert.Json {
+#else
+namespace uFrame { 
 #endif
     public static class JSON
     {
@@ -1202,6 +1204,5 @@ namespace Invert.Json {
         }
     }
     // End of JSONNode
-#if UNITY_DLL
+
 }
-#endif

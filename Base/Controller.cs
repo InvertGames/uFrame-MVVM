@@ -111,6 +111,7 @@ public abstract class Controller : SystemService
     {
         var result =  Create(Guid.NewGuid().ToString());
         EventAggregator.Publish(new ViewModelCreatedEvent() {ViewModel = result });
+
         return result;
     }
 
@@ -124,6 +125,7 @@ public abstract class Controller : SystemService
 
         var vm = CreateEmpty(identifier);
         vm.Identifier = identifier;
+        Initialize(vm);
         return vm;
     }
 

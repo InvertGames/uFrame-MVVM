@@ -65,11 +65,29 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
             Ctx.SetBaseType(typeof(ViewBase));
         }
         // Add namespaces based on the types used for properties
-
+        Ctx.AddIterator("ViewComponentProperty",_=>_.OutputsTo<ViewComponentNode>());
         // Add the iterators for template method/property
-        Ctx.AddIterator("ExecuteCommand", _ => _.Element.LocalCommands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
-        Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.LocalCommands);
-        Ctx.AddIterator("ExecuteCommandWithArg", _ => _.Element.LocalCommands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
+        if (Ctx.Data.BaseNode == null)
+        {
+            Ctx.AddIterator("ExecuteCommand",
+                _ => _.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
+            Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.InheritedCommandsWithLocal);
+            Ctx.AddIterator("ExecuteCommandWithArg",
+                _ =>
+                    _.Element.InheritedCommandsWithLocal.Where(
+                        p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
+        }
+        else
+        {
+            Ctx.AddIterator("ExecuteCommand",
+               _ => _.Element.LocalCommands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
+            Ctx.AddIterator("ExecuteCommandOverload", _ => _.Element.LocalCommands);
+            Ctx.AddIterator("ExecuteCommandWithArg",
+                _ =>
+                    _.Element.LocalCommands.Where(
+                        p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
+        }
+        
         Ctx.AddIterator("ResetProperty", _ => _.SceneProperties);
         Ctx.AddIterator("CalculateProperty", _ => _.SceneProperties);
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
@@ -281,5 +299,20 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
             yield return "{0}";
             yield return "{0}Base";
         }
+    }
+
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndType)]
+    public virtual object ViewComponentProperty
+    {
+        get
+        {
+            
+            var field = Ctx.CurrentDecleration._private_(Ctx.Item.Name, Ctx.Item.Name.AsField());
+            field.CustomAttributes.Add(new CodeAttributeDeclaration(typeof (SerializeField).ToCodeReference()));
+            Ctx.CurrentProperty.Type = field.Type;
+            Ctx._("return {0} ?? ({0} = this.gameObject.EnsureComponent<{1}>())", field.Name, Ctx.Item.Name);
+            return null;
+        }
+
     }
 }

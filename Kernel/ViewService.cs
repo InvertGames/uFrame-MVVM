@@ -15,9 +15,6 @@ public class ViewService : SystemServiceMonoBehavior
 
         this.OnEvent<ViewCreatedEvent>()
             .Subscribe(ViewCreated);
-
-        this.OnEvent<KernalLoadedEvent>()
-            .Subscribe(Loaded);
     }
 
     public List<ViewBase> Views
@@ -72,18 +69,6 @@ public class ViewService : SystemServiceMonoBehavior
         data.Result = resultView;
     }
 
-    private void Loaded(KernalLoadedEvent data)
-    {
-        foreach (var view in Views.Where(p=>!p.CreateEventData.IsInstantiated))
-        {
-            view.SetViewModelObjectSilently(FetchViewModel(view));
-        }
-        foreach (var view in Views.Where(p => !p.CreateEventData.IsInstantiated))
-        {
-            view.SetupBindings();
-        }
-    }
-
     private void ViewCreated(ViewCreatedEvent viewCreatedEvent)
     {
 
@@ -114,7 +99,8 @@ public class ViewService : SystemServiceMonoBehavior
         if (contextViewModel == null)
         {
             // Either use the controller to create it or create it ourselves
-            contextViewModel = Activator.CreateInstance(viewBase.ViewModelType, EventAggregator) as ViewModel;
+            var controller = uFrameMVVMKernel.Container.Resolve<Controller>(viewBase.ViewModelType.Name);
+            contextViewModel = controller.Create();
             contextViewModel.Identifier = viewBase.Identifier;
        
             // Register it, this is usually when a non registered element is treated like a single-instance anways

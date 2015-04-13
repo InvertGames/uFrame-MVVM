@@ -3,8 +3,23 @@ using UnityEngine;
 using UniRx;
 public class Scene : MonoBehaviour, IScene
 {
-    private const string KERNEL_SCENE_NAME = "uFrameMVVMKernelScene";
+    [SerializeField]
+    private string _KernelScene;
 
+
+    protected string KernelScene
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_KernelScene))
+            {
+                return DefaultKernelScene;
+            }
+            return _KernelScene;
+        }
+    }
+
+    public virtual string DefaultKernelScene { get; set; }
     public string Name { get; set; }
 
     public ISceneSettings _SettingsObject { get; set; }
@@ -21,7 +36,7 @@ public class Scene : MonoBehaviour, IScene
         if (!uFrameMVVMKernel.IsKernelLoaded)
         {
             Name = Application.loadedLevelName;
-            yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(KERNEL_SCENE_NAME));
+            yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(KernelScene));
         }
         uFrameMVVMKernel.EventAggregator.Publish(new SceneAwakeEvent() { Scene = this });
         

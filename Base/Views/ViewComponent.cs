@@ -5,10 +5,9 @@ public abstract class ViewComponent : MonoBehaviour, IBindingProvider
     [SerializeField]
     private ViewBase _view;
 
-
     public ViewBase View
     {
-        get { return _view != null ? _view : this.GetView(); }
+        get { return _view ?? (_view = this.GetView()); }
         set { _view = value; }
     }
 
@@ -23,7 +22,6 @@ public abstract class ViewComponent : MonoBehaviour, IBindingProvider
         {
             View.BindingProviders.Add(this);
         }
-        
     }
 
     public virtual void Bind(ViewBase view)
