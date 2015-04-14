@@ -225,7 +225,7 @@ public class ViewModelManager<T> : IViewModelManager<T> where T : ViewModel
 
     public void Add(ViewModel viewModel)
     {
-        if(ViewModels.Contains((T)viewModel))
+        if(!ViewModels.Contains((T)viewModel))
         ViewModels.Add((T)viewModel);
    
     }
