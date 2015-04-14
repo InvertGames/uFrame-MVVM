@@ -99,8 +99,7 @@ public class ViewService : SystemServiceMonoBehavior
         if (contextViewModel == null)
         {
             // Either use the controller to create it or create it ourselves
-            var controller = uFrameMVVMKernel.Container.Resolve<Controller>(viewBase.ViewModelType.Name);
-            contextViewModel = controller.Create();
+            contextViewModel = this.CreateViewModel(viewBase.ViewModelType);
             contextViewModel.Identifier = viewBase.Identifier;
        
             // Register it, this is usually when a non registered element is treated like a single-instance anways
@@ -126,4 +125,6 @@ public class ViewService : SystemServiceMonoBehavior
         }
         return contextViewModel;
     }
+
+    
 }
