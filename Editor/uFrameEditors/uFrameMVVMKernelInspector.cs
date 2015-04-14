@@ -33,6 +33,11 @@ public class UFrameMvvmKernelInspector : ManagerInspector<SceneManager>
 
         if (Application.isPlaying)
         {
+
+            if (!uFrameMVVMKernel.IsKernelLoaded)
+            {
+                Warning("Kernel is not loaded!");                
+            }
             if (GUIHelpers.DoToolbarEx("Services"))
             {
                 foreach (var instance in uFrameMVVMKernel.Instance.Services)

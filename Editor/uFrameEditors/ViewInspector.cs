@@ -284,6 +284,7 @@ public class ViewInspector : uFrameInspector
         var resolveNameProperty = serializedObject.FindProperty("_resolveName");
         var resolutionNameProperty = serializedObject.FindProperty("_viewModelId");
         var injectProperty = serializedObject.FindProperty("_InjectView");
+        var bindOnStartProperty = serializedObject.FindProperty("_BindOnStart");
         var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
 
 
@@ -300,6 +301,9 @@ public class ViewInspector : uFrameInspector
 
         Info("Should this view be injected with Dependencies defined in the GameContainer.  e.g.GameManager.Resolve<MyViewModel>(ResolveName);");
         EditorGUILayout.PropertyField(injectProperty, new GUIContent("Inject This View"));
+
+        Info("Should this view try to bind on start.");
+        EditorGUILayout.PropertyField(bindOnStartProperty, new GUIContent("Bind On Start"));
 
         Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
         EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));

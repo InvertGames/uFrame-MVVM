@@ -73,7 +73,7 @@ public class ViewService : SystemServiceMonoBehavior
     {
 
         var view = viewCreatedEvent.View;
-        if (view.ViewModelObject == null)
+        if (view.ViewModelObject == null && view.BindOnStart)
         {
             var viewModel = FetchViewModel(viewCreatedEvent.View);
             view.ViewModelObject = viewModel;

@@ -57,6 +57,9 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
 
     private int _ViewId;
 
+    [SerializeField, HideInInspector]
+    private bool _BindOnStart = true;
+
     [HideInInspector]
     private ViewModel _Model;
 
@@ -142,6 +145,13 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
         get { return _InjectView; }
         set { _InjectView = value; }
     }
+
+    public bool BindOnStart
+    {
+        get { return _BindOnStart; }
+        set { _BindOnStart = value; }
+    }
+
 
     /// <summary>
     /// A lazy loaded property for "GetInstanceId" on the game-object.
@@ -261,7 +271,8 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     protected virtual void OnDestroy()
     {
         if (IsBound) Unbind();
-        if (!uFrameMVVMKernel.IsKernelLoaded) return;
+        if (!uFrameMVVMKernel.IsKernelLoaded || CreateEventData == null) return;
+        
         this.Publish(new ViewDestroyedEvent()
         {
             IsInstantiated = CreateEventData.IsInstantiated,
@@ -333,6 +344,7 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
 
     private IScene _parentScene;
 
+  
     /// <summary>This method will ensure that a view-model exists and then call the bind method when it's appropriate.</summary>
     public void SetupBindings()
     {
