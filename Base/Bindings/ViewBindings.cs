@@ -417,7 +417,8 @@ public static class ViewBindings
     /// <returns></returns>
     public static IDisposable BindCommandExecuted<TCommandType>(this ViewBase bindable, Signal<TCommandType> sourceCommand, Action<TCommandType> executed) where TCommandType : ViewModelCommand, new()
     {
-        return bindable.AddBinding(bindable.OnEvent<TCommandType>().Subscribe(executed));
+
+        return bindable.AddBinding(sourceCommand.Subscribe(executed));
     } 
 
     /// <summary>
