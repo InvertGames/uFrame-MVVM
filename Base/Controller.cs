@@ -62,6 +62,12 @@ public abstract class SystemServiceMonoBehavior : UnityEngine.MonoBehaviour, ISy
     {
         
     }
+
+    public void Start()
+    {
+        
+    }
+
 }
 
 public static class SystemControllerExtensions

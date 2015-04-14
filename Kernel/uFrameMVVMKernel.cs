@@ -114,17 +114,26 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
             this.Publish(new SystemLoaderEvent() { State = SystemState.Loaded, Loader = systemLoader });
         }
 
-        var attachedServices = gameObject.GetComponentsInChildren(typeof(SystemServiceMonoBehavior)).OfType<SystemServiceMonoBehavior>();
+        var attachedServices = gameObject.GetComponentsInChildren(typeof(SystemServiceMonoBehavior))
+            .OfType<SystemServiceMonoBehavior>()
+            .Where(_=>_.isActiveAndEnabled)
+            .ToArray();
+
+        foreach (var service in attachedServices)
+        {
+            Container.RegisterService(service);
+            service.EventAggregator = EventAggregator; // JUST IN CASE, MAN
+            Services.Add(service);        
+        }
+
         foreach (var service in attachedServices)
         {
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loading, Service = service });
-            service.EventAggregator = EventAggregator;
             service.Setup();
-            Container.RegisterService(service);
             yield return StartCoroutine(service.SetupAsync());
-            Services.Add(service); //TODO: is that really needed??
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loaded, Service = service });
         }
+
 
         this.Publish(new SystemsLoadedEvent()
         {
@@ -144,7 +153,7 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
         {
             Kernel = this
         });
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame(); //Ensure that everything is bound
         yield return new WaitForEndOfFrame();
         this.Publish(new GameReadyEvent());
     }

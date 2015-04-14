@@ -34,27 +34,22 @@ public class SceneManagementServiceInspector : ManagerInspector<SceneManagementS
         DrawTitleBar("Scene Management Service");
         serializedObject.Update();
 
-        if (!UnityEditor.EditorBuildSettings.scenes.Any(s =>
-        {
-            return s.path.EndsWith("uFrameMVVMKernelScene.unity");
-        }))
-        {
-            Warning("Please add this scene to the build settings!");
-        }
-
         if (Application.isPlaying)
         {
             if (GUIHelpers.DoToolbarEx("Loaded Scenes"))
             {
-                foreach (var instance in Service.LoadedScenes)
+                if (Service != null)
                 {
-                    if (GUIHelpers.DoTriggerButton(new UFStyle()
+                    foreach (var instance in Service.LoadedScenes)
                     {
-                        BackgroundStyle = ElementDesignerStyles.EventButtonStyleSmall,
-                        Label = string.Format("{0}", instance.GetType().Name)
-                    }))
-                    {
-                        Selection.activeGameObject = (instance as MonoBehaviour).gameObject;
+                        if (GUIHelpers.DoTriggerButton(new UFStyle()
+                        {
+                            BackgroundStyle = ElementDesignerStyles.EventButtonStyleSmall,
+                            Label = string.Format("{0}", instance.GetType().Name)
+                        }))
+                        {
+                            Selection.activeGameObject = (instance as MonoBehaviour).gameObject;
+                        }
                     }
                 }
             }

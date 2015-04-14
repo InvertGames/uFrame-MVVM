@@ -34,14 +34,6 @@ public class ViewServiceInspector : ManagerInspector<ViewService>
         DrawTitleBar("View Service");
         serializedObject.Update();
 
-        if (!UnityEditor.EditorBuildSettings.scenes.Any(s =>
-        {
-            return s.path.EndsWith("uFrameMVVMKernelScene.unity");
-        }))
-        {
-            Warning("Please add this scene to the build settings!");
-        }
-
         if (Application.isPlaying)
         {
             if (GUIHelpers.DoToolbarEx("Views"))

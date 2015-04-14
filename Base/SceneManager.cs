@@ -408,15 +408,15 @@ public static class ContainerExtensions
 {
     public static void RegisterService(this IGameContainer container, ISystemService service)
     {
-        container.RegisterInstance<ISystemService>(service, service.GetType().Name, false);
+        container.RegisterInstance<ISystemService>(service, service.GetType().Name);
         //container.RegisterInstance(typeof(TService), service, false);
-        container.RegisterInstance(service.GetType(), service, false);
+        container.RegisterInstance(service.GetType(), service);
     }    
     
     public static void RegisterService<TService>(this IGameContainer container, ISystemService service)
     {
-        container.RegisterInstance<ISystemService>(service, service.GetType().Name, false);
-        container.RegisterInstance(typeof(TService), service, false);
+        container.RegisterInstance<ISystemService>(service, service.GetType().Name);
+        container.RegisterInstance(typeof(TService), service);
     }    
     
     public static void RegisterSceneLoader(this IGameContainer container, ISceneLoader sceneLoader)
