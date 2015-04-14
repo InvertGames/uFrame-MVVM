@@ -207,8 +207,10 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
+
         public static IDisposable BindSliderToProperty<TO>(this ViewBase viewBase, Slider slider, P<TO> property, Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
         {
+
             var d1 = slider.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(i2pSelector(value));
@@ -231,15 +233,17 @@ using UnityEngine.UI;
             //Debug.Log("seeting slider to "+property.Value);
             //slider.value = property.Value;
 
-            var d1 = slider.AsValueChangedObservable().DistinctUntilChanged().Subscribe(value =>
+            var d1 = slider.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(value);
             }).DisposeWith(viewBase);
 
-            var d2 = property.DistinctUntilChanged().Subscribe(value =>
+            var d2 = property.Subscribe(value =>
             {
                 slider.value = value;
             });
+
+            Observable.EveryEndOfFrame().Take(1).Subscribe(_ => slider.value = property.Value);
 
 
             return Disposable.Create(() =>
