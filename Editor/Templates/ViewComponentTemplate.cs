@@ -1,4 +1,5 @@
 using System.CodeDom;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Invert.Core.GraphDesigner;
@@ -7,7 +8,7 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
-public class ViewComponentTemplate : ViewComponent,IClassTemplate<ViewComponentNode>
+public class ViewComponentTemplate : ViewComponent,IClassTemplate<ViewComponentNode>, IClassRefactorable
 {
     public string OutputPath
     {
@@ -60,6 +61,15 @@ public class ViewComponentTemplate : ViewComponent,IClassTemplate<ViewComponentN
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
         Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0}, Argument = arg }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
+    }
+
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+            yield return "{0}Base";
+        }
     }
 }
 

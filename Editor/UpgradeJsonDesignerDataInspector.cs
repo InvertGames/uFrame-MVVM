@@ -14,17 +14,7 @@ public class GraphDataInspector : Editor
 {
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI();
 
-//        if (GUILayout.Button("Convert to Text Asset"))
-//        {
-//            var t = target as IGraphData;
-////            var property = serializedObject.FindProperty("_jsonData");
-//            var jsonData = InvertGraph.Serialize(t).ToString();
-//            var path = AssetDatabase.GetAssetPath(target);
-//            File.WriteAllText(path.Replace(".asset",".txt"),jsonData);
-//            AssetDatabase.Refresh();
-//        }
         if (GUILayout.Button("Upgrade Format"))
         {
             DoConvert();
@@ -163,6 +153,40 @@ public class GraphDataInspector : Editor
                 if (!string.IsNullOrEmpty(item.TransitionToIdentifier))
                     connections.Add(new ConnectionData(item.Identifier, item.TransitionToIdentifier));
             }
+            converted.Add(oldNode, node);
+        }
+        foreach (var oldNode in oldGraph.NodeItems.OfType<ClassNodeData>())
+        {
+            var node = new ElementNode()
+            {
+                Identifier = oldNode.Identifier,
+                Name = oldNode.Name,
+            };
+            if (!string.IsNullOrEmpty(oldNode.BaseIdentifier))
+            {
+                connections.Add(new ConnectionData(oldNode.BaseIdentifier, oldNode.Identifier));
+            }
+            foreach (var item in oldNode.Properties)
+            {
+                node.ChildItems.Add(new PropertiesChildItem()
+                {
+                    Identifier = item.Identifier,
+                    Node = node,
+                    Name = item.Name,
+                    RelatedType = item.RelatedType
+                });
+            }
+            foreach (var item in oldNode.Collections)
+            {
+                node.ChildItems.Add(new CollectionsChildItem()
+                {
+                    Identifier = item.Identifier,
+                    Name = item.Name,
+                    Node = node,
+                    RelatedType = item.RelatedType
+                });
+            }
+
             converted.Add(oldNode, node);
         }
         foreach (var oldNode in oldGraph.NodeItems.OfType<ViewData>())
