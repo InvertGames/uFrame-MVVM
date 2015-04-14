@@ -1,13 +1,15 @@
 using System.CodeDom;
 using System.IO;
 using System.Linq;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.ICSharpCode.NRefactory.TypeSystem;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
-public class ViewComponentTemplate : ViewComponent,IClassTemplate<ViewComponentNode>
+public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
 {
     public string OutputPath
     {
@@ -21,6 +23,10 @@ public class ViewComponentTemplate : ViewComponent,IClassTemplate<ViewComponentN
 
     public void TemplateSetup()
     {
+        if (Ctx.IsDesignerFile) //TODO FIX FOR INHERITANCE (Ctx.Data.BaseNode)
+        { 
+            Ctx.SetBaseType(InvertApplication.FindType(typeof(ViewComponent).FullName));
+        }
         Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
         Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
