@@ -109,10 +109,10 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         Ctx._comment("This is called when the controller is created");
         if (Ctx.IsDesignerFile)
         {
-            foreach (var command in Ctx.Data.AllCommandHandlers)
-            {
-                Ctx._("this.OnEvent<{0}Command>().Subscribe(this.{0}Handler)", command.Name);
-            }
+//            foreach (var command in Ctx.Data.AllCommandHandlers)
+//            {
+//                Ctx._("this.OnEvent<{0}Command>().Subscribe(this.{0}Handler)", command.Name);
+//            }
             //foreach (var command in Ctx.Data.Handlers.Where(p => !(p.SourceItem is CommandsChildItem)))
             //{
             //    Ctx._("this.OnEvent<{0}>().Subscribe(this.{0}Handler)", command.Name);
