@@ -6,7 +6,11 @@ namespace Invert.uFrame.MVVM {
     
     
     public class SimpleClassPage : SimpleClassPageBase {
-        
+        public override string Name
+        {
+            get { return "Simple Classes"; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
 

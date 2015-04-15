@@ -9,7 +9,16 @@ namespace Invert.uFrame.MVVM {
     
     
     public class SubsystemPage : SubsystemPageBase {
-        
+        public override Type ParentPage
+        {
+            get { return typeof (TheKernel); }
+        }
+
+        public override string Name
+        {
+            get { return "Subsystems"; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
             _.Paragraph("Subsystems allow you to seperate the various pieces of your project into logical and reusable parts.  Subsystems contain any number of Services, Elements, Views, StateMachines ..etc");

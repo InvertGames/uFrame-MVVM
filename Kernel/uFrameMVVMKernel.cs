@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-
+using System.Reflection;
 public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
 
     private static GameContainer _container;

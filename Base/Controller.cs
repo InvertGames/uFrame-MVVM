@@ -42,6 +42,15 @@ public abstract class SystemService : ISystemService
     {
         
     }
+    public IObservable<TEvent> OnEvent<TEvent>()
+    {
+        return EventAggregator.GetEvent<TEvent>();
+    }
+
+    public void Publish(object eventMessage)
+    {
+        EventAggregator.Publish(eventMessage);
+    }
 }
 public abstract class SystemServiceMonoBehavior : UnityEngine.MonoBehaviour, ISystemService
 {
@@ -67,11 +76,20 @@ public abstract class SystemServiceMonoBehavior : UnityEngine.MonoBehaviour, ISy
     {
         
     }
+    public IObservable<TEvent> OnEvent<TEvent>()
+    {
+        return EventAggregator.GetEvent<TEvent>();
+    }
 
+    public void Publish(object eventMessage)
+    {
+        EventAggregator.Publish(eventMessage);
+    }
 }
 
 public static class SystemControllerExtensions
 {
+
     public static IObservable<TEvent> OnEvent<TEvent>(this ISystemService systemController)
     {
         return systemController.EventAggregator.GetEvent<TEvent>();
@@ -88,20 +106,11 @@ public static class SystemControllerExtensions
 /// </summary>
 public abstract class Controller : SystemService
 {
-    private List<ViewModel> _viewModels = new List<ViewModel>();
-
-    public List<ViewModel> ViewModels
-    {
-        get { return _viewModels; }
-        set { _viewModels = value; }
-    }
-
 
     /// <summary>
     /// The dependency container that this controller will use
     /// </summary>
     public IGameContainer Container { get; set; }
-
 
     protected Controller()
     {
@@ -186,14 +195,12 @@ public abstract class Controller : SystemService
     public void ExecuteCommand<TArgument>(ICommandWith<TArgument> command, TArgument argument)
     {
         //CommandDispatcher.ExecuteCommand(command, argument);
-    }
+    } 
 
     public virtual void DisposingViewModel(ViewModel viewModel)
     {
         
     }
-    
-
 };
 
 public interface IViewModelManager : IEnumerable<ViewModel>

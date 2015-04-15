@@ -6,7 +6,16 @@ namespace Invert.uFrame.MVVM {
     
     
     public class StatePage : StatePageBase {
-        
+        public override Type ParentPage
+        {
+            get { return typeof (StateMachinePage); }
+        }
+
+        public override decimal Order
+        {
+            get { return 2; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
         }

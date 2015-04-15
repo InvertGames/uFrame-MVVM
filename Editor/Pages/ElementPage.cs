@@ -17,12 +17,12 @@ namespace Invert.uFrame.MVVM {
                               "ViewModels are very portable.  Although they do not require a View " +
                               "in order to exist, if you would like to represent a ViewModel's data " +
                               "in Unity, you would create a View and bind it to that ViewModel.");
-
+            _.Break();
             _.Title2("Where does it exist in Unity?");
             _.Paragraph("ViewModels don't technically exist until runtime, at which point they are " +
                               "instantiated into memory as needed.  If a View exists in your scene, at runtime " +
-                              "it asks the SceneManager for the specific ViewModel it wants to bind to, at which " +
-                              "point the SceneManager will return the ViewModel with the matching given identifier," +
+                              "it will publish the 'ViewCreatedEvent' for the specific ViewModel it wants to bind to, at which " +
+                              "point the ViewService will set the ViewModel with the matching given identifier," +
                               " creating it if it doesn't exist.  When defining single instances of a particular " +
                               "ViewModel through the uFrame Editor window on a subsystem, these instances are also " +
                               "created at runtime and will be readily available in the SceneManager's Dependency " +

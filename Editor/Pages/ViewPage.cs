@@ -8,7 +8,16 @@ namespace Invert.uFrame.MVVM {
     
     
     public class ViewPage : ViewPageBase {
-        
+        public override Type ParentPage
+        {
+            get { return typeof (ElementPage); }
+        }
+
+        public override string Name
+        {
+            get { return "Element Views"; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _)
         {
             base.GetContent(_);

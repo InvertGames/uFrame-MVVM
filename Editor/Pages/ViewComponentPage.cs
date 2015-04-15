@@ -6,6 +6,11 @@ namespace Invert.uFrame.MVVM {
     
     
     public class ViewComponentPage : ViewComponentPageBase {
+        public override Type ParentPage
+        {
+            get { return typeof (ViewPage); }
+        }
+
         public override decimal Order
         {
             get { return 1; }

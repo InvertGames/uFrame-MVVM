@@ -6,7 +6,11 @@ namespace Invert.uFrame.MVVM {
     
     
     public class StateMachinePage : StateMachinePageBase {
-        
+        public override string Name
+        {
+            get { return "State Machines"; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
         }

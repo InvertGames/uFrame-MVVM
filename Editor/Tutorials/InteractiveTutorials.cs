@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Invert.uFrame.MVVM;
 
-public class GettingStartedPage : uFrameMVVMPage
+public class InteractiveTutorials : uFrameMVVMPage
 {
     public override string Name
     {
-        get { return "Getting Started"; }
+        get { return "Interactive Tutorials"; }
     }
     
     public override decimal Order

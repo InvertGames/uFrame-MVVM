@@ -1,15 +1,14 @@
 using System.CodeDom;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Invert.Core;
 using Invert.Core.GraphDesigner;
-using Invert.ICSharpCode.NRefactory.TypeSystem;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
-public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
+public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRefactorable
 {
     public string OutputPath
     {
@@ -23,10 +22,6 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
 
     public void TemplateSetup()
     {
-        if (Ctx.IsDesignerFile) //TODO FIX FOR INHERITANCE (Ctx.Data.BaseNode)
-        { 
-            Ctx.SetBaseType(InvertApplication.FindType(typeof(ViewComponent).FullName));
-        }
         Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
         Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
@@ -66,6 +61,15 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
         Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0}, Argument = arg }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
+    }
+
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+            yield return "{0}Base";
+        }
     }
 }
 
