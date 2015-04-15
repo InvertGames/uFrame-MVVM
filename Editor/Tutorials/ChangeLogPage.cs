@@ -28,7 +28,7 @@ public class ChangeLogPage : uFrameMVVMPage
 
     public override decimal Order
     {
-        get { return -4; }
+        get { return 999; }
     }
 
     public override void GetContent(IDocumentationBuilder _)
