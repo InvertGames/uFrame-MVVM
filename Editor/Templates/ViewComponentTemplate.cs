@@ -2,6 +2,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
@@ -22,6 +23,9 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRe
 
     public void TemplateSetup()
     {
+
+        Ctx.SetBaseType(InvertApplication.FindType(typeof(ViewComponent).FullName));
+
         Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
         Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));

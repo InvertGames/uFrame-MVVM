@@ -221,11 +221,15 @@ using UnityEngine.UI;
                 slider.value = p2iSelector(value);
             });
 
+            Observable.EveryEndOfFrame().Take(1).Subscribe(_ => slider.value = p2iSelector(property.Value));
+
             return Disposable.Create(() =>
             {
                 d1.Dispose();
                 d2.Dispose();
             }).DisposeWith(viewBase);
+
+
         }
 
         public static IDisposable BindSliderToProperty(this ViewBase viewBase, Slider slider, P<float> property)
