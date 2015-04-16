@@ -239,6 +239,16 @@ public class JsonStream : ISerializerStream
         CurrentNode.Add(name, new JSONData(value));
     }
 
+    public void SerializeColor(string name, Color value)
+    {
+        var node = new JSONClass();
+        node.Add("r",new JSONData(value.r));
+        node.Add("g", new JSONData(value.g));
+        node.Add("b", new JSONData(value.b));
+        node.Add("a", new JSONData(value.a));
+        CurrentNode.Add(name, node.AsObject);
+    }
+
     public void SerializeBytes(string name, byte[] bytes)
     {
 //        throw new NotImplementedException();
@@ -348,6 +358,16 @@ public class JsonStream : ISerializerStream
     public string DeserializeString(string name)
     {
         return CurrentNode[name].Value;
+    }
+
+    public Color DeserializeColor(string name)
+    {
+        return new Color(
+            CurrentNode[name]["r"].AsFloat,
+            CurrentNode[name]["g"].AsFloat,
+            CurrentNode[name]["b"].AsFloat,
+            CurrentNode[name]["a"].AsFloat
+            );
     }
 
     public Vector2 DeserializeVector2(string name)

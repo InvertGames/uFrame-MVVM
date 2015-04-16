@@ -27,6 +27,7 @@ public interface ISerializerStream
     void SerializeDouble(string name, double value);
 
     void SerializeFloat(string name, float value);
+    void SerializeColor(string name, Color value);
 
     //void SerializeEnum(string name, Enum value);
     void SerializeBytes(string name, byte[] bytes);
@@ -42,6 +43,7 @@ public interface ISerializerStream
     bool DeserializeBool(string name);
 
     string DeserializeString(string name);
+    Color DeserializeColor(string color);
 
     Vector2 DeserializeVector2(string name);
 
