@@ -45,10 +45,7 @@ public class ViewModelManagers : uFrameMVVMPage<ElementPage>
         get { return -1; }
     }
 
-    public override Type ParentPage
-    {
-        get { return typeof (TheKernel); }
-    }
+
 
     public override void GetContent(IDocumentationBuilder _)
     {

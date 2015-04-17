@@ -1,3 +1,5 @@
+using Invert.Core.GraphDesigner;
+
 namespace Invert.uFrame.MVVM {
     using System;
     using System.Collections;
@@ -23,6 +25,18 @@ namespace Invert.uFrame.MVVM {
 
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
+            var graph = new ScaffoldGraph();
+            var typeRef = graph.BeginNode<TypeReferenceNode>("ViewCreatedEvent").EndNode();
+            graph.BeginNode<ServiceNode>("MyService");
+            HandlersReference handler;
+            graph.AddItem<HandlersReference>("ViewCreatedEvent", out handler);
+            handler.SourceIdentifier = typeRef.Identifier;
+            var service = graph.EndNode() as ServiceNode;
+            _.Title2("Designer File Implementation");
+            _.TemplateExample<ServiceTemplate, ServiceNode>(service);
+            _.Break();
+            _.Title2("Editable File Implementation");
+            _.TemplateExample<ServiceTemplate, ServiceNode>(service,false);
         }
     }
 }

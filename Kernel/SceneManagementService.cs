@@ -18,10 +18,9 @@ public class SceneManagementService : SystemServiceMonoBehavior
         get { return _loadedScenes ?? (_loadedScenes = new List<IScene>()); }
     }
     private List<IScene> _loadedScenes;
+
     public override void Setup()
     {
-
-
         base.Setup();
         this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
         {
@@ -34,23 +33,19 @@ public class SceneManagementService : SystemServiceMonoBehavior
             this.UnloadScene(_.SceneName);
         });
 
-//        this.OnEvent<SystemsLoadedEvent>().Subscribe(_ =>
-  //      {
-            var attachedSceneLoaders = uFrameMVVMKernel.Instance.GetComponentsInChildren(typeof(ISceneLoader)).OfType<ISceneLoader>();
-            foreach (var sceneLoader in attachedSceneLoaders)
-            {
-                uFrameMVVMKernel.Container.RegisterSceneLoader(sceneLoader);
-                uFrameMVVMKernel.Container.Inject(sceneLoader);
-                SceneLoaders.Add(sceneLoader);
-            }
-            _defaultSceneLoader = gameObject.GetComponent<DefaultSceneLoader>() ??
-                                  gameObject.AddComponent<DefaultSceneLoader>();
-
-      //  });
+        var attachedSceneLoaders = uFrameMVVMKernel.Instance.GetComponentsInChildren(typeof(ISceneLoader)).OfType<ISceneLoader>();
+        foreach (var sceneLoader in attachedSceneLoaders)
+        {
+            uFrameMVVMKernel.Container.RegisterSceneLoader(sceneLoader);
+            uFrameMVVMKernel.Container.Inject(sceneLoader);
+            SceneLoaders.Add(sceneLoader);
+        }
+        _defaultSceneLoader = gameObject.GetComponent<DefaultSceneLoader>() ??
+                              gameObject.AddComponent<DefaultSceneLoader>();
 
         this.OnEvent<SceneAwakeEvent>().Subscribe(_ => StartCoroutine(SetupScene(_.Scene)));
-
     }
+
     private List<ISceneLoader> _sceneLoaders;
     public List<ISceneLoader> SceneLoaders
     {
@@ -58,8 +53,8 @@ public class SceneManagementService : SystemServiceMonoBehavior
         {
             return _sceneLoaders ?? (_sceneLoaders = new List<ISceneLoader>());
         }
-    }  
-    
+    }
+
     private DefaultSceneLoader _defaultSceneLoader;
 
 
@@ -70,7 +65,8 @@ public class SceneManagementService : SystemServiceMonoBehavior
 
     public void QueueSceneLoad(string sceneName, ISceneSettings settings)
     {
-        ScenesQueue.Enqueue(new SceneQueueItem(){
+        ScenesQueue.Enqueue(new SceneQueueItem()
+        {
             Loader = LoadSceneInternal(sceneName),
             Name = sceneName
         });
@@ -104,28 +100,28 @@ public class SceneManagementService : SystemServiceMonoBehavior
     public IEnumerator SetupScene(IScene sceneRoot)
     {
 
-         this.Publish(new SceneLoaderEvent()
-        {
-            State = SceneState.Instantiated,
-            SceneRoot = sceneRoot
-        });
+        this.Publish(new SceneLoaderEvent()
+       {
+           State = SceneState.Instantiated,
+           SceneRoot = sceneRoot
+       });
 
 
 
         //If the scene was loaded via the api (it was queued having some name and settings)
-         if (ScenesQueue.Count > 0)
+        if (ScenesQueue.Count > 0)
         {
             var sceneQueueItem = ScenesQueue.Dequeue();
             sceneRoot.Name = sceneQueueItem.Name;
-            sceneRoot._SettingsObject = sceneQueueItem.Settings;    
+            sceneRoot._SettingsObject = sceneQueueItem.Settings;
         }
         //Else, means scene was the start scene (loaded before kernel)
-        else 
+        else
         {
             sceneRoot.Name = Application.loadedLevelName;
         }
 
-        
+
         this.Publish(new SceneLoaderEvent()
         {
             State = SceneState.Instantiated,
@@ -228,7 +224,7 @@ public class SceneManagementService : SystemServiceMonoBehavior
         this.ExecuteLoad();
     }
 
-    
+
 }
 
 public class SceneQueueItem
