@@ -23,9 +23,10 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRe
 
     public void TemplateSetup()
     {
-
-        Ctx.SetBaseType(InvertApplication.FindType(typeof(ViewComponent).FullName));
-
+        if (Ctx.IsDesignerFile)
+        {
+            Ctx.SetBaseType(InvertApplication.FindType(typeof (ViewComponent).FullName));
+        }
         foreach (var property in Ctx.Data.View.Element.PersistedItems.OfType<ITypedItem>())
         {
             var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
