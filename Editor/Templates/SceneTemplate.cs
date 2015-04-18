@@ -169,16 +169,19 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
 
         if (Ctx.IsDesignerFile)
         {
-            foreach (var item in Ctx.Data.Instances)
-            {
-                Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
-            }
 
             foreach (var item in Ctx.Data.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>())
             {
                 Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());
                 Ctx._("Container.RegisterController<{0}>({0})", item.Name.AsController());
             }
+
+            foreach (var item in Ctx.Data.Instances)
+            {
+                Ctx._("Container.RegisterViewModel<{0}>({1}, \"{1}\")", item.SourceItem.Name.AsViewModel(), item.Name, item.Name);
+            }
+
+
         }
         
     }

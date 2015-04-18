@@ -42,9 +42,8 @@ public class SystemLoader : MonoBehaviour,ISystemLoader
 
     public TViewModel CreateInstanceViewModel<TViewModel>(string identifier) where TViewModel : ViewModel
     {
-        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), EventAggregator) as TViewModel;
-        contextViewModel.Identifier = identifier;
-        return contextViewModel;
+        var controller = uFrameMVVMKernel.Container.Resolve<Controller>(typeof(TViewModel).Name);
+        return (TViewModel)controller.Create(identifier);
     }
 
 }

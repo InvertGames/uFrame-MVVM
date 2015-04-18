@@ -26,6 +26,14 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRe
 
         Ctx.SetBaseType(InvertApplication.FindType(typeof(ViewComponent).FullName));
 
+        foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
+        {
+            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+            if (type == null) continue;
+
+            Ctx.TryAddNamespace(type.Namespace);
+        }
+
         Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
         Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
         Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
