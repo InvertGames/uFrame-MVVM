@@ -218,15 +218,14 @@ public abstract class ViewModel
 
     public void Dispose()
     {
-        if (Aggregator != null)
-        Aggregator.Publish(new ViewModelDestroyedEvent()
-        {
-            ViewModel = this
-        });
-
         Unbind();
+        if (Disposer != null)
+        {
+            Disposer(this);
+        }
     }
 
+    public Action<ViewModel> Disposer { get; set; }
     public virtual void Unbind()
     {
         foreach (var binding in Bindings)

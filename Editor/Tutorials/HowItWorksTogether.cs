@@ -6,6 +6,7 @@ public class HowItWorksTogether : uFrameMVVMPage<MVVMPage>
     public override void GetContent(IDocumentationBuilder _)
     {
         base.GetContent(_);
+        _.ImageByUrl("http://i.imgur.com/ghRDgY4.png");
         _.Paragraph("So if you've made games in Unity before, you may have noticed how easy " +
                     "it is to end up with a mess of components with heavy dependencies.  Unit " +
                     "testing is impossible.  Adding/removing properties or changing the game " +

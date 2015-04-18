@@ -150,6 +150,7 @@ public abstract class Controller : SystemService
     public virtual ViewModel CreateEmpty(string identifier)
     {
         var vm = CreateEmpty();
+        vm.Disposer = this.DisposingViewModel;
         vm.Identifier = identifier;
         uFrameMVVMKernel.Container.RegisterViewModel(vm,identifier);
         return vm;

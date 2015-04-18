@@ -1,7 +1,7 @@
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 
-public class ImportantNotes : uFrameMVVMPage
+public class ImportantNotes : uFrameMVVMPage<MVVMPage>
 {
 
     public override void GetContent(IDocumentationBuilder _)

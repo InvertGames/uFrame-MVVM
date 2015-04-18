@@ -15,6 +15,9 @@ public class ViewService : SystemServiceMonoBehavior
 
         this.OnEvent<ViewCreatedEvent>()
             .Subscribe(ViewCreated);
+
+        this.OnEvent<ViewDestroyedEvent>()
+            .Subscribe(ViewDestroyed);
     }
 
     public List<ViewBase> Views
@@ -81,6 +84,18 @@ public class ViewService : SystemServiceMonoBehavior
         Views.Add(view);
     }
 
+    private void ViewDestroyed(ViewDestroyedEvent data)
+    {
+        if (data.View.DisposeOnDestroy)
+        {
+            var vm = data.View.ViewModelObject;
+            vm.Dispose();
+            Publish(new ViewModelDestroyedEvent()
+            {
+                ViewModel = vm,
+            });
+        }
+    }
     /// <summary>
     /// This is method is called by each view in order to get it's view-model as well as place it in
     /// the SceneContext if the "Save & Load" option is checked in it's inspector

@@ -3,7 +3,7 @@ using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using UnityEngine;
 
-public class ChangeLogPage : uFrameMVVMPage
+public class ChangeLogPage : uFrameMVVMPage<MVVMPage>
 {
     private TextAsset _changeLog;
     private string[] _lines;
@@ -13,7 +13,7 @@ public class ChangeLogPage : uFrameMVVMPage
         get { return _changeLog ?? (_changeLog = Resources.Load("uFrameReadme", typeof(TextAsset)) as TextAsset); }
         set { _changeLog = value; }
     }
-
+     
     public string[] Lines
     {
         get

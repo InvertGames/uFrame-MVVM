@@ -59,6 +59,9 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
 
     [SerializeField, HideInInspector]
     private bool _BindOnStart = true;
+    [SerializeField, HideInInspector]
+    private bool _DisposeOnDestroy;
+
 
     [HideInInspector]
     private ViewModel _Model;
@@ -368,10 +371,6 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     {
         DisposeBindings();
         IsBound = false;
-
-        if (ViewModelObject == null)
-            _Model = CreateModel();
-
     }
 
     public virtual void DisposeBindings()
@@ -426,6 +425,12 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
         {
             return _overrideViewModel;
         }
+    }
+
+    public bool DisposeOnDestroy
+    {
+        get { return _DisposeOnDestroy; }
+        set { _DisposeOnDestroy = value; }
     }
 }
 

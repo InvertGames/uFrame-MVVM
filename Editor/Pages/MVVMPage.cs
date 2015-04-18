@@ -14,6 +14,7 @@ namespace Invert.uFrame.MVVM {
        
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
+
         }
     }
 }
