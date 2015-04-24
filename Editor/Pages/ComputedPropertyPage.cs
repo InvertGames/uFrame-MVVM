@@ -11,6 +11,11 @@ namespace Invert.uFrame.MVVM {
             get { return typeof (ElementPage); }
         }
 
+        public override string Name
+        {
+            get { return "Computed Properties"; }
+        }
+
         public override decimal Order
         {
             get { return 1; }

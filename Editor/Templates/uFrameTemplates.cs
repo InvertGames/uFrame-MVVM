@@ -81,6 +81,7 @@ public class uFrameTemplates : DiagramPlugin
                     args.Decleration.Members.Add(method);
 
                 }
+                args.Method.Parameters[0].Type = "Invert.StateMachine.State".ToCodeReference();
             });
 
         container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionsChildItem)

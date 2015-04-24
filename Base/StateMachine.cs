@@ -61,7 +61,10 @@ namespace Invert.StateMachine
         public State CurrentState
         {
             get { return Value; }
-            set { Value = value; }
+            set
+            {
+                Value = value;
+            }
         }
         
         public virtual void Compose(List<State> states)
@@ -97,8 +100,9 @@ namespace Invert.StateMachine
         {
             if (transition.From == CurrentState)
             {
-                CurrentState = transition.To;
                 LastTransition = transition;
+                CurrentState = transition.To;
+               
             }
                 
         }

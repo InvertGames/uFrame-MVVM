@@ -18,6 +18,11 @@ namespace Invert.uFrame.MVVM {
             get { return "Element Views"; }
         }
 
+        public override decimal Order
+        {
+            get { return 5; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _)
         {
             base.GetContent(_);

@@ -67,7 +67,7 @@ public class GraphDataInspector : Editor
             //    if (string.IsNullOrEmpty(item.ToIdentifier)) continue;
             //    connections.Add(new ConnectionData(item.Identifier, item.ToIdentifier));
             //}
-            //converted.Add(oldNode, node);
+            converted.Add(oldNode, node);
         }
         foreach (var oldNode in oldGraph.NodeItems.OfType<SubSystemData>())
         {
@@ -84,7 +84,7 @@ public class GraphDataInspector : Editor
             {
                 Identifier = oldNode.Identifier,
                 Name = oldNode.Name,
-                Type = oldNode.RelatedType
+                PropertyType = oldNode.RelatedType
             };
 
             foreach (var item in oldNode.DependantProperties)

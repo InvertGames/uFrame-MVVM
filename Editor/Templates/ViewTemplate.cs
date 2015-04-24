@@ -43,6 +43,8 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
             return null;
         }
     }
+
+
     public virtual void TemplateSetup()
     {
         this.Ctx.TryAddNamespace("UniRx");
@@ -183,6 +185,9 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
     [TemplateMethod(MemberGeneratorLocation.Both)]
     protected virtual void InitializeViewModel(ViewModel model)
     {
+        Ctx._comment("var vm = model as {0}", Ctx.Data.Element.Name.AsViewModel());
+        Ctx._comment("This method is invoked when applying the data from the inspector to the viewmodel.  Add any view-specific customizations here.");
+
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
         if (!Ctx.IsDesignerFile) return;
         Ctx.CurrentMethod.invoke_base(true);
@@ -214,15 +219,20 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
             else
             {
                 field.Type = new CodeTypeReference(typeof(ViewBase));
-                Ctx._("{0}.{1} = this.{2} == null ? null : this.{2}.ViewModelObject as {3}", variableName, property.Name, property.Name.AsField(), relatedViewModel.Name.AsViewModel());
+                Ctx._("{0}.{1} = this.{2} == null ? null :  ViewService.FetchViewModel(this.{2}) as {3}", variableName, property.Name, property.Name.AsField(), relatedViewModel.Name.AsViewModel());
             }
         }
+
+     
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, true)]
     public virtual void Bind()
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
+        Ctx._comment("Use this.{0} to access the viewmodel.",Ctx.Data.Element.Name);
+        Ctx._comment("Use this method to subscribe to the view-model.");
+        Ctx._comment("Any designer bindings are created in the base implementation.");
 
         if (!Ctx.IsDesignerFile)
         {

@@ -87,7 +87,7 @@ public class ServiceTemplate : IClassTemplate<ServiceNode>, IClassRefactorable
         Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("<summary>", true));
         Ctx.CurrentMethod.Comments.Add(
                 new CodeCommentStatement(string.Format("This method is executed when using this.Publish(new {0}())",
-                    Ctx.CurrentMethod.Parameters[0].Type)));
+                    Ctx.ItemAs<IClassTypeNode>().ClassName)));
         Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("</summary>", true));
     
     }

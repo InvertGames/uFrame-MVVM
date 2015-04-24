@@ -180,7 +180,7 @@ public static class ViewExtensions
 
     public static ViewBase InstantiateView(this Transform parent, string viewName, ViewModel model, Vector3 position, Quaternion rotation, string identifier = null)
     {
-        return InstantiateView(parent, GameManager.ViewResolver.FindView(viewName), model, position, rotation,identifier);
+        return InstantiateView(parent, uFrameMVVMKernel.ViewResolver.FindView(viewName), model, position, rotation,identifier);
     }
 
     public static ViewBase InstantiateView(this Transform parent, GameObject prefab, ViewModel model, Vector3 position, string identifier = null)

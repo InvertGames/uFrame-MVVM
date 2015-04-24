@@ -436,7 +436,6 @@ public static class ContainerExtensions
     public static void RegisterController<TController>(this IGameContainer container, TController controller) where TController : Controller
     {
         container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
-        container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
         container.RegisterInstance<ISystemService>(controller,controller.GetType().Name,false);
         container.RegisterInstance<TController>(controller,false);
         // Todo Convention hack make it prettier :)

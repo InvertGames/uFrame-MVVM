@@ -86,7 +86,7 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
     public override void Perform(DiagramViewModel node)
     {
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
-        if (!EditorUtility.DisplayDialog("ACHTUNG!", "Before scaffolding the core, make sure you saved and compiled!",
+        if (!EditorUtility.DisplayDialog("Warning!", "Before scaffolding the core, make sure you saved and compiled!",
             "Yes, I saved and compiled!", "Cancel")) return;
 
         var paths = node.GraphData.CodePathStrategy;
@@ -204,7 +204,7 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
 
     private T FindComponentInScene<T>() where T : MonoBehaviour
     {
-        object[] obj = GameObject.FindSceneObjectsOfType(typeof(GameObject));
+        object[] obj = Object.FindObjectsOfType(typeof(GameObject));
         foreach (object o in obj)
         {
             GameObject g = (GameObject)o;

@@ -203,15 +203,16 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     {
         get { return null; }
     }
-    [TemplateMethod("{0}CollectionChanged", MemberGeneratorLocation.DesignerFile, true, AutoFill = AutoFillType.NameOnly)]
-    protected virtual void CollectionChanged()
-    {
-        // Doesn't like this one in a normal parameter
-        Ctx.CurrentMethod.Parameters.Add(
-            new CodeParameterDeclarationExpression("System.Collections.Specialized.NotifyCollectionChangedEventArgs",
-                "args"));
 
-    }
+    //[TemplateMethod("{0}CollectionChanged", MemberGeneratorLocation.DesignerFile, true, AutoFill = AutoFillType.NameOnly)]
+    //protected virtual void CollectionChanged()
+    //{
+    //    // Doesn't like this one in a normal parameter
+    //    Ctx.CurrentMethod.Parameters.Add(
+    //        new CodeParameterDeclarationExpression("System.Collections.Specialized.NotifyCollectionChangedEventArgs",
+    //            "args"));
+
+    //}
     #endregion
 
     #region Commands
@@ -607,6 +608,8 @@ public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefa
             return Path2.Combine(Ctx.Data.Node.Graph.Name, "Commands");
         }
     }
+
+
     public override void TemplateSetup()
     {
         base.TemplateSetup();

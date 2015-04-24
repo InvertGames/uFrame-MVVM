@@ -286,6 +286,7 @@ public class ViewInspector : uFrameInspector
         var injectProperty = serializedObject.FindProperty("_InjectView");
         var bindOnStartProperty = serializedObject.FindProperty("_BindOnStart");
         var overrideProperty = serializedObject.FindProperty("_overrideViewModel");
+        var disposeOnDestory = serializedObject.FindProperty("_DisposeOnDestroy");
 
 
         if (!string.IsNullOrEmpty(t.DefaultIdentifier) && (resolveNameProperty.stringValue != t.DefaultIdentifier))
@@ -297,13 +298,17 @@ public class ViewInspector : uFrameInspector
         Info("If you leave this empty, View will fetch a new viewmodel on awake.\n" +
              "Otherwise it is going to always use the viewmodel with given identifier.\n" +
              "If viewmodel with given id does not exist, one will be automatically created and registered.");
-        EditorGUILayout.PropertyField(resolutionNameProperty, new GUIContent("ViewModel Identidier"));
+        EditorGUILayout.PropertyField(resolutionNameProperty, new GUIContent("ViewModel Identifier"));
 
         Info("Should this view be injected with Dependencies defined in the GameContainer.  e.g.GameManager.Resolve<MyViewModel>(ResolveName);");
         EditorGUILayout.PropertyField(injectProperty, new GUIContent("Inject This View"));
 
         Info("Should this view try to bind on start.");
         EditorGUILayout.PropertyField(bindOnStartProperty, new GUIContent("Bind On Start"));
+
+        Info("When the gameobject/view is destroyed should its dispose of the view-model as well?.");
+        EditorGUILayout.PropertyField(disposeOnDestory, new GUIContent("Dispose On Destroy"));
+        
 
         Info("This should always be checked except when you are instantiating it manually, or its using a shared instance that is already being initialized.");
         EditorGUILayout.PropertyField(overrideProperty, new GUIContent("Initialize ViewModel"));

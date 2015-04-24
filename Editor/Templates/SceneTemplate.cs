@@ -72,7 +72,11 @@ public partial class SceneLoaderTemplate : IClassTemplate<SceneTypeNode>
             //Ctx.SetBaseType("SceneLoader<{0}>",Ctx.Data.Name)
             Ctx.CurrentDecleration.BaseTypes.Clear();
             Ctx.CurrentDecleration.BaseTypes.Add(string.Format("SceneLoader<{0}>", Ctx.Data.Name));
-        } 
+        }
+        else
+        {
+            Ctx.TryAddNamespace("UnityEngine");
+        }
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, CallBase = false)]
@@ -159,6 +163,7 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
         Ctx.AddIterator("ControllerProperty", node => node.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>());
     }
 
+
     [TemplateMethod(MemberGeneratorLocation.Both,CallBase = true)]
     public void Load()
     {
@@ -169,7 +174,7 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
 
         if (Ctx.IsDesignerFile)
         {
-
+            
             foreach (var item in Ctx.Data.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>())
             {
                 Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())", item.Name.AsViewModel());

@@ -102,19 +102,26 @@ public class ViewService : SystemServiceMonoBehavior
     /// </summary>
     /// <param name="viewBase">The view that is requesting it's view-model.</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
-    public ViewModel FetchViewModel(ViewBase viewBase)
+    public static ViewModel FetchViewModel(ViewBase viewBase)
     {
+        if (viewBase.ViewModelObject != null)
+        {
+            return viewBase.ViewModelObject;
+        }
         if (viewBase.InjectView)
         {
             uFrameMVVMKernel.Container.Inject(viewBase);
         }
         // Attempt to resolve it by the identifier 
-        var contextViewModel = uFrameMVVMKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
+        //var contextViewModel = uFrameMVVMKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
+        // It now only registers under the viewmodeltype to allow multip different view-models with the same identifier
+        var contextViewModel = uFrameMVVMKernel.Container.Resolve(viewBase.ViewModelType, viewBase.Identifier) as ViewModel;
+
         // If it doesn't resolve by the identifier we need to create it
         if (contextViewModel == null)
         {
             // Either use the controller to create it or create it ourselves
-            contextViewModel = this.CreateViewModel(viewBase.ViewModelType);
+            contextViewModel = ISystemServiceExtensions.CreateViewModel(viewBase.ViewModelType);
             contextViewModel.Identifier = viewBase.Identifier;
        
             // Register it, this is usually when a non registered element is treated like a single-instance anways
@@ -122,9 +129,9 @@ public class ViewService : SystemServiceMonoBehavior
                     string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
 
             // Register it under the generic view-model type
-            uFrameMVVMKernel.Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
+            //uFrameMVVMKernel.Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
        
-            this.Publish(new ViewModelCreatedEvent()
+            uFrameMVVMKernel.EventAggregator.Publish(new ViewModelCreatedEvent()
             {
                 ViewModel = contextViewModel
             });

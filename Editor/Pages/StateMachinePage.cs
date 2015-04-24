@@ -13,6 +13,20 @@ namespace Invert.uFrame.MVVM {
 
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
+            _.Paragraph("uFrame utilizes a new concept developed to fit the uFrame and RX paradigm of programming.  " +
+                        "We like to call this \"Re-active\" state machines. ");
+            _.Paragraph("The main concept of state machines in uFrame MVVM is that when defining them in your " +
+                        "diagrams you don't need to focus on anything other than the states and transitions that " +
+                        "make up the machine.  Making the machine come to life is a matter of wiring them to " +
+                        "computed properties, command bindings, and view bindings.  But initially, you can focus " +
+                        "purely on the high-level rather than implementation, once commands and transitions " +
+                        "are all wired together transitions and states can be easily tweaked with minimal to " +
+                        "zero changes in your code.");
+            _.Paragraph("Reactive State Machines employ the concept of data subscriptions causing transitions, rather than polling data every frame, this can give a definite increase in performance.");
+            _.Break();
+            _.ImageByUrl("http://i.imgur.com/CPymbPH.png");
+
+            _.AlsoSeePages(typeof(UsingStateMachines));
         }
     }
 }

@@ -33,7 +33,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneSelectionCommand(), "AddToSceneSelection");
         container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneCommand(), "AddViewToScene");
-        container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneSelectionCommand(), "AddViewToSceneSelection");
+        //container.RegisterInstance<IDiagramNodeCommand>(new AddViewToSceneSelectionCommand(), "AddViewToSceneSelection");
         container.RegisterInstance<IUFrameTypeProvider>(new uFrameTypeProvider());
         container.RegisterInstance<IToolbarCommand>(new ScaffoldOrUpdateKernelCommand(),"ScaffoldOrUpdateKernel");
     }

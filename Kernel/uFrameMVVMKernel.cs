@@ -182,7 +182,7 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
 
         if (isViewModel)
         {
-            var contextViewModel = Container.Resolve<ViewModel>(identifier);
+            var contextViewModel = Container.Resolve(type, identifier);
             if (contextViewModel != null)
             {
                 return contextViewModel;
@@ -311,4 +311,3 @@ public static class uFrameKernelExtensions
         return uFrameMVVMKernel.EventAggregator.GetEvent<T>();
     }
 }
-

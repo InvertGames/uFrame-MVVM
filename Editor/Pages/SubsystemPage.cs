@@ -22,13 +22,18 @@ namespace Invert.uFrame.MVVM {
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
             _.Paragraph("Subsystems allow you to seperate the various pieces of your project into logical and reusable parts.  Subsystems contain any number of Services, Elements, Views, StateMachines ..etc");
-            _.LinkToPage<SystemLoaders>();
+ 
             _.ContentByPage<SystemLoaders>();
         }
     }
 
     public class SystemLoaders : uFrameMVVMPage<SubsystemPage>
     {
+        public override bool ShowInNavigation
+        {
+            get { return false; }
+        }
+
         public override void GetContent(IDocumentationBuilder _)
         {
             base.GetContent(_);

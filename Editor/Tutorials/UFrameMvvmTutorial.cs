@@ -5,7 +5,7 @@ using Invert.uFrame.MVVM;
 using UnityEditor;
 using UnityEngine;
 
-public abstract class UFrameMvvmTutorial : uFrameMVVMPage<InteractiveTutorials>
+public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 {
     public sealed override void GetContent(IDocumentationBuilder _)
     {
@@ -83,10 +83,10 @@ public abstract class UFrameMvvmTutorial : uFrameMVVMPage<InteractiveTutorials>
     {
 
         var project = projectRepository as DefaultProjectRepository;
-
-        var path = AssetDatabase.GetAssetPath(project);
-        var prefabName = project.Name + "Kernel.prefab";
-        var prefabNameWithPath = path.Replace(project.name + ".asset", prefabName);
+        
+        var path = project == null ? string.Empty : AssetDatabase.GetAssetPath(project);
+        var prefabName = project == null ? "Kernel.prefab" : project.Name + "Kernel.prefab";
+        var prefabNameWithPath = project == null ? prefabName : path.Replace(project.name + ".asset", prefabName);
 
 
         var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
@@ -122,9 +122,9 @@ public abstract class UFrameMvvmTutorial : uFrameMVVMPage<InteractiveTutorials>
     }
     public ElementNode TheGame { get; set; }
     public ViewNode GameView { get; set; }
-    protected void SaveAndCompile(IDocumentationBuilder _)
+    protected void SaveAndCompile(IDocumentationBuilder _, DiagramNode node = null)
     {
-        _.ShowTutorialStep(SaveAndCompile(SceneA));
+        _.ShowTutorialStep(SaveAndCompile(node ?? SceneA));
     }
 
     public void EnsureCode(IDocumentationBuilder _, DiagramNode codeFor, string description, string imageUrl, string filenameSearch, string codeSearch)
@@ -136,6 +136,23 @@ public abstract class UFrameMvvmTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     }
 
+    protected void EnsureNamespace(IDocumentationBuilder _)
+    {
+        _.ShowTutorialStep(new TutorialStep("Set the project namespace to something unique", () =>
+        {
+            if (string.IsNullOrEmpty(TheProject.Namespace))
+            {
+                return
+                    "The current namespace is not set yet.  Navigate to the project repository, and set the namespace property.";
+
+            }
+            return null;
+        }), b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/CBXSJbZ.png");
+        });
+   
+    }
     protected bool BasicSetup(IDocumentationBuilder _, string systemName = "SystemA", string sceneName = "SystemB")
     {
         TheProject = DoCreateNewProjectStep(_);
@@ -143,6 +160,8 @@ public abstract class UFrameMvvmTutorial : uFrameMVVMPage<InteractiveTutorials>
 
         TheGraph = DoGraphStep<MVVMGraph>(_);
         if (TheGraph == null) return false;
+
+        EnsureNamespace(_);
 
         SystemA = DoNamedNodeStep<SubsystemNode>(_, "SystemA");
         if (SystemA == null) return false;
@@ -163,11 +182,55 @@ public abstract class UFrameMvvmTutorial : uFrameMVVMPage<InteractiveTutorials>
         GameView = DoNamedNodeStep<ViewNode>(_, "GameView", TheGame);
         DoCreateConnectionStep(_, TheGame, GameView == null ? null : GameView.ElementInputSlot);
     }
+    protected bool CreatePlayerElement(IDocumentationBuilder _)
+    {
+        ThePlayer = DoNamedNodeStep<ElementNode>(_, "Player", SystemA, b => { });
+        if (TheGame == null) return false;
+        return true;
+    }
+
+    public ElementNode ThePlayer { get; set; }
+
+    protected void CreatePlayerView(IDocumentationBuilder _)
+    {
+        ThePlayerView = DoNamedNodeStep<ViewNode>(_, "PlayerView", ThePlayer);
+        DoCreateConnectionStep(_, ThePlayer, ThePlayerView == null ? null : ThePlayerView.ElementInputSlot);
+    }
+
+    public ViewNode ThePlayerView { get; set; }
 
     protected void GameBasicSetup(IDocumentationBuilder _)
     {
         BasicSetup(_);
+       GameSetup(_);
+    }
+
+    protected void GameSetup(IDocumentationBuilder _)
+    {
         CreateGameElement(_);
         CreateGameView(_);
+    }
+    protected void PlayerSetup(IDocumentationBuilder _)
+    {
+    
+        CreatePlayerElement(_);
+        CreatePlayerView(_);
+    }
+
+    protected void AddViewToScene(IDocumentationBuilder _, ViewNode view)
+    {
+        EnsureComponentInSceneStep<ViewBase>(_, view ?? GameView,
+            string.Format("Now add the {0} to the scene.", view == null ? "view" : view.Name),
+            b =>
+            {
+                b.Paragraph("Create an empty gameObject underneath the _SceneARoot game object.  " +
+                            "When creating scene types, everything should be a descendent of this root game object, " +
+                            "this allows them to be destroyed by uFrame when needed.");
+
+                b.Paragraph(
+                    string.Format("On this empty game object click 'Add Component' in the inspector. Then add the '{0}' component to it.", view == null ? "view" : view.Name));
+
+                b.ImageByUrl("http://i.imgur.com/3pKo4yL.png");
+            });
     }
 }
