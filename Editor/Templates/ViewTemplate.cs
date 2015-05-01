@@ -185,7 +185,8 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
     [TemplateMethod(MemberGeneratorLocation.Both)]
     protected virtual void InitializeViewModel(ViewModel model)
     {
-        Ctx._comment("var vm = model as {0}", Ctx.Data.Element.Name.AsViewModel());
+        Ctx._comment("NOTE: this method is only invoked if the 'Initialize ViewModel' is checked in the inspector.");
+        Ctx._comment("var vm = model as {0};", Ctx.Data.Element.Name.AsViewModel());
         Ctx._comment("This method is invoked when applying the data from the inspector to the viewmodel.  Add any view-specific customizations here.");
 
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;

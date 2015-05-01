@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
-
 /// <summary>
 /// 	<para>The Game Manager has the longest life-cycle of all the uFrame classes, it will remain throughout the entire lifecycle of a game/application.  It uses
 /// the Unity "DontDestroyOnLoad" functionality allowing it to persist from scene to scene.</para>
@@ -575,77 +573,5 @@ public class GameManager : MonoBehaviour
         _HaloStrength = RenderSettings.haloStrength;
 
         _FlareStrength = RenderSettings.flareStrength;
-    }
-}
-
-
-public interface IEventAggregator
-{
-    IObservable<TEvent> GetEvent<TEvent>();
-    void Publish<TEvent>(TEvent evt);
-}
-public class EventAggregator : IEventAggregator, ISubject<object>
-{
-    bool isDisposed;
-    readonly Subject<object> eventsSubject = new Subject<object>();
-
-    public IObservable<TEvent> GetEvent<TEvent>()
-    {
-        return eventsSubject.Where(p =>
-        {
-            return p is TEvent;
-        }).Select(delegate(object p)
-        {
-            return (TEvent) p;
-        });
-    }
-
-    public void Publish<TEvent>(TEvent evt)
-    {
-        eventsSubject.OnNext(evt);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (isDisposed) return;
-        eventsSubject.Dispose();
-        isDisposed = true;
-    }
-
-    public void OnCompleted()
-    {
-        eventsSubject.OnCompleted();
-    }
-
-    public void OnError(Exception error)
-    {
-        eventsSubject.OnError(error);
-    }
-
-    public void OnNext(object value)
-    {
-       eventsSubject.OnNext(value);
-    }
-
-    public IDisposable Subscribe(IObserver<object> observer)
-    {
-        return eventsSubject.Subscribe(observer);
-    }
-}
-
-public static class AggregatorExtensions
-{
-    public static IObservable<TViewModel> OnViewModelCreated<TViewModel>(this IEventAggregator ea) where TViewModel : ViewModel
-    {
-        return ea.GetEvent<ViewModelCreatedEvent>().Where(p => p.ViewModel is TViewModel).Select(p=>(TViewModel)p.ViewModel);
-    }
-    public static IObservable<TViewModel> OnViewModelDestroyed<TViewModel>(this IEventAggregator ea) where TViewModel : ViewModel
-    {
-        return ea.GetEvent<ViewModelDestroyedEvent>().Where(p => p.ViewModel is TViewModel).Select(p => (TViewModel)p.ViewModel);
     }
 }

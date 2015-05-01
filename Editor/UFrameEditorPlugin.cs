@@ -168,7 +168,7 @@ public class UFrameEditorPlugin : DiagramPlugin
 
         public Type Computed
         {
-            get { return typeof(Computed<>); }
+            get { throw new Exception(); }
         }
 
         public Type State

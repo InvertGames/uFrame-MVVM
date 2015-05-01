@@ -202,10 +202,10 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
 
             SetIdentifierSilently(_Model.Identifier);
 
-            if (OverrideViewModel)
-            {
-                InitializeData(_Model);
-            }
+            //if (OverrideViewModel)
+            //{
+            //    InitializeData(_Model);
+            //}
 
             SetupBindings(); //Star binding procedure
 
@@ -295,11 +295,28 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     }
     public IScene ParentScene
     {
-        get { return _parentScene ?? (_parentScene = (GetComponentInParent(typeof(IScene)) as IScene)); }
+        get
+        {
+
+
+
+            return _parentScene ?? (_parentScene = (GetComponentInParentRecursive(this.transform, typeof(IScene)) as IScene));
+        }
         set { _parentScene = value; }
     }
 
+    private object GetComponentInParentRecursive(Transform parent, Type type)
+    {
+        if (parent== null) return null;
+        var theComponent = GetComponentInParent(type);
+        if (theComponent != null)
+        {
+            return theComponent;
+        }
 
+        var result = GetComponentInParentRecursive(parent.parent, type);
+        return result;
+    }
     /// <summary>
     /// 	<para>This method is the primary method of a view.  It's purpose is to provide a safe place to create subscriptions/bindings to it's view-model.  When
     /// this method is invoked it will allways have an instance to a view-model.</para>
@@ -342,6 +359,7 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     public void InitializeData(ViewModel model)
     {
         InitializeViewModel(model);
+        
     }
     
 
@@ -384,8 +402,11 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
             }
         }
 
-        foreach (var bindingProvider in BindingProviders)
+        for (int index = 0; index < BindingProviders.Count; index++)
+        {
+            var bindingProvider = BindingProviders[index];
             bindingProvider.Unbind(this);
+        }
     }
 
     public virtual void Write(ISerializerStream stream)
@@ -410,7 +431,7 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     /// <buildflag>Exclude from Booklet</buildflag>
     /// <param name="model">The model to initialize.</param>
     protected virtual void InitializeViewModel(ViewModel model) { }
-
+    
     /// <summary>
     /// This method is called immediately before "Bind".  This method is used
     /// by uFrames designer generated code to set-up defined bindings.

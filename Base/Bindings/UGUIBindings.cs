@@ -305,42 +305,6 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
         }
 
-        //public static IDisposable BindToggleOnToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command)
-        //{
-        //    var d = toggle.AsValueChangedObservable().Subscribe(_ =>
-        //    {
-        //        viewBase.ExecuteCommand(command);
-        //    }).DisposeWith(viewBase);
-        //    return d;
-        //}
-
-        //public static IDisposable BindToggleOnToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command, Func<T> selector)
-        //{
-        //    var d = toggle.AsValueChangedObservable().Where(v=>v).Subscribe(_ =>
-        //    {
-        //        viewBase.ExecuteCommand(command, selector());
-        //    }).DisposeWith(viewBase);
-        //    return d;
-        //}
-
-        //public static IDisposable BindToggleOffToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command)
-        //{
-        //    var d = toggle.AsValueChangedObservable().Where(v => v == false).Subscribe(_ =>
-        //    {
-        //        viewBase.ExecuteCommand(command);
-        //    }).DisposeWith(viewBase);
-        //    return d;
-        //}
-
-        //public static IDisposable BindToggleOffToCommand<T>(this ViewBase viewBase, Toggle toggle, CommandBase<T> command, Func<T> selector)
-        //{
-        //    var d = toggle.AsValueChangedObservable().Where(v=>v==false).Subscribe(_ =>
-        //    {
-        //        viewBase.ExecuteCommand(command, selector());
-        //    }).DisposeWith(viewBase);
-        //    return d;
-        //}
-    
         public static IObservable<Unit> AsClickObservable(this Button button)
         {
 

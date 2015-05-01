@@ -1,6 +1,7 @@
 ﻿using System.CodeDom;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Invert.Core;
@@ -10,7 +11,7 @@ using uFrame.Graphs;
 
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}")]
-public partial class SceneTemplate : IClassTemplate<SceneTypeNode>
+public partial class SceneTemplate : IClassTemplate<SceneTypeNode>, IClassRefactorable
 {
     [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
     public virtual string DefaultKernelScene
@@ -60,11 +61,27 @@ public partial class SceneTemplate : IClassTemplate<SceneTypeNode>
         }
     }
 
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+            yield return "{1}Base";
+        }
+    }
 }
 
 [TemplateClass(MemberGeneratorLocation.Both, "{0}Loader")]
-public partial class SceneLoaderTemplate : IClassTemplate<SceneTypeNode>
+public partial class SceneLoaderTemplate : IClassTemplate<SceneTypeNode>, IClassRefactorable
 {
+    public IEnumerable<string> ClassNameFormats
+    {
+        get
+        {
+            yield return "{0}";
+            yield return "{1}Base";
+        }
+    }
     public void TemplateSetup()
     {
         if (Ctx.IsDesignerFile)

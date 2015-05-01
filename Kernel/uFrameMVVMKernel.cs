@@ -142,7 +142,7 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
        
         Container.InjectAll();
   
-        foreach (var controller in Container.ResolveAll<Controller>())
+        foreach (var controller in Container.ResolveAll<Controller>().Distinct())
         {
             controller.Setup();
         }

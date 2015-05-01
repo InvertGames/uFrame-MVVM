@@ -3,13 +3,10 @@ using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using uFrame.Graphs;
-using UniRx;
-using UnityEngine;
 
 [TemplateClass(MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
 public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>, IClassRefactorable, IMethodRefactorable
@@ -41,10 +38,6 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         if (Ctx.IsDesignerFile)
         {
             Ctx.CurrentDecleration.Attributes = MemberAttributes.Abstract;
-            //if (Ctx.Data.BaseNode == null)
-            //{
-            //    Ctx.SetBaseType("Controller<{0}>", Ctx.Data.Name.AsViewModel());
-            //}
         }
 
         Ctx.AddIterator("CommandMethod", _ => _.AllCommandHandlers.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
@@ -52,8 +45,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
 
         Ctx.AddIterator("OnCommandMethod",
-            _ => _.LocalCommands.Cast<IClassTypeNode>());
-                //.Concat(_.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>()));
+            _ => _.LocalCommands);
 
 
         if (Ctx.Data.BaseNode == null)
@@ -65,15 +57,12 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         {
             Ctx.AddCondition("InstanceProperty", _ => false);
         }
-
-
-        //Ctx.AddIterator("ControllerProperty", _ =>{});
     }
 
     public string NameAsViewModel { get { return Ctx.Data.Name.AsViewModel(); } }
 
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndTypeWithBackingField, NameFormat = "{0}Manager")]
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndTypeWithBackingField, NameFormat = "{0}ViewModelManager")]
     public IViewModelManager ViewModelManager
     {
         get
@@ -132,7 +121,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         get
         {
             Ctx.SetTypeArgument(Ctx.Data.Name.AsViewModel());
-            Ctx._("return {1}Manager.OfType<{0}>()", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
+            Ctx._("return {1}ViewModelManager.OfType<{0}>()", Ctx.Data.Name.AsViewModel(), Ctx.Data.Name);
             return null;
         }
     }
@@ -171,7 +160,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
             {
                 Ctx._("viewModel.{0}.Action = this.{0}Handler", command.Name);
             }
-            Ctx._("{0}Manager.Add(viewModel)", Ctx.Data.Name);
+            Ctx._("{0}ViewModelManager.Add(viewModel)", Ctx.Data.Name);
         }
             
     }
@@ -180,7 +169,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     public override void DisposingViewModel(ViewModel viewModel)
     {
         base.DisposingViewModel(viewModel);
-        Ctx._("{0}Manager.Remove(viewModel)", Ctx.Data.Name);
+        Ctx._("{0}ViewModelManager.Remove(viewModel)", Ctx.Data.Name);
     }
 
     [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
@@ -190,7 +179,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         DoTransition();
     }
 
-    [TemplateMethod("{0}", MemberGeneratorLocation.Both, true)]
+    [TemplateMethod("{0}", MemberGeneratorLocation.DesignerFile, true)]
     public virtual void OnCommandMethod(ViewModelCommand command)
     {
 

@@ -10,7 +10,7 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 using UnityEngine;
 
-[TemplateClass( MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
+[TemplateClass(MemberGeneratorLocation.Both, ClassNameFormat = uFrameFormats.VIEW_MODEL_FORMAT)]
 public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>, IClassRefactorable
 {
     #region Template Stuff
@@ -43,7 +43,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
         StateMachineProperties = Ctx.Data.AllProperties.Where(p => (p.RelatedNode() is StateMachineNode)).ToArray();
         ViewModelProperties = Ctx.Data.AllProperties.Where(p => !StateMachineProperties.Contains(p)).ToArray();
-         
+
         Ctx.AddIterator("ResetComputed", (d) => d.ComputedProperties);
         Ctx.AddIterator("Compute", (d) => d.ComputedProperties);
         Ctx.AddIterator("ComputedDependents", (d) => d.ComputedProperties);
@@ -54,7 +54,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         Ctx.AddIterator("CommandMethod", (d) => d.LocalCommands);
         Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
 
-        Ctx.AddIterator("StateMachineProperty", (d)=> StateMachineProperties);
+        Ctx.AddIterator("StateMachineProperty", (d) => StateMachineProperties);
         Ctx.AddIterator("StateMachineCurrentState", (d) => StateMachineProperties);
 
         foreach (var item in Ctx.Data.ComputedProperties)
@@ -73,7 +73,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     [TemplateConstructor(MemberGeneratorLocation.DesignerFile, "aggregator")]
     public void AggregatorConstructor(IEventAggregator aggregator)
     {
-       
+
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, true)]
@@ -82,23 +82,23 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         if (!Ctx.IsDesignerFile) return;
         foreach (var command in Ctx.Data.Commands)
         {
-            Ctx._("this.{0} = new Signal<{0}Command>(this)",command.Name);
+            Ctx._("this.{0} = new Signal<{0}Command>(this)", command.Name);
         }
         foreach (var property in ViewModelProperties)
         {
-            Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName,property.Name);
+            Ctx._("{0} = new P<{1}>(this, \"{2}\")", property.Name.AsSubscribableField(), property.RelatedTypeName, property.Name);
         }
         // No more parents so no need to bind to the collection change, this was bad anyways
         foreach (var property in Ctx.Data.LocalCollections)
         {
             Ctx._("{0} = new ModelCollection<{1}>(this, \"{2}\")", property.Name.AsField(), property.RelatedTypeName, property.Name);
-         //   Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
+            //   Ctx._("{0}.CollectionChanged += {1}CollectionChanged", property.Name.AsField(), property.Name);
         }
 
         foreach (var item in StateMachineProperties)
         {
-            Ctx._("{0} = new {1}(this, \"{2}\")", item.Name.AsSubscribableField(), item.RelatedTypeName,item.Name);
-        } 
+            Ctx._("{0} = new {1}(this, \"{2}\")", item.Name.AsSubscribableField(), item.RelatedTypeName, item.Name);
+        }
         foreach (var item in Ctx.Data.ComputedProperties)
         {
             Ctx._("Reset{0}()", item.Name);
@@ -106,7 +106,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         //_StateMachineProperty.B.AddComputer(IsCorrectPasswordProperty);
         foreach (var item in Ctx.Data.ComputedProperties)
         {
-            
+
             var transition = item.OutputTo<TransitionsChildItem>();
             if (transition == null) continue;
             var stateMachineNode = transition.Node as IClassTypeNode;
@@ -126,7 +126,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
             Ctx._("{0}.Subscribe(_ => {1}.{2}.OnNext(true))", item.Name, property.Name.AsSubscribableProperty(), transition.Name);
 
         }
-       
+
 
     }
 
@@ -179,7 +179,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     public virtual P<float> ViewModelProperty
     {
         get { return null; }
-     
+
     }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType)]
@@ -204,28 +204,20 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         get { return null; }
     }
 
-    //[TemplateMethod("{0}CollectionChanged", MemberGeneratorLocation.DesignerFile, true, AutoFill = AutoFillType.NameOnly)]
-    //protected virtual void CollectionChanged()
-    //{
-    //    // Doesn't like this one in a normal parameter
-    //    Ctx.CurrentMethod.Parameters.Add(
-    //        new CodeParameterDeclarationExpression("System.Collections.Specialized.NotifyCollectionChangedEventArgs",
-    //            "args"));
-
-    //}
     #endregion
 
     #region Commands
     [TemplateProperty("{0}", AutoFillType.NameOnlyWithBackingField)]
-    public virtual object CommandItems {
+    public virtual object CommandItems
+    {
         get
         {
-            Ctx.SetType("Signal<{0}Command>",Ctx.Item.Name);
+            Ctx.SetType("Signal<{0}Command>", Ctx.Item.Name);
             return null;
         }
         set
         {
-            
+
         }
     }
     #endregion
@@ -246,7 +238,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
             {
                 var elementNode = relatedNode as ElementNode;
                 Ctx._("\t\tif (stream.DeepSerialize) this.{0} = stream.DeserializeObject<{1}>(\"{0}\");", viewModelPropertyData.Name, elementNode.Name.AsViewModel());
-                
+
             }
             else if (relatedNode is StateMachineNode)
             {
@@ -365,7 +357,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
                string.IsNullOrEmpty(commandChildItem.RelatedTypeName) ? "void" : commandChildItem.RelatedTypeName
             );
         }
-        
+
     }
 
 
@@ -407,7 +399,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         foreach (var item in computed.InputsFrom<PropertiesChildItem>())
         {
 
-            Ctx._("yield return {0}", item.Name.AsSubscribableField());
+            Ctx._("yield return {0}", item.Name.AsSubscribableProperty());
             var relatedNode = item.RelatedTypeNode;
             if (relatedNode != null)
             {
@@ -418,14 +410,12 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
                     conditionStatements._("yield return {0}.Value.{1}", item.Name.AsSubscribableProperty(), p.Name.AsSubscribableProperty());
                 }
             }
-            else
-            {
-                
-            }
-
-          
         }
-       
+        foreach (var item in computed.InputsFrom<ComputedPropertyNode>())
+        {
+            Ctx._("yield return {0}", item.Name.AsSubscribableField());
+        }
+
 
         Ctx._("yield break");
 
@@ -436,9 +426,9 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     {
         var computed = Ctx.ItemAs<ComputedPropertyNode>();
         Ctx._if("_{0}Disposable != null", computed.Name)
-            .TrueStatements._("_{0}Disposable.Dispose()",computed.Name);
-        Ctx._("_{0}Disposable = {1}.ToComputed(Compute{0}, this.Get{0}Dependents().ToArray()).DisposeWith(this)",computed.Name, computed.Name.AsSubscribableField());
-        
+            .TrueStatements._("_{0}Disposable.Dispose()", computed.Name);
+        Ctx._("_{0}Disposable = {1}.ToComputed(Compute{0}, this.Get{0}Dependents().ToArray()).DisposeWith(this)", computed.Name, computed.Name.AsSubscribableField());
+
     }
 
     [TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Compute{0}")]
@@ -496,7 +486,7 @@ public partial class ViewModelConstructorTemplate : IClassTemplate<ElementNode>
         // Ensure the namespaces for each property type are property set up
         Ctx.CurrentDecleration.BaseTypes.Clear();
         Ctx.CurrentDecleration.IsPartial = true;
-        Ctx.CurrentDecleration.Name = string.Format(uFrameFormats.VIEW_MODEL_FORMAT,Ctx.Data.Name);
+        Ctx.CurrentDecleration.Name = string.Format(uFrameFormats.VIEW_MODEL_FORMAT, Ctx.Data.Name);
     }
 
 }
@@ -519,16 +509,28 @@ public partial class ViewModelCommandClassTemplate : ViewModelCommand, IClassTem
 
     public void TemplateSetup()
     {
-        
+
+        var type = InvertApplication.FindTypeByName(Ctx.Data.RelatedTypeName);
+        if (type != null)
+        {
+            Ctx.TryAddNamespace(type.Namespace);
+        }
+        else
+        {
+            type = InvertApplication.FindType(Ctx.Data.RelatedTypeName);
+            if (type != null)
+            Ctx.TryAddNamespace(type.Namespace);
+        }
         Ctx.CurrentDecleration.IsPartial = true;
         Ctx.CurrentDecleration.Name = Ctx.Data.Name + "Command";
-        Ctx.AddCondition("Argument",_=>!string.IsNullOrEmpty(_.RelatedType));
+        Ctx.AddCondition("Argument", _ => !string.IsNullOrEmpty(_.RelatedType));
     }
 
     public TemplateContext<CommandsChildItem> Ctx { get; set; }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile,AutoFillType.NameOnlyWithBackingField)]
-    public object Argument {
+    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameOnlyWithBackingField)]
+    public object Argument
+    {
         get
         {
             Ctx.SetType(Ctx.Data.RelatedTypeName);
@@ -537,7 +539,7 @@ public partial class ViewModelCommandClassTemplate : ViewModelCommand, IClassTem
         }
         set
         {
-            
+
         }
     }
 
@@ -640,3 +642,4 @@ public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefa
         set;
     }
 }
+

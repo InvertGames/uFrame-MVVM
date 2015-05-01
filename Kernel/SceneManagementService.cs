@@ -68,7 +68,8 @@ public class SceneManagementService : SystemServiceMonoBehavior
         ScenesQueue.Enqueue(new SceneQueueItem()
         {
             Loader = LoadSceneInternal(sceneName),
-            Name = sceneName
+            Name = sceneName,
+            Settings = settings
         });
     }
 
@@ -76,11 +77,11 @@ public class SceneManagementService : SystemServiceMonoBehavior
     {
         foreach (var item in items)
         {
-            ScenesQueue.Enqueue(new SceneQueueItem()
+            if (item.Loader == null)
             {
-                Loader = LoadSceneInternal(item.Name),
-                Name = item.Name
-            });
+                item.Loader = LoadSceneInternal(item.Name);
+            }
+            ScenesQueue.Enqueue(item);
         }
     }
 

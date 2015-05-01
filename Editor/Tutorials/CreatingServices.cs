@@ -18,7 +18,7 @@ public class CreatingServices : uFrameMVVMTutorial
         CreateGameView(_);
 
         // var debugService = DoNamedNodeStep<ServiceNode>(_, "DebugService");
-        var graph = DoGraphStep<ServiceGraph>(_,null, b => { });
+        var graph = DoGraphStep<ServiceGraph>(_,"DebugService", b => { });
         var debugService = graph == null ? null : graph.RootFilter as ServiceNode;
         var logEvent = DoNamedNodeStep<SimpleClassNode>(_, "LogEvent");
         DoNamedItemStep<PropertiesChildItem>(_, "Message", logEvent, "a property", b => { });

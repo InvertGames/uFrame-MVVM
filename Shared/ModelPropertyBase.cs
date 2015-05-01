@@ -101,30 +101,30 @@ public class P<T> : ISubject<T>, IObservableProperty, INotifyPropertyChanged
                 d.Dispose();
         });
     }
-    /// <summary>
-    /// Makes this property a computed variable.
-    /// </summary>
-    /// <param name="action"></param>
-    /// <param name="properties"></param>
-    /// <returns></returns>
-    public IDisposable ToComputed(Func<ViewModel, T> action, params IObservableProperty[] properties)
-    {
-        var disposables = new List<IDisposable>();
-        foreach (var property in properties)
-        {
-            disposables.Add(property.SubscribeInternal(_ =>
-            {
-                OnNext(action(Owner));
-            }));
-        }
-        action(Owner);
+    ///// <summary>
+    ///// Makes this property a computed variable.
+    ///// </summary>
+    ///// <param name="action"></param>
+    ///// <param name="properties"></param>
+    ///// <returns></returns>
+    //public IDisposable ToComputed(Func<ViewModel, T> action, params IObservableProperty[] properties)
+    //{
+    //    var disposables = new List<IDisposable>();
+    //    foreach (var property in properties)
+    //    {
+    //        disposables.Add(property.SubscribeInternal(_ =>
+    //        {
+    //            OnNext(action(Owner));
+    //        }));
+    //    }
+    //    action(Owner);
 
-        return Disposable.Create(() =>
-        {
-            foreach (var d in disposables)
-                d.Dispose();
-        });
-    }
+    //    return Disposable.Create(() =>
+    //    {
+    //        foreach (var d in disposables)
+    //            d.Dispose();
+    //    });
+    //}
 
     public P(T value)
     {

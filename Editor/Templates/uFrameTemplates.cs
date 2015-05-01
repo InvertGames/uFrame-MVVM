@@ -14,8 +14,13 @@ public class uFrameTemplates : DiagramPlugin
     {
         get { return 5; }
     }
-
+    
     private uFrameMVVM Framework { get; set; }
+
+    public override string Title
+    {
+        get { return "uFrame MVVM Templates"; }
+    }
 
     public override void Initialize(uFrameContainer container)
     {
