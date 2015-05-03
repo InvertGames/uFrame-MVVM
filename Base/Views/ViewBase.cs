@@ -535,7 +535,7 @@ public partial class ViewBase
         if (_updateObservable != null)
             _updateObservable.OnNext(Unit.Default);
 
-        if (TransformChangedObservable != null && transform.hasChanged)
+        if (_transformObservable != null && transform.hasChanged)
         {
             TransformChangedObservable.OnNext(transform);
             transform.hasChanged = false;

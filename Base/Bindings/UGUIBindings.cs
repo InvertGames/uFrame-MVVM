@@ -207,31 +207,6 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
-
-        public static IDisposable BindSliderToProperty<TO>(this ViewBase viewBase, Slider slider, P<TO> property, Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
-        {
-
-            var d1 = slider.AsValueChangedObservable().Subscribe(value =>
-            {
-                property.OnNext(i2pSelector(value));
-            });
-
-            var d2 = property.Subscribe(value =>
-            {
-                slider.value = p2iSelector(value);
-            });
-
-            Observable.EveryEndOfFrame().Take(1).Subscribe(_ => slider.value = p2iSelector(property.Value));
-
-            return Disposable.Create(() =>
-            {
-                d1.Dispose();
-                d2.Dispose();
-            }).DisposeWith(viewBase);
-
-
-        }
-
         public static IDisposable BindSliderToProperty(this ViewBase viewBase, Slider slider, P<float> property)
         {
             //Debug.Log("seeting slider to "+property.Value);
@@ -256,6 +231,31 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
+        public static IDisposable BindSliderToProperty<TO>(this ViewBase viewBase, Slider slider, P<TO> property, Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
+        {
+
+            var d1 = slider.AsValueChangedObservable().Subscribe(value =>
+            {
+                property.OnNext(i2pSelector(value));
+            });
+
+            var d2 = property.Subscribe(value =>
+            {
+                slider.value = p2iSelector(value);
+            });
+
+            Observable.EveryEndOfFrame().Take(1).Subscribe(_ => slider.value = p2iSelector(property.Value));
+
+            return Disposable.Create(() =>
+            {
+                d1.Dispose();
+                d2.Dispose();
+            }).DisposeWith(viewBase);
+
+
+        }
+
+    
 
         public static IDisposable BindToggleToHandler(this ViewBase viewBase, Toggle toggle, Action<bool> handler)
         {

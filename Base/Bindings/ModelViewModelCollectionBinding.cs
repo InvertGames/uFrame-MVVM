@@ -10,13 +10,12 @@ using Object = UnityEngine.Object;
 public class ModelCollectionBinding<TCollectionType> : Binding
 {
     private bool _isImmediate = true;
+    private ModelCollection<TCollectionType> _collection;
 
     public ModelCollection<TCollectionType> Collection
     {
-        get
-        {
-            return ModelProperty as ModelCollection<TCollectionType>;
-        }
+        get { return _collection ?? (_collection = ModelProperty as ModelCollection<TCollectionType>); }
+        set { _collection = value; }
     }
 
     public bool IsImmediate

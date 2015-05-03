@@ -30,8 +30,9 @@ public class SceneManagementServiceInspector : ManagerInspector<SceneManagementS
     public override void OnInspectorGUI()
     {
         GUIHelpers.IsInsepctor = true;
-        //base.OnInspectorGUI();
+        //
         DrawTitleBar("Scene Management Service");
+        base.OnInspectorGUI();
         serializedObject.Update();
 
         if (Application.isPlaying)

@@ -42,6 +42,11 @@ public class CreatingServices : uFrameMVVMTutorial
 
 public class UsingStateMachines : uFrameMVVMTutorial
 {
+    public override decimal Order
+    {
+        get { return 10; }
+    }
+
     protected override void TutorialContent(IDocumentationBuilder _)
     {
         BasicSetup(_);
@@ -119,6 +124,74 @@ public class UsingStateMachines : uFrameMVVMTutorial
     public StateNode MainMenuState { get; set; }
 
     public StateMachineGraph StateGraph { get; set; }
+
+    protected override void Introduction(IDocumentationBuilder _)
+    {
+        
+    }
+
+    protected override void Ending(IDocumentationBuilder _, InteractiveTutorial tutorial)
+    {
+        
+    }
+}
+
+public class TheBasics : uFrameMVVMTutorial
+{
+    public override decimal Order
+    {
+        get { return -1; }
+    }
+
+    protected override void TutorialContent(IDocumentationBuilder _)
+    {
+        TheProject = DoCreateNewProjectStep(_);
+        SubsystemGraph = DoGraphStep<SubsystemGraph>(_, "Basics");
+        if (SubsystemGraph != null)
+        {
+            SystemA = SubsystemGraph.RootFilter as SubsystemNode;
+        }
+        CreatePlayerElement(_);
+        CreatePlayerView(_);
+        NameProperty = DoNamedItemStep<PropertiesChildItem>(_, "Name", ThePlayer, "a property", b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/wJi2IZP.png");
+        });
+
+        ResetCommand = DoNamedItemStep<CommandsChildItem>(_, "Reset", ThePlayer, "a command", b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/ZktA9FP.png");
+        });
+
+        NameChangedBinding = DoNamedItemStep<BindingsReference>(_, "Name Changed", ThePlayerView, "a binding", b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/9K08Woe.png");
+
+        });
+        SaveAndCompile(_, ThePlayerView);
+        EnsureKernel(_);
+        CreateDefaultScene(_);
+        AddViewToScene(_, ThePlayerView);
+        EnsureInitializeView(_,ScenePlayerView);
+    }
+
+    public void CreateDefaultScene(IDocumentationBuilder builder)
+    {
+        EnsureComponentInSceneStep<Scene>(builder, null,
+            "Create an empty scene, create an empty game object and add the 'Scene' component to it.",
+            b =>
+            {
+                b.ImageByUrl("http://i.imgur.com/5Pnd9Xf.png");
+            });
+        
+    }
+    public BindingsReference NameChangedBinding { get; set; }
+
+    public CommandsChildItem ResetCommand { get; set; }
+
+    public PropertiesChildItem NameProperty { get; set; }
+
+    public SubsystemGraph SubsystemGraph { get; set; }
 
     protected override void Introduction(IDocumentationBuilder _)
     {

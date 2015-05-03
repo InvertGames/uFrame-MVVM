@@ -19,9 +19,14 @@ public class SceneManagementService : SystemServiceMonoBehavior
     }
     private List<IScene> _loadedScenes;
 
+    [SerializeField]
+    private string[] _startupScenes = new string[] {};
+
     public override void Setup()
     {
         base.Setup();
+
+
         this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
         {
 
@@ -53,6 +58,12 @@ public class SceneManagementService : SystemServiceMonoBehavior
         {
             return _sceneLoaders ?? (_sceneLoaders = new List<ISceneLoader>());
         }
+    }
+
+    public string[] StartupScenes
+    {
+        get { return _startupScenes; }
+        set { _startupScenes = value; }
     }
 
     private DefaultSceneLoader _defaultSceneLoader;
@@ -219,12 +230,33 @@ public class SceneManagementService : SystemServiceMonoBehavior
         this.QueueSceneLoad(name, settings);
         this.ExecuteLoad();
     }
+    public void LoadSceneIfNotAlready(string name, ISceneSettings settings)
+    {
+        if (LoadedScenes.Any(p => p.Name == name) || ScenesQueue.Any(p => p.Name == name) || Application.loadedLevelName == name)
+        {
+            return;
+        }
+        this.QueueSceneLoad(name, settings);
+        this.ExecuteLoad();
+    }
     public void LoadScenes(params SceneQueueItem[] items)
     {
         this.QueueScenesLoad(items);
         this.ExecuteLoad();
     }
-
+    public void QueueSceneLoadIfNotAlready(string sceneName, ISceneSettings settings)
+    {
+        if (LoadedScenes.Any(p => p.Name == sceneName) || ScenesQueue.Any(p => p.Name == sceneName) || Application.loadedLevelName == sceneName)
+        {
+            return;
+        }
+        ScenesQueue.Enqueue(new SceneQueueItem()
+        {
+            Loader = LoadSceneInternal(sceneName),
+            Name = sceneName,
+            Settings = settings
+        });
+    }
 
 }
 

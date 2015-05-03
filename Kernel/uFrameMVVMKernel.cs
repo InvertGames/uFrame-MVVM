@@ -104,6 +104,7 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
     private IEnumerator Startup()
     {
         var attachedSystemLoaders = gameObject.GetComponentsInChildren(typeof(ISystemLoader)).OfType<ISystemLoader>();
+
         foreach (var systemLoader in attachedSystemLoaders)
         {
             this.Publish(new SystemLoaderEvent() { State = SystemState.Loading, Loader = systemLoader });

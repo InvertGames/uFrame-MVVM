@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1942191683, guid: 665e7007641162d49b570cba8a539e2d, type: 3}
+  m_Name: DefaultProject
+  m_EditorClassIdentifier: 
+  _settingsKeys: []
+  _settingsValues: 
+  _diagrams:
+  - {fileID: 11400000, guid: 9b99d76b166e6624396bcea5a92e1bb6, type: 2}
+  - {fileID: 11400000, guid: 00ff4f68c9cfe334dbfd68bd08abaf79, type: 2}
+  _projectNamespace: uFrame.DefaultProject
+  _currentTabs:
+  - _graphIdentifier: 0999f5c3-e70f-4e6b-bb6e-75bb39f8b16d
+    _graphName: uFrameStarter
+    _path: []
+  - _graphIdentifier: a0009eb1-7b60-4ef2-80cb-0bf2f4f2bd63
+    _graphName: GameSystem
+    _path: []

@@ -118,13 +118,19 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     private void ExplainKernel(IDocumentationBuilder _)
     {
+        _.ImageByUrl("http://i.imgur.com/349glV8.png");
         _.ToggleContentByPage<TheKernel>("The Kernel");
     }
     public ElementNode TheGame { get; set; }
     public ViewNode GameView { get; set; }
     protected void SaveAndCompile(IDocumentationBuilder _, DiagramNode node = null)
     {
-        _.ShowTutorialStep(SaveAndCompile(node ?? SceneA));
+        _.ShowTutorialStep(SaveAndCompile(node ?? SceneA), b =>
+        {
+            b.Paragraph("Saving and compiling is the process of taking the information you've created by graphs and putting it into code form.  The generated code consists of both designer files (always regenerated), and editable files (only generated if it doesnt exist so it doesn't destroy your implementations).");
+            b.Break();
+            b.ImageByUrl("http://i.imgur.com/HY5sD9D.png");
+        });
     }
 
     public void EnsureCode(IDocumentationBuilder _, DiagramNode codeFor, string description, string imageUrl, string filenameSearch, string codeSearch)
@@ -184,7 +190,11 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     }
     protected bool CreatePlayerElement(IDocumentationBuilder _)
     {
-        ThePlayer = DoNamedNodeStep<ElementNode>(_, "Player", SystemA, b => { });
+        ThePlayer = DoNamedNodeStep<ElementNode>(_, "Player", SystemA, b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/lEnVVQj.png");
+            b.ImageByUrl("http://i.imgur.com/SJ0zI8w.png");
+        });
         if (TheGame == null) return false;
         return true;
     }
@@ -193,8 +203,19 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     protected void CreatePlayerView(IDocumentationBuilder _)
     {
-        ThePlayerView = DoNamedNodeStep<ViewNode>(_, "PlayerView", ThePlayer);
-        DoCreateConnectionStep(_, ThePlayer, ThePlayerView == null ? null : ThePlayerView.ElementInputSlot);
+        ThePlayerView = DoNamedNodeStep<ViewNode>(_, "PlayerView", ThePlayer, b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/H1OzzfC.png");
+        });
+        DoCreateConnectionStep(_, ThePlayer, ThePlayerView == null ? null : ThePlayerView.ElementInputSlot, b =>
+        {
+            
+            b.Paragraph("Creating this connection means that the view will visually present the data on the player to the user in the 3d world.");
+            b.Paragraph("You can always create multiple views to seperate different presentations of the same data.  For instance, you could also create a PlayerUIView, which deals strictly with showing inventory, stats,...etc");
+
+            b.Break();
+            b.ImageByUrl("http://i.imgur.com/scVtfd9.png");
+        });
     }
 
     public ViewNode ThePlayerView { get; set; }
@@ -219,7 +240,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     protected void AddViewToScene(IDocumentationBuilder _, ViewNode view)
     {
-        EnsureComponentInSceneStep<ViewBase>(_, view ?? GameView,
+        ScenePlayerView = EnsureComponentInSceneStep<ViewBase>(_, view ?? GameView,
             string.Format("Now add the {0} to the scene.", view == null ? "view" : view.Name),
             b =>
             {
@@ -233,4 +254,19 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
                 b.ImageByUrl("http://i.imgur.com/3pKo4yL.png");
             });
     }
+
+    protected void EnsureInitializeView(IDocumentationBuilder _, ViewBase view)
+    {
+        _.ShowTutorialStep(new TutorialStep("Now check 'Initialize View Model' on the view.", () =>
+        { 
+            return view.OverrideViewModel ? null : "You haven't checked the checkbox yet";
+        }), b =>
+        {
+            b.Paragraph("'Initialize View Model' overrides the ");
+            b.ImageByUrl("http://i.imgur.com/8yCZNLA.png");
+        });
+
+
+    }
+    public ViewBase ScenePlayerView { get; set; }
 }

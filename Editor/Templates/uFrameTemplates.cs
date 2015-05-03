@@ -130,5 +130,8 @@ public class uFrameTemplates : DiagramPlugin
         container.AddBindingMethod(typeof(UGUIExtensions), "BindTextToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
             .SetNameFormat("{0} To Text");
 
+        container.AddBindingMethod(typeof(UGUIExtensions), "BindSliderToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(float).Name)
+            .SetNameFormat("{0} To Slider");
+
     }
 }
