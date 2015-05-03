@@ -15,6 +15,7 @@ namespace uFrame.DefaultProject {
     using System.Linq;
     using UnityEngine;
     using UniRx;
+    using uFrame.DefaultProject;
     
     
     public class GameServiceBase : SystemServiceMonoBehavior {
@@ -26,6 +27,7 @@ namespace uFrame.DefaultProject {
         public override void Setup() {
             this.OnEvent<GameReadyEvent>().Subscribe(this.GameReadyEventHandler);
             this.OnEvent<SceneLoaderEvent>().Subscribe(this.SceneLoaderEventHandler);
+            this.OnEvent<BeginGameCommand>().Subscribe(this.BeginGameCommandHandler);
         }
         
         /// <summary>
@@ -40,6 +42,14 @@ namespace uFrame.DefaultProject {
         // This method is executed when using this.Publish(new SceneLoaderEvent())
         /// </summary>
         public virtual void SceneLoaderEventHandler(SceneLoaderEvent data) {
+            // Process the commands information.  Also, you can publish new events by using the line below.
+            // this.Publish(new AnotherEvent())
+        }
+        
+        /// <summary>
+        // This method is executed when using this.Publish(new BeginGameCommand())
+        /// </summary>
+        public virtual void BeginGameCommandHandler(BeginGameCommand data) {
             // Process the commands information.  Also, you can publish new events by using the line below.
             // this.Publish(new AnotherEvent())
         }

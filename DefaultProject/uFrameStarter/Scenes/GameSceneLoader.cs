@@ -9,12 +9,22 @@ namespace uFrame.DefaultProject {
     public class GameSceneLoader : GameSceneLoaderBase {
         
         protected override IEnumerator LoadScene(GameScene scene, Action<float, string> progressDelegate) {
+            if (scene.Settings == null)
+            {
+                // Here is a good place to create some default settings
+                scene.Settings = new GameSceneSettings()
+                {
+                    // etc
+                };
+            }
+
+            // Some long running progress
             for (var i = 0; i < 100; i++)
             {
                 progressDelegate(i*0.01f, string.Format("Loaded {0} %", i *0.01f));
                 yield return new WaitForSeconds(0.05f);
             }
-            yield break;
+            
         }
         
         protected override IEnumerator UnloadScene(GameScene scene, Action<float, string> progressDelegate) {

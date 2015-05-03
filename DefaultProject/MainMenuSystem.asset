@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1328937199, guid: 019118f6de8965947b2d943bbe59c84b, type: 3}
+  m_Name: MainMenuSystem
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"MainMenuSystem", "Version":"1.501", "Identifier":"1528bf45-4136-499c-b590-fec5db79bd1a",
+    "Type":"Invert.uFrame.MVVM.SubsystemGraph", "DocumentationMode":"false", "RootNode":{"_CLRType":"Invert.uFrame.MVVM.SubsystemNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"MainMenuSystem", "IsCollapsed":"false", "Identifier":"1a8e15d6-f2ce-4b1b-96cf-76c2da46c946",
+    "Items":[ {"_CLRType":"Invert.uFrame.MVVM.InstancesReference, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"", "Identifier":"0688ff64-e357-45fa-a11d-71c96c6d171d",
+    "Precompiled":"false", "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "SourceIdentifier":"03e84a9b-f53b-4e9e-96d7-04440c82a563"} ], "CollapsedValues":{"03e84a9b-f53b-4e9e-96d7-04440c82a563":"false"},
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "IsNewNode":"false"}, "Nodes":[ {"_CLRType":"Invert.uFrame.MVVM.ElementNode, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"MainMenuScreen",
+    "IsCollapsed":"false", "Identifier":"03e84a9b-f53b-4e9e-96d7-04440c82a563", "Items":[
+    {"_CLRType":"Invert.uFrame.MVVM.CommandsChildItem, Assembly-CSharp-Editor, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null", "Name":"PlayGame", "Identifier":"ab8dfd13-b080-4eac-b331-c02f90f2f2e0",
+    "Precompiled":"false", "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "ItemType":""} ], "CollapsedValues":{"4c90b352-57f6-4249-a7e6-56acf4cfafe5":"false",
+    "d17e8abf-afe0-4072-ade6-87628041a978":"false", "778a2f21-27ac-40d4-8670-f5abd4e8e404":"false",
+    "7009cc38-e3e6-4fe6-b943-95116d053f47":"false", "9a2d373a-a724-4378-a420-4c57d95ac017":"false",
+    "d73cfaa3-8b78-40dc-8d36-83a568bfee84":"false", "8ee544e7-8326-4bf2-aafe-172d0d7231e8":"false",
+    "09082224-f36e-4ba6-bc11-0b482b23a018":"false"}, "Flags":{"_CLRType":"true"},
+    "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}, "IsNewNode":"false"},
+    {"_CLRType":"Invert.uFrame.MVVM.ViewNode, Assembly-CSharp-Editor, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null", "Name":"MainMenuScreenView", "IsCollapsed":"false",
+    "Identifier":"d17e8abf-afe0-4072-ade6-87628041a978", "Items":[ {"_CLRType":"Invert.uFrame.MVVM.BindingsReference,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"PlayGameToButton", "Identifier":"fe8c5951-2a70-4829-b2ec-7b45e3b814e2",
+    "Precompiled":"false", "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "BindingName":"BindButtonToCommand", "SourceIdentifier":"ab8dfd13-b080-4eac-b331-c02f90f2f2e0"}
+    ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "ScenePropertiesInputSlot":{"_CLRType":"Invert.uFrame.MVVM.SceneProperties, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"SceneProperties",
+    "Identifier":"74200de8-b46a-4e4b-982f-453ba0c4748c", "Precompiled":"false", "Flags":{"_CLRType":"true"},
+    "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}}, "ElementInputSlot":{"_CLRType":"Invert.uFrame.MVVM.Element,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"Element", "Identifier":"7c16bb1d-4bba-4bef-ad87-8ef4d323642e", "Precompiled":"false",
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}},
+    "IsNewNode":"false"} ], "ConnectedItems":[ {"_CLRType":"ConnectionData, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "OutputIdentifier":"03e84a9b-f53b-4e9e-96d7-04440c82a563",
+    "InputIdentifier":"7c16bb1d-4bba-4bef-ad87-8ef4d323642e"} ], "PositionData":{"_CLRType":"FilterPositionData,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "1a8e15d6-f2ce-4b1b-96cf-76c2da46c946":{"1a8e15d6-f2ce-4b1b-96cf-76c2da46c946":{"x":"80",
+    "y":"80"}, "03e84a9b-f53b-4e9e-96d7-04440c82a563":{"x":"390", "y":"180"}}, "03e84a9b-f53b-4e9e-96d7-04440c82a563":{"03e84a9b-f53b-4e9e-96d7-04440c82a563":{"x":"390",
+    "y":"180"}, "d17e8abf-afe0-4072-ade6-87628041a978":{"x":"680", "y":"100"}}}, "FilterState":{"_CLRType":"FilterState,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "CodeGenDisabled":"false",
+    "SnapSize":"10", "Snap":"true", "CodePathStrategyName":"Default", "GridLinesColor":{"r":"0.271",
+    "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169", "g":"0.169",
+    "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1", "b":"1", "a":"1"},
+    "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"}, "InheritanceLinkColor":{"r":"0",
+    "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5", "a":"1"}, "TransitionLinkColor":{"r":"1",
+    "g":"0.9215686", "b":"0.01568628", "a":"1"}, "ViewLinkColor":{"r":"0", "g":"0",
+    "b":"1", "a":"1"}, "RootNamespace":""}, "Changes":[  ]}'

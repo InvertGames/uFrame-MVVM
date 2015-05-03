@@ -16,6 +16,8 @@ namespace uFrame.DefaultProject {
         public override void InitializeLoadingScreen(LoadingScreenViewModel viewModel) {
             base.InitializeLoadingScreen(viewModel);
             // This is called when a LoadingScreenViewModel is created
+
         }
+        
     }
 }

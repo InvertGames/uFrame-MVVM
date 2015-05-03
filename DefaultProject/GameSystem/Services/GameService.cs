@@ -9,6 +9,7 @@ namespace uFrame.DefaultProject {
     
     public class GameService : GameServiceBase {
 
+        // Grab the uFrame SceneManagementService
         [Inject]
         public SceneManagementService SceneManagement { get; set; }
 
@@ -34,15 +35,36 @@ namespace uFrame.DefaultProject {
         public override void GameReadyEventHandler(GameReadyEvent data)
         {
             base.GameReadyEventHandler(data);
-            // Queue as many scenes as you want, UIScene, LoadingScene...etc
-            SceneManagement.QueueSceneLoadIfNotAlready("UIScene", null);
-            SceneManagement.QueueSceneLoadIfNotAlready("GameScene", null);
+     
+            // We don't want to load the UIScene if we enter play-mode from the gamescene
+            if (Application.loadedLevelName != "GameScene")
+            {       
+                // This is an example of how to queue multiple scenes by using the
+                // Scene managemenet service
+                // Queue as many scenes as you want, UIScene, HudScene...etc
+                SceneManagement.QueueSceneLoadIfNotAlready("UIScene", null);
+            }
+            
             // Perform loading all queued
             SceneManagement.ExecuteLoad();
      
          
         }
 
-
+        public override void BeginGameCommandHandler(BeginGameCommand data)
+        {
+            base.BeginGameCommandHandler(data);
+            this.Publish(new UnloadSceneCommand()
+            {
+                SceneName = "UIScene"
+            });
+            // Loading a scene with publish
+            this.Publish(new LoadSceneCommand() { 
+                SceneName = "GameScene",
+                Settings = new GameSceneSettings()
+                {
+                    // Your own game settings, this will be passed to the GameSceneLoader see GameSceneLoader.cs
+                } });
+        }
     }
 }
