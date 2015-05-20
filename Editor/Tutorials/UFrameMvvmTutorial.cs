@@ -138,8 +138,11 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
         _.ShowTutorialStep(new TutorialStep(description,
             () => EnsureCodeInEditableFile(codeFor, filenameSearch, codeSearch)),
-            b => { _.ImageByUrl(imageUrl); });
-
+            b =>
+            {
+                _.Paragraph(string.Format("Right-Click on the Node and choose Open->{0}", filenameSearch));
+                _.ImageByUrl(imageUrl);
+            });
     }
 
     protected void EnsureNamespace(IDocumentationBuilder _)

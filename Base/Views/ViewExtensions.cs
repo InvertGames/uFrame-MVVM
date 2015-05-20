@@ -208,18 +208,18 @@ public static class ViewExtensions
         command.Result.transform.rotation = rotation;
         return command.Result;
 
-        // Create the view object from the specified prefab
-        var prefabView = prefab.GetComponent<ViewBase>();
-        var idCache = prefabView.Identifier;
-        prefabView.SetIdentifierSilently(model.Identifier);
-        var viewObject = (GameObject)Object.Instantiate(prefab, position, rotation);
-        prefabView.SetIdentifierSilently(idCache);
-#if (UNITY_4_6 || UNITY_5_0)
-		viewObject.transform.SetParent(parent,false);
-#else
-		viewObject.transform.parent = parent;
-#endif
-        return viewObject.GetComponent<ViewBase>();
+//        // Create the view object from the specified prefab
+//        var prefabView = prefab.GetComponent<ViewBase>();
+//        var idCache = prefabView.Identifier;
+//        prefabView.SetIdentifierSilently(model.Identifier);
+//        var viewObject = (GameObject)Object.Instantiate(prefab, position, rotation);
+//        prefabView.SetIdentifierSilently(idCache);
+//#if (UNITY_4_6 || UNITY_5_0)
+//        viewObject.transform.SetParent(parent,false);
+//#else
+//        viewObject.transform.parent = parent;
+//#endif
+//        return viewObject.GetComponent<ViewBase>();
     }
 
     public static ViewBase InstantiateView(this Transform parent, ViewModel model, string identifier = null)

@@ -73,7 +73,7 @@ public class UsingSceneLoaders : LoadingAndUnloadingScenes
     protected override void DoTutorial(IDocumentationBuilder _)
     {
         base.DoTutorial(_);
-        EnsureCode(_, SceneA, "Now add the following code to SceneALoader.cs", "http://i.imgur.com/dQknvBt.png", "Loader.cs", "CreatePrimitive");
+        //EnsureCode(_, SceneA, "Now add the following code to SceneALoader.cs", "http://i.imgur.com/dQknvBt.png", "Loader.cs", "CreatePrimitive");
     }
 
 }

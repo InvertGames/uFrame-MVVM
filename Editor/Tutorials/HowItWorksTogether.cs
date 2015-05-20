@@ -67,3 +67,38 @@ public class HowItWorksTogether : uFrameMVVMPage<MVVMPage>
                     "losing health.");
     }
 }
+
+public class uFrameOfMind : uFrameMVVMPage<MVVMPage>
+{
+    public override decimal Order
+    {
+        get { return -1; }
+    }
+
+    public override string Name
+    {
+        get { return base.Name; }
+    }
+
+    public override void GetContent(IDocumentationBuilder _)
+    {
+     
+        base.GetContent(_);
+        _.Paragraph("uFrame, specifically created for the Unity game engine, uses a pattern-based framework called MVVM (Model View ViewModel). It is designed to provide developers with the visual editing tools, code structure and knowledge to develop games faster and more efficiently. This \"frame of mind\" for creating games is different than what most Unity developers are used to, but once understood the possibilities of where an idea can go are limitless. So, let's jump right into the \"uFrame of mind\"! ");
+        _.Title2("Making things simple");
+        _.Paragraph("Far too often game development begins with throwing a bunch of random game objects and components together and then retrofitting code in hopes of creating a masterpiece. Teams fail to focus on the basic concepts first and are left with trying to assemble pieces of a project that don't quite fit together. Doesn't make much sense does it?");
+        _.Paragraph("uFrame simplifies things by separating out the essential and peripheral parts of the Unity's component model. It eliminates the visual noise (user-interface, HUD, transformers, positions, rotations, working with geometry, shaders, pathfinders, mouse events etc.) that can overwhelm and discourage many developers, and allows them to initially focus on the core logic.");
+        _.Paragraph("uFrame does this with the use of Elements . Each element in a game has different parts, which consists of the ViewModel, Controller, View and possibly the View Component. A ViewModel serves as interface between the visual entities and logic of the game. These entities include properties (Score, Ammo, etc.), collections (Players, Environments etc.), and commands (PlayerHit, Upgrade etc.). A Controller works with a ViewModel to initialize and modify data when a command is invoked and/or interaction occurs between an event and the user. ");
+        _.Break();
+        _.Title2("Always Consider Portability.");
+        _.Paragraph("In uFrame, both the Controller and the ViewModel are \"portable\" parts of a game. This means taking them outside of Unity and putting them into a separate environment, such as a terminal application or web server, will never be an issue. In fact, this is essential to providing proper support for the extended features of uFrame and is enforced by the Element Designer (which limit the types that are available). This should always be taken into consideration when developing or extending Controllers or ViewModels. ");
+        _.Note("Even if a game doesn't need portability it is still good to think in these terms. uFrame is built around this concept, which allows each piece to fit together more naturally.");
+        _.Break();
+        _.Title2("Making The Noise Sing.");
+        _.Paragraph("The other two parts of the element, the View and the View Component, connect the game logic with the visual noise. They are the key components that connect Unity to the Controllers and ViewModels, bringing the game to life. A View Component can read and modify the real-time data of a ViewModel, but isn't necessary for every element. It is only meant to provide an extra level of extendibility when needed. A View (which is technically a View Component, but with a larger role) binds to an element's data so that it's notified when something is changed. When these changes occur, it directs the View Component to execute the appropriate action. Views also execute the commands of events and interactions that occur in the scene (e.g. Collision, MouseClick, Hover). ");
+        _.Break();
+        _.Title2("Naming Things.");
+        _.Paragraph("When creating elements, particularly element commands, it's important to think about how things are being named. For instance, if a player can pick up an item when a game object collides with it and when the player clicks on it, then a developer would want to create a label such as \"PickUpItem\", that describes both commands. This would more broadly explain its function and allow for items to be collected in a different way, if the developer so chooses.  ");
+        _.Break();
+    }
+}

@@ -201,6 +201,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
                 if (Ctx.ItemAs<CommandsChildItem>().OutputCommand != null)
                 {
                     Ctx._("this.{0}(command.Sender as {1}, command)", c.Name, c.Node.Name.AsViewModel());
+                    
                 }
                 else if (string.IsNullOrEmpty(c.RelatedType))
                 {
@@ -209,6 +210,10 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
                 else
                 {
                     Ctx._("this.{0}(command.Sender as {1}, command.Argument)", c.Name, c.Node.Name.AsViewModel());
+                }
+                if (Ctx.ItemAs<CommandsChildItem>().Publish)
+                {
+                    Ctx._("this.Publish(command)");
                 }
             }
 
@@ -257,5 +262,18 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
     public IEnumerable<string> MethodFormats
     {
         get { yield return "Initialize{0}"; }
+    }
+}
+
+
+
+public partial class ControllerTemplate
+{
+    [TemplateForEach("Bindings")]
+    public string Property { get; set; }
+
+    public void Function()
+    {
+     
     }
 }

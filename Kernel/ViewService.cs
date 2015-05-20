@@ -26,7 +26,7 @@ public class ViewService : SystemServiceMonoBehavior
         set { _views = value; }
     }
 
-    private void InstantiateView(InstantiateViewCommand data)
+    protected virtual void InstantiateView(InstantiateViewCommand data)
     {
         var scene = data.Scene as Scene;
         
@@ -72,7 +72,7 @@ public class ViewService : SystemServiceMonoBehavior
         data.Result = resultView;
     }
 
-    private void ViewCreated(ViewCreatedEvent viewCreatedEvent)
+    protected virtual void ViewCreated(ViewCreatedEvent viewCreatedEvent)
     {
 
         var view = viewCreatedEvent.View;
@@ -84,7 +84,7 @@ public class ViewService : SystemServiceMonoBehavior
         Views.Add(view);
     }
 
-    private void ViewDestroyed(ViewDestroyedEvent data)
+    protected virtual void ViewDestroyed(ViewDestroyedEvent data)
     {
         if (data.View.DisposeOnDestroy)
         {
@@ -96,6 +96,7 @@ public class ViewService : SystemServiceMonoBehavior
             });
         }
     }
+
     /// <summary>
     /// This is method is called by each view in order to get it's view-model as well as place it in
     /// the SceneContext if the "Save & Load" option is checked in it's inspector

@@ -236,7 +236,7 @@ public class ModelViewModelCollectionBinding : Binding
         {
             var targetTransform = Parent ?? SourceView.transform;
             if (targetTransform != null)
-            {
+            { 
                 for (var i = 0; i < targetTransform.childCount; i++)
                 {
                     var view = targetTransform.GetChild(i).GetView();
@@ -244,7 +244,7 @@ public class ModelViewModelCollectionBinding : Binding
                     {
                         if (view.ViewModelObject == null)
                         {
-                            view.ViewModelObject = view.CreateModel();
+                            view.ViewModelObject = ViewService.FetchViewModel(view);
                         }
                         List.Add(view.ViewModelObject);
                         AddLookup(view.gameObject, view.ViewModelObject);

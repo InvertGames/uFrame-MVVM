@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// The base class for a View that binds to a ViewModel
@@ -50,6 +51,7 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     //private bool _forceResolveViewModel = false;
 
     [SerializeField,HideInInspector]
+    [FormerlySerializedAs("_resolveName")]
     private string _viewModelId = "";
 
     [SerializeField, HideInInspector]
@@ -69,8 +71,8 @@ public abstract partial class ViewBase : ViewContainer, IUFSerializable, IBindab
     [SerializeField, HideInInspector, UFGroup("View Model Properties")]
     private bool _overrideViewModel;
 
-    [SerializeField, HideInInspector, UFGroup("View Model Properties")]
-    private string _resolveName = null;
+    //[SerializeField, HideInInspector, UFGroup("View Model Properties")]
+    //private string _resolveName = null;
 
     #endregion
 
@@ -547,10 +549,11 @@ public partial class ViewBase
 public partial class ViewBase
 {
     [Obsolete]
-    protected ViewModel RequestViewModel()
+    protected ViewModel RequestViewModel(object dummy)
     {
         throw new NotImplementedException();
     }
+
     [Obsolete]
     public void ExecuteCommand(ICommand command)
     {

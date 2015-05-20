@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 using UnityEngine.UI;
 
+
     public static class UGUIExtensions
     {
 
@@ -29,7 +30,9 @@ using UnityEngine.UI;
         {
             var d = button.AsClickObservable().Subscribe(_ =>
             {
-                command.OnNext(new TSignalType());
+                var obj = new TSignalType();
+                obj.Sender = viewBase.ViewModelObject;
+                command.OnNext(obj);
             }).DisposeWith(viewBase);
             return d;
         }
@@ -46,12 +49,7 @@ using UnityEngine.UI;
         public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, ViewModelCommand command, Func<T> selector)
         {
             throw new Exception("Must be fixed");
-            var d = button.AsClickObservable().Subscribe(_ =>
-            {
-                   
-                //    viewBase.ExecuteCommand(command, selector());
-            }).DisposeWith(viewBase);
-            return d;
+         
         }
         public static IDisposable BindTextToProperty(this ViewBase viewBase, Text input, P<string> property)
         {

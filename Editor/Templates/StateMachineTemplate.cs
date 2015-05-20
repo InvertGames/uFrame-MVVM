@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,13 @@ public class StateMachineTemplate : Invert.StateMachine.StateMachine, IClassTemp
     {
 
     }
+
+    [TemplateConstructor(MemberGeneratorLocation.DesignerFile, "null", "string.Empty")]
+    public void StateMachineConstructor()
+    {
+
+    }
+
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
     public override Invert.StateMachine.State StartState

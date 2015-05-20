@@ -280,8 +280,8 @@ public class ViewInspector : uFrameInspector
     private void DoInitializationSection(ViewBase t)
     {
         EditorGUILayout.Space();
-        
-        var resolveNameProperty = serializedObject.FindProperty("_resolveName");
+
+        var resolveNameProperty = serializedObject.FindProperty("_viewModelId");
         var resolutionNameProperty = serializedObject.FindProperty("_viewModelId");
         var injectProperty = serializedObject.FindProperty("_InjectView");
         var bindOnStartProperty = serializedObject.FindProperty("_BindOnStart");
@@ -292,7 +292,7 @@ public class ViewInspector : uFrameInspector
         if (!string.IsNullOrEmpty(t.DefaultIdentifier) && (resolveNameProperty.stringValue != t.DefaultIdentifier))
             if (GUILayout.Button(string.Format("Use Registered \"{0}\" Instance", t.DefaultIdentifier)))
             {
-                serializedObject.FindProperty("_resolveName").stringValue = t.DefaultIdentifier;
+                serializedObject.FindProperty("_viewModelId").stringValue = t.DefaultIdentifier;
             }
 
         Info("If you leave this empty, View will fetch a new viewmodel on awake.\n" +

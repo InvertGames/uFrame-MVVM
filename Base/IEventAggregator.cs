@@ -1,5 +1,5 @@
 using UniRx;
-
+using System; // Required for WP8 and Store APPS
 public interface IEventAggregator
 {
     IObservable<TEvent> GetEvent<TEvent>();

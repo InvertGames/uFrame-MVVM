@@ -17,14 +17,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9b99d76b166e6624396bcea5a92e1bb6, type: 2}
   - {fileID: 11400000, guid: 00ff4f68c9cfe334dbfd68bd08abaf79, type: 2}
   - {fileID: 11400000, guid: 9b4aa3018ad9a1b46ab8a5508d3723bf, type: 2}
+  - {fileID: 11400000, guid: fe2dffffebaf9a946b1fec847a481f97, type: 2}
   _projectNamespace: uFrame.DefaultProject
   _currentTabs:
-  - _graphIdentifier: 0999f5c3-e70f-4e6b-bb6e-75bb39f8b16d
-    _graphName: uFrameStarter
-    _path: []
   - _graphIdentifier: a0009eb1-7b60-4ef2-80cb-0bf2f4f2bd63
     _graphName: GameSystem
     _path: []
   - _graphIdentifier: 1528bf45-4136-499c-b590-fec5db79bd1a
     _graphName: MainMenuSystem
+    _path: []
+  - _graphIdentifier: 0999f5c3-e70f-4e6b-bb6e-75bb39f8b16d
+    _graphName: uFrameStarter
+    _path: []
+  - _graphIdentifier: f196d937-a3a4-45f7-8c3c-f2066c49f3c2
+    _graphName: NewUnityGraphData
     _path: []

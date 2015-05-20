@@ -9,7 +9,7 @@ using Invert.uFrame.MVVM;
 using uFrame.Graphs;
 
 [TemplateClass(MemberGeneratorLocation.Both)]
-public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRefactorable
+public partial class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRefactorable
 {
     public string OutputPath
     {
@@ -36,11 +36,15 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRe
         }
 
         Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
-        Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
+        //Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
         Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
         
     }
 
+    public IEnumerable<CommandsChildItem> Commands
+    {
+        get { return Ctx.Data.View.Element.InheritedCommandsWithLocal; }
+    }
     public TemplateContext<ViewComponentNode> Ctx { get; set; }
 
     [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
@@ -61,14 +65,7 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRe
         Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0} }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
         //Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
     }
-    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
-    public void ExecuteCommandOverload(ViewModelCommand command)
-    {
-        Ctx.CurrentMethod.Parameters[0].Type = (Ctx.Item.Name + "Command").ToCodeReference();
-        Ctx._("command.Sender = {0}", Ctx.Data.View.Element.Name);
-        Ctx._("{0}.{1}.OnNext(command)", Ctx.Data.View.Element.Name, Ctx.Item.Name);
-        //Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
-    }
+
     [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
     public void ExecuteCommandWithArg(object arg)
     {
@@ -86,3 +83,14 @@ public class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, IClassRe
     }
 }
 
+public partial class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
+{
+    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
+    [TemplateForEach("Commands")]
+    public void ExecuteCommandOverload(ViewModelCommand command)
+    {
+        Ctx.CurrentMethod.Parameters[0].Type = (Ctx.Item.Name + "Command").ToCodeReference();
+        Ctx._("command.Sender = {0}", Ctx.Data.View.Element.Name);
+        Ctx._("{0}.{1}.OnNext(command)", Ctx.Data.View.Element.Name, Ctx.Item.Name);
+    }
+}

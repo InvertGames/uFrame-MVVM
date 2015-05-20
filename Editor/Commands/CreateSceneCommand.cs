@@ -175,10 +175,10 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
             }
         }
 
-        var systemNodes = node.CurrentRepository.NodeItems.OfType<SubsystemNode>();
+        var systemNodes = node.GraphData.Project.AllGraphItems.OfType<SubsystemNode>();
         foreach (var systemNode in systemNodes)
         {
-            if (!systemNode.GetContainingNodes(systemNode.Graph.Project).OfType<ElementNode>().Any()) continue;
+            //if (!systemNode.GetContainingNodes(systemNode.Graph.Project).OfType<ElementNode>().Any()) continue;
             var type = InvertApplication.FindType(string.Format("{0}Loader", systemNode.FullName));
             if (type != null && systemLoadersContainer.GetComponent(type) == null)
             {

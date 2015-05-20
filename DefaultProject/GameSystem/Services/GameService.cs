@@ -54,17 +54,17 @@ namespace uFrame.DefaultProject {
         public override void BeginGameCommandHandler(BeginGameCommand data)
         {
             base.BeginGameCommandHandler(data);
+            // Unloading a scene
             this.Publish(new UnloadSceneCommand()
             {
                 SceneName = "UIScene"
             });
             // Loading a scene with publish
-            this.Publish(new LoadSceneCommand() { 
-                SceneName = "GameScene",
-                Settings = new GameSceneSettings()
-                {
-                    // Your own game settings, this will be passed to the GameSceneLoader see GameSceneLoader.cs
-                } });
+            this.Publish(new LoadSceneCommand() 
+            { 
+                SceneName = "GameScene", 
+                Settings = new GameSceneSettings() 
+            });
         }
     }
 }

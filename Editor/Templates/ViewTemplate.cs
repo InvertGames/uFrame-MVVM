@@ -327,3 +327,32 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
 
     }
 }
+
+public class ModelNode : GenericNode
+{
+    
+}
+
+public partial class ModelTemplate : IClassTemplate<ModelNode>
+{
+    public string OutputPath { get; private set; }
+    public bool CanGenerate { get; private set; }
+    public void TemplateSetup()
+    {
+        throw new NotImplementedException();
+    }
+
+    public TemplateContext<ModelNode> Ctx { get; set; }
+}
+
+
+[TemplateClass(MemberGeneratorLocation.DesignerFile,"{0}Model")]
+public partial class ModelTemplate : IClassTemplate<ModelNode>
+{
+    [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
+    [TemplateForEach("Commands")]
+    public void CommandFunction()
+    {
+        Ctx._comment("This is the {0} function", Ctx.Item.Name);
+    }
+}

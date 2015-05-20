@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1328937199, guid: 019118f6de8965947b2d943bbe59c84b, type: 3}
+  m_Name: AppFlow
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"AppFlow", "Version":"1.501", "Identifier":"f196d937-a3a4-45f7-8c3c-f2066c49f3c2",
+    "Type":"Invert.uFrame.MVVM.StateMachineGraph", "DocumentationMode":"false", "RootNode":{"_CLRType":"Invert.uFrame.MVVM.StateMachineNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"AppFlow", "IsCollapsed":"false", "Identifier":"6ff44a7f-8d01-45b2-b55f-bd5709070366",
+    "Items":[ {"_CLRType":"Invert.uFrame.MVVM.TransitionsChildItem, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"PlayGame", "Identifier":"418b7c0e-4c1b-4d7d-882b-3397564be9c1",
+    "Precompiled":"false", "Flags":{"_CLRType":"Invert.Core.GraphDesigner.FlagsDictionary,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}} ], "CollapsedValues":{"7fbcbac6-76e8-4b3b-bf8d-3f37bb534941":"false",
+    "16cb9157-59dd-4d17-9eb3-c320ff8a42de":"false", "197b1c29-678e-4a5b-b509-67f8b76d6bc8":"false"},
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "StartStateOutputSlot":{"_CLRType":"Invert.uFrame.MVVM.StartState, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"StartState", "Identifier":"57e9668b-469d-4580-a4f6-28be1575f1fd",
+    "Precompiled":"false", "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}},
+    "IsNewNode":"true"}, "Nodes":[ {"_CLRType":"Invert.uFrame.MVVM.StateNode, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"MainMenu", "IsCollapsed":"false",
+    "Identifier":"7fbcbac6-76e8-4b3b-bf8d-3f37bb534941", "Items":[ {"_CLRType":"Invert.uFrame.MVVM.StateTransitionsReference,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"", "Identifier":"474e9afe-f061-490d-bc7b-586cbba00e0d", "Precompiled":"false",
+    "Flags":{"_CLRType":"Invert.Core.GraphDesigner.FlagsDictionary, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "SourceIdentifier":"418b7c0e-4c1b-4d7d-882b-3397564be9c1"} ], "CollapsedValues":{},
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "IsNewNode":"true"}, {"_CLRType":"Invert.uFrame.MVVM.StateNode, Assembly-CSharp-Editor,
+    Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"GameConfig", "IsCollapsed":"false",
+    "Identifier":"197b1c29-678e-4a5b-b509-67f8b76d6bc8", "Items":[  ], "CollapsedValues":{},
+    "Flags":{"_CLRType":"Invert.Core.GraphDesigner.FlagsDictionary, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "IsNewNode":"true"} ], "ConnectedItems":[ {"_CLRType":"ConnectionData, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "OutputIdentifier":"57e9668b-469d-4580-a4f6-28be1575f1fd",
+    "InputIdentifier":"7fbcbac6-76e8-4b3b-bf8d-3f37bb534941"}, {"_CLRType":"ConnectionData,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "OutputIdentifier":"474e9afe-f061-490d-bc7b-586cbba00e0d", "InputIdentifier":"197b1c29-678e-4a5b-b509-67f8b76d6bc8"}
+    ], "PositionData":{"_CLRType":"FilterPositionData, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "6ff44a7f-8d01-45b2-b55f-bd5709070366":{"6ff44a7f-8d01-45b2-b55f-bd5709070366":{"x":"110",
+    "y":"220"}, "7fbcbac6-76e8-4b3b-bf8d-3f37bb534941":{"x":"400", "y":"170"}, "197b1c29-678e-4a5b-b509-67f8b76d6bc8":{"x":"650",
+    "y":"360"}}}, "FilterState":{"_CLRType":"FilterState, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "CodeGenDisabled":"false", "SnapSize":"10", "Snap":"true", "CodePathStrategyName":"Default",
+    "GridLinesColor":{"r":"0.271", "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169",
+    "g":"0.169", "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1",
+    "b":"1", "a":"1"}, "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"},
+    "InheritanceLinkColor":{"r":"0", "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5",
+    "g":"0.5", "b":"0.5", "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "TransitionLinkColor":{"r":"1", "g":"0.9215686", "b":"0.01568628", "a":"1"},
+    "ViewLinkColor":{"r":"0", "g":"0", "b":"1", "a":"1"}, "RootNamespace":""}, "Changes":[
+    {"_CLRType":"Invert.Core.GraphDesigner.GraphItemAdded, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "ItemIdentifier":"7fbcbac6-76e8-4b3b-bf8d-3f37bb534941"},
+    {"_CLRType":"Invert.Core.GraphDesigner.GraphItemAdded, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "ItemIdentifier":"197b1c29-678e-4a5b-b509-67f8b76d6bc8"},
+    {"_CLRType":"Invert.Core.GraphDesigner.GraphItemAdded, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "ItemIdentifier":"418b7c0e-4c1b-4d7d-882b-3397564be9c1"},
+    {"_CLRType":"Invert.Core.GraphDesigner.GraphItemAdded, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "ItemIdentifier":"474e9afe-f061-490d-bc7b-586cbba00e0d"},
+    {"_CLRType":"Invert.Core.GraphDesigner.NameChange, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "ItemIdentifier":"6ff44a7f-8d01-45b2-b55f-bd5709070366",
+    "New":"AppFlow"} ]}'

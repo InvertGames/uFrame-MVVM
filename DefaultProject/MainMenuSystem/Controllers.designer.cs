@@ -20,6 +20,8 @@ namespace uFrame.DefaultProject {
         
         private IViewModelManager _MainMenuScreenViewModelManager;
         
+        private MainMenuScreenViewModel _MainMenuScreen;
+        
         [InjectAttribute("MainMenuScreen")]
         public IViewModelManager MainMenuScreenViewModelManager {
             get {
@@ -27,6 +29,16 @@ namespace uFrame.DefaultProject {
             }
             set {
                 _MainMenuScreenViewModelManager = value;
+            }
+        }
+        
+        [InjectAttribute("MainMenuScreen")]
+        public MainMenuScreenViewModel MainMenuScreen {
+            get {
+                return _MainMenuScreen;
+            }
+            set {
+                _MainMenuScreen = value;
             }
         }
         
@@ -71,6 +83,7 @@ namespace uFrame.DefaultProject {
         
         public virtual void PlayGameHandler(PlayGameCommand command) {
             this.PlayGame(command.Sender as MainMenuScreenViewModel);
+            this.Publish(command);
         }
     }
 }

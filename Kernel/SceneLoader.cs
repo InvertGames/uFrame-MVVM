@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class SceneLoader<T> : MonoBehaviour, ISceneLoader where T : IScene 
 {
     
-    public Type SceneType
+    public virtual Type SceneType
     {
         get { return typeof (T); }
     }
@@ -29,7 +29,7 @@ public abstract class SceneLoader<T> : MonoBehaviour, ISceneLoader where T : ISc
 public class DefaultSceneLoader : SceneLoader<IScene>
 {
 
-    public Type SceneType
+    public override Type SceneType
     {
         get { return typeof(IScene); }
     }
@@ -44,14 +44,14 @@ public class DefaultSceneLoader : SceneLoader<IScene>
         yield break;
     }
 
-    public IEnumerator Load(object sceneObject, Action<float, string> progressDelegate)
-    {
-        return LoadScene((IScene)sceneObject, progressDelegate);
-    }
+    //public IEnumerator Load(object sceneObject, Action<float, string> progressDelegate)
+    //{
+    //    return LoadScene((IScene)sceneObject, progressDelegate);
+    //}
 
-    public IEnumerator Unload(object sceneObject, object settings, Action<float, string> progressDelegate)
-    {
-        return UnloadScene((IScene)sceneObject, progressDelegate);
-    }
+    //public IEnumerator Unload(object sceneObject, object settings, Action<float, string> progressDelegate)
+    //{
+    //    return UnloadScene((IScene)sceneObject, progressDelegate);
+    //}
 }
 

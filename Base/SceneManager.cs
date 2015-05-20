@@ -448,6 +448,7 @@ public static class ContainerExtensions
         container.RegisterInstance<IViewModelManager>(manager,typeof(TViewModel).Name.Replace("ViewModel", ""));
         container.RegisterInstance<IViewModelManager>(manager,typeof(TViewModel).Name);
         container.RegisterInstance<IViewModelManager<TViewModel>>(manager,typeof(TViewModel).Name.Replace("ViewModel", ""));
+        container.RegisterInstance<IViewModelManager<TViewModel>>(manager);
     }
     public static void RegisterViewModelController<TController, TViewModel>(this IGameContainer container, TController controller) where TController : Controller
     {

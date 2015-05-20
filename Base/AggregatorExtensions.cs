@@ -1,5 +1,5 @@
 using UniRx;
-
+using System; // Required for WP8 and Store APPS
 public static class AggregatorExtensions
 {
     public static IObservable<TViewModel> OnViewModelCreated<TViewModel>(this IEventAggregator ea) where TViewModel : ViewModel

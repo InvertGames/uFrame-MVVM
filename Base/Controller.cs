@@ -104,7 +104,7 @@ public static class SystemControllerExtensions
 /// <summary>
 /// A controller is a group of commands usually to provide an abstract level
 /// </summary>
-public abstract class Controller : SystemService
+public abstract partial class Controller : SystemService
 {
 
     /// <summary>
