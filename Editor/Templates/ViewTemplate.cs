@@ -93,7 +93,9 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
         Ctx.AddIterator("ResetProperty", _ => _.SceneProperties);
         Ctx.AddIterator("CalculateProperty", _ => _.SceneProperties);
         Ctx.AddIterator("GetPropertyObservable", _ => _.SceneProperties);
-
+        Ctx.AddCondition("ViewModelProperty", _=>!_.IsDerivedOnly);
+        Ctx.AddCondition("DefaultIdentifier", _=>!_.IsDerivedOnly);
+        Ctx.AddCondition("ViewModelType", _=>!_.IsDerivedOnly);
         if (!Ctx.IsDesignerFile)
         {
             // For each binding lets do some magic
@@ -162,10 +164,12 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
     }
 
     [TemplateProperty]
+    
     public Type ViewModelProperty
     {
         get
         {
+            
             Ctx.CurrentProperty.Name = Ctx.Data.Element.Name;
             Ctx.CurrentProperty.Type = Ctx.Data.Element.Name.AsViewModel().ToCodeReference();
             Ctx._("return ({0})ViewModelObject", Ctx.Data.Element.Name.AsViewModel());
@@ -193,13 +197,15 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
         if (!Ctx.IsDesignerFile) return;
         Ctx.CurrentMethod.invoke_base(true);
         if (!Ctx.Data.Element.LocalProperties.Any()) return;
+        if (Ctx.Data.IsDerivedOnly) return;
         var variableName = Ctx.Data.Name.ToLower();
         Ctx._("var {0} = (({1})model)", variableName, Ctx.Data.Element.Name.AsViewModel());
 
         foreach (var property in Ctx.Data.Element.LocalProperties)
         {
             if (property.RelatedTypeNode is StateMachineNode) continue;
-
+            // Make sure derived views don't duplicate in initialize vm
+            
             var field = Ctx.CurrentDecleration._public_(property.RelatedTypeName, property.Name.AsField());
             field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializeField))));
             field.CustomAttributes.Add(

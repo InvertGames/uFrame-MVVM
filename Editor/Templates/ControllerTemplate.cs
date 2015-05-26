@@ -51,7 +51,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         if (Ctx.Data.BaseNode == null)
         {
             Ctx.AddIterator("InstanceProperty",
-                _ => _.GetParentNodes().OfType<SubsystemNode>().SelectMany(p => p.Instances).Distinct());
+               _ => _.Graph.NodeItems.OfType<SubsystemNode>().SelectMany(p => p.Instances).Distinct());
         }
         else
         {
@@ -156,7 +156,7 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(NameAsViewModel);
         if (Ctx.IsDesignerFile)
         {
-            foreach (var command in Ctx.Data.Commands)
+            foreach (var command in Ctx.Data.LocalCommands)
             {
                 Ctx._("viewModel.{0}.Action = this.{0}Handler", command.Name);
             }
@@ -266,14 +266,3 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 }
 
 
-
-public partial class ControllerTemplate
-{
-    [TemplateForEach("Bindings")]
-    public string Property { get; set; }
-
-    public void Function()
-    {
-     
-    }
-}

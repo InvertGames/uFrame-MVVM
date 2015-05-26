@@ -37,6 +37,10 @@ public class Scene : MonoBehaviour, IScene
         {
             Name = Application.loadedLevelName;
             yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(KernelScene));
+        } 
+        while (!uFrameMVVMKernel.IsKernelLoaded)
+        {
+            yield return null;
         }
         uFrameMVVMKernel.EventAggregator.Publish(new SceneAwakeEvent() { Scene = this });
         

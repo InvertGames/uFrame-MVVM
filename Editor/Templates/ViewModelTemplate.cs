@@ -52,7 +52,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         Ctx.AddIterator("CollectionProperty", (d) => d.LocalCollections);
         Ctx.AddIterator("CommandItems", (d) => d.LocalCommands);
         Ctx.AddIterator("CommandMethod", (d) => d.LocalCommands);
-        Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
+        //Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
 
         Ctx.AddIterator("StateMachineProperty", (d) => StateMachineProperties);
         Ctx.AddIterator("StateMachineCurrentState", (d) => StateMachineProperties);
@@ -80,7 +80,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     public override void Bind()
     {
         if (!Ctx.IsDesignerFile) return;
-        foreach (var command in Ctx.Data.Commands)
+        foreach (var command in Ctx.Data.LocalCommands)
         {
             Ctx._("this.{0} = new Signal<{0}Command>(this)", command.Name);
         }
@@ -131,21 +131,21 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     }
 
     //[TemplateMethod(MemberGeneratorLocation.DesignerFile)]
-    protected override void WireCommands(Controller controller)
-    {
-        //base.WireCommands(controller);
-        if (!Ctx.Data.Commands.Any()) return;
-        var varName = Ctx.Data.Name.ToLower();
-        Ctx._("var {0} = controller as {1}", varName, Ctx.Data.Name.AsController());
-        foreach (var command in Ctx.Data.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)))
-        {
-            Ctx._("this.{0} = new CommandWithSender<{1}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName);
-        }
-        foreach (var command in Ctx.Data.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)))
-        {
-            Ctx._("this.{0} = new CommandWithSenderAndArgument<{1},{3}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName, command.RelatedTypeName);
-        }
-    }
+    //protected override void WireCommands(Controller controller)
+    //{
+    //    //base.WireCommands(controller);
+    //    if (!Ctx.Data.Commands.Any()) return;
+    //    var varName = Ctx.Data.Name.ToLower();
+    //    Ctx._("var {0} = controller as {1}", varName, Ctx.Data.Name.AsController());
+    //    foreach (var command in Ctx.Data.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)))
+    //    {
+    //        Ctx._("this.{0} = new CommandWithSender<{1}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName);
+    //    }
+    //    foreach (var command in Ctx.Data.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)))
+    //    {
+    //        Ctx._("this.{0} = new CommandWithSenderAndArgument<{1},{3}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName, command.RelatedTypeName);
+    //    }
+    //}
 
     #region Properties
 
@@ -350,7 +350,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     protected override void FillCommands(List<ViewModelCommandInfo> list)
     {
         //base.FillCommands(list);
-        foreach (var commandChildItem in Ctx.Data.Commands)
+        foreach (var commandChildItem in Ctx.Data.LocalCommands)
         {
             Ctx._("list.Add(new ViewModelCommandInfo(\"{0}\", {0}) {{ ParameterType = typeof({1}) }})",
                commandChildItem.Name,
