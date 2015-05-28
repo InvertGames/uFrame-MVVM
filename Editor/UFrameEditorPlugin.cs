@@ -50,12 +50,12 @@ public class UFrameEditorPlugin : DiagramPlugin
         {
             get { return typeof(Controller); }
         }
-
+        [Obsolete]
         public Type SceneManager
         {
             get { return typeof(SceneManager); }
         }
-
+        [Obsolete]
         public Type GameManager
         {
             get { return typeof(GameManager); }
@@ -95,7 +95,7 @@ public class UFrameEditorPlugin : DiagramPlugin
         {
             return typeof(ModelCollection<T>);
         }
-
+        [Obsolete]
         public Type UpdateProgressDelegate
         {
             get { return typeof(UpdateProgressDelegate); }

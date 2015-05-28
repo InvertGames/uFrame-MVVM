@@ -63,39 +63,48 @@ public class uFrameTemplates : DiagramPlugin
 
         container.AddBindingMethod(typeof(ViewBindings), "BindStateProperty", _ => _ is PropertiesChildItem && _.RelatedNode() is StateMachineNode)
             .SetNameFormat("{0} State Changed")
+            .SetDescription("Binding to a state property creates methods for each state, and in the designer code will property call the each state's method when it changes.")
             .ImplementWith(args =>
             {
                 args.Method.Parameters[0].Type = typeof(State).ToCodeReference();
                 var sourceItem = args.SourceItem as ITypedItem;
                 var stateMachine = sourceItem.RelatedNode() as StateMachineNode;
-
-                foreach (var state in stateMachine.States)
+                if (args.IsDesignerFile)
                 {
-                    var method = new CodeMemberMethod()
+                    foreach (var state in stateMachine.States)
                     {
-                        Name = "On" + state.Name,
-                        Attributes = MemberAttributes.Public
-                    };
-                    var conditionStatement =
-                    new CodeConditionStatement(
-                        new CodeSnippetExpression(string.Format("arg1 is {0}", state.Name)));
-                    conditionStatement.TrueStatements.Add(
-                        new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), method.Name));
+                        var method = new CodeMemberMethod()
+                        {
+                            Name = "On" + state.Name,
+                            Attributes = MemberAttributes.Public
+                        };
+                        var conditionStatement =
+                        new CodeConditionStatement(
+                            new CodeSnippetExpression(string.Format("arg1 is {0}", state.Name)));
+                        conditionStatement.TrueStatements.Add(
+                            new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), method.Name));
 
-                    args.Method.Statements.Add(conditionStatement);
-                    args.Decleration.Members.Add(method);
+                        args.Method.Statements.Add(conditionStatement);
+                        args.Decleration.Members.Add(method);
 
+                    }
+                    
                 }
+              
                 args.Method.Parameters[0].Type = "Invert.StateMachine.State".ToCodeReference();
             });
 
         container.AddBindingMethod(typeof(ViewBindings), "BindCollection", _ => _ is CollectionsChildItem)
-            .SetNameFormat("{0} Collection Changed");
+            .SetNameFormat("{0} Collection Changed")
+            .SetDescription("Collection bindings bind to a collection giving you two methods, {CollectionName}Added, and {CollectionName}Removed, override these methods to execute something when the collection is modified.")
+            ;
 
         container.AddBindingMethod(typeof(ViewBindings), "BindToViewCollection", _ => _ is CollectionsChildItem)
             .SetNameFormat("{0} View Collection Changed")
+            .SetDescription("The view collection changed binding automatically creates views for each element's viewmodel when created.")
             .ImplementWith(args =>
             {
+
                 if (args.Method.Name.EndsWith("CreateView"))
                 {
                     args.Method.Parameters[0].Name = "viewModel";
@@ -110,8 +119,11 @@ public class uFrameTemplates : DiagramPlugin
 
         container.AddBindingMethod(typeof(ViewBindings), "BindCommandExecuted", _ => _ is CommandsChildItem)
             .SetNameFormat("{0} Executed")
+            .SetDescription("The executed binding is for listening to when a command is invoked on a view.  It will provide you with a method in the format {CommandName}Executed({CommandClass} data)")
+
             .ImplementWith(args =>
             {
+                
                 args.Method.Parameters[0].Name = "command";
                 var commandItem = args.SourceItem as CommandsChildItem;
                 args.Method.Parameters[0].Type = commandItem.ClassName.ToCodeReference();
@@ -120,17 +132,22 @@ public class uFrameTemplates : DiagramPlugin
 
         container.AddBindingMethod(typeof(UGUIExtensions), "BindInputFieldToProperty", // Registration
             _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name) // Validation
+            .SetDescription("Binds a string property to an uGUI input field.  A field will be created on the view for specifying the uGUI field.")
             .SetNameFormat("{0} To Input Field")// Configuration
             ;
 
         container.AddBindingMethod(typeof(UGUIExtensions), "BindButtonToCommand", _ => _ is CommandsChildItem)
+            .SetDescription("The ButtonToCommand binding will create a reference to a uGUI button on the view and automatically wire the click event to invoke the command.")
             .SetNameFormat("{0} To Button");
         container.AddBindingMethod(typeof(UGUIExtensions), "BindToggleToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(bool).Name)
+            .SetDescription("Bind toggle to property will bind a boolean property directly to a uGUI toggle box.")
             .SetNameFormat("{0} To Toggle");
         container.AddBindingMethod(typeof(UGUIExtensions), "BindTextToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(string).Name)
+            .SetDescription("Binds a string property to a uGUI text label.")
             .SetNameFormat("{0} To Text");
 
         container.AddBindingMethod(typeof(UGUIExtensions), "BindSliderToProperty", _ => _ is PropertiesChildItem && _.RelatedTypeName == typeof(float).Name)
+            .SetDescription("Binds a slider to a float value.")
             .SetNameFormat("{0} To Slider");
 
     }

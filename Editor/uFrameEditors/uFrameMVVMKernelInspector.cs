@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(uFrameMVVMKernel), true)]
-public class UFrameMvvmKernelInspector : ManagerInspector<SceneManager>
+public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
 {
     private bool _RenderSettingsOpen;
 

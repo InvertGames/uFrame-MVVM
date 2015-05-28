@@ -13,11 +13,11 @@ public class CollectionBindings : uFrameMVVMTutorial
         BasicSetup(_);
         PlayerSetup(_);
 
-        var firstNameProperty = DoNamedItemStep<PropertiesChildItem>(_, "FirstName", ThePlayer, "a property", b => { });
-        var lastNameProperty = DoNamedItemStep<PropertiesChildItem>(_, "LastName", ThePlayer, "a property", b => { });
-        var loadNameCommand = DoNamedItemStep<CommandsChildItem>(_, "LoadName", ThePlayer, "a command", b => { });
+        DoNamedItemStep<PropertiesChildItem>(_, "FirstName", ThePlayer, "a property", b => { });
+        DoNamedItemStep<PropertiesChildItem>(_, "LastName", ThePlayer, "a property", b => { });
+        DoNamedItemStep<CommandsChildItem>(_, "LoadName", ThePlayer, "a command", b => { });
 
-        var propertyBinding = DoNamedItemStep<BindingsReference>(_,
+        DoNamedItemStep<BindingsReference>(_,
             "FirstName Changed", ThePlayerView, "a property binding", b => { });
 
 

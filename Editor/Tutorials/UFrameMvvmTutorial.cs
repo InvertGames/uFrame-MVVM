@@ -92,9 +92,8 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
         var component = go == null ? null : go.GetComponent<uFrameMVVMKernel>();
 
-        builder.ShowTutorialStep(new TutorialStep("Now create the we need to create the kernel.", () =>
+        builder.ShowTutorialStep(new TutorialStep("Now we need to scaffold/update the kernel.", () =>
         {
-
             if (component == null)
             {
                 return "The Kernel Prefab has not been created yet.  Please press 'Scaffold/Update Kernel'.";

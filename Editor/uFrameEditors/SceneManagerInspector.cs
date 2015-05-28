@@ -1,10 +1,11 @@
+using System;
 using System.IO;
 using System.Text;
 using Invert.Common;
 using Invert.Common.UI;
 using UnityEditor;
 using UnityEngine;
-
+[Obsolete]
 [CustomEditor(typeof(SceneManager), true)]
 public class SceneManagerInspector : uFrameInspector
 {
@@ -78,27 +79,5 @@ public class SceneManagerInspector : uFrameInspector
         }
 
         GUIHelpers.IsInsepctor = false;
-    }
-}
-public class TextAssetStorage : ISerializerStorage
-{
-    public string AssetPath { get; set; }
-
-    public TextAsset Asset
-    {
-        get
-        {
-            return AssetDatabase.LoadAssetAtPath(AssetPath, typeof(TextAsset)) as TextAsset;
-        }
-    }
-    public void Save(ISerializerStream stream)
-    {
-        File.WriteAllText(AssetPath, Encoding.UTF8.GetString(stream.Save()));
-        AssetDatabase.Refresh();
-    }
-
-    public void Load(ISerializerStream stream)
-    {
-        stream.Load(Asset.bytes);
     }
 }

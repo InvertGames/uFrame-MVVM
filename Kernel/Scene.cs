@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UniRx;
-public class Scene : MonoBehaviour, IScene
+public class Scene : uFrameComponent, IScene
 {
     [SerializeField]
     private string _KernelScene;
@@ -31,18 +31,26 @@ public class Scene : MonoBehaviour, IScene
         StartCoroutine(InternalAwake());
     }
 
-    public IEnumerator InternalAwake()
+    protected override IEnumerator Start()
     {
         if (!uFrameMVVMKernel.IsKernelLoaded)
         {
             Name = Application.loadedLevelName;
             yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(KernelScene));
-        } 
+        }
+        while (!uFrameMVVMKernel.IsKernelLoaded) yield return null;
+        uFrameMVVMKernel.EventAggregator.Publish(new SceneAwakeEvent() { Scene = this });
+    }
+
+
+    public IEnumerator InternalAwake()
+    {
+  
         while (!uFrameMVVMKernel.IsKernelLoaded)
         {
             yield return null;
         }
-        uFrameMVVMKernel.EventAggregator.Publish(new SceneAwakeEvent() { Scene = this });
+       
         
     }
 

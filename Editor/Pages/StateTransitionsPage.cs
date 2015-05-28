@@ -6,7 +6,11 @@ namespace Invert.uFrame.MVVM {
     
     
     public class StateStateTransitionsPage : StateStateTransitionsPageBase {
-        
+        public override bool ShowInNavigation
+        {
+            get { return false; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
         }

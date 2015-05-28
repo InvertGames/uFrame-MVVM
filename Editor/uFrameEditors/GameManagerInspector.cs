@@ -6,7 +6,7 @@ using Invert.Common.UI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-
+[Obsolete]
 [CustomEditor(typeof(GameManager), true)]
 public class GameManagerInspector : ManagerInspector<SceneManager>
 {

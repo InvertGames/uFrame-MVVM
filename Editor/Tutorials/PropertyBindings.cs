@@ -14,10 +14,10 @@ public class PropertyBindings : uFrameMVVMTutorial
         
         PlayerSetup(_);
 
-        var firstNameProperty = DoNamedItemStep<PropertiesChildItem>(_, "FirstName", ThePlayer, "a property", b => { });
-        var loadNameCommand = DoNamedItemStep<CommandsChildItem>(_, "LoadName", ThePlayer, "a command", b => { });
+        DoNamedItemStep<PropertiesChildItem>(_, "FirstName", ThePlayer, "a property", b => { });
+        DoNamedItemStep<CommandsChildItem>(_, "LoadName", ThePlayer, "a command", b => { });
 
-        var propertyBinding = DoNamedItemStep<BindingsReference>(_, 
+        DoNamedItemStep<BindingsReference>(_, 
             "FirstName Changed", ThePlayerView, "a property binding", b => { });
 
         SaveAndCompile(_,ThePlayerView);

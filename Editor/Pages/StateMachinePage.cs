@@ -25,6 +25,18 @@ namespace Invert.uFrame.MVVM {
             _.Paragraph("Reactive State Machines employ the concept of data subscriptions causing transitions, rather than polling data every frame, this can give a definite increase in performance.");
             _.Break();
             _.ImageByUrl("http://i.imgur.com/CPymbPH.png");
+            _.Break();
+            _.Title2("Manually triggering transitions");
+            _.Paragraph("To set a transition in code, you'll need to access the state machine property.  This should be the property that is connected to your state machine.");
+            _.CodeSnippet("{ViewModel}.{StateMachinePropertyName}Property.Transition(\"NAME OF TRANSITION HERE\");");
+            _.Break();
+            _.Title2("Manually setting the state");
+            _.CodeSnippet("{ViewModel}.{StateMachinePropertyName}Property.SetState<STATE_CLASS_NAME>();");
+            _.Title3("or");
+            _.CodeSnippet("{ViewModel}.{StateMachinePropertyName}Property.SetState(\"STATE_NAME\");");
+            _.Break();
+
+
 
             _.AlsoSeePages(typeof(UsingStateMachines));
         }

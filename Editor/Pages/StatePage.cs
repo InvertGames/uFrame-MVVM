@@ -16,6 +16,11 @@ namespace Invert.uFrame.MVVM {
             get { return 2; }
         }
 
+        public override bool ShowInNavigation
+        {
+            get { return false; }
+        }
+
         public override void GetContent(Invert.Core.GraphDesigner.IDocumentationBuilder _) {
             base.GetContent(_);
         }
