@@ -33,11 +33,11 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     public MVVMGraph TheGraph { get; set; }
 
     public IProjectRepository TheProject { get; set; }
-    public void EnsureSceneOpen(IDocumentationBuilder _, SceneTypeNode scene, Action<IDocumentationBuilder> stepContent = null)
+    public void EnsureSceneOpen(IDocumentationBuilder _, SceneTypeNode scene, Action<IDocumentationBuilder> stepContent = null, string sceneName = null)
     {
 
 
-        _.ShowTutorialStep(new TutorialStep(scene == null ? "Open The Scene" : string.Format("Open the scene '{0}'", scene.Name), () =>
+        _.ShowTutorialStep(new TutorialStep(scene == null ? "Open The Scene " + sceneName: string.Format("Open the scene '{0}'", scene.Name), () =>
         {
             return EditorApplication.currentScene.EndsWith(scene.Name + ".unity")
                 ? null
@@ -55,10 +55,10 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         });
 
     }
-    public void EnsureCreateScene(IDocumentationBuilder _, SceneTypeNode scene, Action<IDocumentationBuilder> stepContent = null)
+    public void EnsureCreateScene(IDocumentationBuilder _, SceneTypeNode scene, Action<IDocumentationBuilder> stepContent = null, string sceneName = null)
     {
 
-        _.ShowTutorialStep(new TutorialStep(scene == null ? "Create the scene" : string.Format("Create the scene for scene type '{0}'", scene.Name), () =>
+        _.ShowTutorialStep(new TutorialStep(scene == null ? "Create the scene " + sceneName : string.Format("Create the scene for scene type '{0}'", scene.Name), () =>
         {
             var paths = scene.Graph.CodePathStrategy;
             var scenePath = System.IO.Path.Combine(paths.ScenesPath, scene.Name + ".unity");
@@ -187,7 +187,10 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     protected void CreateGameView(IDocumentationBuilder _)
     {
-        GameView = DoNamedNodeStep<ViewNode>(_, "GameView", TheGame);
+        GameView = DoNamedNodeStep<ViewNode>(_, "GameView", TheGame, b =>
+        {
+            _.Paragraph("You must enter the 'Game' element context to create its view, you can do this by double-clicking on it.");
+        });
         DoCreateConnectionStep(_, TheGame, GameView == null ? null : GameView.ElementInputSlot);
     }
     protected bool CreatePlayerElement(IDocumentationBuilder _)
@@ -257,15 +260,18 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
             });
     }
 
-    protected void EnsureInitializeView(IDocumentationBuilder _, ViewBase view)
+    protected void EnsureInitializeView(IDocumentationBuilder _, ViewBase view, string additionalMessage = null)
     {
         _.ShowTutorialStep(new TutorialStep("Now check 'Initialize View Model' on the view.", () =>
         { 
             return view.OverrideViewModel ? null : "You haven't checked the checkbox yet";
         }), b =>
         {
-            b.Paragraph("'Initialize View Model' overrides the ");
+            
+            b.Paragraph("'Initialize View Model' will allow you to set properties on the view-model before its bound.");
             b.ImageByUrl("http://i.imgur.com/8yCZNLA.png");
+            if (additionalMessage != null)
+                b.Paragraph(additionalMessage);
         });
 
 

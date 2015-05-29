@@ -146,6 +146,8 @@ public class TheBasics : uFrameMVVMTutorial
     protected override void TutorialContent(IDocumentationBuilder _)
     {
         TheProject = DoCreateNewProjectStep(_);
+        EnsureNamespace(_);
+
         SubsystemGraph = DoGraphStep<SubsystemGraph>(_, "Basics");
         if (SubsystemGraph != null)
         {
@@ -173,8 +175,8 @@ public class TheBasics : uFrameMVVMTutorial
         CreateDefaultScene(_);
         AddViewToScene(_, ThePlayerView);
         EnsureInitializeView(_,ScenePlayerView);
-        EnsureCode(_, ThePlayer, "Open the player controller and add the following code.", "http://i.imgur.com/gjFLEeD.png","PlayerController.cs", ".Name");
-        EnsureCode(_, ThePlayerView, "Open the player view and add the following code.", "http://i.imgur.com/gjFLEeD.png", "PlayerView.cs", "Debug.Log");
+        EnsureCode(_, ThePlayer, "Open the player controller by right-clicking on the 'Player' node and choosing Open->PlayerController.cs and add the following code.", "http://i.imgur.com/gjFLEeD.png","PlayerController.cs", ".Name");
+        EnsureCode(_, ThePlayerView, "Open the player view and add the following code.", "http://i.imgur.com/rV97qSC.png", "PlayerView.cs", "Debug.Log");
     }
 
     public void CreateDefaultScene(IDocumentationBuilder builder)
@@ -202,7 +204,7 @@ public class TheBasics : uFrameMVVMTutorial
 
     protected override void Ending(IDocumentationBuilder _, InteractiveTutorial tutorial)
     {
-        _.Paragraph("Now run the game, select the PlayerView gameobject, and type 'Hello World' into the Name field, then press the reset button.  You should see the console log each change to the property 'Name'");
+        _.Paragraph("Now run the game, select the PlayerView gameobject, and type 'Hello World' into the Name field, then press the reset button.  You should also see the console log each change to the property 'Name'");
         _.ImageByUrl("http://i.imgur.com/zrg6r7q.png");
 
         _.AlsoSeePages(typeof(LoadingAndUnloadingScenes), typeof(CreatingServices));

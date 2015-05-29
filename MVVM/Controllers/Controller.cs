@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 #if DLL
 namespace Invert.Common.MVVM
@@ -42,8 +43,17 @@ public abstract partial class Controller : SystemService
 
         var vm = CreateEmpty(identifier);
         vm.Identifier = identifier;
-        Initialize(vm);
-        EventAggregator.Publish(new ViewModelCreatedEvent() { ViewModel = vm });
+        if (_setupInvoked)
+        {
+            Initialize(vm);
+            EventAggregator.Publish(new ViewModelCreatedEvent() { ViewModel = vm });
+        }
+        else
+        {
+            _instanceVMs.Add(vm);
+        }
+        
+   
         return vm;
     }
 
@@ -73,13 +83,23 @@ public abstract partial class Controller : SystemService
     [Obsolete("Game event is not longer used for transitions.  Regenerate your diagram.")]
     public void GameEvent(string name) { }
 
+    private bool _setupInvoked = false;
+    private List<ViewModel> _instanceVMs = new List<ViewModel>();
+
     /// <summary>
     /// The setup method is called when the controller is first created and has been injected.  Use this
     /// to subscribe to any events on the EventAggregator
     /// </summary>
     public override void Setup()
     {
-        
+        foreach (var item in _instanceVMs)
+        {
+            Initialize(item);
+            EventAggregator.Publish(new ViewModelCreatedEvent() { ViewModel = item });
+        }
+        _instanceVMs.Clear();
+        _instanceVMs = null;
+        _setupInvoked = true;
     }
 
     public virtual void Initialize(ViewModel viewModel)

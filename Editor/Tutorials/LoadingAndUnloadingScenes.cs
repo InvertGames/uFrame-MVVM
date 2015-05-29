@@ -14,7 +14,7 @@ public class LoadingAndUnloadingScenes : uFrameMVVMTutorial
 
     protected override void Introduction(IDocumentationBuilder _)
     {
-        _.Paragraph("The purpose of this tutorial is to teach you the high level aspects of using uFrame, this includes SubSystems, and Scenes");
+        _.Paragraph("The purpose of this tutorial is to teach you how to publish events to the scene service for unloading, and loading of scene types.");
         _.Break();
     }
 
@@ -47,11 +47,17 @@ public class LoadingAndUnloadingScenes : uFrameMVVMTutorial
 
         EnsureKernel(_);
 
-        EnsureCreateScene(_, SceneA);
+        EnsureCreateScene(_, SceneA, b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/XPqOhHS.png");
+        }, "SceneA");
 
-        EnsureCreateScene(_, sceneB);
+        EnsureCreateScene(_, sceneB, b =>
+        {
+            b.ImageByUrl("http://i.imgur.com/XPqOhHS.png");
+        }, "SceneA");
 
-        EnsureSceneOpen(_, SceneA);
+        EnsureSceneOpen(_, SceneA, null,"SceneA");
 
         EnsureCode(_, TheGame,
             "Now add the code to the game controller to load and unload Scene B.",
