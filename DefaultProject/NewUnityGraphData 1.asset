@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1328937199, guid: 019118f6de8965947b2d943bbe59c84b, type: 3}
+  m_Name: NewUnityGraphData 1
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"NewUnityGraphData 1", "Version":"1.501", "Identifier":"ff92cba9-7f72-49db-a0f9-bc29f2472a30",
+    "Type":"Invert.uFrame.MVVM.SubsystemGraph", "DocumentationMode":"false", "RootNode":{"_CLRType":"Invert.uFrame.MVVM.SubsystemNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"", "IsCollapsed":"false", "Identifier":"", "Items":[  ], "CollapsedValues":{},
+    "Flags":{"_CLRType":"Invert.Core.GraphDesigner.FlagsDictionary, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "IsNewNode":"true"}, "Nodes":[  ], "ConnectedItems":[  ], "PositionData":{"_CLRType":"FilterPositionData,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
+    "FilterState":{"_CLRType":"FilterState, Invert.Core.GraphDesigner, Version=1.1.0.0,
+    Culture=neutral, PublicKeyToken=null", "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "CodeGenDisabled":"false", "SnapSize":"10", "Snap":"true", "CodePathStrategyName":"Default",
+    "GridLinesColor":{"r":"0.271", "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169",
+    "g":"0.169", "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1",
+    "b":"1", "a":"1"}, "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"},
+    "InheritanceLinkColor":{"r":"0", "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5",
+    "g":"0.5", "b":"0.5", "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "TransitionLinkColor":{"r":"1", "g":"0.9215686", "b":"0.01568628", "a":"1"},
+    "ViewLinkColor":{"r":"0", "g":"0", "b":"1", "a":"1"}, "RootNamespace":""}, "Changes":[  ]}'

@@ -96,7 +96,7 @@ public partial class SceneLoaderTemplate : IClassTemplate<SceneTypeNode>, IClass
         }
     }
 
-    [TemplateMethod(MemberGeneratorLocation.Both, CallBase = false)]
+    [TemplateMethod( CallBase = false),Inside(TemplateLocation.Both)]
     protected virtual void LoadScene(object scene, object progressDelegate)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Data.Name);
@@ -105,8 +105,8 @@ public partial class SceneLoaderTemplate : IClassTemplate<SceneTypeNode>, IClass
         Ctx.CurrentMethod.ReturnType = "IEnumerator".ToCodeReference();
         Ctx._("yield break");
     }
-    
-    [TemplateMethod(MemberGeneratorLocation.Both,CallBase = false)]
+
+    [TemplateMethod(CallBase = false), Inside(TemplateLocation.Both)]
     protected virtual void UnloadScene(object scene, object progressDelegate)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.Data.Name);
@@ -181,7 +181,7 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
     }
 
 
-    [TemplateMethod(MemberGeneratorLocation.Both,CallBase = true)]
+    [TemplateMethod(CallBase = true), Inside(TemplateLocation.Both)]
     public void Load()
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
@@ -222,7 +222,7 @@ public partial class SystemLoaderTemplate : IClassTemplate<SubsystemNode>
                 .Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(instance.Name)));
 
             Ctx._if("this.{0} == null", instance.Name.AsField())
-                .TrueStatements._("this.{0} = CreateInstanceViewModel<{1}>( \"{2}\")", instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.Name);
+                .TrueStatements._("this.{0} = this.CreateInstanceViewModel<{1}>( \"{2}\")", instance.Name.AsField(), instance.SourceItem.Name.AsViewModel(), instance.Name);
 
             Ctx.CurrentDecleration._private_(Ctx.CurrentProperty.Type, instance.Name.AsField());
             Ctx._("return {0}", instance.Name.AsField());

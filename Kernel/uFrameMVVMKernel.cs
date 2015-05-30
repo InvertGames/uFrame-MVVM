@@ -2,14 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UniRx;
 using UnityEngine;
 using System.Reflection;
-public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
+using UniRx;
+
+public class uFrameMVVMKernel : MonoBehaviour {
 
     private static GameContainer _container;
     private static IEventAggregator _eventAggregator;
-    private static IViewResolver _viewResolver;
+
     private static bool _isKernelLoaded;
     private List<ISystemService> _services;
     private List<ISystemLoader> _systemLoaders;
@@ -51,7 +52,7 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
                 _container = new GameContainer();
                 _container.RegisterInstance<IGameContainer>(_container);
                 _container.RegisterInstance<IEventAggregator>(EventAggregator);
-                _container.RegisterInstance<IViewResolver>(new ViewResolver());
+         
             }
             return _container;
         }
@@ -61,12 +62,6 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
     {
         get { return _eventAggregator ?? (_eventAggregator = new EventAggregator()); }
         set { _eventAggregator = value; }
-    }
-
-    public static IViewResolver ViewResolver
-    {
-        get { return _viewResolver ?? (_viewResolver = Container.Resolve<IViewResolver>()); }
-        set { _viewResolver = value; }
     }
 
     public List<ISystemLoader> SystemLoaders
@@ -94,8 +89,8 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
         else
         {
             Instance = this;
-            if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
-                this.gameObject.AddComponent<MainThreadDispatcher>();
+            //if (this.gameObject.GetComponent<MainThreadDispatcher>() == null)
+            //    this.gameObject.AddComponent<MainThreadDispatcher>();
             DontDestroyOnLoad(gameObject);
             StartCoroutine(Startup());
         }
@@ -127,7 +122,9 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
             Services.Add(service);        
         }
 
-        foreach (var service in attachedServices)
+        Container.InjectAll();
+
+        foreach (var service in Container.ResolveAll<ISystemService>())
         {
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loading, Service = service });
             service.Setup();
@@ -135,18 +132,10 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
             this.Publish(new ServiceLoaderEvent() { State = ServiceState.Loaded, Service = service });
         }
 
-
         this.Publish(new SystemsLoadedEvent()
         {
             Kernel = this
         });
-       
-        Container.InjectAll();
-  
-        foreach (var controller in Container.ResolveAll<Controller>().Distinct())
-        {
-            controller.Setup();
-        }
 
         _isKernelLoaded = true;
         
@@ -159,47 +148,6 @@ public class uFrameMVVMKernel : MonoBehaviour, ITypeResolver {
         this.Publish(new GameReadyEvent());
     }
 
-    Type ITypeResolver.GetType(string name)
-    {
-        return Type.GetType(name);
-    }
-
-    string ITypeResolver.SetType(Type type)
-    {
-        return type.AssemblyQualifiedName;
-    }
-
-    object ITypeResolver.CreateInstance(string name, string identifier)
-    {
-        var type = ((ITypeResolver)this).GetType(name);
-
-#if NETFX_CORE 
-        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
-#else
-        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
-#endif
-        // IsAssignableFrom doesn't work with winRT
-        // typeof(ViewModel).IsAssignableFrom(type);
-
-        if (isViewModel)
-        {
-            var contextViewModel = Container.Resolve(type, identifier);
-            if (contextViewModel != null)
-            {
-                return contextViewModel;
-            }
-            return Activator.CreateInstance(type,new []{EventAggregator});
-        }
-
-//        var view = PersistantViews.FirstOrDefault(p => p.Identifier == identifier);
-//        if (view != null)
-//        {
-//            Debug.Log(string.Format("Loading View: {0} - {1}", name, identifier));
-//            return view;
-//        }
-//        return ViewNotFoundOnLoad(name, identifier);
-        return null;
-    }
 }
 
 public class SystemsLoadedEvent
@@ -212,33 +160,9 @@ public class KernalLoadedEvent
     public uFrameMVVMKernel Kernel;
 }
 
-public class ViewEvent
-{
-    public bool IsInstantiated { get; set; }
-    public IScene Scene { get; set; }
-    public ViewBase View { get; set; }
-}
-public class ViewDestroyedEvent : ViewEvent
-{
-   
-}
-
-public class ViewCreatedEvent :ViewEvent
+public class GameReadyEvent 
 {
     
-}
-
-public class GameReadyEvent : ViewEvent
-{
-    
-}
-public class InstantiateViewCommand
-{
-    public string Identifier { get; set; }
-    public IScene Scene { get; set; }
-    public ViewModel ViewModelObject { get; set; }
-    public ViewBase Result { get; set; }
-    public GameObject Prefab { get; set; }
 }
 
 public class LoadSceneCommand
@@ -263,7 +187,7 @@ public class SystemLoaderEvent
 public class ServiceLoaderEvent
 {
     public ServiceState State { get; set; }
-    public SystemServiceMonoBehavior Service { get; set; }
+    public ISystemService Service { get; set; }
 }
 
 public class SceneLoaderEvent
@@ -302,6 +226,27 @@ public enum SystemState
 
 public static class uFrameKernelExtensions
 {
+    public static void RegisterService(this IGameContainer container, ISystemService service)
+    {
+        container.RegisterInstance<ISystemService>(service, service.GetType().Name);
+        //container.RegisterInstance(typeof(TService), service, false);
+        container.RegisterInstance(service.GetType(), service);
+    }
+
+    public static void RegisterService<TService>(this IGameContainer container, ISystemService service)
+    {
+        container.RegisterInstance<ISystemService>(service, service.GetType().Name);
+        container.RegisterInstance(typeof(TService), service);
+    }
+
+    public static void RegisterSceneLoader(this IGameContainer container, ISceneLoader sceneLoader)
+    {
+        container.RegisterInstance<ISceneLoader>(sceneLoader, sceneLoader.GetType().Name, false);
+        //container.RegisterInstance(typeof(TService), service, false);
+        container.RegisterInstance(sceneLoader.GetType(), sceneLoader, false);
+    }
+
+
     public static void Publish(this uFrameMVVMKernel mvvmKernel, object evt)
     {
         uFrameMVVMKernel.EventAggregator.Publish(evt);

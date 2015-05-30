@@ -21,7 +21,7 @@ public interface ISystemLoader
 
 }
 
-public class SystemLoader : MonoBehaviour,ISystemLoader
+public partial class SystemLoader : MonoBehaviour,ISystemLoader
 {
     public virtual void Load()
     {
@@ -39,12 +39,5 @@ public class SystemLoader : MonoBehaviour,ISystemLoader
         get;
         set;
     }
-
-    public TViewModel CreateInstanceViewModel<TViewModel>(string identifier) where TViewModel : ViewModel
-    {
-        var controller = uFrameMVVMKernel.Container.Resolve<Controller>(typeof(TViewModel).Name);
-        return (TViewModel)controller.Create(identifier);
-    }
-
 }
 

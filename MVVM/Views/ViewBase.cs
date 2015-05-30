@@ -10,7 +10,7 @@ using UnityEngine.Serialization;
 /// <summary>
 /// The base class for a View that binds to a ViewModel
 /// </summary>
-public abstract partial class ViewBase : uFrameComponent, IUFSerializable, IBindable
+public abstract partial class ViewBase : MVVMComponent, IUFSerializable, IBindable
 {
 
     public T AddComponentBinding<T>() where T : ObservableComponent
@@ -545,5 +545,100 @@ public partial class ViewBase
     public void ExecuteCommand(ICommand command, object selector)
     {
         throw new NotImplementedException();
+    }
+}
+
+public class MVVMComponent : uFrameComponent
+{
+    public ViewBase InstantiateView(ViewModel model)
+    {
+        return InstantiateView(model, Vector3.zero);
+    }
+
+    public ViewBase InstantiateView(ViewModel model, Vector3 position)
+    {
+        return InstantiateView(model, position, Quaternion.identity);
+    }
+
+    public ViewBase InstantiateView(ViewModel model, Vector3 position, Quaternion rotation)
+    {
+        return transform.InstantiateView(model, position, rotation);
+    }
+
+    public ViewBase InstantiateView(GameObject prefab, ViewModel model)
+    {
+        return InstantiateView(prefab, model, Vector3.zero);
+    }
+
+    public ViewBase InstantiateView(GameObject prefab, ViewModel model, Vector3 position)
+    {
+        return InstantiateView(prefab, model, position, Quaternion.identity);
+    }
+
+    public ViewBase InstantiateView(string viewName, string identifier = null)
+    {
+        return InstantiateView(viewName, null, identifier);
+    }
+
+    /// <summary>
+    /// Instantiates a view.
+    /// </summary>
+    /// <param name="viewName">The name of the prefab/view to instantiate</param>
+    /// <param name="model">The model that will be passed to the view.</param>
+    /// <returns>The instantiated view</returns>
+    public ViewBase InstantiateView(string viewName, ViewModel model, string identifier = null)
+    {
+        return InstantiateView(viewName, model, Vector3.zero, identifier);
+    }
+    /// <summary>
+    /// Instantiates a view.
+    /// </summary>
+    /// <param name="viewName">The name of the prefab/view to instantiate</param>
+
+    /// <param name="position">The position to instantiate the view.</param>
+    /// <returns>The instantiated view</returns>
+    public ViewBase InstantiateView(string viewName, Vector3 position, string identifier = null)
+    {
+        return InstantiateView(viewName, null, position, Quaternion.identity, identifier);
+    }
+
+    /// <summary>
+    /// Instantiates a view.
+    /// </summary>
+    /// <param name="viewName">The name of the prefab/view to instantiate</param>
+    /// <param name="model">The model that will be passed to the view.</param>
+    /// <param name="position">The position to instantiate the view.</param>
+    /// <returns>The instantiated view</returns>
+    public ViewBase InstantiateView(string viewName, ViewModel model, Vector3 position, string identifier = null)
+    {
+        return InstantiateView(viewName, model, position, Quaternion.identity, identifier);
+    }
+
+    /// <summary>
+    /// Instantiates a view.
+    /// </summary>
+    /// <param name="viewName">The name of the prefab/view to instantiate</param>
+    /// <param name="model">The model that will be passed to the view.</param>
+    /// <param name="position">The position to instantiate the view.</param>
+    /// <param name="rotation">The rotation to instantiate the view with.</param>
+    /// <returns>The instantiated view</returns>
+    public ViewBase InstantiateView(string viewName, ViewModel model, Vector3 position,
+        Quaternion rotation, string identifier = null)
+    {
+        return transform.InstantiateView(viewName, model, position, rotation, identifier);
+    }
+
+    /// <summary>
+    /// Instantiates a view.
+    /// </summary>
+    /// <param name="prefab">The prefab/view to instantiate</param>
+    /// <param name="model">The model that will be passed to the view.</param>
+    /// <param name="position">The position to instantiate the view.</param>
+    /// <param name="rotation">The rotation to instantiate the view with.</param>
+    /// <returns>The instantiated view</returns>
+    public ViewBase InstantiateView(GameObject prefab, ViewModel model, Vector3 position,
+        Quaternion rotation, string identifier = null)
+    {
+        return transform.InstantiateView(prefab, model, position, rotation, identifier);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 public static class ViewModelExtensions
@@ -16,8 +17,45 @@ public static class ViewModelExtensions
         ISerializerStream stream = new JsonStream();
         stream.DeepSerialize = true;
         stream.DependencyContainer = uFrameMVVMKernel.Container;
-        stream.TypeResolver = uFrameMVVMKernel.Instance;
+        stream.TypeResolver = new ViewModelResolver() {Container = uFrameMVVMKernel.Container};
         stream.Load(Encoding.UTF8.GetBytes(json));
         model.Read(stream);
+    }
+}
+
+public class ViewModelResolver : ITypeResolver
+{
+    public IGameContainer Container { get; set; }
+    Type ITypeResolver.GetType(string name)
+    {
+        return Type.GetType(name);
+    }
+
+    string ITypeResolver.SetType(Type type)
+    {
+        return type.AssemblyQualifiedName;
+    }
+
+    object ITypeResolver.CreateInstance(string name, string identifier)
+    {
+        var type = ((ITypeResolver)this).GetType(name);
+
+#if NETFX_CORE 
+        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
+#else
+        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+#endif
+
+        if (isViewModel)
+        {
+            var contextViewModel = Container.Resolve(type, identifier);
+            if (contextViewModel != null)
+            {
+                return contextViewModel;
+            }
+            return MVVMKernelExtensions.CreateViewModel(type, identifier);
+        }
+
+        return null;
     }
 }

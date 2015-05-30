@@ -186,7 +186,7 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
     //    return null;
     //}
 
-    [TemplateMethod(MemberGeneratorLocation.Both)]
+    [TemplateMethod, Inside(TemplateLocation.Both)]
     protected virtual void InitializeViewModel(ViewModel model)
     {
         Ctx._comment("NOTE: this method is only invoked if the 'Initialize ViewModel' is checked in the inspector.");
@@ -233,7 +233,7 @@ public partial class ViewTemplate : IClassTemplate<ViewNode>, IClassRefactorable
      
     }
 
-    [TemplateMethod(MemberGeneratorLocation.Both, true)]
+    [TemplateMethod,Inside(TemplateLocation.Both)]
     public virtual void Bind()
     {
         Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
@@ -356,7 +356,7 @@ public partial class ModelTemplate : IClassTemplate<ModelNode>
 public partial class ModelTemplate : IClassTemplate<ModelNode>
 {
     [TemplateMethod(MemberGeneratorLocation.DesignerFile)]
-    [TemplateForEach("Commands")]
+    [ForEach("Commands")]
     public void CommandFunction()
     {
         Ctx._comment("This is the {0} function", Ctx.Item.Name);

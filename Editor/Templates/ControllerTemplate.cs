@@ -59,11 +59,28 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
         }
     }
 
+    public IEnumerable<InstancesReference> Instances
+    {
+        get
+        {
+            if (Ctx.Data.BaseNode == null)
+            {
+                foreach (
+                    var item in Ctx.Data.Graph.NodeItems.OfType<SubsystemNode>().SelectMany(p => p.Instances).Distinct()
+                    )
+                {
+                    yield return item;
+                }
+            }
+        }
+    }
+
     public string NameAsViewModel { get { return Ctx.Data.Name.AsViewModel(); } }
 
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndTypeWithBackingField, NameFormat = "{0}ViewModelManager")]
-    public IViewModelManager ViewModelManager
+    //[TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameAndTypeWithBackingField, NameFormat = "{0}ViewModelManager")]
+    [ForEach("Instances"),TemplateProperty,WithField]
+    public IViewModelManager _Name_ViewModelManager
     {
         get
         {
@@ -115,8 +132,8 @@ public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode
 
     }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType, NameFormat = "{0}ViewModels")]
-    public IEnumerable<ViewModel> ViewModelItems
+    [TemplateProperty]
+    public IEnumerable<object> _Name_ViewModels
     {
         get
         {

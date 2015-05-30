@@ -26,7 +26,7 @@ namespace uFrame.DefaultProject {
         public virtual LoadingScreenViewModel LoadingScreen {
             get {
                 if (this._LoadingScreen == null) {
-                    this._LoadingScreen = CreateInstanceViewModel<LoadingScreenViewModel>( "LoadingScreen");
+                    this._LoadingScreen = this.CreateInstanceViewModel<LoadingScreenViewModel>( "LoadingScreen");
                 }
                 return _LoadingScreen;
             }
@@ -52,5 +52,6 @@ namespace uFrame.DefaultProject {
             Container.RegisterController<LoadingScreenController>(LoadingScreenController);
             Container.RegisterViewModel<LoadingScreenViewModel>(LoadingScreen, "LoadingScreen");
         }
+
     }
 }

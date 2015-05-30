@@ -44,19 +44,6 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
         StateMachineProperties = Ctx.Data.AllProperties.Where(p => (p.RelatedNode() is StateMachineNode)).ToArray();
         ViewModelProperties = Ctx.Data.AllProperties.Where(p => !StateMachineProperties.Contains(p)).ToArray();
 
-        Ctx.AddIterator("ResetComputed", (d) => d.ComputedProperties);
-        Ctx.AddIterator("Compute", (d) => d.ComputedProperties);
-        Ctx.AddIterator("ComputedDependents", (d) => d.ComputedProperties);
-        Ctx.AddIterator("ViewModelProperty", (d) => ViewModelProperties);
-        Ctx.AddIterator("ViewModelValueProperty", (d) => ViewModelProperties);
-        Ctx.AddIterator("CollectionProperty", (d) => d.LocalCollections);
-        Ctx.AddIterator("CommandItems", (d) => d.LocalCommands);
-        Ctx.AddIterator("CommandMethod", (d) => d.LocalCommands);
-        //Ctx.AddIterator("CollectionChanged", (d) => d.Collections.Where(p => p.RelatedTypeName != null));
-
-        Ctx.AddIterator("StateMachineProperty", (d) => StateMachineProperties);
-        Ctx.AddIterator("StateMachineCurrentState", (d) => StateMachineProperties);
-
         foreach (var item in Ctx.Data.ComputedProperties)
         {
             Ctx.CurrentDecleration._private_(typeof(IDisposable), "_{0}Disposable", item.Name);
@@ -76,7 +63,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
     }
 
-    [TemplateMethod(MemberGeneratorLocation.Both, true)]
+    [TemplateMethod]
     public override void Bind()
     {
         if (!Ctx.IsDesignerFile) return;
@@ -130,36 +117,22 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
     }
 
-    //[TemplateMethod(MemberGeneratorLocation.DesignerFile)]
-    //protected override void WireCommands(Controller controller)
-    //{
-    //    //base.WireCommands(controller);
-    //    if (!Ctx.Data.Commands.Any()) return;
-    //    var varName = Ctx.Data.Name.ToLower();
-    //    Ctx._("var {0} = controller as {1}", varName, Ctx.Data.Name.AsController());
-    //    foreach (var command in Ctx.Data.Commands.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)))
-    //    {
-    //        Ctx._("this.{0} = new CommandWithSender<{1}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName);
-    //    }
-    //    foreach (var command in Ctx.Data.Commands.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName)))
-    //    {
-    //        Ctx._("this.{0} = new CommandWithSenderAndArgument<{1},{3}>(this as {1}, {2}.{0})", command.Name, Ctx.Data.Name.AsViewModel(), varName, command.RelatedTypeName);
-    //    }
-    //}
 
     #region Properties
 
-    [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
-    public virtual float StateMachineProperty
+    //[TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
+    [ForEach("StateMachineProperties"),TemplateProperty, WithField]
+    public virtual _ITEMTYPE_ _Name2_Property
     {
         get
         {
-            return 0;
+            return null;
         }
     }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameOnly)]
-    public virtual State StateMachineCurrentState
+    //[TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameOnly)]
+    [ForEach("StateMachineProperties"),TemplateProperty]
+    public virtual State _Name2_
     {
         get
         {
@@ -175,20 +148,21 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
     #region Properties
 
-    [TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
-    public virtual P<float> ViewModelProperty
+    //[TemplateProperty(uFrameFormats.SUBSCRIBABLE_PROPERTY_FORMAT, AutoFillType.NameAndTypeWithBackingField)]
+    [ForEach("ViewModelProperties"), TemplateProperty, WithField]
+    public virtual P<_ITEMTYPE_> _Name_Property
     {
         get { return null; }
 
     }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndType)]
-    public virtual Single ViewModelValueProperty
+    [ForEach("ViewModelProperties"), TemplateProperty]
+    public virtual _ITEMTYPE_ _Name_
     {
         get
         {
             Ctx._("return {0}.Value", Ctx.Item.Name.AsSubscribableProperty());
-            return 0f;
+            return null;
         }
         set
         {
@@ -198,8 +172,9 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     #endregion
 
     #region Collections
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
-    public virtual ModelCollection<Single> CollectionProperty
+    //[TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
+    [ForEach("LocalCollections"), TemplateProperty, WithField]
+    public virtual ModelCollection<_ITEMTYPE_> _Name4_
     {
         get { return null; }
     }
@@ -207,8 +182,9 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     #endregion
 
     #region Commands
-    [TemplateProperty("{0}", AutoFillType.NameOnlyWithBackingField)]
-    public virtual object CommandItems
+   // [TemplateProperty("{0}", AutoFillType.NameOnlyWithBackingField)]
+    [ForEach("LocalCommands"), TemplateProperty, WithField]
+    public virtual object _Name3_
     {
         get
         {
@@ -346,7 +322,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
     #region Reflection
 
-    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.None)]
+    [TemplateMethod]
     protected override void FillCommands(List<ViewModelCommandInfo> list)
     {
         //base.FillCommands(list);
@@ -361,7 +337,7 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     }
 
 
-    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.None)]
+    [TemplateMethod]
     protected override void FillProperties(List<ViewModelPropertyInfo> list)
     {
         //base.FillProperties(list);
@@ -392,8 +368,9 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
     #endregion
 
 
-    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
-    public virtual IEnumerable<IObservableProperty> ComputedDependents()
+   // [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Get{0}Dependents")]
+    [ForEach("ComputedProperties"), TemplateMethod]
+    public virtual IEnumerable<IObservableProperty> Get_Name_Dependents()
     {
         var computed = Ctx.ItemAs<ComputedPropertyNode>();
         foreach (var item in computed.InputsFrom<PropertiesChildItem>())
@@ -421,8 +398,10 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
         yield break;
     }
-    [TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Reset{0}")]
-    public virtual void ResetComputed()
+    
+    //[TemplateMethod(MemberGeneratorLocation.DesignerFile, AutoFill = AutoFillType.NameOnly, NameFormat = "Reset{0}")]
+    [ForEach("ComputedProperties"),TemplateMethod]
+    public virtual void Reset_Name_()
     {
         var computed = Ctx.ItemAs<ComputedPropertyNode>();
         Ctx._if("_{0}Disposable != null", computed.Name)
@@ -431,8 +410,9 @@ public partial class ViewModelTemplate : ViewModel, IClassTemplate<ElementNode>,
 
     }
 
-    [TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Compute{0}")]
-    public virtual Boolean Compute()
+    //[TemplateMethod(MemberGeneratorLocation.Both, AutoFill = AutoFillType.NameOnly, NameFormat = "Compute{0}")]
+    [ForEach("ComputedProperties"), TemplateMethod]
+    public virtual Boolean Compute_Name_()
     {
         var type = Ctx.ItemAs<ComputedPropertyNode>().RelatedTypeName;
         Ctx.SetType(type);
@@ -471,7 +451,7 @@ public partial class ViewModelConstructorTemplate : IClassTemplate<ElementNode>
     {
         get { return Path2.Combine(Ctx.Data.Graph.Name, "ViewModels"); }
     }
-    [TemplateConstructor(MemberGeneratorLocation.Both, "aggregator")]
+    [TemplateConstructor("aggregator")]
     public void AggregatorConstructor(IEventAggregator aggregator)
     {
 
@@ -528,20 +508,13 @@ public partial class ViewModelCommandClassTemplate : ViewModelCommand, IClassTem
 
     public TemplateContext<CommandsChildItem> Ctx { get; set; }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameOnlyWithBackingField)]
-    public object Argument
+    public bool HasArgument
     {
-        get
-        {
-            Ctx.SetType(Ctx.Data.RelatedTypeName);
-            Ctx.CurrentProperty.Name = "Argument";
-            return null;
-        }
-        set
-        {
-
-        }
+        get { return !string.IsNullOrEmpty(Ctx.Data.RelatedType); }
     }
+
+    [TemplateProperty, WithField, If("HasArgument")]
+    public _ITEMTYPE_ Argument { get; set; }
 
     public IEnumerable<string> ClassNameFormats
     {
@@ -603,6 +576,7 @@ public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefa
             yield return "{0}Command";
         }
     }
+
     public override string OutputPath
     {
         get
@@ -624,19 +598,18 @@ public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefa
         }
 
         Ctx.CurrentDecleration.IsPartial = true;
-        Ctx.AddIterator("Property", node => node.Properties);
-        Ctx.AddIterator("Collection", node => node.Collections);
-
     }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
-    public object Property
+
+    [ForEach("Collections"), TemplateProperty, WithField]
+    public _ITEMTYPE_ _Name_
     {
         get;
         set;
     }
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
-    public List<object> Collection
+
+    [ForEach("Collections"), TemplateProperty, WithField]
+    public List<_ITEMTYPE_> _CollectionName_
     {
         get;
         set;

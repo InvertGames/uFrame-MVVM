@@ -369,7 +369,6 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
     }
 }
 
-
 [Obsolete]
 public static class SceneManagerExtensions
 {
@@ -394,54 +393,6 @@ public static class SceneManagerExtensions
 
 public static class ContainerExtensions
 {
-    public static void RegisterService(this IGameContainer container, ISystemService service)
-    {
-        container.RegisterInstance<ISystemService>(service, service.GetType().Name);
-        //container.RegisterInstance(typeof(TService), service, false);
-        container.RegisterInstance(service.GetType(), service);
-    }    
-    
-    public static void RegisterService<TService>(this IGameContainer container, ISystemService service)
-    {
-        container.RegisterInstance<ISystemService>(service, service.GetType().Name);
-        container.RegisterInstance(typeof(TService), service);
-    }    
-    
-    public static void RegisterSceneLoader(this IGameContainer container, ISceneLoader sceneLoader)
-    {
-        container.RegisterInstance<ISceneLoader>(sceneLoader, sceneLoader.GetType().Name, false);
-        //container.RegisterInstance(typeof(TService), service, false);
-        container.RegisterInstance(sceneLoader.GetType(), sceneLoader, false);
-    }
-
-    public static void RegisterViewModel<TViewModel>(this IGameContainer container, TViewModel viewModel, string identifier) where TViewModel : ViewModel
-    {
-        container.Register<TViewModel,TViewModel>();
-        container.RegisterInstance<ViewModel>(viewModel, identifier);
-        container.RegisterInstance(typeof(TViewModel), viewModel, identifier);
-    }
-
-    public static void RegisterController<TController>(this IGameContainer container, TController controller) where TController : Controller
-    {
-        container.RegisterInstance<Controller>(controller,controller.GetType().Name,false);
-        container.RegisterInstance<ISystemService>(controller,controller.GetType().Name,false);
-        container.RegisterInstance<TController>(controller,false);
-        // Todo Convention hack make it prettier :)
-        container.RegisterInstance<Controller>(controller, typeof(TController).Name.Replace("Controller", "ViewModel"));
-    }
-    
-    public static void RegisterViewModelManager<TViewModel>(this IGameContainer container, 
-        IViewModelManager<TViewModel> manager)
-    {
-        container.RegisterInstance<IViewModelManager>(manager,typeof(TViewModel).Name.Replace("ViewModel", ""));
-        container.RegisterInstance<IViewModelManager>(manager,typeof(TViewModel).Name);
-        container.RegisterInstance<IViewModelManager<TViewModel>>(manager,typeof(TViewModel).Name.Replace("ViewModel", ""));
-        container.RegisterInstance<IViewModelManager<TViewModel>>(manager);
-    }
-    public static void RegisterViewModelController<TController, TViewModel>(this IGameContainer container, TController controller) where TController : Controller
-    {
-        
-    }
 }
 public class LoadedEvent
 {

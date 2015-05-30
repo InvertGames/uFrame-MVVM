@@ -7,9 +7,22 @@ using UnityEngine;
 public class ViewService : SystemServiceMonoBehavior
 {
     private List<ViewBase> _views;
+    private static IViewResolver _viewResolver;
+    
+    [Inject]
+    public static IViewResolver ViewResolver
+    {
+        get { return _viewResolver; }
+        set { _viewResolver = value; }
+    }
 
     public override void Setup()
     {
+        if (ViewResolver == null)
+        {
+            ViewResolver = new ViewResolver();
+        }
+
         this.OnEvent<InstantiateViewCommand>()
             .Subscribe(InstantiateView);
 
@@ -38,7 +51,7 @@ public class ViewService : SystemServiceMonoBehavior
         }
         else if (data.ViewModelObject != null)
         {
-            viewPrefab = uFrameMVVMKernel.ViewResolver.FindView(data.ViewModelObject);
+            viewPrefab = ViewResolver.FindView(data.ViewModelObject);
         }
         else
         {
@@ -122,7 +135,7 @@ public class ViewService : SystemServiceMonoBehavior
         if (contextViewModel == null)
         {
             // Either use the controller to create it or create it ourselves
-            contextViewModel = ISystemServiceExtensions.CreateViewModel(viewBase.ViewModelType);
+            contextViewModel = MVVMKernelExtensions.CreateViewModel(viewBase.ViewModelType);
             contextViewModel.Identifier = viewBase.Identifier;
        
             // Register it, this is usually when a non registered element is treated like a single-instance anways

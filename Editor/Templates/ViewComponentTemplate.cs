@@ -35,39 +35,53 @@ public partial class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, 
             Ctx.TryAddNamespace(type.Namespace);
         }
 
-        Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
-        //Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
-        Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
+        //Ctx.AddIterator("ExecuteCommand", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)));
+        ////Ctx.AddIterator("ExecuteCommandOverload", _ => _.View.Element.InheritedCommandsWithLocal);
+        //Ctx.AddIterator("ExecuteCommandWithArg", _ => _.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null));
         
     }
 
-    public IEnumerable<CommandsChildItem> Commands
-    {
-        get { return Ctx.Data.View.Element.InheritedCommandsWithLocal; }
-    }
+
     public TemplateContext<ViewComponentNode> Ctx { get; set; }
 
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile)]
-    public virtual object Player
+    public string ElementName
     {
         get
         {
-            Ctx.CurrentProperty.Name = Ctx.Data.View.Element.Name;
+            return Ctx.Data.View.Element.Name;
+        }
+    }
+
+    [TemplateProperty]
+    public virtual object _ElementName_
+    {
+        get
+        {
             Ctx.CurrentProperty.Type = Ctx.Data.View.Element.Name.AsViewModel().ToCodeReference();
             Ctx._("return ({0})this.View.ViewModelObject", Ctx.Data.View.Element.Name.AsViewModel());
             return null;
         }
     }
 
-    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
-    public void ExecuteCommand()
+    public IEnumerable<CommandsChildItem> CommandsWithArguments
     {
-        Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0} }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
-        //Ctx._("this.ExecuteCommand({0}.{1})", Ctx.Data.Element.Name, Ctx.Item.Name);
+        get { return Ctx.Data.View.Element.InheritedCommandsWithLocal.Where(p => !string.IsNullOrEmpty(p.RelatedTypeName) && p.OutputCommand == null); }
     }
 
-    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
-    public void ExecuteCommandWithArg(object arg)
+    public IEnumerable<CommandsChildItem> Commands
+    {
+        get { return Ctx.Data.View.Element.InheritedCommandsWithLocal.Where(p => string.IsNullOrEmpty(p.RelatedTypeName)); }
+    }
+
+    [ForEach("Commands"), TemplateMethod]
+    public void Execute_Name_()
+    {
+        Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0} }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
+    }
+
+    //[TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
+    [ForEach("CommandsWithArguments"), TemplateMethod(CallBase = false)]
+    public void Execute_Name2_(object arg)
     {
         Ctx.CurrentMethod.Parameters[0].Type = new CodeTypeReference(Ctx.TypedItem.RelatedTypeName);
         Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0}, Argument = arg }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
@@ -83,14 +97,24 @@ public partial class ViewComponentTemplate : IClassTemplate<ViewComponentNode>, 
     }
 }
 
-public partial class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
-{
-    [TemplateMethod("Execute{0}", MemberGeneratorLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
-    [TemplateForEach("Commands")]
-    public void ExecuteCommandOverload(ViewModelCommand command)
-    {
-        Ctx.CurrentMethod.Parameters[0].Type = (Ctx.Item.Name + "Command").ToCodeReference();
-        Ctx._("command.Sender = {0}", Ctx.Data.View.Element.Name);
-        Ctx._("{0}.{1}.OnNext(command)", Ctx.Data.View.Element.Name, Ctx.Item.Name);
-    }
-}
+//public partial class ViewComponentTemplate : IClassTemplate<ViewComponentNode>
+//{
+//    public bool Nope
+//    {
+//        get { return true; }
+//    }
+
+//    [ForEach("Properties"), TemplateProperty, WithField, If("Nope")]
+//    public _ITEMTYPE_ _Name_Property { get; set; }
+    
+     
+//    [ForEach("Commands"), TemplateMethod]
+//    public void Execute_Name_(ViewModelCommand command)
+//    {
+//        Ctx.CurrentMethod.Parameters[0].Type = (Ctx.Item.Name + "Command").ToCodeReference();
+//        Ctx._("command.Sender = {0}", Ctx.Data.View.Element.Name);
+//        Ctx._("{0}.{1}.OnNext(command)", Ctx.Data.View.Element.Name, Ctx.Item.Name);
+//    }
+
+
+//}
