@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using Invert.Common;
 using Invert.Common.UI;
+using uFrame.Kernel;
+using uFrame.MVVM.Services;
 using UnityEditor;
 using UnityEngine;
 

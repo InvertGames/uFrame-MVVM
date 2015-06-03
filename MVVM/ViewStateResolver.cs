@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using uFrame.MVVM;
 using Debug = UnityEngine.Debug;
 #if NETFX_CORE 
 using System.Reflection;

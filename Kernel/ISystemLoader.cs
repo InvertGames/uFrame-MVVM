@@ -1,43 +1,32 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using uFrame.IOC;
+using uFrame.Kernel;
 
-public interface ISystemLoader
+namespace uFrame.Kernel
 {
-
-    void Load();
-
-    IGameContainer Container
+    public interface ISystemLoader
     {
-        get;
-        set;
+
+        void Load();
+
+        IUFrameContainer Container { get; set; }
+
+        IEventAggregator EventAggregator { get; set; }
+
     }
 
-    IEventAggregator EventAggregator
+    public partial class SystemLoader : MonoBehaviour, ISystemLoader
     {
-        get;
-        set;
+        public virtual void Load()
+        {
+
+        }
+
+        public IUFrameContainer Container { get; set; }
+
+        public IEventAggregator EventAggregator { get; set; }
     }
 
 }
-
-public partial class SystemLoader : MonoBehaviour,ISystemLoader
-{
-    public virtual void Load()
-    {
-        
-    }
-
-    public IGameContainer Container
-    {
-        get;
-        set;
-    }
-
-    public IEventAggregator EventAggregator
-    {
-        get;
-        set;
-    }
-}
-

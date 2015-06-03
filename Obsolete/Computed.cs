@@ -1,4 +1,6 @@
 using System;
+using uFrame.MVVM;
+using uFrame.MVVM.Bindings;
 
 
 #if DLL

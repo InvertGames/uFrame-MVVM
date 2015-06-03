@@ -1,6 +1,9 @@
-public interface IBindingProvider
+namespace uFrame.MVVM.Bindings
 {
-    void Bind(ViewBase view);
+    public interface IBindingProvider
+    {
+        void Bind(ViewBase view);
 
-    void Unbind(ViewBase viewBase);
+        void Unbind(ViewBase viewBase);
+    }
 }

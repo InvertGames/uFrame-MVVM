@@ -1,3 +1,6 @@
+using uFrame.IOC;
+using uFrame.Kernel;
+
 namespace uFrame.DefaultProject {
     using System;
     using System.Collections;

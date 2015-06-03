@@ -5,6 +5,10 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using System.Reflection;
+using uFrame.IOC;
+using uFrame.Kernel;
+using uFrame.MVVM;
+using uFrame.Serialization;
 
 /// <summary>
 /// The main entry point for a game that is managed and accessible via GameManager. Only one will
@@ -18,29 +22,19 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
 
     [Inject]
     [Obsolete]
-    public ICommandDispatcher CommandDispatcher
-    {
-        get;
-        set;
-    }
+    public ICommandDispatcher CommandDispatcher { get; set; }
 
 
     /// <summary>
     /// The Dependency container for this scene.  If unset then it will use "GameManager.Container".
     /// </summary>
-    public IGameContainer Container
+    public IUFrameContainer Container
     {
-        get
-        {
-            return GameManager.Container;
-        }
-        set
-        {
-
-        }
+        get { return GameManager.Container; }
+        set { }
     }
 
- /// <summary>
+    /// <summary>
     /// This method should do any set up necessary to load the controller and is invoked when you call
     /// GameStateManager.SwitchGame().  This should call StartCoroutine(Controller.Load) on any
     /// regular controller in the scene.
@@ -74,6 +68,7 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
     {
         GameManager.Transition(this);
     }
+
     /// <summary>
     /// This method is called by the GameManager in order to register any dependencies.  It is one of the first things 
     /// to be invoked.  This method is called before the "Load" method.
@@ -117,10 +112,7 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
     /// <value>The settings.</value>
     public static ISwitchLevelSettings Settings
     {
-        get
-        {
-            return GameManager.SwitchLevelSettings;
-        }
+        get { return GameManager.SwitchLevelSettings; }
     }
 
 
@@ -135,10 +127,12 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
     /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
     [Obsolete]
-    public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
+    public TViewModel SetupViewModel<TViewModel>(Controller controller, string identifier)
+        where TViewModel : ViewModel
     {
         return null;
     }
+
     /// <summary>
     /// Used by the SceneManager when creating an instance before the scene loads.  This allows a view-model instance to be ready
     /// before a view-initializes it. This is used by the uFrame generators to initialize single isntance view-models.
@@ -147,26 +141,27 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
     /// <param name="controller">The controller that the view-model should be initialized with</param>
     /// <param name="identifier">The identifier of the view-model to be created or loaded (if reloading a scenes state).</param>
     /// <returns>A new view model or the view-model with the identifier specified found in the scene context.</returns>
-  
-    public TViewModel SetupViewModel<TViewModel>( string identifier) where TViewModel : ViewModel
+
+    public TViewModel SetupViewModel<TViewModel>(string identifier) where TViewModel : ViewModel
     {
         // Create the ViewModel
-        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), EventAggregator) as TViewModel;
+        var contextViewModel = Activator.CreateInstance(typeof (TViewModel), EventAggregator) as TViewModel;
         contextViewModel.Identifier = identifier;
         // Register the instance under "ViewModel" so any single instance view-model can be accessed with ResolveAll<ViewModel>();
         Container.RegisterViewModel<TViewModel>(contextViewModel, identifier);
         return contextViewModel;
     }
-    
-    public TViewModel CreateInstanceViewModel<TViewModel>( string identifier) where TViewModel : ViewModel
+
+    public TViewModel CreateInstanceViewModel<TViewModel>(string identifier) where TViewModel : ViewModel
     {
-        var contextViewModel = Activator.CreateInstance(typeof(TViewModel), EventAggregator) as TViewModel;
+        var contextViewModel = Activator.CreateInstance(typeof (TViewModel), EventAggregator) as TViewModel;
         contextViewModel.Identifier = identifier;
         return contextViewModel;
     }
 
     [Obsolete]
-    public TViewModel CreateInstanceViewModel<TViewModel>(Controller controller, string identifier) where TViewModel : ViewModel
+    public TViewModel CreateInstanceViewModel<TViewModel>(Controller controller, string identifier)
+        where TViewModel : ViewModel
     {
         return null;
     }
@@ -216,7 +211,11 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
             // Do something here maybe?
         }
     }
-    private void VoidMethod(object p) { }
+
+    private void VoidMethod(object p)
+    {
+    }
+
     public void SaveState(ISerializerStorage storage, ISerializerStream stream)
     {
         stream.DeepSerialize = true;
@@ -249,6 +248,7 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
     {
         return null;
     }
+
     /// <summary>
     /// This is method is called by each view in order to get it's view-model as well as place it in
     /// the SceneContext if the "Save & Load" option is checked in it's inspector
@@ -320,7 +320,7 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
         {
             systemController.Setup();
         }
-        
+
     }
 
     Type ITypeResolver.GetType(string name)
@@ -335,12 +335,12 @@ public abstract class SceneManager : uFrameComponent, ITypeResolver
 
     object ITypeResolver.CreateInstance(string name, string identifier)
     {
-        var type = ((ITypeResolver)this).GetType(name);
-    
+        var type = ((ITypeResolver) this).GetType(name);
+
 #if NETFX_CORE 
-        var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
+    var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
 #else
-        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+        var isViewModel = typeof (ViewModel).IsAssignableFrom(type);
 #endif
         // IsAssignableFrom doesn't work with winRT
         // typeof(ViewModel).IsAssignableFrom(type);
@@ -382,6 +382,7 @@ public static class SceneManagerExtensions
         var stream = new JsonStream();
         sceneManager.LoadState(stringStorage, stream);
     }
+
     public static string ToJson(this SceneManager sceneManager)
     {
         var stringStorage = new StringSerializerStorage();
@@ -394,6 +395,7 @@ public static class SceneManagerExtensions
 public static class ContainerExtensions
 {
 }
+
 public class LoadedEvent
 {
 }

@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableTriggerEnter2DBehaviour : ObservableComponent
 {
     private Subject<Collider2D> onTriggerEnter2D;
@@ -18,4 +18,5 @@ public class ObservableTriggerEnter2DBehaviour : ObservableComponent
     }
 
 
+}
 }

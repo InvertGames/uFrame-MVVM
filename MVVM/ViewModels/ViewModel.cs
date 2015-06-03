@@ -4,11 +4,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using uFrame.Kernel;
+using uFrame.MVVM.Bindings;
+
 #if DLL
 using Invert.MVVM;
 using Invert.uFrame.Editor;
 namespace Invert.MVVM
 {
+#else
+namespace uFrame.MVVM { 
 #endif
 using UniRx;
 
@@ -260,6 +265,5 @@ public abstract class ViewModel
     }
 }
 
-#if DLL
+
 }
-#endif

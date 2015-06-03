@@ -1,34 +1,40 @@
 using System.Collections;
+using uFrame.IOC;
 using UniRx;
-/// <summary>
-/// This class is a generic base class for a systemservice, your probably looking for SystemServiceMonoBehaviour.
-/// </summary>
-public abstract class SystemService : ISystemService
+
+namespace uFrame.Kernel
 {
-    [Inject]
-    public IEventAggregator EventAggregator { get; set; }
+    /// <summary>
+    /// This class is a generic base class for a systemservice, your probably looking for SystemServiceMonoBehaviour.
+    /// </summary>
+    public abstract class SystemService : ISystemService
+    {
+        [Inject]
+        public IEventAggregator EventAggregator { get; set; }
 
-    public virtual void Setup()
-    {
-        
-    }
+        public virtual void Setup()
+        {
 
-    public virtual IEnumerator SetupAsync()
-    {
-        yield break;
-    }
+        }
 
-    public virtual void Dispose()
-    {
-        
-    }
-    public IObservable<TEvent> OnEvent<TEvent>()
-    {
-        return EventAggregator.GetEvent<TEvent>();
-    }
+        public virtual IEnumerator SetupAsync()
+        {
+            yield break;
+        }
 
-    public void Publish(object eventMessage)
-    {
-        EventAggregator.Publish(eventMessage);
+        public virtual void Dispose()
+        {
+
+        }
+
+        public IObservable<TEvent> OnEvent<TEvent>()
+        {
+            return EventAggregator.GetEvent<TEvent>();
+        }
+
+        public void Publish(object eventMessage)
+        {
+            EventAggregator.Publish(eventMessage);
+        }
     }
 }

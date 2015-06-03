@@ -1,6 +1,7 @@
 using System;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
+using uFrame.MVVM.Templates;
 
 public class SceneTypePage : SceneTypePageBase
 {

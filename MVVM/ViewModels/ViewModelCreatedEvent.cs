@@ -1,9 +1,12 @@
-public class ViewModelCreatedEvent
+namespace uFrame.MVVM
 {
-    public ViewModelCreatedEvent()
+    public class ViewModelCreatedEvent
     {
-    }
+        public ViewModelCreatedEvent()
+        {
+        }
 
-    public ViewModel ViewModel { get; set; }
-    
+        public ViewModel ViewModel { get; set; }
+
+    }
 }

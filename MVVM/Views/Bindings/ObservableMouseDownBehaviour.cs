@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableMouseDownBehaviour : ObservableComponent
 {
     private Subject<Unit> onMouseDown;
@@ -36,4 +36,5 @@ public class ObservableOnDestroyBehaviour : ObservableComponent
         return onDestroy ?? (onDestroy = new Subject<Unit>());
     }
 
+}
 }

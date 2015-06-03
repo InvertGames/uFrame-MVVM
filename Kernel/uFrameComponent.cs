@@ -4,47 +4,73 @@ using System.Security.Cryptography.X509Certificates;
 using UniRx;
 using UnityEngine;
 
-/// <summary>
-/// A base class for all view containers.
-/// Simply just utility methods for views and events.
-/// </summary>
-public class uFrameComponent : MonoBehaviour
+namespace uFrame.Kernel
 {
-
-    protected IEventAggregator EventAggregator { get { return uFrameMVVMKernel.EventAggregator; } }
-
-    public IObservable<TEvent> OnEvent<TEvent>()
-    {
-        return EventAggregator.GetEvent<TEvent>();
-    }
-
-    public void Publish(object eventMessage)
-    {
-        EventAggregator.Publish(eventMessage);
-    }
-    protected virtual IEnumerator Start()
-    {
-        KernelLoading();
-        while (!uFrameMVVMKernel.IsKernelLoaded) yield return null;
-        KernelLoaded();
-    }
     /// <summary>
-    /// Before we wait for the kernel to load, even if the kernel is already loaded it will still invoke this before it attempts to wait.
-    /// </summary>
-    public virtual void KernelLoading()
+    /// The uFrameComponent is a simple class that extends from MonoBehaviour, and is directly plugged into the kernel.
+    /// Use this component when creating any components manually or if you need to plug existing libraries into the uFrame system.
+    /// <example>
+    /// public class MyComponent : uFrameComponent {
+    /// }
+    /// </example></summary>
+    /// <example>
+    /// 	<para>public class MyComponent : uFrameComponent {</para>
+    /// 	<para>      public override void KernelLoaded() {</para>
+    /// 	<para>             this.Publish(new MyComponentCreatedEvent() { Instance = this });</para>
+    /// 	<para>      }</para>
+    /// 	<para>}</para>
+    /// </example>
+    public class uFrameComponent : MonoBehaviour
     {
-        
-    }
 
-    /// <summary>
-    /// The first method to execute when we are sure the kernel has completed loading.
-    /// </summary>
-    public virtual void KernelLoaded()
-    {
-        
-    }
-   
+        protected IEventAggregator EventAggregator
+        {
+            get { return uFrameMVVMKernel.EventAggregator; }
+        }
 
+        /// <summary>Wait for an Event to occur on the global event aggregator.</summary>
+        /// <example>
+        /// this.OnEvent&lt;MyEventClass&gt;().Subscribe(myEventClassInstance=&gt;{ DO_SOMETHING_HERE });
+        /// </example>
+        public IObservable<TEvent> OnEvent<TEvent>()
+        {
+            return EventAggregator.GetEvent<TEvent>();
+        }
+
+        /// <summary>Publishes a command to the event aggregator. Publish the class data you want, and let any "OnEvent" subscriptions handle them.</summary>
+        /// <example>
+        /// this.Publish(new MyEventClass() { Message = "Hello World" });
+        /// </example>
+        public void Publish(object eventMessage)
+        {
+            EventAggregator.Publish(eventMessage);
+        }
+
+        protected virtual IEnumerator Start()
+        {
+            KernelLoading();
+            while (!uFrameMVVMKernel.IsKernelLoaded) yield return null;
+            KernelLoaded();
+        }
+
+        /// <summary>
+        /// Before we wait for the kernel to load, even if the kernel is already loaded it will still invoke this before it attempts to wait.
+        /// </summary>
+        public virtual void KernelLoading()
+        {
+
+        }
+
+        /// <summary>
+        /// The first method to execute when we are sure the kernel has completed loading.
+        /// </summary>
+        public virtual void KernelLoaded()
+        {
+
+        }
+
+
+
+    }
 
 }
-

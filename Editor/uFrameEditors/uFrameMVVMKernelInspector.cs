@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Invert.Common;
 using Invert.Common.UI;
+using uFrame.Kernel;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,6 +39,8 @@ public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
             {
                 Warning("Kernel is not loaded!");                
             }
+            if (uFrameMVVMKernel.Instance == null) return;
+
             if (GUIHelpers.DoToolbarEx("Services"))
             {
                 foreach (var instance in uFrameMVVMKernel.Instance.Services)
@@ -52,9 +55,10 @@ public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
                     }
                 }
             }
-
+            
             if (GUIHelpers.DoToolbarEx("Systems"))
             {
+
                 foreach (var instance in uFrameMVVMKernel.Instance.SystemLoaders)
                 {
                     if (GUIHelpers.DoTriggerButton(new UFStyle()

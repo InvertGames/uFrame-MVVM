@@ -1,7 +1,10 @@
-﻿public interface IScene
+﻿namespace uFrame.Kernel
 {
-    string Name { get; set; }
+    public interface IScene
+    {
+        string Name { get; set; }
 
-    ISceneSettings _SettingsObject { get; set; }
+        ISceneSettings _SettingsObject { get; set; }
 
+    }
 }

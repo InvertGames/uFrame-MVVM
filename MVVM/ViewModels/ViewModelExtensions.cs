@@ -1,61 +1,69 @@
 using System;
 using System.Text;
+using uFrame.IOC;
+using uFrame.Kernel;
+using uFrame.Serialization;
 
-public static class ViewModelExtensions
+namespace uFrame.MVVM
 {
-    public static string SerializeToJSON(this ViewModel model)
+    public static class ViewModelExtensions
     {
-        ISerializerStream stream = new JsonStream();
-        ISerializerStorage storage = new StringSerializerStorage();
-        stream.DeepSerialize = true;
-        model.Write(stream);
-        storage.Save(stream);
-        return storage.ToString();
-    }
-    public static void DeserializeFromJSON(this ViewModel model, string json)
-    {
-        ISerializerStream stream = new JsonStream();
-        stream.DeepSerialize = true;
-        stream.DependencyContainer = uFrameMVVMKernel.Container;
-        stream.TypeResolver = new ViewModelResolver() {Container = uFrameMVVMKernel.Container};
-        stream.Load(Encoding.UTF8.GetBytes(json));
-        model.Read(stream);
-    }
-}
+        public static string SerializeToJSON(this ViewModel model)
+        {
+            ISerializerStream stream = new JsonStream();
+            ISerializerStorage storage = new StringSerializerStorage();
+            stream.DeepSerialize = true;
+            model.Write(stream);
+            storage.Save(stream);
+            return storage.ToString();
+        }
 
-public class ViewModelResolver : ITypeResolver
-{
-    public IGameContainer Container { get; set; }
-    Type ITypeResolver.GetType(string name)
-    {
-        return Type.GetType(name);
+        public static void DeserializeFromJSON(this ViewModel model, string json)
+        {
+            ISerializerStream stream = new JsonStream();
+            stream.DeepSerialize = true;
+            stream.DependencyContainer = uFrameMVVMKernel.Container;
+            stream.TypeResolver = new ViewModelResolver() {Container = uFrameMVVMKernel.Container};
+            stream.Load(Encoding.UTF8.GetBytes(json));
+            model.Read(stream);
+        }
     }
 
-    string ITypeResolver.SetType(Type type)
+    public class ViewModelResolver : ITypeResolver
     {
-        return type.AssemblyQualifiedName;
-    }
+        public IUFrameContainer Container { get; set; }
 
-    object ITypeResolver.CreateInstance(string name, string identifier)
-    {
-        var type = ((ITypeResolver)this).GetType(name);
+        Type ITypeResolver.GetType(string name)
+        {
+            return Type.GetType(name);
+        }
+
+        string ITypeResolver.SetType(Type type)
+        {
+            return type.AssemblyQualifiedName;
+        }
+
+        object ITypeResolver.CreateInstance(string name, string identifier)
+        {
+            var type = ((ITypeResolver) this).GetType(name);
 
 #if NETFX_CORE 
         var isViewModel = type.GetTypeInfo().IsSubclassOf(typeof(ViewModel));
 #else
-        var isViewModel = typeof(ViewModel).IsAssignableFrom(type);
+            var isViewModel = typeof (ViewModel).IsAssignableFrom(type);
 #endif
 
-        if (isViewModel)
-        {
-            var contextViewModel = Container.Resolve(type, identifier);
-            if (contextViewModel != null)
+            if (isViewModel)
             {
-                return contextViewModel;
+                var contextViewModel = Container.Resolve(type, identifier);
+                if (contextViewModel != null)
+                {
+                    return contextViewModel;
+                }
+                return MVVMKernelExtensions.CreateViewModel(type, identifier);
             }
-            return MVVMKernelExtensions.CreateViewModel(type, identifier);
-        }
 
-        return null;
+            return null;
+        }
     }
 }

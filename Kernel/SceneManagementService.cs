@@ -5,264 +5,275 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 
-public class SceneManagementService : SystemServiceMonoBehavior
+namespace uFrame.Kernel
 {
-
-    private Queue<SceneQueueItem> _scenesQueue;
-    public Queue<SceneQueueItem> ScenesQueue
+    public class SceneManagementService : SystemServiceMonoBehavior
     {
-        get { return _scenesQueue ?? (_scenesQueue = new Queue<SceneQueueItem>()); }
-    }
-    public List<IScene> LoadedScenes
-    {
-        get { return _loadedScenes ?? (_loadedScenes = new List<IScene>()); }
-    }
-    private List<IScene> _loadedScenes;
 
-    [SerializeField]
-    private string[] _startupScenes = new string[] {};
+        private Queue<SceneQueueItem> _scenesQueue;
 
-    public override void Setup()
-    {
-        base.Setup();
-
-
-        this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
+        public Queue<SceneQueueItem> ScenesQueue
         {
-
-            this.LoadScene(_.SceneName, _.Settings);
-        });
-
-        this.OnEvent<UnloadSceneCommand>().Subscribe(_ =>
-        {
-            this.UnloadScene(_.SceneName);
-        });
-
-        var attachedSceneLoaders = uFrameMVVMKernel.Instance.GetComponentsInChildren(typeof(ISceneLoader)).OfType<ISceneLoader>();
-        foreach (var sceneLoader in attachedSceneLoaders)
-        {
-            uFrameMVVMKernel.Container.RegisterSceneLoader(sceneLoader);
-            uFrameMVVMKernel.Container.Inject(sceneLoader);
-            SceneLoaders.Add(sceneLoader);
+            get { return _scenesQueue ?? (_scenesQueue = new Queue<SceneQueueItem>()); }
         }
-        _defaultSceneLoader = gameObject.GetComponent<DefaultSceneLoader>() ??
-                              gameObject.AddComponent<DefaultSceneLoader>();
 
-        this.OnEvent<SceneAwakeEvent>().Subscribe(_ => StartCoroutine(SetupScene(_.Scene)));
-    }
-
-    private List<ISceneLoader> _sceneLoaders;
-    public List<ISceneLoader> SceneLoaders
-    {
-        get
+        public List<IScene> LoadedScenes
         {
-            return _sceneLoaders ?? (_sceneLoaders = new List<ISceneLoader>());
+            get { return _loadedScenes ?? (_loadedScenes = new List<IScene>()); }
         }
-    }
 
-    public string[] StartupScenes
-    {
-        get { return _startupScenes; }
-        set { _startupScenes = value; }
-    }
+        private List<IScene> _loadedScenes;
 
-    private DefaultSceneLoader _defaultSceneLoader;
+        [SerializeField] private string[] _startupScenes = new string[] {};
 
-
-    public IEnumerator LoadSceneInternal(string sceneName)
-    {
-        yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(sceneName));
-    }
-
-    public void QueueSceneLoad(string sceneName, ISceneSettings settings)
-    {
-        ScenesQueue.Enqueue(new SceneQueueItem()
+        public override void Setup()
         {
-            Loader = LoadSceneInternal(sceneName),
-            Name = sceneName,
-            Settings = settings
-        });
-    }
+            base.Setup();
 
-    public void QueueScenesLoad(params SceneQueueItem[] items)
-    {
-        foreach (var item in items)
-        {
-            if (item.Loader == null)
+
+            this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
             {
-                item.Loader = LoadSceneInternal(item.Name);
+
+                this.LoadScene(_.SceneName, _.Settings);
+            });
+
+            this.OnEvent<UnloadSceneCommand>().Subscribe(_ =>
+            {
+                this.UnloadScene(_.SceneName);
+            });
+
+            var attachedSceneLoaders =
+                uFrameMVVMKernel.Instance.GetComponentsInChildren(typeof (ISceneLoader)).OfType<ISceneLoader>();
+            foreach (var sceneLoader in attachedSceneLoaders)
+            {
+                uFrameMVVMKernel.Container.RegisterSceneLoader(sceneLoader);
+                uFrameMVVMKernel.Container.Inject(sceneLoader);
+                SceneLoaders.Add(sceneLoader);
             }
-            ScenesQueue.Enqueue(item);
-        }
-    }
+            _defaultSceneLoader = gameObject.GetComponent<DefaultSceneLoader>() ??
+                                  gameObject.AddComponent<DefaultSceneLoader>();
 
-    protected IEnumerator ExecuteLoadAsync()
-    {
-        foreach (var sceneQueeItem in ScenesQueue.ToArray())
-        {
-            yield return StartCoroutine(sceneQueeItem.Loader);
-        }
-    }
-
-    public void ExecuteLoad()
-    {
-        StartCoroutine(ExecuteLoadAsync());
-    }
-
-    public IEnumerator SetupScene(IScene sceneRoot)
-    {
-
-        this.Publish(new SceneLoaderEvent()
-       {
-           State = SceneState.Instantiated,
-           SceneRoot = sceneRoot
-       });
-
-
-
-        //If the scene was loaded via the api (it was queued having some name and settings)
-        if (ScenesQueue.Count > 0)
-        {
-            var sceneQueueItem = ScenesQueue.Dequeue();
-            sceneRoot.Name = sceneQueueItem.Name;
-            sceneRoot._SettingsObject = sceneQueueItem.Settings;
-        }
-        //Else, means scene was the start scene (loaded before kernel)
-        else
-        {
-            sceneRoot.Name = Application.loadedLevelName;
+            this.OnEvent<SceneAwakeEvent>().Subscribe(_ => StartCoroutine(SetupScene(_.Scene)));
         }
 
+        private List<ISceneLoader> _sceneLoaders;
 
-        this.Publish(new SceneLoaderEvent()
+        public List<ISceneLoader> SceneLoaders
         {
-            State = SceneState.Instantiated,
-            SceneRoot = sceneRoot
-        });
+            get { return _sceneLoaders ?? (_sceneLoaders = new List<ISceneLoader>()); }
+        }
 
-        Action<float, string> updateDelegate = (v, m) =>
+        public string[] StartupScenes
         {
+            get { return _startupScenes; }
+            set { _startupScenes = value; }
+        }
+
+        private DefaultSceneLoader _defaultSceneLoader;
+
+
+        public IEnumerator LoadSceneInternal(string sceneName)
+        {
+            yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(sceneName));
+        }
+
+        public void QueueSceneLoad(string sceneName, ISceneSettings settings)
+        {
+            ScenesQueue.Enqueue(new SceneQueueItem()
+            {
+                Loader = LoadSceneInternal(sceneName),
+                Name = sceneName,
+                Settings = settings
+            });
+        }
+
+        public void QueueScenesLoad(params SceneQueueItem[] items)
+        {
+            foreach (var item in items)
+            {
+                if (item.Loader == null)
+                {
+                    item.Loader = LoadSceneInternal(item.Name);
+                }
+                ScenesQueue.Enqueue(item);
+            }
+        }
+
+        protected IEnumerator ExecuteLoadAsync()
+        {
+            foreach (var sceneQueeItem in ScenesQueue.ToArray())
+            {
+                yield return StartCoroutine(sceneQueeItem.Loader);
+            }
+        }
+
+        public void ExecuteLoad()
+        {
+            StartCoroutine(ExecuteLoadAsync());
+        }
+
+        public IEnumerator SetupScene(IScene sceneRoot)
+        {
+
             this.Publish(new SceneLoaderEvent()
             {
-                State = SceneState.Update,
-                Progress = v,
-                ProgressMessage = m
+                State = SceneState.Instantiated,
+                SceneRoot = sceneRoot
             });
-        };
-
-        var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType()) ?? _defaultSceneLoader;
-
-        yield return StartCoroutine(sceneLoader.Load(sceneRoot, updateDelegate));
-
-        LoadedScenes.Add(sceneRoot);
-
-        this.Publish(new SceneLoaderEvent()
-        {
-            State = SceneState.Loaded,
-            SceneRoot = sceneRoot
-        });
 
 
-    }
 
-    protected IEnumerator UnloadSceneAsync(string name)
-    {
-        var sceneRoot = LoadedScenes.FirstOrDefault(s => s.Name == name);
-        if (sceneRoot != null) yield return StartCoroutine(this.UnloadSceneAsync(sceneRoot));
-        else yield break;
-    }
+            //If the scene was loaded via the api (it was queued having some name and settings)
+            if (ScenesQueue.Count > 0)
+            {
+                var sceneQueueItem = ScenesQueue.Dequeue();
+                sceneRoot.Name = sceneQueueItem.Name;
+                sceneRoot._SettingsObject = sceneQueueItem.Settings;
+            }
+            //Else, means scene was the start scene (loaded before kernel)
+            else
+            {
+                sceneRoot.Name = Application.loadedLevelName;
+            }
 
-    protected IEnumerator UnloadSceneAsync(IScene sceneRoot)
-    {
 
-        var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType()) ?? _defaultSceneLoader;
-
-        Action<float, string> updateDelegate = (v, m) =>
-        {
             this.Publish(new SceneLoaderEvent()
             {
-                State = SceneState.Unloading,
-                Progress = v,
-                ProgressMessage = m
+                State = SceneState.Instantiated,
+                SceneRoot = sceneRoot
             });
-        };
 
-        yield return StartCoroutine(sceneLoader.Unload(sceneRoot, updateDelegate));
+            Action<float, string> updateDelegate = (v, m) =>
+            {
+                this.Publish(new SceneLoaderEvent()
+                {
+                    State = SceneState.Update,
+                    Progress = v,
+                    ProgressMessage = m
+                });
+            };
 
-        this.Publish(new SceneLoaderEvent() { State = SceneState.Unloaded, SceneRoot = sceneRoot });
+            var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType()) ??
+                              _defaultSceneLoader;
 
-        LoadedScenes.Remove(sceneRoot);
-        Destroy((sceneRoot as MonoBehaviour).gameObject);
+            yield return StartCoroutine(sceneLoader.Load(sceneRoot, updateDelegate));
 
-        this.Publish(new SceneLoaderEvent() { State = SceneState.Destructed, SceneRoot = sceneRoot });
+            LoadedScenes.Add(sceneRoot);
+
+            this.Publish(new SceneLoaderEvent()
+            {
+                State = SceneState.Loaded,
+                SceneRoot = sceneRoot
+            });
 
 
-    }
+        }
 
-    public void UnloadScene(string name)
-    {
-        StartCoroutine(UnloadSceneAsync(name));
-    }
+        protected IEnumerator UnloadSceneAsync(string name)
+        {
+            var sceneRoot = LoadedScenes.FirstOrDefault(s => s.Name == name);
+            if (sceneRoot != null) yield return StartCoroutine(this.UnloadSceneAsync(sceneRoot));
+            else yield break;
+        }
 
-    public void UnloadScene(IScene sceneRoot)
-    {
-        StartCoroutine(UnloadSceneAsync(sceneRoot));
-    }
+        protected IEnumerator UnloadSceneAsync(IScene sceneRoot)
+        {
 
-    public void UnloadScenes(string[] names)
-    {
-        foreach (var name in names)
+            var sceneLoader = SceneLoaders.FirstOrDefault(loader => loader.SceneType == sceneRoot.GetType()) ??
+                              _defaultSceneLoader;
+
+            Action<float, string> updateDelegate = (v, m) =>
+            {
+                this.Publish(new SceneLoaderEvent()
+                {
+                    State = SceneState.Unloading,
+                    Progress = v,
+                    ProgressMessage = m
+                });
+            };
+
+            yield return StartCoroutine(sceneLoader.Unload(sceneRoot, updateDelegate));
+
+            this.Publish(new SceneLoaderEvent() {State = SceneState.Unloaded, SceneRoot = sceneRoot});
+
+            LoadedScenes.Remove(sceneRoot);
+            Destroy((sceneRoot as MonoBehaviour).gameObject);
+
+            this.Publish(new SceneLoaderEvent() {State = SceneState.Destructed, SceneRoot = sceneRoot});
+
+
+        }
+
+        public void UnloadScene(string name)
         {
             StartCoroutine(UnloadSceneAsync(name));
         }
-    }
 
-    public void UnloadScenes(IScene[] sceneRoots)
-    {
-        foreach (var sceneRoot in sceneRoots)
+        public void UnloadScene(IScene sceneRoot)
         {
             StartCoroutine(UnloadSceneAsync(sceneRoot));
         }
-    }
 
-    public void LoadScene(string name, ISceneSettings settings)
-    {
-        this.QueueSceneLoad(name, settings);
-        this.ExecuteLoad();
-    }
-    public void LoadSceneIfNotAlready(string name, ISceneSettings settings)
-    {
-        if (LoadedScenes.Any(p => p.Name == name) || ScenesQueue.Any(p => p.Name == name) || Application.loadedLevelName == name)
+        public void UnloadScenes(string[] names)
         {
-            return;
+            foreach (var name in names)
+            {
+                StartCoroutine(UnloadSceneAsync(name));
+            }
         }
-        this.QueueSceneLoad(name, settings);
-        this.ExecuteLoad();
-    }
-    public void LoadScenes(params SceneQueueItem[] items)
-    {
-        this.QueueScenesLoad(items);
-        this.ExecuteLoad();
-    }
-    public void QueueSceneLoadIfNotAlready(string sceneName, ISceneSettings settings)
-    {
-        if (LoadedScenes.Any(p => p.Name == sceneName) || ScenesQueue.Any(p => p.Name == sceneName) || Application.loadedLevelName == sceneName)
+
+        public void UnloadScenes(IScene[] sceneRoots)
         {
-            return;
+            foreach (var sceneRoot in sceneRoots)
+            {
+                StartCoroutine(UnloadSceneAsync(sceneRoot));
+            }
         }
-        ScenesQueue.Enqueue(new SceneQueueItem()
+
+        public void LoadScene(string name, ISceneSettings settings)
         {
-            Loader = LoadSceneInternal(sceneName),
-            Name = sceneName,
-            Settings = settings
-        });
+            this.QueueSceneLoad(name, settings);
+            this.ExecuteLoad();
+        }
+
+        public void LoadSceneIfNotAlready(string name, ISceneSettings settings)
+        {
+            if (LoadedScenes.Any(p => p.Name == name) || ScenesQueue.Any(p => p.Name == name) ||
+                Application.loadedLevelName == name)
+            {
+                return;
+            }
+            this.QueueSceneLoad(name, settings);
+            this.ExecuteLoad();
+        }
+
+        public void LoadScenes(params SceneQueueItem[] items)
+        {
+            this.QueueScenesLoad(items);
+            this.ExecuteLoad();
+        }
+
+        public void QueueSceneLoadIfNotAlready(string sceneName, ISceneSettings settings)
+        {
+            if (LoadedScenes.Any(p => p.Name == sceneName) || ScenesQueue.Any(p => p.Name == sceneName) ||
+                Application.loadedLevelName == sceneName)
+            {
+                return;
+            }
+            ScenesQueue.Enqueue(new SceneQueueItem()
+            {
+                Loader = LoadSceneInternal(sceneName),
+                Name = sceneName,
+                Settings = settings
+            });
+        }
+
     }
 
-}
-
-public class SceneQueueItem
-{
-    public string Name { get; set; }
-    public IEnumerator Loader { get; set; }
-    public ISceneSettings Settings { get; set; }
+    public class SceneQueueItem
+    {
+        public string Name { get; set; }
+        public IEnumerator Loader { get; set; }
+        public ISceneSettings Settings { get; set; }
+    }
 }

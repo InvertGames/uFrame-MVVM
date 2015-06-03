@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
+using uFrame.Kernel;
+using uFrame.MVVM;
 using UnityEditor;
 using UnityEngine;
 
@@ -110,6 +112,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     {
         Kernel = this.EnsureScaffoldKernel(_, TheProject, ExplainKernel);
         if (Kernel == null) return false;
+
         return true;
     }
 

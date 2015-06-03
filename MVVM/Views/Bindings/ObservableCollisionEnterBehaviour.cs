@@ -1,7 +1,7 @@
 using UniRx;
 using UnityEngine;
 using System;
-
+namespace uFrame.MVVM.Bindings {
 public class ObservableCollisionEnterBehaviour : ObservableComponent
 {
     private Subject<Collision> onCollisionEnter;
@@ -19,4 +19,5 @@ public class ObservableCollisionEnterBehaviour : ObservableComponent
     }
 
 
+}
 }

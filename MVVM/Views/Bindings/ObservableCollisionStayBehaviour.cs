@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableCollisionStayBehaviour : ObservableComponent
 {
     private Subject<Collision> onCollisionStay;
@@ -18,4 +18,5 @@ public class ObservableCollisionStayBehaviour : ObservableComponent
     }
 
 
+}
 }

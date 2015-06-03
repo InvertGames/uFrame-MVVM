@@ -1,4 +1,5 @@
 using Invert.Core.GraphDesigner;
+using uFrame.MVVM.Templates;
 using UnityEngine;
 
 namespace Invert.uFrame.MVVM {

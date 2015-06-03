@@ -1,6 +1,19 @@
 [u]Frame Release Notes
 Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, notifications, and cool info.
 
+Note for 1.5 Users: The 1.6 Version of uFrame, only falls short of a major release due to it being mostly bug fixes and changes that will support 
+	the idea of ECS and MVVM working together, and promises for the 1.x release. If you already have a lot of work done in 1.5 save 1.6 for your next game or application.  
+	While upgrading is possible if you are familiar enough with it, but it will require a significant effort.
+
+1.6 RC1 Notes
+- uFrame is now seperated into various namespaces, the uFrame.Kernel, and uFrame.MVVM are the main ones.  
+        - If you have resharper, just got to each file and click on import 'uFrame.MVVM' or any other required namespace. http://i.imgur.com/0EPGdbO.png
+		- You may also want to check your kernel and ensure that all is well.
+		- It will help with errors if you stick strictly the the unity console and not the visual studio error list, just go down the list of errors and fix the namespace issues.
+		- It will look like you have a lot of errors in the designer files, but a simple namespace will fix them
+- Depending on what beta version you are currently on you may need to fix some  collection bindings with {Name}OnAdd, and {Name}OnRemove
+
+
 Editor and Project:
 1.5.1
 Lots of bug fixes

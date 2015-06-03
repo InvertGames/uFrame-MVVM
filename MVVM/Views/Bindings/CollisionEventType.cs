@@ -1,6 +1,9 @@
-public enum CollisionEventType
+namespace uFrame.MVVM.Bindings
 {
-    Enter,	
-    Exit,	
-    Stay
+    public enum CollisionEventType
+    {
+        Enter,
+        Exit,
+        Stay
+    }
 }

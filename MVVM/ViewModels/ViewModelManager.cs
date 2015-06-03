@@ -2,42 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-/// <summary>
-/// The view model manager is a class that encapsulates a list of viewmodels
-/// </summary>
-/// <typeparam name="T"></typeparam>
-public class ViewModelManager<T> : IViewModelManager<T> where T : ViewModel
+namespace uFrame.MVVM
 {
-    private List<T> _viewModels = new List<T>();
-
-    public List<T> ViewModels
+    /// <summary>
+    /// The view model manager is a class that encapsulates a list of viewmodels
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ViewModelManager<T> : IViewModelManager<T> where T : ViewModel
     {
-        get { return _viewModels; }
-        set { _viewModels = value; }
-    }
+        private List<T> _viewModels = new List<T>();
 
-    public IEnumerator<ViewModel> GetEnumerator()
-    {
-        return ViewModels.Cast<ViewModel>().GetEnumerator();
-    }
+        public List<T> ViewModels
+        {
+            get { return _viewModels; }
+            set { _viewModels = value; }
+        }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+        public IEnumerator<ViewModel> GetEnumerator()
+        {
+            return ViewModels.Cast<ViewModel>().GetEnumerator();
+        }
 
-    public void Add(ViewModel viewModel)
-    {
-        if(!ViewModels.Contains((T)viewModel))
-            ViewModels.Add((T)viewModel);
-   
-    }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-    public void Remove(ViewModel viewModel)
-    {
-        ViewModels.Remove((T)viewModel);
- 
-    }
+        public void Add(ViewModel viewModel)
+        {
+            if (!ViewModels.Contains((T) viewModel))
+                ViewModels.Add((T) viewModel);
 
-   
+        }
+
+        public void Remove(ViewModel viewModel)
+        {
+            ViewModels.Remove((T) viewModel);
+
+        }
+
+
+    }
 }

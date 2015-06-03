@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableTriggerStayBehaviour : ObservableComponent
 {
     private Subject<Collider> onTriggerStay;
@@ -18,4 +18,5 @@ public class ObservableTriggerStayBehaviour : ObservableComponent
     }
 
 
+}
 }

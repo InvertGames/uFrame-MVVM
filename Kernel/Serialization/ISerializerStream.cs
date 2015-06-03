@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using uFrame.IOC;
 using UnityEngine;
 
 public interface ISerializerStream
 {
-    IGameContainer DependencyContainer { get; set; }
+    IUFrameContainer DependencyContainer { get; set; }
 
     void SerializeArray<T>(string name, IEnumerable<T> items);
 

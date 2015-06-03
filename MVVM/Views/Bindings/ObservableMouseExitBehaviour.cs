@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableMouseExitBehaviour : ObservableComponent
 {
     private Subject<Unit> onMouseExit;
@@ -18,4 +18,5 @@ public class ObservableMouseExitBehaviour : ObservableComponent
     }
 
 
+}
 }

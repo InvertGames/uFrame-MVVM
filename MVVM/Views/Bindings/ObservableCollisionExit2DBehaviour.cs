@@ -1,6 +1,7 @@
 using UniRx;
 using UnityEngine;
 using System;
+namespace uFrame.MVVM.Bindings {
 public class ObservableCollisionExit2DBehaviour : ObservableComponent
 {
     private Subject<Collision2D> onCollisionExit2D;
@@ -18,4 +19,5 @@ public class ObservableCollisionExit2DBehaviour : ObservableComponent
     }
 
 
+}
 }

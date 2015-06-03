@@ -3,6 +3,8 @@ using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
+using uFrame.Kernel;
+using uFrame.MVVM.Services;
 using UnityEditor;
 using UnityEngine;
 

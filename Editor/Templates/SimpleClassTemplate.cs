@@ -4,37 +4,49 @@ using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 
-[TemplateClass(MemberGeneratorLocation.Both)]
-public class SimpleClassTemplate : IClassTemplate<SimpleClassNode>
+namespace uFrame.MVVM.Templates
 {
-    public string OutputPath
-    {
-        get { return Path2.Combine(Ctx.Data.Graph.Name, "SimplesClasses"); }
-    }
 
-    public bool CanGenerate { get { return true; } }
 
-    public void TemplateSetup()
+    [TemplateClass(TemplateLocation.Both)]
+    public class SimpleClassTemplate : IClassTemplate<SimpleClassNode>
     {
-        foreach (var property in Ctx.Data.ChildItems.OfType<ITypedItem>())
+        public string OutputPath
         {
-            var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
-            if (type == null) continue;
-
-            Ctx.TryAddNamespace(type.Namespace);
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "SimplesClasses"); }
         }
 
-        Ctx.AddIterator("Property", node => node.Properties);
-        Ctx.AddIterator("Collection", node => node.Collections);
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+            this.Ctx.TryAddNamespace("uFrame.Kernel");
+            this.Ctx.TryAddNamespace("uFrame.MVVM");
+            this.Ctx.TryAddNamespace("uFrame.MVVM.Bindings");
+            this.Ctx.TryAddNamespace("uFrame.Serialization");
+            foreach (var property in Ctx.Data.ChildItems.OfType<ITypedItem>())
+            {
+                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+                if (type == null) continue;
+
+                Ctx.TryAddNamespace(type.Namespace);
+            }
+
+            Ctx.AddIterator("Property", node => node.Properties);
+            Ctx.AddIterator("Collection", node => node.Collections);
+        }
+
+        public TemplateContext<SimpleClassNode> Ctx { get; set; }
+
+        [ForEach("Properties"), GenerateProperty, WithField]
+        public _ITEMTYPE_ _PropertyName_ { get; set; }
+
+        [ForEach("Collections"), GenerateProperty, WithField]
+        public List<_ITEMTYPE_> _CollectionName_ { get; set; }
+
+
     }
-
-    public TemplateContext<SimpleClassNode> Ctx { get; set; }
-
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
-    public string Property { get; set; }
-
-    [TemplateProperty(MemberGeneratorLocation.DesignerFile, AutoFillType.NameAndTypeWithBackingField)]
-    public List<string> Collection { get; set; }
-
-
 }

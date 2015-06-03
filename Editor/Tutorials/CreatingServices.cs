@@ -1,6 +1,7 @@
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
+using uFrame.Kernel;
 
 public class CreatingServices : uFrameMVVMTutorial
 {
@@ -23,9 +24,12 @@ public class CreatingServices : uFrameMVVMTutorial
         var logEvent = DoNamedNodeStep<SimpleClassNode>(_, "LogEvent");
         DoNamedItemStep<PropertiesChildItem>(_, "Message", logEvent, "a property", b => { });
         DoNamedItemStep<HandlersReference>(_, "LogEvent", debugService, "a handler", b => { });
+        DoNamedItemStep<CommandsChildItem>(_, "Log", TheGame, "a command", null);
         SaveAndCompile(_);
-        EnsureCode(_, debugService, "Open DebugService.cs and implement the LogEventHandler method.", "http://i.imgur.com/Vrdqgx4.png", "DebugService", "Debug.Log");
         EnsureKernel(_);
+        EnsureCode(_, debugService, "Open DebugService.cs and implement the LogEventHandler method.", "http://i.imgur.com/Vrdqgx4.png", "DebugService", "Debug.Log");
+        EnsureCode(_, debugService, "Open GameController.cs and implement the Log method.", "http://i.imgur.com/Vrdqgx4.png", "DebugService", "Debug.Log");
+        
     }
 
     protected override void Introduction(IDocumentationBuilder _)

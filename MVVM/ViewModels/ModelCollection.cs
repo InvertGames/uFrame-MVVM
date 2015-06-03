@@ -5,14 +5,18 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+
+
 #if DLL
 using Invert.uFrame.Editor;
 namespace Invert.MVVM
 {
-#else 
 
-#endif
+#else 
 using UniRx;
+namespace uFrame.MVVM { 
+#endif
+
 
 public class ModelCollection<T> : ObservableCollection<T>
 #if !DLL
@@ -393,6 +397,5 @@ public class ModelCollectionChangeEventWith<T> : ModelCollectionChangeEvent
     }
 }
 
-#if DLL
+
 }
-#endif

@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableTriggerStay2DBehaviour : ObservableComponent
 {
     private Subject<Collider2D> onTriggerStay2D;
@@ -16,4 +16,5 @@ public class ObservableTriggerStay2DBehaviour : ObservableComponent
     {
         return onTriggerStay2D ?? (onTriggerStay2D = new Subject<Collider2D>());
     }
+}
 }

@@ -1,14 +1,10 @@
-#if DLL
-namespace Invert.MVVM
+namespace uFrame.MVVM.Bindings
 {
-#endif
-public interface ITwoWayBinding : IBinding
-{
-    /// <summary>
-    /// Will be called every update frame
-    /// </summary>
-    void BindReverse();
+    public interface ITwoWayBinding : IBinding
+    {
+        /// <summary>
+        /// Will be called every update frame
+        /// </summary>
+        void BindReverse();
+    }
 }
-#if DLL
-}
-#endif

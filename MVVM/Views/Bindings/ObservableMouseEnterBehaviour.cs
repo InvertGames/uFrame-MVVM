@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableMouseEnterBehaviour : ObservableComponent
 {
     Subject<Unit> onMouseEnter;
@@ -16,4 +16,5 @@ public class ObservableMouseEnterBehaviour : ObservableComponent
     {
         return onMouseEnter ?? (onMouseEnter = new Subject<Unit>());
     }
+}
 }

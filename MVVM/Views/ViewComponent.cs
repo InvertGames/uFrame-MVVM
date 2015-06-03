@@ -1,36 +1,39 @@
+using uFrame.MVVM.Bindings;
 using UnityEngine;
 
-public abstract class ViewComponent : MonoBehaviour, IBindingProvider
+namespace uFrame.MVVM
 {
-    [SerializeField]
-    private ViewBase _view;
-
-    public ViewBase View
+    public abstract class ViewComponent : MonoBehaviour, IBindingProvider
     {
-        get { return _view != null ? _view : (_view = this.GetView()); }
-        set { _view = value; }
-    }
+        [SerializeField] private ViewBase _view;
 
-    public virtual void Awake()
-    {
-        if (View == null) return;
-        if (View.IsBound)
+        public ViewBase View
         {
-            this.Bind(View);
+            get { return _view != null ? _view : (_view = this.GetView()); }
+            set { _view = value; }
         }
-        else
+
+        public virtual void Awake()
         {
-            View.BindingProviders.Add(this);
+            if (View == null) return;
+            if (View.IsBound)
+            {
+                this.Bind(View);
+            }
+            else
+            {
+                View.BindingProviders.Add(this);
+            }
         }
-    }
 
-    public virtual void Bind(ViewBase view)
-    {
+        public virtual void Bind(ViewBase view)
+        {
 
-    }
+        }
 
-    public virtual void Unbind(ViewBase viewBase)
-    {
-        
+        public virtual void Unbind(ViewBase viewBase)
+        {
+
+        }
     }
 }

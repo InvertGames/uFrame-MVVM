@@ -1,6 +1,9 @@
 using System;
 
-public interface IBindable
+namespace uFrame.MVVM.Bindings
 {
-    IDisposable AddBinding(IDisposable binding);
+    public interface IBindable
+    {
+        IDisposable AddBinding(IDisposable binding);
+    }
 }

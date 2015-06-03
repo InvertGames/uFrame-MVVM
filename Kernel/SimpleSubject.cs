@@ -2,47 +2,50 @@ using System;
 using System.Collections.Generic;
 using UniRx;
 
-public class SimpleSubject<T> : ISubject<T>
+namespace uFrame.Kernel
 {
-    private List<IObserver<T>> _observers;
-
-    public List<IObserver<T>> Observers
+    public class SimpleSubject<T> : ISubject<T>
     {
-        get { return _observers ?? (_observers = new List<IObserver<T>>()); }
-        set { _observers = value; }
-    }
+        private List<IObserver<T>> _observers;
 
-    public void OnCompleted()
-    {
-        foreach (var observer in Observers.ToArray())
+        public List<IObserver<T>> Observers
         {
-            if (observer == null) continue;
-            observer.OnCompleted();
+            get { return _observers ?? (_observers = new List<IObserver<T>>()); }
+            set { _observers = value; }
         }
-        Observers.Clear();
-    }
 
-    public void OnError(Exception error)
-    {
-        foreach (var observer in Observers.ToArray())
+        public void OnCompleted()
         {
-            if (observer == null) continue;
-            observer.OnError(error);
+            foreach (var observer in Observers.ToArray())
+            {
+                if (observer == null) continue;
+                observer.OnCompleted();
+            }
+            Observers.Clear();
         }
-    }
 
-    public void OnNext(T value)
-    {
-        foreach (var observer in Observers)
+        public void OnError(Exception error)
         {
-            if (observer == null) continue;
-            observer.OnNext(value);
+            foreach (var observer in Observers.ToArray())
+            {
+                if (observer == null) continue;
+                observer.OnError(error);
+            }
         }
-    }
 
-    public IDisposable Subscribe(IObserver<T> observer)
-    {
-        Observers.Add(observer);
-        return Disposable.Create(() => Observers.Remove(observer));
+        public void OnNext(T value)
+        {
+            foreach (var observer in Observers)
+            {
+                if (observer == null) continue;
+                observer.OnNext(value);
+            }
+        }
+
+        public IDisposable Subscribe(IObserver<T> observer)
+        {
+            Observers.Add(observer);
+            return Disposable.Create(() => Observers.Remove(observer));
+        }
     }
 }

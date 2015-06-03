@@ -50,7 +50,7 @@ using UnityEngine;
 #if UNITY_DLL
 namespace Invert.Json {
 #else
-namespace uFrame { 
+namespace uFrame.Serialization { 
 #endif
     public static class JSON
     {
@@ -632,7 +632,7 @@ namespace uFrame {
                 return this as JSONClass;
             }
         }
-#if UNITY_DLL || UNITY_4_0 || UNITY_5_0 || UNITY_3_0
+#if UNITY_DLL || UNITY_4_0 || UNITY_4_1||UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_3_0
         public virtual Quaternion AsQuaternion
         {
             get

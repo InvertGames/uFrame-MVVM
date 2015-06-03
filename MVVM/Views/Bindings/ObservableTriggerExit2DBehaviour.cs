@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableTriggerExit2DBehaviour : ObservableComponent
 {
     private Subject<Collider2D> onTriggerExit2D;
@@ -18,4 +18,5 @@ public class ObservableTriggerExit2DBehaviour : ObservableComponent
     }
 
 
+}
 }

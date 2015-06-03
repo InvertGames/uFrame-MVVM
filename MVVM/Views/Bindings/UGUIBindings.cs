@@ -1,4 +1,4 @@
-#if UNITY_4_6 || UNITY_5_0
+#if UNITY_4_6 || UNITY_5_0 || UNITY_5_1
 using System;
 using UniRx;
 using UnityEngine;
@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 
 using UnityEngine.UI;
 
-
+namespace uFrame.MVVM.Bindings
+{
     public static class UGUIExtensions
     {
 
@@ -25,7 +26,8 @@ using UnityEngine.UI;
         }
 
 
-        public static IDisposable BindButtonToCommand<TSignalType>(this ViewBase viewBase, Button button, Signal<TSignalType> command) 
+        public static IDisposable BindButtonToCommand<TSignalType>(this ViewBase viewBase, Button button,
+            Signal<TSignalType> command)
             where TSignalType : ViewModelCommand, new()
         {
             var d = button.AsClickObservable().Subscribe(_ =>
@@ -36,6 +38,7 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
             return d;
         }
+
         [Obsolete]
         public static IDisposable BindButtonToCommand(this ViewBase viewBase, Button button, ICommand command)
         {
@@ -45,28 +48,34 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
             return d;
         }
+
         [Obsolete]
-        public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, ViewModelCommand command, Func<T> selector)
+        public static IDisposable BindButtonToCommand<T>(this ViewBase viewBase, Button button, ViewModelCommand command,
+            Func<T> selector)
         {
             throw new Exception("Must be fixed");
-         
+
         }
+
         public static IDisposable BindTextToProperty(this ViewBase viewBase, Text input, P<string> property)
         {
             if (input != null)
             {
                 input.text = property.Value ?? string.Empty;
             }
-     
+
             var d1 = property.Subscribe(value =>
-            { if (input != null) input.text = value; });
+            {
+                if (input != null) input.text = value;
+            });
 
             return d1.DisposeWith(viewBase);
         }
-       
-        public static IDisposable BindTextToProperty<T>(this ViewBase viewBase, Text input, P<T> property, Func<T,string> selector)
+
+        public static IDisposable BindTextToProperty<T>(this ViewBase viewBase, Text input, P<T> property,
+            Func<T, string> selector)
         {
-     
+
             var d1 = property.Subscribe(value =>
             {
                 input.text = selector(value);
@@ -77,11 +86,11 @@ using UnityEngine.UI;
             return d1.DisposeWith(viewBase);
         }
 
-        
+
         public static IDisposable BindInputFieldToProperty(this ViewBase viewBase, InputField input, P<string> property)
         {
             if (property.Value != null)
-            input.text = property.Value;
+                input.text = property.Value;
             var d1 = input.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(value);
@@ -99,10 +108,11 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
         }
 
-        public static IDisposable BindInputFieldToProperty<TO>(this ViewBase viewBase, InputField inputField, P<TO> property, Func<string, TO> i2pSelector, Func<TO,string> p2iSelector)
+        public static IDisposable BindInputFieldToProperty<TO>(this ViewBase viewBase, InputField inputField,
+            P<TO> property, Func<string, TO> i2pSelector, Func<TO, string> p2iSelector)
         {
             if (property.Value != null)
-            inputField.text = p2iSelector(property.Value);
+                inputField.text = p2iSelector(property.Value);
             var d1 = inputField.AsValueChangedObservable().Subscribe(value =>
             {
                 property.OnNext(i2pSelector(value));
@@ -119,8 +129,9 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
- 
-        public static IDisposable BindInputFieldToHandler(this ViewBase viewBase, InputField inputField, Action<string> handler)
+
+        public static IDisposable BindInputFieldToHandler(this ViewBase viewBase, InputField inputField,
+            Action<string> handler)
         {
             var d = inputField.AsValueChangedObservable().Subscribe(value =>
             {
@@ -129,7 +140,8 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField, Signal<T> command) where T : ViewModelCommand, new()
+        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField,
+            Signal<T> command) where T : ViewModelCommand, new()
         {
             var d = inputField.AsEndEditObservable().Subscribe(_ =>
             {
@@ -138,14 +150,15 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField, Signal<T> command, Func<T> selector) where T : ViewModelCommand, new()
+        public static IDisposable BindInputFieldToCommand<T>(this ViewBase viewBase, InputField inputField,
+            Signal<T> command, Func<T> selector) where T : ViewModelCommand, new()
         {
             var d = inputField.AsEndEditObservable().Subscribe(_ =>
             {
                 var selected = selector();
                 selected.Sender = viewBase.ViewModelObject;
                 command.OnNext(selected);
-                
+
             }).DisposeWith(viewBase);
             return d;
         }
@@ -159,7 +172,8 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindScrollbarToHandler(this ViewBase viewBase, Scrollbar scrollBar, Action<float> handler)
+        public static IDisposable BindScrollbarToHandler(this ViewBase viewBase, Scrollbar scrollBar,
+            Action<float> handler)
         {
             var d = scrollBar.AsValueChangedObservable().Subscribe(value =>
             {
@@ -168,7 +182,8 @@ using UnityEngine.UI;
             return d;
         }
 
-        public static IDisposable BindScrollbarToProperty<TO>(this ViewBase viewBase, Scrollbar scrollbar, P<TO> property, Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
+        public static IDisposable BindScrollbarToProperty<TO>(this ViewBase viewBase, Scrollbar scrollbar,
+            P<TO> property, Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
         {
             var d1 = scrollbar.AsValueChangedObservable().Subscribe(value =>
             {
@@ -205,6 +220,7 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
+
         public static IDisposable BindSliderToProperty(this ViewBase viewBase, Slider slider, P<float> property)
         {
             //Debug.Log("seeting slider to "+property.Value);
@@ -229,7 +245,9 @@ using UnityEngine.UI;
                 d2.Dispose();
             }).DisposeWith(viewBase);
         }
-        public static IDisposable BindSliderToProperty<TO>(this ViewBase viewBase, Slider slider, P<TO> property, Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
+
+        public static IDisposable BindSliderToProperty<TO>(this ViewBase viewBase, Slider slider, P<TO> property,
+            Func<float, TO> i2pSelector, Func<TO, float> p2iSelector)
         {
 
             var d1 = slider.AsValueChangedObservable().Subscribe(value =>
@@ -253,7 +271,7 @@ using UnityEngine.UI;
 
         }
 
-    
+
 
         public static IDisposable BindToggleToHandler(this ViewBase viewBase, Toggle toggle, Action<bool> handler)
         {
@@ -269,7 +287,7 @@ using UnityEngine.UI;
             toggle.isOn = property.Value;
             var d1 = toggle.AsValueChangedObservable().Subscribe(value =>
             {
-                property.OnNext(value); 
+                property.OnNext(value);
             }).DisposeWith(viewBase);
 
             var d2 = property.Subscribe(value =>
@@ -284,7 +302,8 @@ using UnityEngine.UI;
             }).DisposeWith(viewBase);
         }
 
-        public static IDisposable BindToggleToProperty<TO>(this ViewBase viewBase, Toggle toggle, P<TO> property, Func<bool, TO> i2pSelector, Func<TO, bool> p2iSelector)
+        public static IDisposable BindToggleToProperty<TO>(this ViewBase viewBase, Toggle toggle, P<TO> property,
+            Func<bool, TO> i2pSelector, Func<TO, bool> p2iSelector)
         {
             var d1 = toggle.AsValueChangedObservable().Subscribe(value =>
             {
@@ -343,6 +362,7 @@ using UnityEngine.UI;
                 return Disposable.Create(() => slider.onValueChanged.RemoveListener(unityAction));
             });
         }
+
         public static IObservable<bool> AsValueChangedObservable(this Toggle toggle)
         {
             return Observable.Create<bool>(observer =>
@@ -352,7 +372,7 @@ using UnityEngine.UI;
                 return Disposable.Create(() => toggle.onValueChanged.RemoveListener(unityAction));
             });
         }
-    
+
         public static IObservable<float> AsValueChangedObservable(this Scrollbar scrollbar)
         {
 
@@ -363,74 +383,93 @@ using UnityEngine.UI;
                 return Disposable.Create(() => scrollbar.onValueChanged.RemoveListener(unityAction));
             });
         }
+
         public static IObservable<PointerEventData> AsObservableOfClick(this EventTrigger trigger)
         {
-            return trigger.AsObservableOf(EventTriggerType.PointerClick).Cast<BaseEventData,PointerEventData>();
+            return trigger.AsObservableOf(EventTriggerType.PointerClick).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfDrag(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Drag).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfBeginDrag(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.BeginDrag).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfEndDrag(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.EndDrag).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<AxisEventData> AsObservableOfMove(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Move).Cast<BaseEventData, AxisEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfDrop(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Drop).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfPointerDown(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.PointerDown).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfPointerUp(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.PointerUp).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfPointerEnter(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.PointerEnter).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfPointerExit(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.PointerExit).Cast<BaseEventData, PointerEventData>();
-        }    
+        }
+
         public static IObservable<PointerEventData> AsObservableOfInitializePotentialDrag(this EventTrigger trigger)
         {
-            return trigger.AsObservableOf(EventTriggerType.InitializePotentialDrag).Cast<BaseEventData, PointerEventData>();
+            return
+                trigger.AsObservableOf(EventTriggerType.InitializePotentialDrag).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<PointerEventData> AsObservableOfScroll(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Scroll).Cast<BaseEventData, PointerEventData>();
         }
+
         public static IObservable<BaseEventData> AsObservableOfSelect(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Select);
         }
+
         public static IObservable<BaseEventData> AsObservableOfSubmit(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Submit);
         }
+
         public static IObservable<BaseEventData> AsObservableOfCancel(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Cancel);
         }
+
         public static IObservable<BaseEventData> AsObservableOfDeselect(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.Deselect);
         }
+
         public static IObservable<BaseEventData> AsObservableOfUpdateSelected(this EventTrigger trigger)
         {
             return trigger.AsObservableOf(EventTriggerType.UpdateSelected);
-        }  
+        }
+
         public static IObservable<BaseEventData> AsObservableOf(this EventTrigger trigger, EventTriggerType type)
         {
             return Observable.Create<BaseEventData>(observer =>
@@ -449,12 +488,13 @@ using UnityEngine.UI;
                 eventID = type,
                 callback = new EventTrigger.TriggerEvent()
             };
-        
+
             entry.callback.AddListener(new UnityAction<BaseEventData>(action));
 
             return entry;
         }
 
     }
+}
 
 #endif

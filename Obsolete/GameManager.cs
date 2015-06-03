@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using uFrame.IOC;
+using uFrame.Kernel;
+using uFrame.MVVM;
 using UniRx;
 using UnityEngine;
 /// <summary>
@@ -36,7 +39,7 @@ public class GameManager : MonoBehaviour
     public string _StartupScene;
 
     private static SceneManager _activeSceneManager;
-    private static IGameContainer _container;
+    private static IUFrameContainer _container;
 
     private static IViewResolver _viewResolver;
 
@@ -115,13 +118,13 @@ public class GameManager : MonoBehaviour
         private set { _activeSceneManager = value; }
     }
 
-    public static IGameContainer Container
+    public static IUFrameContainer Container
     {
         get
         {
             if (_container == null)
             {
-                _container = new GameContainer();
+                _container = new UFrameContainer();
     
                 _container.RegisterInstance<IEventAggregator>(EventAggregator);
                 

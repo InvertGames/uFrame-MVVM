@@ -1,7 +1,11 @@
 using UniRx;
 using System; // Required for WP8 and Store APPS
-public interface IEventAggregator
+
+namespace uFrame.Kernel
 {
-    IObservable<TEvent> GetEvent<TEvent>();
-    void Publish<TEvent>(TEvent evt);
+    public interface IEventAggregator
+    {
+        IObservable<TEvent> GetEvent<TEvent>();
+        void Publish<TEvent>(TEvent evt);
+    }
 }

@@ -1,3 +1,5 @@
+using uFrame.MVVM.Templates;
+
 namespace Invert.uFrame.MVVM {
     using System;
     using System.Collections;

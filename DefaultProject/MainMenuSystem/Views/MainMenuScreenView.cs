@@ -1,3 +1,5 @@
+using uFrame.MVVM;
+
 namespace uFrame.DefaultProject {
     using System;
     using System.Collections;

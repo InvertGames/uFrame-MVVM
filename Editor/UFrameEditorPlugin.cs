@@ -5,12 +5,15 @@ using System.Reflection;
 using System.Text;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.IOC;
 using Invert.StateMachine;
 using Invert.uFrame.Editor;
 using Invert.uFrame.MVVM;
+using uFrame.MVVM;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
+using ViewModel = Invert.Core.GraphDesigner.ViewModel;
 
 [InitializeOnLoad]
 public class UFrameEditorPlugin : DiagramPlugin
@@ -27,7 +30,7 @@ public class UFrameEditorPlugin : DiagramPlugin
 
     }
 
-    public override void Initialize(uFrameContainer container)
+    public override void Initialize(UFrameContainer container)
     {
         container.RegisterInstance<IDiagramNodeCommand>(new CreateSceneCommand(), "CreateScene");
         container.RegisterInstance<IDiagramNodeCommand>(new AddManagerToSceneCommand(), "AddToScene");

@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableFixedUpdateBehaviour : ObservableComponent
 {
     private Subject<Unit> onFixedUpdate;
@@ -16,4 +16,5 @@ public class ObservableFixedUpdateBehaviour : ObservableComponent
     {
         return onFixedUpdate ?? (onFixedUpdate = new Subject<Unit>());
     }
+}
 }

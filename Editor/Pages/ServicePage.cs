@@ -1,4 +1,5 @@
 using Invert.Core.GraphDesigner;
+using uFrame.MVVM.Templates;
 
 namespace Invert.uFrame.MVVM {
     using System;

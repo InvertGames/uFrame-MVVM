@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using uFrame.IOC;
+using uFrame.MVVM;
+
 /// <summary>
 /// The scene context keeps track of view-models based on their identifiers when a view has checked "Save & Load"
 /// </summary>
 [Obsolete]
 public class SceneContext
 {
-    private IGameContainer _container;
+    private IUFrameContainer _container;
     private Dictionary<string, ViewModel> _viewModels;
     private Dictionary<string, ViewModel> _persitantViewModels;
 
@@ -44,7 +47,7 @@ public class SceneContext
         }
     }
 
-    public IGameContainer Container
+    public IUFrameContainer Container
     {
         get
         {
@@ -74,7 +77,7 @@ public class SceneContext
     {
     }
 
-    public SceneContext(IGameContainer gameContainer)
+    public SceneContext(IUFrameContainer gameContainer)
     {
         Container = gameContainer;
     }

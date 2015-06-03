@@ -1,4 +1,7 @@
-public class ViewDestroyedEvent : ViewEvent
+namespace uFrame.MVVM
 {
-   
+    public class ViewDestroyedEvent : ViewEvent
+    {
+
+    }
 }

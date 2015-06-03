@@ -185,7 +185,6 @@ MonoBehaviour:
   _BindOnStart: 1
   _DisposeOnDestroy: 0
   _overrideViewModel: 0
-  _resolveName: 
   _BindPlayGame: 1
   _PlayGameButton: {fileID: 459940742}
 --- !u!224 &348365650

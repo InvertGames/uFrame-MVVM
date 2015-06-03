@@ -1,16 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Potential future use.
-/// </summary>
-public interface IViewModelObserver
+namespace uFrame.MVVM.Bindings
 {
-    //List<IBinding> Bindings { get; set; }
+    /// <summary>
+    /// Potential future use.
+    /// </summary>
+    public interface IViewModelObserver
+    {
+        //List<IBinding> Bindings { get; set; }
 
-    void AddBinding(IBinding binding);
+        void AddBinding(IBinding binding);
 
-    void RemoveBinding(IBinding binding);
+        void RemoveBinding(IBinding binding);
 
-    void Unbind();
+        void Unbind();
+    }
 }

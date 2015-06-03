@@ -1,6 +1,6 @@
 using UniRx;
 using UnityEngine;
-using System;
+using System;namespace uFrame.MVVM.Bindings {
 public class ObservableMouseOverBehaviour : ObservableComponent
 {
     private Subject<Unit> onMouseOver;
@@ -18,4 +18,5 @@ public class ObservableMouseOverBehaviour : ObservableComponent
     }
 
 
+}
 }
