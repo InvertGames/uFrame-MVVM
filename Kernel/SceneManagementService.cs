@@ -43,11 +43,11 @@ namespace uFrame.Kernel
             });
 
             var attachedSceneLoaders =
-                uFrameMVVMKernel.Instance.GetComponentsInChildren(typeof (ISceneLoader)).OfType<ISceneLoader>();
+                uFrameKernel.Instance.GetComponentsInChildren(typeof (ISceneLoader)).OfType<ISceneLoader>();
             foreach (var sceneLoader in attachedSceneLoaders)
             {
-                uFrameMVVMKernel.Container.RegisterSceneLoader(sceneLoader);
-                uFrameMVVMKernel.Container.Inject(sceneLoader);
+                uFrameKernel.Container.RegisterSceneLoader(sceneLoader);
+                uFrameKernel.Container.Inject(sceneLoader);
                 SceneLoaders.Add(sceneLoader);
             }
             _defaultSceneLoader = gameObject.GetComponent<DefaultSceneLoader>() ??
@@ -74,7 +74,7 @@ namespace uFrame.Kernel
 
         public IEnumerator LoadSceneInternal(string sceneName)
         {
-            yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(sceneName));
+            yield return StartCoroutine(uFrameKernel.InstantiateSceneAsyncAdditively(sceneName));
         }
 
         public void QueueSceneLoad(string sceneName, ISceneSettings settings)

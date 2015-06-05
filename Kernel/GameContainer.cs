@@ -209,7 +209,7 @@ namespace uFrame.IOC
             if (namedMapping != null)
             {
                 var obj = CreateInstance(namedMapping, constructorArgs);
-                Inject(obj);
+                //Inject(obj);
                 return obj;
             }
             return null;
@@ -303,7 +303,7 @@ namespace uFrame.IOC
                 return null;
             }
             var result = CreateInstance(concreteType, args);
-            Inject(result);
+            //Inject(result);
             return result;
         }
         public TBase ResolveRelation<TFor, TBase>(params object[] arg)
@@ -371,6 +371,7 @@ namespace uFrame.IOC
     }
     public class TypeRelationCollection : List<TypeRelation>
     {
+        
         public Type this[Type from, Type to]
         {
             get

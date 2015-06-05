@@ -215,7 +215,7 @@ namespace uFrame.MVVM
                 Scene = parentScene,
                 Prefab = prefab
             };
-            uFrameMVVMKernel.EventAggregator.Publish(command);
+            uFrameKernel.EventAggregator.Publish(command);
             command.Result.transform.position = position;
             command.Result.transform.rotation = rotation;
             return command.Result;

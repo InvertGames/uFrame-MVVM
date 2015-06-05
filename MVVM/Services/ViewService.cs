@@ -128,13 +128,13 @@ namespace uFrame.MVVM.Services
             }
             if (viewBase.InjectView)
             {
-                uFrameMVVMKernel.Container.Inject(viewBase);
+                uFrameKernel.Container.Inject(viewBase);
             }
             // Attempt to resolve it by the identifier 
             //var contextViewModel = uFrameMVVMKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
             // It now only registers under the viewmodeltype to allow multip different view-models with the same identifier
             var contextViewModel =
-                uFrameMVVMKernel.Container.Resolve(viewBase.ViewModelType, viewBase.Identifier) as ViewModel;
+                uFrameKernel.Container.Resolve(viewBase.ViewModelType, viewBase.Identifier) as ViewModel;
 
             // If it doesn't resolve by the identifier we need to create it
             if (contextViewModel == null)
@@ -144,13 +144,13 @@ namespace uFrame.MVVM.Services
                 contextViewModel.Identifier = viewBase.Identifier;
 
                 // Register it, this is usually when a non registered element is treated like a single-instance anways
-                uFrameMVVMKernel.Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
+                uFrameKernel.Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
                     string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
 
                 // Register it under the generic view-model type
                 //uFrameMVVMKernel.Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
 
-                uFrameMVVMKernel.EventAggregator.Publish(new ViewModelCreatedEvent()
+                uFrameKernel.EventAggregator.Publish(new ViewModelCreatedEvent()
                 {
                     ViewModel = contextViewModel
                 });

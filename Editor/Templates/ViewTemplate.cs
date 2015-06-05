@@ -352,4 +352,5 @@ namespace uFrame.MVVM.Templates
 
         }
     }
+    
 }

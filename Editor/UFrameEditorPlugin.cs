@@ -13,7 +13,7 @@ using uFrame.MVVM;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
-using ViewModel = Invert.Core.GraphDesigner.ViewModel;
+using ViewModel = uFrame.MVVM.ViewModel;
 
 [InitializeOnLoad]
 public class UFrameEditorPlugin : DiagramPlugin
@@ -27,7 +27,6 @@ public class UFrameEditorPlugin : DiagramPlugin
     {
         InvertApplication.CachedAssemblies.Add(typeof(ViewModel).Assembly);
         InvertApplication.CachedAssemblies.Add(typeof(UFrameEditorPlugin).Assembly);
-
     }
 
     public override void Initialize(UFrameContainer container)

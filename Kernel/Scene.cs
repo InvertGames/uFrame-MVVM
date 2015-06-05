@@ -54,12 +54,12 @@ namespace uFrame.Kernel
         protected override IEnumerator Start()
         {
             this.KernelLoading();
-            if (!uFrameMVVMKernel.IsKernelLoaded)
+            if (!uFrameKernel.IsKernelLoaded)
             {
                 Name = Application.loadedLevelName;
-                yield return StartCoroutine(uFrameMVVMKernel.InstantiateSceneAsyncAdditively(KernelScene));
+                yield return StartCoroutine(uFrameKernel.InstantiateSceneAsyncAdditively(KernelScene));
             }
-            while (!uFrameMVVMKernel.IsKernelLoaded) yield return null;
+            while (!uFrameKernel.IsKernelLoaded) yield return null;
             this.KernelLoaded();
             this.Publish(new SceneAwakeEvent() {Scene = this});
         }

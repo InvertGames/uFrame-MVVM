@@ -81,7 +81,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         });
 
     }
-    public uFrameMVVMKernel EnsureScaffoldKernel(IDocumentationBuilder builder, IProjectRepository projectRepository, Action<IDocumentationBuilder> stepContent = null)
+    public uFrameKernel EnsureScaffoldKernel(IDocumentationBuilder builder, IProjectRepository projectRepository, Action<IDocumentationBuilder> stepContent = null)
     {
 
         var project = projectRepository as DefaultProjectRepository;
@@ -92,7 +92,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
 
         var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
-        var component = go == null ? null : go.GetComponent<uFrameMVVMKernel>();
+        var component = go == null ? null : go.GetComponent<uFrameKernel>();
 
         builder.ShowTutorialStep(new TutorialStep("Now we need to scaffold/update the kernel.", () =>
         {
@@ -116,7 +116,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         return true;
     }
 
-    public uFrameMVVMKernel Kernel { get; set; }
+    public uFrameKernel Kernel { get; set; }
 
     private void ExplainKernel(IDocumentationBuilder _)
     {

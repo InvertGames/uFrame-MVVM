@@ -22,7 +22,7 @@ public class ViewServiceInspector : ManagerInspector<ViewService>
 
     public ViewService ViewService
     {
-        get { return _viewService ?? (_viewService = uFrameMVVMKernel.Container.Resolve<ViewService>()); }
+        get { return _viewService ?? (_viewService = uFrameKernel.Container.Resolve<ViewService>()); }
     }
 
     public void OnDisable()

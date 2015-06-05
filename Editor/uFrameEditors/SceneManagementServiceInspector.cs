@@ -21,7 +21,7 @@ public class SceneManagementServiceInspector : ManagerInspector<SceneManagementS
 
     public SceneManagementService Service
     {
-        get { return _service ?? (_service = uFrameMVVMKernel.Container.Resolve<SceneManagementService>()); }
+        get { return _service ?? (_service = uFrameKernel.Container.Resolve<SceneManagementService>()); }
     }
 
     public void OnDisable()

@@ -103,13 +103,13 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
         var prefabNameWithPath =  path.Replace(project.name + ".asset", prefabName);
 
 
-        uFrameMVVMKernel uFrameMVVMKernel = null;
+        uFrameKernel uFrameMVVMKernel = null;
 
         if (File.Exists(sceneNameWithPath))
         {
             //EditorApplication.OpenScene(sceneNameWithPath);
             var gameObject = (GameObject)AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject));
-            uFrameMVVMKernel = gameObject.GetComponent<uFrameMVVMKernel>();
+            uFrameMVVMKernel = gameObject.GetComponent<uFrameKernel>();
             SyncKernel(node, uFrameMVVMKernel.gameObject);
 
         }
@@ -120,8 +120,8 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
             {
                 Directory.CreateDirectory(paths.ScenesPath);
             }
-            uFrameMVVMKernel = FindComponentInScene<uFrameMVVMKernel>() ??
-                                new GameObject("Kernel").AddComponent<uFrameMVVMKernel>();
+            uFrameMVVMKernel = FindComponentInScene<uFrameKernel>() ??
+                                new GameObject("Kernel").AddComponent<uFrameKernel>();
             var services =SyncKernel(node, uFrameMVVMKernel.gameObject);
 
             services.gameObject.AddComponent<ViewService>();

@@ -64,7 +64,7 @@ namespace uFrame.MVVM
             var vm = CreateEmpty();
             vm.Disposer = this.DisposingViewModel;
             vm.Identifier = identifier;
-            uFrameMVVMKernel.Container.RegisterViewModel(vm, identifier);
+            uFrameKernel.Container.RegisterViewModel(vm, identifier);
             return vm;
         }
 

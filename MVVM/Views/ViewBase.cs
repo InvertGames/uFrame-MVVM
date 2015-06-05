@@ -261,7 +261,7 @@ namespace uFrame.MVVM
         protected virtual void OnDestroy()
         {
             if (IsBound) Unbind();
-            if (!uFrameMVVMKernel.IsKernelLoaded || CreateEventData == null) return;
+            if (!uFrameKernel.IsKernelLoaded || CreateEventData == null) return;
 
             this.Publish(new ViewDestroyedEvent()
             {

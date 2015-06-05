@@ -112,4 +112,17 @@ namespace uFrame.MVVM.Templates
             }
         }
     }
+
+    public partial class ViewComponentTemplate
+    {
+        [TemplateSetup]
+        public void Init()
+        {
+            //Ctx.CurrentDecleration // the current class or interface
+            Ctx.TryAddNamespace("MyNameSpace");
+        }
+
+        [ForEach("Commands"), GenerateProperty, WithLazyField]
+        public _ITEMTYPE_ _Name_Property { get; set; }
+    }
 }

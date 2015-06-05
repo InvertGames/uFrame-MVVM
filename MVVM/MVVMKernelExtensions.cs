@@ -49,7 +49,7 @@ namespace uFrame.MVVM
 
         public static ViewModel CreateViewModel(this ISystemService s, Type type, string identifier = null)
         {
-            var controller = uFrameMVVMKernel.Container.Resolve<Controller>(type.Name);
+            var controller = uFrameKernel.Container.Resolve<Controller>(type.Name);
             if (controller == null)
             {
                 throw new Exception(
@@ -66,7 +66,7 @@ namespace uFrame.MVVM
 
         public static ViewModel CreateViewModel(Type type, string identifier = null)
         {
-            var controller = uFrameMVVMKernel.Container.Resolve<Controller>(type.Name);
+            var controller = uFrameKernel.Container.Resolve<Controller>(type.Name);
             if (controller == null)
             {
                 throw new Exception(
@@ -78,7 +78,7 @@ namespace uFrame.MVVM
         public static TViewModel CreateViewModel<TViewModel>(this ISystemLoader loader, string identifier = null)
             where TViewModel : ViewModel
         {
-            var controller = uFrameMVVMKernel.Container.Resolve<Controller>(typeof (TViewModel).Name);
+            var controller = uFrameKernel.Container.Resolve<Controller>(typeof (TViewModel).Name);
             return (TViewModel) controller.Create(identifier ?? Guid.NewGuid().ToString());
         }
     }

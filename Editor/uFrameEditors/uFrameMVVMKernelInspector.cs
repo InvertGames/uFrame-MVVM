@@ -6,8 +6,8 @@ using uFrame.Kernel;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(uFrameMVVMKernel), true)]
-public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
+[CustomEditor(typeof(uFrameKernel), true)]
+public class UFrameMvvmKernelInspector : ManagerInspector<uFrameKernel>
 {
     private bool _RenderSettingsOpen;
 
@@ -35,15 +35,15 @@ public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
         if (Application.isPlaying)
         {
 
-            if (!uFrameMVVMKernel.IsKernelLoaded)
+            if (!uFrameKernel.IsKernelLoaded)
             {
                 Warning("Kernel is not loaded!");                
             }
-            if (uFrameMVVMKernel.Instance == null) return;
+            if (uFrameKernel.Instance == null) return;
 
             if (GUIHelpers.DoToolbarEx("Services"))
             {
-                foreach (var instance in uFrameMVVMKernel.Instance.Services)
+                foreach (var instance in uFrameKernel.Instance.Services)
                 {
                     if (GUIHelpers.DoTriggerButton(new UFStyle()
                     {
@@ -59,7 +59,7 @@ public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
             if (GUIHelpers.DoToolbarEx("Systems"))
             {
 
-                foreach (var instance in uFrameMVVMKernel.Instance.SystemLoaders)
+                foreach (var instance in uFrameKernel.Instance.SystemLoaders)
                 {
                     if (GUIHelpers.DoTriggerButton(new UFStyle()
                     {
@@ -99,7 +99,7 @@ public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
 
             if (GUIHelpers.DoToolbarEx("Dependency Container - Instances", defOn: false))
             {
-                foreach (var instance in uFrameMVVMKernel.Container.Instances)
+                foreach (var instance in uFrameKernel.Container.Instances)
                 {
                     if (GUIHelpers.DoTriggerButton(new UFStyle()
                     {
@@ -119,7 +119,7 @@ public class UFrameMvvmKernelInspector : ManagerInspector<uFrameMVVMKernel>
 
             if (GUIHelpers.DoToolbarEx("Dependency Container - Mappings",defOn:false))
             {
-                foreach (var instance in uFrameMVVMKernel.Container.Mappings)
+                foreach (var instance in uFrameKernel.Container.Mappings)
                 {
                     if (GUIHelpers.DoTriggerButton(new UFStyle()
                     {

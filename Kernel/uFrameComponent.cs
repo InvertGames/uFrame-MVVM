@@ -25,7 +25,7 @@ namespace uFrame.Kernel
 
         protected IEventAggregator EventAggregator
         {
-            get { return uFrameMVVMKernel.EventAggregator; }
+            get { return uFrameKernel.EventAggregator; }
         }
 
         /// <summary>Wait for an Event to occur on the global event aggregator.</summary>
@@ -49,7 +49,7 @@ namespace uFrame.Kernel
         protected virtual IEnumerator Start()
         {
             KernelLoading();
-            while (!uFrameMVVMKernel.IsKernelLoaded) yield return null;
+            while (!uFrameKernel.IsKernelLoaded) yield return null;
             KernelLoaded();
         }
 

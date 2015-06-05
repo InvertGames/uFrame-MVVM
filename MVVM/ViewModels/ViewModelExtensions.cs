@@ -22,8 +22,8 @@ namespace uFrame.MVVM
         {
             ISerializerStream stream = new JsonStream();
             stream.DeepSerialize = true;
-            stream.DependencyContainer = uFrameMVVMKernel.Container;
-            stream.TypeResolver = new ViewModelResolver() {Container = uFrameMVVMKernel.Container};
+            stream.DependencyContainer = uFrameKernel.Container;
+            stream.TypeResolver = new ViewModelResolver() {Container = uFrameKernel.Container};
             stream.Load(Encoding.UTF8.GetBytes(json));
             model.Read(stream);
         }
