@@ -146,6 +146,35 @@ namespace uFrame.Kernel
             this.Publish(new GameReadyEvent());
         }
 
+        public void OnDestroy()
+        {
+            _container = null;
+            IsKernelLoaded = false;
+            Services.Clear();
+            SystemLoaders.Clear();
+            EventAggregator = null;
+            Instance = null;
+        }
+
+        public void ResetKernel()
+        {
+            DestroyImmediate(Instance.gameObject);
+            _container = null;
+            IsKernelLoaded = false;
+            Services.Clear();
+            SystemLoaders.Clear();
+            EventAggregator = null;
+            Instance = null;
+        }
+  
+        public static void DestroyKernel(string levelToLoad = null)
+        {
+
+            Instance.ResetKernel();
+            if (levelToLoad != null)
+                Application.LoadLevel(levelToLoad);
+
+        }
     }
 
     public class SystemsLoadedEvent
