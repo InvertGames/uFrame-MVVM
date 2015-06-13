@@ -2,6 +2,7 @@ using System;
 using uFrame.IOC;
 using uFrame.Kernel;
 using uFrame.MVVM;
+using uFrame.MVVM.Bindings;
 
 namespace uFrame.MVVM
 {
@@ -80,6 +81,10 @@ namespace uFrame.MVVM
         {
             var controller = uFrameKernel.Container.Resolve<Controller>(typeof (TViewModel).Name);
             return (TViewModel) controller.Create(identifier ?? Guid.NewGuid().ToString());
+        }
+        public static IDisposable DisposeWith(this IDisposable disposable, ViewModel container)
+        {
+            return container.AddBinding(disposable);
         }
     }
 }

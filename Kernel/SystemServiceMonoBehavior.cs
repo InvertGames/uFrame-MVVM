@@ -8,8 +8,16 @@ namespace uFrame.Kernel
     /// of the EventAggregator.  You can use this.Publish(new AnyType()).  Or you can use this.OnEvent&lt;AnyType&gt;().Subscribe(anyTypeInstance=>{ });
     /// In services you can also inject any instances that are setup in any of the SystemLoaders.
     /// </summary>
-    public abstract class SystemServiceMonoBehavior : uFrameComponent, ISystemService
+    public abstract class SystemServiceMonoBehavior : uFrameComponent, ISystemService, IDisposableContainer
     {
+        private CompositeDisposable _disposer = new CompositeDisposable();
+
+        public CompositeDisposable Disposer
+        {
+            get { return _disposer; }
+            set { _disposer = value; }
+        }
+
         IEventAggregator ISystemService.EventAggregator
         {
             get { return EventAggregator; }
@@ -24,7 +32,10 @@ namespace uFrame.Kernel
         /// </summary>
         public virtual void Setup()
         {
-
+            if (Disposer.IsDisposed)
+            {
+                Disposer = new CompositeDisposable();
+            }
         }
 
         /// <summary>
@@ -37,5 +48,9 @@ namespace uFrame.Kernel
             yield break;
         }
 
+        public void OnDestroy()
+        {
+            Disposer.Dispose();
+        }
     }
 }

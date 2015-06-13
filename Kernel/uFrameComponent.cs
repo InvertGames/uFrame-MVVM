@@ -20,8 +20,22 @@ namespace uFrame.Kernel
     /// 	<para>      }</para>
     /// 	<para>}</para>
     /// </example>
-    public class uFrameComponent : MonoBehaviour
+    public class uFrameComponent : MonoBehaviour, IDisposableContainer
     {
+        private CompositeDisposable _disposer;
+
+        CompositeDisposable IDisposableContainer.Disposer
+        {
+            get { return _disposer ?? (_disposer = new CompositeDisposable()); }
+            set { _disposer = value; }
+        }
+        protected virtual void OnDestroy()
+        {
+            if (_disposer != null)
+            {
+                _disposer.Dispose();
+            }
+        }
 
         protected IEventAggregator EventAggregator
         {

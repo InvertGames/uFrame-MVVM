@@ -388,10 +388,10 @@ namespace uFrame.MVVM.Bindings
             return gameObject.OnDestroyObservable().First().Subscribe(p => disposable.Dispose());
         }
 
-        public static IDisposable DisposeWith(this IDisposable disposable, IBindable bindable)
-        {
-            return bindable.AddBinding(disposable);
-        }
+        //public static IDisposable DisposeWith(this IDisposable disposable, IBindable bindable)
+        //{
+        //    return bindable.AddBinding(disposable);
+        //}
 
         public static IDisposable DisposeWhenChanged<T>(this IDisposable disposable, P<T> sourceProperty,
             bool onlyWhenChanged = true)

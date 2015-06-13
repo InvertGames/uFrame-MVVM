@@ -4,7 +4,8 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-
+using uFrame.MVVM;
+using uFrame.Kernel;
 using UnityEngine.UI;
 
 namespace uFrame.MVVM.Bindings

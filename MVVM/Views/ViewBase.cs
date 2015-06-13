@@ -258,8 +258,9 @@ namespace uFrame.MVVM
         /// When this view is destroy it will decrememnt the ViewModel's reference count.  If the reference count reaches 0
         /// it will call "Unbind" on the viewmodel properly unbinding anything subscribed to it.
         /// </summary>
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             if (IsBound) Unbind();
             if (!uFrameKernel.IsKernelLoaded || CreateEventData == null) return;
 

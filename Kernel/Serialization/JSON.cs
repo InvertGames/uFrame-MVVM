@@ -47,7 +47,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-#if UNITY_DLL
+#if UNITY_DLL || DLL
 namespace Invert.Json {
 #else
 namespace uFrame.Serialization { 
