@@ -99,6 +99,7 @@ namespace Invert.StateMachine
 
         public void Transition(StateTransition transition)
         {
+            if (transition == null) return;
             if (transition.From == CurrentState)
             {
                 LastTransition = transition;

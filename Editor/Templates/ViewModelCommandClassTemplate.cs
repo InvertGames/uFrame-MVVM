@@ -24,7 +24,7 @@ namespace uFrame.MVVM.Templates
             this.Ctx.TryAddNamespace("uFrame.Kernel");
             this.Ctx.TryAddNamespace("uFrame.MVVM");
             this.Ctx.TryAddNamespace("uFrame.Serialization");
-            var type = InvertApplication.FindTypeByName(Ctx.Data.RelatedTypeName);
+            var type = InvertApplication.FindTypeByNameExternal(Ctx.Data.RelatedTypeName);
             if (type != null)
             {
                 Ctx.TryAddNamespace(type.Namespace);
@@ -35,8 +35,8 @@ namespace uFrame.MVVM.Templates
                 if (type != null)
                     Ctx.TryAddNamespace(type.Namespace);
             }
-            Ctx.CurrentDecleration.IsPartial = true;
-            Ctx.CurrentDecleration.Name = Ctx.Data.Name + "Command";
+            Ctx.CurrentDeclaration.IsPartial = true;
+            Ctx.CurrentDeclaration.Name = Ctx.Data.Name + "Command";
             Ctx.AddCondition("Argument", _ => !string.IsNullOrEmpty(_.RelatedType));
         }
 

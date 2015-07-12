@@ -15,7 +15,7 @@ namespace uFrame.MVVM.Templates
             this.Ctx.TryAddNamespace("uFrame.Serialization");
             if (Ctx.IsDesignerFile)
             {
-                Ctx.CurrentDecleration.BaseTypes.Clear();
+                Ctx.CurrentDeclaration.BaseTypes.Clear();
                 Ctx.SetBaseType("SceneSettings<{0}>", Ctx.Data.Name);
             }
         }

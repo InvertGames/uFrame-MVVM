@@ -300,7 +300,17 @@ namespace uFrame.MVVM.Bindings
                     if (view != null)
                     {
                         AddLookup(view.gameObject, item as ViewModel);
-                        view.transform.parent = targetTransform;
+                        
+                        var rectTransform = view.GetComponent<RectTransform>();
+                        if (rectTransform != null)
+                        {
+                            rectTransform.SetParent(targetTransform, false);
+                        }
+                        else
+                        {
+                            view.transform.SetParent(targetTransform);
+                        }
+                        
                         if (OnAddView != null)
                         {
                             OnAddView(view);

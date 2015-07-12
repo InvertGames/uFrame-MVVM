@@ -36,7 +36,7 @@ namespace uFrame.MVVM.Templates
             }
             foreach (var property in Ctx.Data.View.Element.PersistedItems.OfType<ITypedItem>())
             {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+                var type = InvertApplication.FindTypeByNameExternal(property.RelatedTypeName);
                 if (type == null) continue;
 
                 Ctx.TryAddNamespace(type.Namespace);
@@ -83,10 +83,11 @@ namespace uFrame.MVVM.Templates
         [ForEach("Commands"), GenerateMethod]
         public void Execute_Name_()
         {
-            Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0} }})", Ctx.Data.View.Element.Name, Ctx.Item.Name);
+            Ctx._("{0}.{1}.OnNext(new {1}Command() {{ Sender = {0} }})", 
+                Ctx.Data.View.Element.Name, Ctx.Item.Name);
         }
 
-        //[TemplateMethod("Execute{0}", TemplateLocation.DesignerFile, false, AutoFill = AutoFillType.NameOnly)]
+        
         [ForEach("CommandsWithArguments"), GenerateMethod(CallBase = false)]
         public void Execute_Name2_(object arg)
         {
@@ -113,16 +114,5 @@ namespace uFrame.MVVM.Templates
         }
     }
 
-    public partial class ViewComponentTemplate
-    {
-        [TemplateSetup]
-        public void Init()
-        {
-            //Ctx.CurrentDecleration // the current class or interface
-            Ctx.TryAddNamespace("MyNameSpace");
-        }
 
-        [ForEach("Commands"), GenerateProperty, WithLazyField]
-        public _ITEMTYPE_ _Name_Property { get; set; }
-    }
 }

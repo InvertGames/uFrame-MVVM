@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using UniRx;
+using UniRx.Triggers;
 
 namespace uFrame.MVVM.Bindings
 {
@@ -115,6 +116,7 @@ namespace uFrame.MVVM.Bindings
         /// <param name="t">The view that owns the binding</param>
         /// <param name="eventType">The collision event to bind to.</param>
         /// <returns>The collision binding class that allows chaining extra options.</returns>
+        [Obsolete("Use UniRx.Triggers.OnCollision[X]AsObservable")]
         public static IObservable<Collision> OnCollisionObservable(this GameObject t, CollisionEventType eventType)
         {
             if (eventType == CollisionEventType.Enter)

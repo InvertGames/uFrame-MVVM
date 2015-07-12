@@ -9,11 +9,11 @@ namespace uFrame.MVVM.Templates
 
 
     [TemplateClass(TemplateLocation.Both)]
-    public class SimpleClassTemplate : IClassTemplate<SimpleClassNode>
+    public partial class SimpleClassTemplate : IClassTemplate<SimpleClassNode>, IClassRefactorable
     {
         public string OutputPath
         {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "SimplesClasses"); }
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "SimpleClasses"); }
         }
 
         public bool CanGenerate
@@ -29,7 +29,7 @@ namespace uFrame.MVVM.Templates
             this.Ctx.TryAddNamespace("uFrame.Serialization");
             foreach (var property in Ctx.Data.ChildItems.OfType<ITypedItem>())
             {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+                var type = InvertApplication.FindTypeByNameExternal(property.RelatedTypeName);
                 if (type == null) continue;
 
                 Ctx.TryAddNamespace(type.Namespace);
@@ -48,5 +48,13 @@ namespace uFrame.MVVM.Templates
         public List<_ITEMTYPE_> _CollectionName_ { get; set; }
 
 
+        public IEnumerable<string> ClassNameFormats
+        {
+            get
+            {
+                yield return "{0}";
+                yield return "{0}Base";
+            }
+        }
     }
 }

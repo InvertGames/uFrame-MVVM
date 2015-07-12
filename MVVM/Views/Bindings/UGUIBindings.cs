@@ -476,8 +476,8 @@ namespace uFrame.MVVM.Bindings
             return Observable.Create<BaseEventData>(observer =>
             {
                 var entry = ComposeEntry(type, observer.OnNext);
-                trigger.delegates.Add(entry);
-                return Disposable.Create(() => trigger.delegates.Remove(entry));
+                trigger.triggers.Add(entry);
+                return Disposable.Create(() => trigger.triggers.Remove(entry));
             });
         }
 

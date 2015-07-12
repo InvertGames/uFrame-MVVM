@@ -300,7 +300,7 @@ public class ViewInspector : uFrameInspector
              "If viewmodel with given id does not exist, one will be automatically created and registered.");
         EditorGUILayout.PropertyField(resolutionNameProperty, new GUIContent("ViewModel Identifier"));
 
-        Info("Should this view be injected with Dependencies defined in the GameContainer.  e.g.GameManager.Resolve<MyViewModel>(ResolveName);");
+        Info("Should this view be injected with Dependencies registered inside of system loaders.");
         EditorGUILayout.PropertyField(injectProperty, new GUIContent("Inject This View"));
 
         Info("Should this view try to bind on start.");

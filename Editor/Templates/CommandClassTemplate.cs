@@ -27,13 +27,13 @@ namespace uFrame.MVVM.Templates
             this.Ctx.TryAddNamespace("uFrame.Serialization");
             foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
             {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+                var type = InvertApplication.FindTypeByNameExternal(property.RelatedTypeName);
                 if (type == null) continue;
 
                 Ctx.TryAddNamespace(type.Namespace);
             }
 
-            Ctx.CurrentDecleration.IsPartial = true;
+            Ctx.CurrentDeclaration.IsPartial = true;
         }
 
 

@@ -169,7 +169,14 @@ public class SceneInspector :Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        EditorGUILayout.HelpBox(string.Format("Leave the 'Kernel Scene' property blank to use the default '{0}'",Target.DefaultKernelScene), MessageType.Info);
+        if (!string.IsNullOrEmpty(Target.DefaultKernelScene))
+        {
+            EditorGUILayout.HelpBox(
+                string.Format("Leave the 'Kernel Scene' property blank to use the default '{0}'",
+                    Target.DefaultKernelScene), MessageType.Info);
+        }
+      
+        
     }
 
 

@@ -244,6 +244,10 @@ namespace uFrame.MVVM
         public override void KernelLoaded()
         {
             base.KernelLoaded();
+            if (this.InjectView)
+            {
+                uFrameKernel.Container.Inject(this);
+            }
             this.Publish(CreateEventData ?? (CreateEventData = new ViewCreatedEvent()
             {
                 IsInstantiated = false,
@@ -347,7 +351,6 @@ namespace uFrame.MVVM
         public void InitializeData(ViewModel model)
         {
             InitializeViewModel(model);
-
         }
 
 

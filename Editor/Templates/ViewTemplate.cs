@@ -64,7 +64,7 @@ namespace uFrame.MVVM.Templates
             uFrameBindingType.ICommandType = typeof (ISignal);
             foreach (var property in Ctx.Data.Element.PersistedItems.OfType<ITypedItem>())
             {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+                var type = InvertApplication.FindTypeByNameExternal(property.RelatedTypeName);
                 if (type == null) continue;
 
                 Ctx.TryAddNamespace(type.Namespace);
@@ -117,7 +117,7 @@ namespace uFrame.MVVM.Templates
                     // Create the binding signature based on the Method Info
 
                     bindingType.CreateBindingSignature(new CreateBindingSignatureParams(
-                        Ctx.CurrentDecleration, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data, source)
+                        Ctx.CurrentDeclaration, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data, source)
                     {
                         Ctx = Ctx,
                         BindingsReference = item,
@@ -135,7 +135,7 @@ namespace uFrame.MVVM.Templates
         public virtual void ResetProperty()
         {
             // Make sure the disposable is created
-            Ctx.CurrentDecleration._private_(typeof (System.IDisposable), "_{0}Disposable", Ctx.Item.Name);
+            Ctx.CurrentDeclaration._private_(typeof (System.IDisposable), "_{0}Disposable", Ctx.Item.Name);
             Ctx._if("_{0}Disposable != null", Ctx.Item.Name)
                 .TrueStatements
                 ._("_{0}Disposable.Dispose()", Ctx.Item.Name);
@@ -219,7 +219,7 @@ namespace uFrame.MVVM.Templates
                 if (property.RelatedTypeNode is StateMachineNode) continue;
                 // Make sure derived views don't duplicate in initialize vm
 
-                var field = Ctx.CurrentDecleration._public_(property.RelatedTypeName, property.Name.AsField());
+                var field = Ctx.CurrentDeclaration._public_(property.RelatedTypeName, property.Name.AsField());
                 field.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof (SerializeField))));
                 field.CustomAttributes.Add(
                     new CodeAttributeDeclaration(
@@ -271,7 +271,7 @@ namespace uFrame.MVVM.Templates
                 var source = item.SourceItem as ITypedItem;
                 // Create a boolean field for each property that has a binding this will serve the condition
                 // in the bind method to turn the binding on or off.
-                var bindingField = Ctx.CurrentDecleration._public_(typeof (bool), "_Bind{0}", source.Name);
+                var bindingField = Ctx.CurrentDeclaration._public_(typeof (bool), "_Bind{0}", source.Name);
                 // Bindings should always be on by default
                 bindingField.InitExpression = new CodePrimitiveExpression(true);
                 // Add a toggle group attribute to it, this hides and shows anything within the same group
@@ -288,7 +288,7 @@ namespace uFrame.MVVM.Templates
                 // Create the binding signature based on the Method Info
                 var bindingStatement =
                     bindingType.CreateBindingSignature(new CreateBindingSignatureParams(
-                        Ctx.CurrentDecleration, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data, source)
+                        Ctx.CurrentDeclaration, _ => source.RelatedTypeName.ToCodeReference(), Ctx.Data, source)
                     {
                         Ctx = Ctx
                     });
@@ -343,7 +343,7 @@ namespace uFrame.MVVM.Templates
             get
             {
 
-                var field = Ctx.CurrentDecleration._private_(Ctx.Item.Name, Ctx.Item.Name.AsField());
+                var field = Ctx.CurrentDeclaration._private_(Ctx.Item.Name, Ctx.Item.Name.AsField());
                 field.CustomAttributes.Add(new CodeAttributeDeclaration(typeof (SerializeField).ToCodeReference()));
                 Ctx.CurrentProperty.Type = field.Type;
                 Ctx._("return {0} ?? ({0} = this.gameObject.EnsureComponent<{1}>())", field.Name, Ctx.Item.Name);

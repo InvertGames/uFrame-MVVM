@@ -62,8 +62,9 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
         _.ShowTutorialStep(new TutorialStep(scene == null ? "Create the scene " + sceneName : string.Format("Create the scene for scene type '{0}'", scene.Name), () =>
         {
-            var paths = scene.Graph.CodePathStrategy;
-            var scenePath = System.IO.Path.Combine(paths.ScenesPath, scene.Name + ".unity");
+            var paths = scene.Graph.Project.SystemDirectory;
+            var scenesPath = System.IO.Path.Combine(paths, "Scenes");
+            var scenePath = System.IO.Path.Combine(scenesPath, scene.Name + ".unity");
             var exists = File.Exists(scenePath);
             return exists
                 ? null

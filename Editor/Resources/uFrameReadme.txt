@@ -5,13 +5,17 @@ Note for 1.5 Users: The 1.6 Version of uFrame, only falls short of a major relea
 	the idea of ECS and MVVM working together, and promises for the 1.x release. If you already have a lot of work done in 1.5 save 1.6 for your next game or application.  
 	While upgrading is possible if you are familiar enough with it, but it will require a significant effort.
 
-1.6 RC1 Notes
-- uFrame is now seperated into various namespaces, the uFrame.Kernel, and uFrame.MVVM are the main ones.  
-        - If you have resharper, just got to each file and click on import 'uFrame.MVVM' or any other required namespace. http://i.imgur.com/0EPGdbO.png
-		- You may also want to check your kernel and ensure that all is well.
-		- It will help with errors if you stick strictly the the unity console and not the visual studio error list, just go down the list of errors and fix the namespace issues.
-		- It will look like you have a lot of errors in the designer files, but a simple namespace will fix them
-- Depending on what beta version you are currently on you may need to fix some  collection bindings with {Name}OnAdd, and {Name}OnRemove
+Whats new in 1.6?
+	- A completely re-written kernel that gives a very easy and straightforward application life-cycle within Unity.
+	- Services and an Event Aggregator drastically increase the ease of communication and portability in code.
+	- uFrame is now seperated into various namespaces, the uFrame.Kernel, and uFrame.MVVM are the main ones.  
+	- 100's of bug fixes and performance issues
+	- New Navigation bar for easy contextual switching
+	- New Tabs bar easier working withing multiple graphs
+	- Brand new code templating engine, customize the output any way you like.
+	- Simplified and extensible binding system, create your own designer bindings.
+	- Support for all platforms including WinRT
+	- Tons more...
 
 
 Editor and Project:

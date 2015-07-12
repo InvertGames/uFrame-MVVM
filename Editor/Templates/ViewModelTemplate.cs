@@ -32,7 +32,7 @@ namespace uFrame.MVVM.Templates
         public void TemplateSetup()
         {
             // Ensure the namespaces for each property type are property set up
-            Ctx.CurrentDecleration.IsPartial = true;
+            Ctx.CurrentDeclaration.IsPartial = true;
             Ctx.TryAddNamespace("uFrame.IOC");
             Ctx.TryAddNamespace("uFrame.Kernel");
             Ctx.TryAddNamespace("uFrame.MVVM");
@@ -45,7 +45,7 @@ namespace uFrame.MVVM.Templates
 
             foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
             {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
+                var type = InvertApplication.FindTypeByNameExternal(property.RelatedTypeName);
                 if (type == null) continue;
 
                 Ctx.TryAddNamespace(type.Namespace);
@@ -57,7 +57,7 @@ namespace uFrame.MVVM.Templates
             {
                 foreach (var item in Ctx.Data.ComputedProperties)
                 {
-                    Ctx.CurrentDecleration._private_(typeof (IDisposable), "_{0}Disposable", item.Name);
+                    Ctx.CurrentDeclaration._private_(typeof (IDisposable), "_{0}Disposable", item.Name);
                 }
             }
 

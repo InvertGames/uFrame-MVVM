@@ -12,6 +12,13 @@ using uFrame.Graphs;
 namespace uFrame.MVVM.Templates
 {
     [TemplateClass(TemplateLocation.Both, ClassNameFormat = uFrameFormats.CONTROLLER_FORMAT)]
+    [RequiresNamespace("uFrame.IOC")]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("uFrame.MVVM")]
+    [RequiresNamespace("uFrame.Serialization")]
+    [RequiresNamespace("UniRx")]
+    [NamespacesFromItems()]
+    [AsAbstract]
     public partial class ControllerTemplate : Controller, IClassTemplate<ElementNode>, IClassRefactorable, IMethodRefactorable
     {
         public TemplateContext<ElementNode> Ctx { get; set; }
@@ -28,23 +35,8 @@ namespace uFrame.MVVM.Templates
 
         public void TemplateSetup()
         {
-            Ctx.TryAddNamespace("uFrame.IOC");
-            Ctx.TryAddNamespace("uFrame.Kernel");
-            Ctx.TryAddNamespace("uFrame.MVVM");
-            Ctx.TryAddNamespace("uFrame.Serialization");
-            Ctx.TryAddNamespace("UniRx");
-            foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
-            {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
-                if (type == null) continue;
-
-                Ctx.TryAddNamespace(type.Namespace);
-            }
-
-            if (Ctx.IsDesignerFile)
-            {
-                Ctx.CurrentDecleration.Attributes = MemberAttributes.Abstract;
-            }
+        
+   
         }
         public IEnumerable<ITypedItem> CommandsWithoutArgs
         {

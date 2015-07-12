@@ -14,20 +14,28 @@ using UnityEngine.EventSystems;
 namespace uFrame.MVVM.Templates
 {
     [TemplateClass(TemplateLocation.Both)]
-    public class ServiceTemplate : IClassTemplate<ServiceNode>, IClassRefactorable
+    [RequiresNamespace("UnityEngine")]
+    [RequiresNamespace("UniRx")]
+    [RequiresNamespace("uFrame.IOC")]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("uFrame.IOC")]
+    [RequiresNamespace("uFrame.MVVM")]
+    [NamespacesFromItems]
+    [ForceBaseType(typeof(SystemServiceMonoBehavior))]
+    public partial class ServiceTemplate : IClassTemplate<ServiceNode>, IClassRefactorable
     {
 
-        [GenerateMethod(TemplateLocation.Both, true)]
+        [GenerateMethod(TemplateLocation.Both, true), AsOverride]
         public void Setup()
         {
+            Ctx.CurrentMethod.invoke_base();
             Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("<summary>", true));
             Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("This method is invoked whenever the kernel is loading.", true));
             Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("Since the kernel lives throughout the entire lifecycle of the game, this will only be invoked once.", true));
             Ctx.CurrentMethod.Comments.Add(new CodeCommentStatement("</summary>", true));
-            Ctx.TryAddNamespace("UniRx"); Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
+            //Ctx.CurrentMethod.Attributes |= MemberAttributes.Override;
             if (Ctx.IsDesignerFile)
             {
-
                 foreach (var command in Ctx.Data.Handlers.Select(p => p.SourceItemObject).OfType<IClassTypeNode>())
                 {
                     Ctx._("this.OnEvent<{0}>().Subscribe(this.{1}Handler)", command.ClassName, command.Name);
@@ -54,28 +62,6 @@ namespace uFrame.MVVM.Templates
 
         public void TemplateSetup()
         {
-            this.Ctx.TryAddNamespace("uFrame.IOC");
-            this.Ctx.TryAddNamespace("uFrame.Kernel");
-            this.Ctx.TryAddNamespace("uFrame.MVVM");
-            Ctx.TryAddNamespace("UnityEngine");
-            Ctx.TryAddNamespace("UniRx");
-
-            if (Ctx.IsDesignerFile)
-            {
-                Ctx.SetBaseType(typeof(SystemServiceMonoBehavior));
-            }
-
-            foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
-            {
-                var type = InvertApplication.FindTypeByName(property.RelatedTypeName);
-                if (type == null) continue;
-
-                Ctx.TryAddNamespace(type.Namespace);
-            }
-
-            Ctx.AddIterator("OnCommandMethod",
-                _ => _.Handlers.Select(p => p.SourceItemObject));
-
 
         }
 

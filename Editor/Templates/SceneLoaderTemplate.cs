@@ -25,8 +25,8 @@ namespace uFrame.MVVM.Templates
             if (Ctx.IsDesignerFile)
             {
                 //Ctx.SetBaseType("SceneLoader<{0}>",Ctx.Data.Name)
-                Ctx.CurrentDecleration.BaseTypes.Clear();
-                Ctx.CurrentDecleration.BaseTypes.Add(string.Format("SceneLoader<{0}>", Ctx.Data.Name));
+                Ctx.CurrentDeclaration.BaseTypes.Clear();
+                Ctx.CurrentDeclaration.BaseTypes.Add(string.Format("SceneLoader<{0}>", Ctx.Data.Name));
             }
             else
             {

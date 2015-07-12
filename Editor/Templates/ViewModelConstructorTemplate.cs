@@ -32,9 +32,9 @@ namespace uFrame.MVVM.Templates
             this.Ctx.TryAddNamespace("uFrame.MVVM");
             this.Ctx.TryAddNamespace("uFrame.Serialization");
             // Ensure the namespaces for each property type are property set up
-            Ctx.CurrentDecleration.BaseTypes.Clear();
-            Ctx.CurrentDecleration.IsPartial = true;
-            Ctx.CurrentDecleration.Name = string.Format(uFrameFormats.VIEW_MODEL_FORMAT, Ctx.Data.Name);
+            Ctx.CurrentDeclaration.BaseTypes.Clear();
+            Ctx.CurrentDeclaration.IsPartial = true;
+            Ctx.CurrentDeclaration.Name = string.Format(uFrameFormats.VIEW_MODEL_FORMAT, Ctx.Data.Name);
         }
 
     }

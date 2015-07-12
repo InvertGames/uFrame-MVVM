@@ -29,27 +29,30 @@ public class CreateSceneCommand : EditorCommand<SceneTypeNode>, IDiagramNodeComm
     {
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
-        var paths = node.Graph.CodePathStrategy;
+        var paths = node.Project.SystemDirectory;
+        var scenesPath = System.IO.Path.Combine(paths, "Scenes");
+        var relativeScenesPath = System.IO.Path.Combine(node.Graph.AssetDirectory, "Scenes");
 
-        if (!Directory.Exists(paths.ScenesPath))
+        if (!Directory.Exists(scenesPath))
         {
-            Directory.CreateDirectory(paths.ScenesPath);
+            Directory.CreateDirectory(scenesPath);
         }
         EditorApplication.NewScene();
         var go = new GameObject(string.Format("_{0}Root", node.Name));
         var type = InvertApplication.FindType(node.FullName);
         if (type != null) go.AddComponent(type);
         EditorUtility.SetDirty(go);
-        var scenePath = System.IO.Path.Combine(paths.ScenesPath, node.Name + ".unity");
+        var scenePath = System.IO.Path.Combine(scenesPath, node.Name + ".unity");
+        var relativeScenePath = System.IO.Path.Combine(relativeScenesPath, node.Name + ".unity");
         if (!File.Exists(scenePath))
         {
-            EditorApplication.SaveScene(System.IO.Path.Combine(paths.ScenesPath, node.Name + ".unity"));
+            EditorApplication.SaveScene(System.IO.Path.Combine(relativeScenesPath, node.Name + ".unity"), false);
             AssetDatabase.Refresh();
-
         }
         else
         {
             EditorApplication.SaveScene();
+            AssetDatabase.Refresh();
         }
         if (!UnityEditor.EditorBuildSettings.scenes.Any(s =>
         {
@@ -57,7 +60,7 @@ public class CreateSceneCommand : EditorCommand<SceneTypeNode>, IDiagramNodeComm
         }))
         {
             var list = EditorBuildSettings.scenes.ToList();
-            list.Add(new EditorBuildSettingsScene(scenePath,true));
+            list.Add(new EditorBuildSettingsScene(relativeScenePath, true));
             EditorBuildSettings.scenes = list.ToArray();
         }
 
@@ -91,16 +94,20 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
         if (!EditorUtility.DisplayDialog("Warning!", "Before scaffolding the core, make sure you saved and compiled!",
             "Yes, I saved and compiled!", "Cancel")) return;
 
-        var paths = node.GraphData.CodePathStrategy;
+        var paths = node.GraphData.Project.SystemDirectory;
+        var scenesPath = System.IO.Path.Combine(paths, "Scenes");
 
         var sceneName = node.GraphData.Project.Name + "KernelScene.unity";
-        var sceneNameWithPath = System.IO.Path.Combine(paths.ScenesPath, sceneName);
+        var sceneNameWithPath = System.IO.Path.Combine(scenesPath, sceneName);
 
         var prefabName = node.GraphData.Project.Name + "Kernel.prefab";
         var project = node.GraphData.Project as Object;
         var path = AssetDatabase.GetAssetPath(project);
 
-        var prefabNameWithPath =  path.Replace(project.name + ".asset", prefabName);
+        var prefabNameWithPath = path.Replace(project.name + ".asset", prefabName);
+
+        var relativeScenesPath = System.IO.Path.Combine(node.GraphData.AssetDirectory, "Scenes");
+        var relativeScenePath = System.IO.Path.Combine(relativeScenesPath, sceneName);
 
 
         uFrameKernel uFrameMVVMKernel = null;
@@ -114,23 +121,23 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
 
         }
         else
-        {        
+        {
             EditorApplication.NewEmptyScene();
-            if (!Directory.Exists(paths.ScenesPath))
+            if (!Directory.Exists(scenesPath))
             {
-                Directory.CreateDirectory(paths.ScenesPath);
+                Directory.CreateDirectory(scenesPath);
             }
             uFrameMVVMKernel = FindComponentInScene<uFrameKernel>() ??
                                 new GameObject("Kernel").AddComponent<uFrameKernel>();
-            var services =SyncKernel(node, uFrameMVVMKernel.gameObject);
+            var services = SyncKernel(node, uFrameMVVMKernel.gameObject);
 
             services.gameObject.AddComponent<ViewService>();
             services.gameObject.AddComponent<SceneManagementService>();
-            
-        //    var pref ab : Object = PrefabUtility.CreateEmptyPrefab(localPath);
-        //PrefabUtility.ReplacePrefab(obj, prefab, ReplacePrefabOptions.ConnectToPrefab);
+
+            //    var pref ab : Object = PrefabUtility.CreateEmptyPrefab(localPath);
+            //PrefabUtility.ReplacePrefab(obj, prefab, ReplacePrefabOptions.ConnectToPrefab);
             PrefabUtility.CreatePrefab(prefabNameWithPath, uFrameMVVMKernel.gameObject, ReplacePrefabOptions.ConnectToPrefab);
-            EditorApplication.SaveScene(sceneNameWithPath);
+            EditorApplication.SaveScene(relativeScenePath);
         }
         if (!UnityEditor.EditorBuildSettings.scenes.Any(s =>
         {
@@ -138,7 +145,7 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
         }))
         {
             var list = EditorBuildSettings.scenes.ToList();
-            list.Add(new EditorBuildSettingsScene(sceneNameWithPath, true));
+            list.Add(new EditorBuildSettingsScene(relativeScenePath, true));
             EditorBuildSettings.scenes = list.ToArray();
         }
         AssetDatabase.Refresh();

@@ -14,14 +14,15 @@ MonoBehaviour:
   _settingsKeys: []
   _settingsValues: 
   _diagrams:
-  - {fileID: 11400000, guid: 9b99d76b166e6624396bcea5a92e1bb6, type: 2}
-  - {fileID: 11400000, guid: 00ff4f68c9cfe334dbfd68bd08abaf79, type: 2}
-  - {fileID: 11400000, guid: 9b4aa3018ad9a1b46ab8a5508d3723bf, type: 2}
-  _projectNamespace: uFrame.DefaultProject
+  - {fileID: 11400000, guid: 3b65d7152e955d84c901b8f8f8d68182, type: 2}
+  - {fileID: 11400000, guid: 029e07149218a22488a57ba283167f35, type: 2}
+  - {fileID: 11400000, guid: df9b607ad8abc6f488fde8ecafe69999, type: 2}
+  - {fileID: 11400000, guid: b3f261330461dc7418fceda237f15838, type: 2}
+  _projectNamespace: 
   _currentTabs:
-  - _graphIdentifier: a0009eb1-7b60-4ef2-80cb-0bf2f4f2bd63
-    _graphName: GameSystem
+  - _graphIdentifier: d3b40f2b-0e79-4005-9f03-7cd4188068d1
+    _graphName: MainDiagram
     _path: []
-  - _graphIdentifier: 0999f5c3-e70f-4e6b-bb6e-75bb39f8b16d
-    _graphName: uFrameStarter
+  - _graphIdentifier: ab48957a-d215-4dac-94a2-4599718fb01d
+    _graphName: MainMenuSystem
     _path: []

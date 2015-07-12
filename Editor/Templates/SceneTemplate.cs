@@ -27,7 +27,7 @@ namespace uFrame.MVVM.Templates
         {
             if (Ctx.IsDesignerFile)
             {
-                Ctx.CurrentDecleration.BaseTypes.Add(typeof (MonoBehaviour).ToCodeReference());
+                Ctx.CurrentDeclaration.BaseTypes.Add(typeof (MonoBehaviour).ToCodeReference());
                 Ctx.SetBaseType(typeof (Scene));
             }
         }
@@ -63,7 +63,7 @@ namespace uFrame.MVVM.Templates
             get
             {
                 yield return "{0}";
-                yield return "{1}Base";
+                yield return "{0}Base";
             }
         }
     }

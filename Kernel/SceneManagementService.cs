@@ -24,7 +24,7 @@ namespace uFrame.Kernel
 
         private List<IScene> _loadedScenes;
 
-        [SerializeField] private string[] _startupScenes = new string[] {};
+  
 
         public override void Setup()
         {
@@ -63,11 +63,6 @@ namespace uFrame.Kernel
             get { return _sceneLoaders ?? (_sceneLoaders = new List<ISceneLoader>()); }
         }
 
-        public string[] StartupScenes
-        {
-            get { return _startupScenes; }
-            set { _startupScenes = value; }
-        }
 
         private DefaultSceneLoader _defaultSceneLoader;
 

@@ -96,7 +96,7 @@ namespace uFrame.MVVM.Services
             if (view.ViewModelObject == null && view.BindOnStart)
             {
                 var viewModel = FetchViewModel(viewCreatedEvent.View);
-                view.ViewModelObject = viewModel;
+                
             }
             Views.Add(view);
         }
@@ -126,10 +126,7 @@ namespace uFrame.MVVM.Services
             {
                 return viewBase.ViewModelObject;
             }
-            if (viewBase.InjectView)
-            {
-                uFrameKernel.Container.Inject(viewBase);
-            }
+            
             // Attempt to resolve it by the identifier 
             //var contextViewModel = uFrameMVVMKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
             // It now only registers under the viewmodeltype to allow multip different view-models with the same identifier
@@ -163,7 +160,9 @@ namespace uFrame.MVVM.Services
                 {
                     viewBase.InitializeData(contextViewModel);
                 }
+                return viewBase.ViewModelObject = contextViewModel;
             }
+          
             return contextViewModel;
         }
 
