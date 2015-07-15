@@ -26,3 +26,9 @@ MonoBehaviour:
   - _graphIdentifier: ab48957a-d215-4dac-94a2-4599718fb01d
     _graphName: MainMenuSystem
     _path: []
+  - _graphIdentifier: bc52ad2c-7fc3-4a0c-96d4-6a0bc46b553a
+    _graphName: UserManagementSystem
+    _path: []
+  - _graphIdentifier: 81f90e87-91e4-4eb6-962c-43e60016a054
+    _graphName: LevelSystem
+    _path: []

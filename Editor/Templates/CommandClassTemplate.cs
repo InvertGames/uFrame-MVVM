@@ -6,6 +6,7 @@ using Invert.Core.GraphDesigner;
 namespace uFrame.MVVM.Templates
 {
     [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "{0}Command")]
+    [RequiresNamespace("UnityEngine")]
     public partial class CommandClassTemplate : CommandClassTemplateBase, IClassRefactorable
     {
         public IEnumerable<string> ClassNameFormats

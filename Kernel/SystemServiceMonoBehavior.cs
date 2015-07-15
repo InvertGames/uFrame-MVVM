@@ -48,7 +48,7 @@ namespace uFrame.Kernel
             yield break;
         }
 
-        public void OnDestroy()
+        protected override void OnDestroy()
         {
             Disposer.Dispose();
         }
