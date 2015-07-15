@@ -46,7 +46,8 @@ public class LevelSelectScreenView : LevelSelectScreenViewBase
         if (item != null) return;
 
         /* Instantiate new LevelListItem */
-        item = Instantiate(LevelListItemPrefab).transform;
+        var go = Instantiate(LevelListItemPrefab) as GameObject;
+        item = go.transform;
 
         /* Parent created LevelListItem to the container */
         item.SetParent(LevelListContainer);

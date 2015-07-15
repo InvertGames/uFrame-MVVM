@@ -5,6 +5,10 @@ Note for 1.5 Users: The 1.6 Version of uFrame, only falls short of a major relea
 	the idea of ECS and MVVM working together, and promises for the 1.x release. If you already have a lot of work done in 1.5 save 1.6 for your next game or application.  
 	While upgrading is possible if you are familiar enough with it, but it will require a significant effort.
 
+1.6p1
+Fixed: reference to "Mono.CompilerServices.SymbolWriter" is added to designer files
+
+
 Whats new in 1.6?
 	- A completely re-written kernel that gives a very easy and straightforward application life-cycle within Unity.
 	- Services and an Event Aggregator drastically increase the ease of communication and portability in code.

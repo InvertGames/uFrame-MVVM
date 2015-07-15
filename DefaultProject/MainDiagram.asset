@@ -48,7 +48,7 @@ MonoBehaviour:
     Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"},
     "IsNewNode":"false"}, {"_CLRType":"Invert.uFrame.MVVM.ServiceNode, Assembly-CSharp-Editor,
     Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", "Name":"SceneFlowService",
-    "IsCollapsed":"true", "Identifier":"699f061d-0823-43b5-87ea-5d7e958ff2af", "Items":[
+    "IsCollapsed":"false", "Identifier":"699f061d-0823-43b5-87ea-5d7e958ff2af", "Items":[
     {"_CLRType":"Invert.uFrame.MVVM.HandlersReference, Assembly-CSharp-Editor, Version=0.0.0.0,
     Culture=neutral, PublicKeyToken=null", "Name":"", "Identifier":"2bf8a56e-f4d6-4ea1-9ed5-15518e73b3e2",
     "Precompiled":"false", "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
@@ -131,13 +131,14 @@ MonoBehaviour:
     "295f729b-4f99-4c9f-b17c-2106b57ed82e":{"295f729b-4f99-4c9f-b17c-2106b57ed82e":{"x":"710",
     "y":"330"}, "64753b42-51c2-44f1-8ab1-9f299a415ba5":{"x":"450", "y":"330"}}, "1b9314fb-0490-453d-be7a-17579bee486c":{}},
     "FilterState":{"_CLRType":"FilterState, Invert.Core.GraphDesigner, Version=1.1.0.0,
-    Culture=neutral, PublicKeyToken=null", "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings,
-    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
-    "CodeGenDisabled":"false", "SnapSize":"10", "Snap":"true", "CodePathStrategyName":"Default",
-    "GridLinesColor":{"r":"0.271", "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169",
-    "g":"0.169", "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1",
-    "b":"1", "a":"1"}, "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"},
-    "InheritanceLinkColor":{"r":"0", "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5",
-    "g":"0.5", "b":"0.5", "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
-    "a":"1"}, "TransitionLinkColor":{"r":"1", "g":"0.9215686", "b":"0.01568628", "a":"1"},
-    "ViewLinkColor":{"r":"0", "g":"0", "b":"1", "a":"1"}, "RootNamespace":""}, "Changes":[  ]}'
+    Culture=neutral, PublicKeyToken=null", "FilterStack":[ "699f061d-0823-43b5-87ea-5d7e958ff2af"
+    ]}, "Settings":{"_CLRType":"ElementDiagramSettings, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "CodeGenDisabled":"false",
+    "SnapSize":"10", "Snap":"true", "CodePathStrategyName":"Default", "GridLinesColor":{"r":"0.271",
+    "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169", "g":"0.169",
+    "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1", "b":"1", "a":"1"},
+    "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"}, "InheritanceLinkColor":{"r":"0",
+    "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5", "a":"1"}, "TransitionLinkColor":{"r":"1",
+    "g":"0.9215686", "b":"0.01568628", "a":"1"}, "ViewLinkColor":{"r":"0", "g":"0",
+    "b":"1", "a":"1"}, "RootNamespace":""}, "Changes":[  ]}'

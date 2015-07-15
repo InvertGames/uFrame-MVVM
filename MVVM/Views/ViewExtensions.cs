@@ -207,7 +207,7 @@ namespace uFrame.MVVM
             Quaternion rotation,
             string identifier = null)
         {
-            var parentScene = parent.GetComponent<IScene>();
+            var parentScene = parent.GetComponent<Scene>();
             var command = new InstantiateViewCommand()
             {
                 Identifier = identifier,

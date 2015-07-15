@@ -451,11 +451,11 @@ public class GameManager : MonoBehaviour
 #else
         for (var i = 0; i < sceneManager.transform.childCount; i++)
         {
-            var service = sceneManager.transform.GetChild(i).GetComponent<ISystemService>();
-            if (service != null)
-            {
-                Container.RegisterInstance<ISystemService>(service, service.GetType().Name);
-            }
+            //var service = sceneManager.transform.GetChild(i).GetComponent<ISystemService>();
+            //if (service != null)
+            //{
+            //    Container.RegisterInstance<ISystemService>(service, service.GetType().Name);
+            //}
         }
 #endif
         sceneManager.Setup();

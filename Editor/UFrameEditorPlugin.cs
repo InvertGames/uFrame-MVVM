@@ -26,6 +26,7 @@ public class UFrameEditorPlugin : DiagramPlugin
     static UFrameEditorPlugin()
     {
         InvertApplication.CachedAssemblies.Add(typeof(ViewModel).Assembly);
+        InvertApplication.TypeAssemblies.Add(typeof(ViewModel).Assembly);
         InvertApplication.CachedAssemblies.Add(typeof(UFrameEditorPlugin).Assembly);
     }
 

@@ -122,7 +122,11 @@ public class ScaffoldOrUpdateKernelCommand : ToolbarCommand<DiagramViewModel>
         }
         else
         {
+#if UNITY_5
             EditorApplication.NewEmptyScene();
+#else
+            EditorApplication.NewScene();
+#endif
             if (!Directory.Exists(scenesPath))
             {
                 Directory.CreateDirectory(scenesPath);

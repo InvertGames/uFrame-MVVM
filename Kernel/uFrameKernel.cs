@@ -111,7 +111,7 @@ namespace uFrame.Kernel
 
             var attachedServices = gameObject.GetComponentsInChildren(typeof (SystemServiceMonoBehavior))
                 .OfType<SystemServiceMonoBehavior>()
-                .Where(_ => _.isActiveAndEnabled)
+                .Where(_ => _.enabled)
                 .ToArray();
 
             foreach (var service in attachedServices)
