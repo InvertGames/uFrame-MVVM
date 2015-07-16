@@ -38,7 +38,7 @@ namespace Invert.uFrame.MVVM {
 
 
 
-            _.AlsoSeePages(typeof(UsingStateMachines));
+//            _.AlsoSeePages(typeof(UsingStateMachines));
         }
     }
 }
