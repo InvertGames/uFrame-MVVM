@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.Reflection;
+using uFrame.Attributes;
 using uFrame.IOC;
 using UniRx;
 
@@ -184,6 +185,7 @@ namespace uFrame.Kernel
     /// <summary>
     /// 
     /// </summary>
+    [uFrameEvent("Kernel Loaded")]
     public class KernelLoadedEvent
     {
         public uFrameKernel Kernel;
@@ -191,6 +193,7 @@ namespace uFrame.Kernel
     /// <summary>
     /// 
     /// </summary>
+    [uFrameEvent("Game Ready")]
     public class GameReadyEvent
     {
 
@@ -198,6 +201,7 @@ namespace uFrame.Kernel
     /// <summary>
     /// 
     /// </summary>
+    
     public class LoadSceneCommand
     {
 
@@ -205,14 +209,13 @@ namespace uFrame.Kernel
         public ISceneSettings Settings { get; set; }
 
     }
-    /// <summary>
-    /// 
-    /// </summary>
+
+    
     public class UnloadSceneCommand
     {
         public string SceneName { get; set; }
     }
-
+    
     public class SystemLoaderEvent
     {
         public SystemState State { get; set; }

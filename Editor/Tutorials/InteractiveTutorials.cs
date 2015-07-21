@@ -5,7 +5,7 @@ public class InteractiveTutorials : uFrameMVVMPage
 {
     public override string Name
     {
-        get { return "Interactive Tutorials"; }
+        get { return "Interactive Tutorials (Experimental)"; }
     }
     
     public override decimal Order
