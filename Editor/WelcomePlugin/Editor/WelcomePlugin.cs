@@ -333,7 +333,7 @@ public class WelcomeWindowToolbarDrawer : Area<WelcomeWindowViewModel>
         {
             if (_buttonStyle == null)
             {
-                var textColor = EditorGUIUtility.isProSkin ? new Color(0.776f, 0.851f, 0.941f) : Color.black;
+                var textColor = new Color(0.776f, 0.851f, 0.941f);
                 _buttonStyle = new GUIStyle
                 {
                     normal =
