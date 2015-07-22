@@ -359,11 +359,8 @@ public class WelcomeWindowToolbarDrawer : Area<WelcomeWindowViewModel>
                     fixedHeight = 50,
                     fixedWidth = 160,
                     alignment = TextAnchor.MiddleCenter,
-                    fontSize = 18,
                     border = new RectOffset(10,10,10,10),
-                    font = Font.CreateDynamicFontFromOSFont("Impact",18)
-                   
-                };
+                }.WithFont("Impact",18);
             }
             return _buttonStyle;
         }
