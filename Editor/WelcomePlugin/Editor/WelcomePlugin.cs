@@ -360,6 +360,7 @@ public class WelcomeWindowToolbarDrawer : Area<WelcomeWindowViewModel>
                     fixedWidth = 160,
                     alignment = TextAnchor.MiddleCenter,
                     fontSize = 18,
+                    border = new RectOffset(10,10,10,10),
                     font = Font.CreateDynamicFontFromOSFont("Impact",18)
                    
                 };
