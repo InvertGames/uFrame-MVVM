@@ -77,7 +77,7 @@ public class uFrameOfMind : uFrameMVVMPage<MVVMPage>
 
     public override string Name
     {
-        get { return base.Name; }
+        get { return "uFrame Of Mind"; }
     }
 
     public override void GetContent(IDocumentationBuilder _)

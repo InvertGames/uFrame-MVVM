@@ -4,6 +4,12 @@ Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, noti
 Note for 1.5 Users: The 1.6 Version of uFrame, only falls short of a major release due to it being mostly bug fixes and changes that will support 
 	the idea of ECS and MVVM working together, and promises for the 1.x release. If you already have a lot of work done in 1.5 save 1.6 for your next game or application.  
 	While upgrading is possible if you are familiar enough with it, but it will require a significant effort.
+1.61
+Added: New Welcome Screen
+- Cleaned up Documentation look and feel
+- Documentation changes/fixes/updates are coming in the next version
+- Default project is now known as ExampleProject and installed on demand rather than existing on installation
+- Other small enhancements
 
 1.6p1
 Fixed: reference to "Mono.CompilerServices.SymbolWriter" is added to designer files
