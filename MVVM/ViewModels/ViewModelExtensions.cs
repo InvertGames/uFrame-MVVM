@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using System.Xml.Serialization;
 using Invert.StateMachine;
 using uFrame.IOC;
 using uFrame.Kernel;
@@ -30,7 +31,7 @@ namespace uFrame.MVVM
             model.Read(stream);
         }
 
-        public static T Clone<T>(this T viewModel) where T : ViewModel
+        public static T Clone<T>(this T viewModel, bool includeCollections = true) where T : ViewModel
         {
             T clone = MVVMKernelExtensions.CreateViewModel<T>();
 
@@ -39,15 +40,15 @@ namespace uFrame.MVVM
                 var sourceP = prop.Property;
                 var cloneP = clone[sourceP.PropertyName].Property;
 
-                if (!prop.IsCollectionProperty)
+                if (!prop.IsCollectionProperty && !prop.IsComputed && !(prop.Property is StateMachine)) //regular property
                 {
                     cloneP.ObjectValue = sourceP.ObjectValue;
                 }
-                else if (!prop.IsComputed || prop.Property is StateMachine)
+                else if (prop.IsComputed || prop.Property is StateMachine) //computed stuff
                 {
                     //Those will be assigned automatically
                 }
-                else
+                else if (prop.IsCollectionProperty && includeCollections) //collections
                 {
                     var sourceList = sourceP as IList;
                     var cloneList = cloneP as IList;
@@ -56,7 +57,6 @@ namespace uFrame.MVVM
                     {
                         cloneList.Add(sourceList[i]);
                     }
-
                 }
             }
 
