@@ -207,7 +207,7 @@ namespace uFrame.Kernel
 
         public string SceneName { get; set; }
         public ISceneSettings Settings { get; set; }
-
+        public bool RestrictToSingleScene { get; set; }
     }
 
     

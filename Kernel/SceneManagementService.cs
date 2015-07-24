@@ -34,7 +34,7 @@ namespace uFrame.Kernel
             this.OnEvent<LoadSceneCommand>().Subscribe(_ =>
             {
 
-                this.LoadScene(_.SceneName, _.Settings);
+                this.LoadScene(_.SceneName, _.Settings, _.RestrictToSingleScene);
             });
 
             this.OnEvent<UnloadSceneCommand>().Subscribe(_ =>
@@ -225,8 +225,9 @@ namespace uFrame.Kernel
             }
         }
 
-        public void LoadScene(string name, ISceneSettings settings)
+        public void LoadScene(string name, ISceneSettings settings, bool restrictToSingleScene)
         {
+            if (restrictToSingleScene && LoadedScenes.Any(_ => _.Name == name)) return;
             this.QueueSceneLoad(name, settings);
             this.ExecuteLoad();
         }
