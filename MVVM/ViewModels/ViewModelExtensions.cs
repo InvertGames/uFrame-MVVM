@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Text;
+using Invert.StateMachine;
 using uFrame.IOC;
 using uFrame.Kernel;
 using uFrame.Serialization;
@@ -27,6 +29,43 @@ namespace uFrame.MVVM
             stream.Load(Encoding.UTF8.GetBytes(json));
             model.Read(stream);
         }
+
+        public static T Clone<T>(this T viewModel) where T : ViewModel
+        {
+            T clone = MVVMKernelExtensions.CreateViewModel<T>();
+
+            foreach (var prop in viewModel.Properties)
+            {
+                var sourceP = prop.Property;
+                var cloneP = clone[sourceP.PropertyName].Property;
+
+                if (!prop.IsCollectionProperty)
+                {
+                    cloneP.ObjectValue = sourceP.ObjectValue;
+                }
+                else if (!prop.IsComputed || prop.Property is StateMachine)
+                {
+                    //Those will be assigned automatically
+                }
+                else
+                {
+                    var sourceList = sourceP as IList;
+                    var cloneList = cloneP as IList;
+
+                    for (int i = 0; i < sourceList.Count; i++)
+                    {
+                        cloneList.Add(sourceList[i]);
+                    }
+
+                }
+            }
+
+      
+
+
+            return clone;
+        }
+
     }
 
     public class ViewModelResolver : ITypeResolver
@@ -37,7 +76,7 @@ namespace uFrame.MVVM
         {
             return Type.GetType(name);
         }
-
+        
         string ITypeResolver.SetType(Type type)
         {
             return type.AssemblyQualifiedName;

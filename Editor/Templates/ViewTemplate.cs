@@ -271,16 +271,28 @@ namespace uFrame.MVVM.Templates
                 var source = item.SourceItem as ITypedItem;
                 // Create a boolean field for each property that has a binding this will serve the condition
                 // in the bind method to turn the binding on or off.
-                var bindingField = Ctx.CurrentDeclaration._public_(typeof (bool), "_Bind{0}", source.Name);
-                // Bindings should always be on by default
-                bindingField.InitExpression = new CodePrimitiveExpression(true);
-                // Add a toggle group attribute to it, this hides and shows anything within the same group
-                bindingField.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof (UFToggleGroup)),
-                        new CodeAttributeArgument(new CodePrimitiveExpression(source.Name))));
-                // Hide them in the insepctor, our custom 'ViewInspector' class will handle them manually
-                bindingField.CustomAttributes.Add(
-                    new CodeAttributeDeclaration(new CodeTypeReference(typeof (HideInInspector))));
+             //   var bindingField = Ctx.CurrentDeclaration._public_(typeof (bool), "_Bind{0}", source.Name);
+
+
+                var bindingField =
+                Ctx.CurrentDeclaration.Members.OfType<CodeMemberField>()
+                    .FirstOrDefault(x => x.Name == string.Format("_Bind{0}", source.Name));
+
+                if (bindingField == null)
+                {
+                    bindingField = Ctx.CurrentDeclaration._public_(typeof (bool), "_Bind{0}", source.Name);
+
+                    // Bindings should always be on by default
+                    bindingField.InitExpression = new CodePrimitiveExpression(true);
+                    // Add a toggle group attribute to it, this hides and shows anything within the same group
+                    bindingField.CustomAttributes.Add(
+                        new CodeAttributeDeclaration(new CodeTypeReference(typeof (UFToggleGroup)),
+                            new CodeAttributeArgument(new CodePrimitiveExpression(source.Name))));
+                    // Hide them in the insepctor, our custom 'ViewInspector' class will handle them manually
+                    bindingField.CustomAttributes.Add(
+                        new CodeAttributeDeclaration(new CodeTypeReference(typeof (HideInInspector))));
+                }
+
                 // Create the binding condition
                 var bindingCondition = Ctx._if("{0}", bindingField.Name);
                 // Grab the uFrame Binding Type

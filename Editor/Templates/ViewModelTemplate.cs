@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -206,6 +207,47 @@ namespace uFrame.MVVM.Templates
                 return null;
             }
             set { }
+        }
+
+        public IEnumerable<CommandsChildItem> ChildCommands
+        {
+            get { return Ctx.Data.LocalCommands.Where(c => c.OutputCommand == null); }
+        }
+
+        public IEnumerable<CommandsChildItem> NodeCommands
+        {
+            get { return Ctx.Data.LocalCommands.Where(c => c.OutputCommand != null); }
+        }
+
+
+        [ForEach("ChildCommands"), GenerateMethod]
+        public virtual void Execute_Name_()
+        {
+            var cmd = Ctx.ItemAs<CommandsChildItem>();
+
+            if (!string.IsNullOrEmpty(cmd.RelatedType))
+            {
+                Ctx.CurrentMethod.Parameters.Add(new CodeParameterDeclarationExpression(cmd.RelatedTypeName,"argument"));
+            }
+
+            if (string.IsNullOrEmpty(cmd.RelatedType))
+            {
+                Ctx._("this.{0}.OnNext(new {1}())", cmd.Name, cmd.ClassName);
+            } 
+            else
+            {
+                Ctx._("this.{0}.OnNext(new {1}(){{" +
+                    "Argument = argument" +
+                    "}})", cmd.Name, cmd.ClassName);
+            }
+        }
+
+        [ForEach("NodeCommands"), GenerateMethod]
+        public virtual void Execute()
+        {
+            var cmd = Ctx.ItemAs<CommandsChildItem>();
+            Ctx.CurrentMethod.Parameters.Add(new CodeParameterDeclarationExpression(cmd.RelatedTypeName,"argument"));
+            Ctx._("this.{0}.OnNext(argument)", cmd.Name);
         }
 
         #endregion

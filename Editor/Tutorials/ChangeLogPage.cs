@@ -34,9 +34,11 @@ public class ChangeLogPage : uFrameMVVMPage<MVVMPage>
     public override void GetContent(IDocumentationBuilder _)
     {
         base.GetContent(_);
-        foreach (var line in Lines)
-        {
-            _.Paragraph(line);
-        }
+//        foreach (var line in Lines)
+//        {
+//            _.Paragraph(line);
+//        }
+
+        _.Paragraph(ChangeLog.text);
     }
 }
