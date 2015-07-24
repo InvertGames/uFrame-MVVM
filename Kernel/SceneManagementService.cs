@@ -86,6 +86,9 @@ namespace uFrame.Kernel
         {
             foreach (var item in items)
             {
+                if (item.RestrictToSingleScene &&
+                    (LoadedScenes.Any(p => p.Name == name) || ScenesQueue.Any(p => p.Name == name) ||
+                     Application.loadedLevelName == name)) continue;
                 if (item.Loader == null)
                 {
                     item.Loader = LoadSceneInternal(item.Name);
@@ -235,6 +238,7 @@ namespace uFrame.Kernel
 
         public void LoadScenes(params SceneQueueItem[] items)
         {
+
             this.QueueScenesLoad(items);
             this.ExecuteLoad();
         }
@@ -261,5 +265,6 @@ namespace uFrame.Kernel
         public string Name { get; set; }
         public IEnumerator Loader { get; set; }
         public ISceneSettings Settings { get; set; }
+        public bool RestrictToSingleScene { get; set; }
     }
 }
