@@ -10,7 +10,6 @@ using Invert.Core.GraphDesigner;
 using Invert.Core.GraphDesigner.Unity;
 using Invert.IOC;
 using Invert.Windows;
-using uFrame.Actions.Attributes;
 using UnityEditor;
 using UnityEngine.UI;
 
@@ -100,7 +99,7 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
     public static void ShowWelcomeWindow()
     {
         var window = WindowsPlugin.GetWindowFor("WelcomeWindowViewModel");
-        window.titleContent = new GUIContent("Welcome");
+        window.title= "Welcome";
         window.minSize = new Vector2(800,410);
         window.maxSize = new Vector2(800,410);
         window.Show();
