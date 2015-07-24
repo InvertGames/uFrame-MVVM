@@ -227,18 +227,8 @@ namespace uFrame.Kernel
 
         public void LoadScene(string name, ISceneSettings settings, bool restrictToSingleScene)
         {
-            if (restrictToSingleScene && LoadedScenes.Any(_ => _.Name == name)) return;
-            this.QueueSceneLoad(name, settings);
-            this.ExecuteLoad();
-        }
-
-        public void LoadSceneIfNotAlready(string name, ISceneSettings settings)
-        {
-            if (LoadedScenes.Any(p => p.Name == name) || ScenesQueue.Any(p => p.Name == name) ||
-                Application.loadedLevelName == name)
-            {
-                return;
-            }
+            if (restrictToSingleScene && (LoadedScenes.Any(p => p.Name == name) || ScenesQueue.Any(p => p.Name == name) ||
+               Application.loadedLevelName == name))
             this.QueueSceneLoad(name, settings);
             this.ExecuteLoad();
         }
