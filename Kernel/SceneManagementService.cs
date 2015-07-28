@@ -115,10 +115,11 @@ namespace uFrame.Kernel
 
             this.Publish(new SceneLoaderEvent()
             {
-                State = SceneState.Instantiated,
+                State = SceneState.Instantiating,
                 SceneRoot = sceneRoot
             });
 
+            
 
 
             //If the scene was loaded via the api (it was queued having some name and settings)
