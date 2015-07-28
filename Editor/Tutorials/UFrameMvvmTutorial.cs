@@ -148,11 +148,11 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
             });
     }
 
-    protected void EnsureNamespace(IDocumentationBuilder _)
+    protected void EnsureNamespace(IDocumentationBuilder _, string namespaceName)
     {
-        _.ShowTutorialStep(new TutorialStep("Set the project namespace to something unique", () =>
+        _.ShowTutorialStep(new TutorialStep(string.Format("Set the project namespace to \"{0}\".", namespaceName), () =>
         {
-            if (string.IsNullOrEmpty(TheProject.Namespace))
+            if (TheProject.Namespace != namespaceName)
             {
                 return
                     "The current namespace is not set yet.  Navigate to the project repository, and set the namespace property.";
@@ -167,13 +167,13 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     }
     protected bool BasicSetup(IDocumentationBuilder _, string systemName = "SystemA", string sceneName = "SystemB")
     {
-        TheProject = DoCreateNewProjectStep(_);
+        TheProject = DoCreateNewProjectStep(_, this.GetType().Name + "Project");
         if (TheProject == null) return false;
 
         TheGraph = DoGraphStep<MVVMGraph>(_);
         if (TheGraph == null) return false;
 
-        EnsureNamespace(_);
+        EnsureNamespace(_, this.GetType().Name + "Project");
 
         SystemA = DoNamedNodeStep<SubsystemNode>(_, "SystemA");
         if (SystemA == null) return false;

@@ -149,10 +149,10 @@ public class TheBasics : uFrameMVVMTutorial
 
     protected override void TutorialContent(IDocumentationBuilder _)
     {
-        TheProject = DoCreateNewProjectStep(_);
-        EnsureNamespace(_);
+        TheProject = DoCreateNewProjectStep(_, "TheBasicsProject");
+        EnsureNamespace(_,"TheBasicsProject");
 
-        SubsystemGraph = DoGraphStep<SubsystemGraph>(_, "Basics");
+        SubsystemGraph = DoGraphStep<SubsystemGraph>(_, "BasicsSystem");
         if (SubsystemGraph != null)
         {
             SystemA = SubsystemGraph.RootFilter as SubsystemNode;

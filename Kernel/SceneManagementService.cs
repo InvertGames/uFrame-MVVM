@@ -141,11 +141,13 @@ namespace uFrame.Kernel
                 State = SceneState.Instantiated,
                 SceneRoot = sceneRoot
             });
-
+            var sceneRootClosure = sceneRoot;
             Action<float, string> updateDelegate = (v, m) =>
             {
                 this.Publish(new SceneLoaderEvent()
                 {
+                    SceneRoot = sceneRootClosure,
+                    Name = sceneRootClosure.Name,
                     State = SceneState.Update,
                     Progress = v,
                     ProgressMessage = m
