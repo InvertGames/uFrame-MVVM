@@ -95,7 +95,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
         var component = go == null ? null : go.GetComponent<uFrameKernel>();
 
-        builder.ShowTutorialStep(new TutorialStep("Now we need to scaffold/update the kernel.", () =>
+        builder.ShowTutorialStep(new TutorialStep("Scaffold Kernel", () =>
         {
             if (component == null)
             {
@@ -108,6 +108,34 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         });
         return component;
     }
+
+    public uFrameKernel EnsureUpdateKernelWithTypes(IDocumentationBuilder builder, IProjectRepository projectRepository, string[] types_section, Action<IDocumentationBuilder> stepContent = null)
+    {
+
+        var project = projectRepository as DefaultProjectRepository;
+
+        var path = project == null ? string.Empty : AssetDatabase.GetAssetPath(project);
+        var prefabName = project == null ? "Kernel.prefab" : project.Name + "Kernel.prefab";
+        var prefabNameWithPath = project == null ? prefabName : path.Replace(project.name + ".asset", prefabName);
+
+
+        var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
+        var component = go == null ? null : go.GetComponent<uFrameKernel>();
+
+        builder.ShowTutorialStep(new TutorialStep("Update Kernel", () =>
+        {
+            if (component == null)
+            {
+                return "The Kernel Prefab has not been created yet.  Please press 'Scaffold/Update Kernel'.";
+            }
+            return null;
+        })
+        {
+            StepContent = stepContent
+        });
+        return component;
+    }
+
 
     protected bool EnsureKernel(IDocumentationBuilder _)
     {
@@ -129,10 +157,19 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     protected void SaveAndCompile(IDocumentationBuilder _, DiagramNode node = null)
     {
         _.ShowTutorialStep(SaveAndCompile(node ?? SceneA), b =>
+
         {
-            b.Paragraph("Saving and compiling is the process of taking the information you've created by graphs and putting it into code form.  The generated code consists of both designer files (always regenerated), and editable files (only generated if it doesnt exist so it doesn't destroy your implementations).");
-            b.Break();
-            b.ImageByUrl("http://i.imgur.com/HY5sD9D.png");
+            b.Paragraph("In this step you need to initiate the process of code generation. This is done using Save and Compile button in the top right corner of the graph designer window. Saving and compiling is the process of taking the information you've created by graphs and putting it into code form.  The generated code consists of both designer files (always regenerated), and editable files (only generated if it doesnt exist so it doesn't destroy your implementations).");
+
+            b.Note(" It does not matter, what graph you are currently in. Save and Compile procedure is Project-specific and is performed for all the graphs in the project at once. So pay attention to what project is currently selected.");
+       
+            b.Note(" If you face with compiling issues after you save and compile, first of all, determine where the issue comes from. If it is an editable file: you can fix it manually and uFrame will not erase your fix on next code generation." +
+                   " If the issue comes from designer files (which gets regenerated each time), you need to understand if an issue is related to your diagram. Sometimes, type references may have invalid types, or elements may have incorrectly named properties." +
+                   " Such diagram issues may result into generated code not compiling.");
+
+            b.ImageByUrl("http://i.imgur.com/QhfMGSq.png","This picture shows \"Save and Compile\" button");
+           
+        
         });
     }
 
@@ -161,7 +198,15 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
             return null;
         }), b =>
         {
-            b.ImageByUrl("http://i.imgur.com/CBXSJbZ.png");
+
+            b.Paragraph("uFrame allows you to set specific namespace for each project. Any generated code will then belong to this namespace." +
+                        "In this step we need to change namespace of {0}. For this, select your project repository asset file and refer to Unity inspector window." +
+                        "You will find namespace setting. Type in the namespace you want for your project. ",TheProject.Name);
+            
+            b.ImageByUrl("http://i.imgur.com/JlgCZGD.png");
+
+            b.Note("Remember, that project namespace setting will be used for generated code, so avoid any keywords or illegal characters.");
+
         });
    
     }
@@ -201,10 +246,10 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     {
         ThePlayer = DoNamedNodeStep<ElementNode>(_, "Player", SystemA, b =>
         {
-            b.ImageByUrl("http://i.imgur.com/lEnVVQj.png");
-            b.ImageByUrl("http://i.imgur.com/SJ0zI8w.png");
+            b.ImageByUrl("http://i.imgur.com/lEnVVQj.png","This picture shows how to create Element Node");
+            b.ImageByUrl("http://i.imgur.com/SJ0zI8w.png","This picture shows the final state of a newly created node, renamed to \"Player\"");
         });
-        if (TheGame == null) return false;
+        if (ThePlayer == null) return false;
         return true;
     }
 
@@ -216,11 +261,11 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         {
             b.ImageByUrl("http://i.imgur.com/H1OzzfC.png");
         });
-        DoCreateConnectionStep(_, ThePlayer, ThePlayerView == null ? null : ThePlayerView.ElementInputSlot, b =>
+        DoCreateConnectionStep(_, ThePlayer, ThePlayerView == null ? null : ThePlayerView.ElementInputSlot,"Player node output","PlayerView node Element input","Player node","PlayerView node", b =>
         {
             
             b.Paragraph("Creating this connection means that the view will visually present the data on the player to the user in the 3d world.");
-            b.Paragraph("You can always create multiple views to seperate different presentations of the same data.  For instance, you could also create a PlayerUIView, which deals strictly with showing inventory, stats,...etc");
+            b.Paragraph("You can always create multiple views to seperate different presentations of the same data. For instance, you could also create a PlayerUIView, which deals strictly with showing inventory, stats,...etc");
 
             b.Break();
             b.ImageByUrl("http://i.imgur.com/scVtfd9.png");
@@ -250,18 +295,18 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     protected void AddViewToScene(IDocumentationBuilder _, ViewNode view)
     {
         ScenePlayerView = EnsureComponentInSceneStep<ViewBase>(_, view ?? GameView,
-            string.Format("Now add the {0} to the scene.", view == null ? "view" : view.Name),
-            b =>
-            {
-                b.Paragraph("Create an empty gameObject underneath the _SceneARoot game object.  " +
-                            "When creating scene types, everything should be a descendent of this root game object, " +
-                            "this allows them to be destroyed by uFrame when needed.");
+        string.Format("Now add the {0} to the scene.", view == null ? "view" : view.Name),
+        b =>
+        {
+            b.Paragraph("Create an empty gameObject underneath the _SceneARoot game object.  " +
+                        "When creating scene types, everything should be a descendent of this root game object, " +
+                        "this allows them to be destroyed by uFrame when needed.");
 
-                b.Paragraph(
-                    string.Format("On this empty game object click 'Add Component' in the inspector. Then add the '{0}' component to it.", view == null ? "view" : view.Name));
+            b.Paragraph(
+                string.Format("On this empty game object click 'Add Component' in the inspector. Then add the '{0}' component to it.", view == null ? "view" : view.Name));
 
-                b.ImageByUrl("http://i.imgur.com/3pKo4yL.png");
-            });
+            b.ImageByUrl("http://i.imgur.com/3pKo4yL.png");
+        });
     }
 
     protected void EnsureInitializeView(IDocumentationBuilder _, ViewBase view, string additionalMessage = null)
