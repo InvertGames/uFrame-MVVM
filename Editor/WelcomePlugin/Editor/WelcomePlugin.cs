@@ -116,7 +116,7 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
         items.Add(new WelcomeWindowToolbarItem()
         {
             ActionTitle = "uFrame",
-            Action = () => Application.OpenURL("http://invertgamestudios.com/members/slackinvite"),
+            Action = () => Application.OpenURL("http://invertgamestudios.com"),
             Header = ElementDesignerStyles.GetSkinTexture("splashscreen_main"),
             ActionArea = new Rect(3, 3, 792, 359)
         });
@@ -135,7 +135,15 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
             Action = ()=>uFrameHelp.ShowWindow(),
             Header = ElementDesignerStyles.GetSkinTexture("splashscreen_3"),
             ActionArea = new Rect(12,293,315,63)
-        });    
+        });
+
+        items.Add(new WelcomeWindowToolbarItem()
+        {
+            ActionTitle = "Wiki",
+            Action = () => Application.OpenURL("https://www.penflip.com/bartlomiejwolk/uframe-documentation"),
+            Header = ElementDesignerStyles.GetSkinTexture("splashscreen_5"),
+            ActionArea = new Rect(592, 281, 191, 76)
+        });
 
         items.Add(new WelcomeWindowToolbarItem()
         {
@@ -151,7 +159,9 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
             Action = () => SetupDefaultProject(),
             Header = ElementDesignerStyles.GetSkinTexture("splashscreen_2"),
             ActionArea = new Rect(459,294,325,63)
-        });
+        });      
+        
+
     }
 
     private void SetupDefaultProject()
@@ -346,17 +356,17 @@ public class WelcomeWindowToolbarDrawer : Area<WelcomeWindowViewModel>
                         textColor = textColor
                     },
                     active = { background = ElementDesignerStyles.GetSkinTexture("EventButton"), textColor = textColor },
-                    hover = { background = ElementDesignerStyles.GetSkinTexture("WelcomeScreenButton"), textColor = textColor },
+                    hover = { background = ElementDesignerStyles.GetSkinTexture("WelcomeScreenButtonHowered"), textColor = textColor },
                     onHover =
                     {
-                        background = ElementDesignerStyles.GetSkinTexture("WelcomeScreenButton"),
+                        background = ElementDesignerStyles.GetSkinTexture("WelcomeScreenButtonHowered"),
                         textColor = textColor
                     },
                     onFocused = { background = ElementDesignerStyles.GetSkinTexture("EventButton"), textColor = textColor }, 
                     onNormal = { background = ElementDesignerStyles.GetSkinTexture("EventButton"), textColor = textColor },
                     onActive = { background = ElementDesignerStyles.GetSkinTexture("EventButton"), textColor = textColor },
                     fixedHeight = 50,
-                    fixedWidth = 160,
+                    fixedWidth = 133,
                     alignment = TextAnchor.MiddleCenter,
                     border = new RectOffset(10,10,10,10),
                 }.WithFont("Impact",18);
