@@ -25,18 +25,14 @@ public class ViewInspector : uFrameInspector
 
     public static bool ShowInfoLabels
     {
-        get
-        {
-            return uFrameEditor.ShowInfoLabels;
-        }
-        set { uFrameEditor.ShowInfoLabels = value; }
+        get { return false; }
     }
 
-    [MenuItem("uFrame/Info Labels")]
-    public static void ShowHideInfoLabels()
-    {
-        ShowInfoLabels = !ShowInfoLabels;
-    }
+    //[MenuItem("uFrame/Info Labels")]
+    //public static void ShowHideInfoLabels()
+    //{
+    //    ShowInfoLabels = !ShowInfoLabels;
+    //}
     public bool ShowIdentifierSettings
     {
         get

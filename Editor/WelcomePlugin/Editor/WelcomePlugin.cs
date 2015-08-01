@@ -15,7 +15,10 @@ using UnityEngine.UI;
 
 public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
     private ProjectService _projectService;
-
+    public override bool Required
+    {
+        get { return true; }
+    }
     public string ExamplePackageScenesPath
     {
         get { return "Assets/ExampleProject/Scenes/"; }

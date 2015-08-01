@@ -172,8 +172,8 @@ public class TheBasics : uFrameMVVMTutorial
         NameChangedBinding = DoNamedItemStep<BindingsReference>(_, "Name Changed", ThePlayerView, "a binding", b =>
         {
             b.ImageByUrl("http://i.imgur.com/9K08Woe.png");
-
         });
+
         SaveAndCompile(_, ThePlayerView);
         EnsureKernel(_);
         CreateDefaultScene(_);
