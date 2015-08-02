@@ -201,6 +201,10 @@ public class TheBasics : uFrameMVVMTutorial
             b =>
             {
                 b.ImageByUrl("http://i.imgur.com/5Pnd9Xf.png");
+                b.Paragraph("In this example we are using \"Scene\" component, which is in fact a common SceneType. It does not belong to any project, that is why you have to manually specify the kernel scene." +
+                       " Later you will learn how to define scene types for a specific project. Those will get kernel scene name automatically, and you won't have to specify it manually.");
+                b.Note("Make sure to set KernelScene to \""+TheProject.Name+"KernelScene\" and do not forget to add this scene into the build settings!");
+                    
             });
         
     }
