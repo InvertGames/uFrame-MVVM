@@ -74,6 +74,12 @@ public class UsingSceneLoaders : LoadingAndUnloadingScenes
     {
         get { return 2; }
     }
+
+    public override bool ShowInNavigation
+    {
+        get { return false; } 
+    }
+
     protected override void DoTutorial(IDocumentationBuilder _)
     {
         base.DoTutorial(_);

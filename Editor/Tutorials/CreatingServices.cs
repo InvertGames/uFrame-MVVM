@@ -22,13 +22,13 @@ public class CreatingServices : uFrameMVVMTutorial
         var graph = DoGraphStep<ServiceGraph>(_,"DebugService", b => { });
         var debugService = graph == null ? null : graph.RootFilter as ServiceNode;
         var logEvent = DoNamedNodeStep<SimpleClassNode>(_, "LogEvent");
-        DoNamedItemStep<PropertiesChildItem>(_, "Message", logEvent, "a property", b => { });
-        DoNamedItemStep<HandlersReference>(_, "LogEvent", debugService, "a handler", b => { });
-        DoNamedItemStep<CommandsChildItem>(_, "Log", TheGame, "a command", null);
+        DoNamedItemStep<PropertiesChildItem>(_, "Message", logEvent, "a property", b => { },"LogEvent","Properties");
+        DoNamedItemStep<HandlersReference>(_, "LogEvent", debugService, "a handler", b => { },"DebugService","Handlers");
+        DoNamedItemStep<CommandsChildItem>(_, "Log", TheGame, "a command", null,"Game","Commands");
         SaveAndCompile(_);
         EnsureKernel(_);
         EnsureCode(_, debugService, "Open DebugService.cs and implement the LogEventHandler method.", "http://i.imgur.com/Vrdqgx4.png", "DebugService", "Debug.Log");
-        EnsureCode(_, debugService, "Open GameController.cs and implement the Log method.", "http://i.imgur.com/t2zwBZv.png", "GameController", "Publish(");
+        EnsureCode(_, TheGame, "Open GameController.cs and implement the Log method.", "http://i.imgur.com/t2zwBZv.png", "GameController", "new LogEvent");
         
     }
 
@@ -149,31 +149,42 @@ public class TheBasics : uFrameMVVMTutorial
 
     protected override void TutorialContent(IDocumentationBuilder _)
     {
+
+        //Step 1
         TheProject = DoCreateNewProjectStep(_, "TheBasicsProject");
+        
+        //Step 2
         EnsureNamespace(_,"TheBasicsProject");
 
+        //Step 3
         SubsystemGraph = DoGraphStep<SubsystemGraph>(_, "BasicsSystem");
+        
         if (SubsystemGraph != null)
         {
             SystemA = SubsystemGraph.RootFilter as SubsystemNode;
         }
+        
+        //Step 4
         CreatePlayerElement(_);
+        
+        //Step 5
         CreatePlayerView(_);
         NameProperty = DoNamedItemStep<PropertiesChildItem>(_, "Name", ThePlayer, "a property", b =>
         {
-            b.ImageByUrl("http://i.imgur.com/wJi2IZP.png");
-        });
+            b.Paragraph("After you finish this step, your node should look like this:");
+            b.ImageByUrl("http://i.imgur.com/wJi2IZP.png","This picture shows the state of Player node after you finish current step.");
+        }, "Player","Properties");
 
         ResetCommand = DoNamedItemStep<CommandsChildItem>(_, "Reset", ThePlayer, "a command", b =>
         {
             b.ImageByUrl("http://i.imgur.com/ZktA9FP.png");
-        });
+        }, "Player" ,"Commands");
 
         NameChangedBinding = DoNamedItemStep<BindingsReference>(_, "Name Changed", ThePlayerView, "a binding", b =>
         {
             b.ImageByUrl("http://i.imgur.com/9K08Woe.png");
-        });
 
+        },"PlayerView","Bindings");
         SaveAndCompile(_, ThePlayerView);
         EnsureKernel(_);
         CreateDefaultScene(_);

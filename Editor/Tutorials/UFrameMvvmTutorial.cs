@@ -261,7 +261,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         {
             _.Paragraph("You must enter the 'Game' element context to create its view, you can do this by double-clicking on it.");
         });
-        DoCreateConnectionStep(_, TheGame, GameView == null ? null : GameView.ElementInputSlot);
+        DoCreateConnectionStep(_, TheGame, GameView == null ? null : GameView.ElementInputSlot,"Game output", "GameView element input");
     }
     protected bool CreatePlayerElement(IDocumentationBuilder _)
     {
