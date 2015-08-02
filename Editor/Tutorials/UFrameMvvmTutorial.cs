@@ -74,6 +74,17 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         {
             StepContent = b =>
             {
+
+                b.Paragraph("In this step you need to created an instance of a scene, based on a SceneType. This means, that uFrame will automatically generate a scene with a basic setup.");
+                b.Paragraph("To create an instance of a scene, you first have to locate the desired SceneType node. Right-click on the node and select 'Create Scene' ooption.");
+
+                b.Note("There are several things that may happen while you are creating a scene:\n" +
+                       "* If your current scene is not saved, uFrame will ask if you want to save it, before doing anything. Make sure you save any important data, as during this step you will be transfered to a different scene.\n" +
+                       "* uFrame will first try to save scene with the name {SceneTypeName}.unity. If such scene does not exist, it will be created automatically and no further dialogs will appear. You then will be transfered to this scene.\n" +
+                       "* If {SceneTypeName}.unity scene already exists, you will be prompted for the name and location for the new scene. You will then be transfered to the newly created scene."+
+                       "");
+
+                b.Note("uFrame automatically adds all the scene you create into the build!");
                 if (stepContent != null)
                 {
                     stepContent(b);
@@ -104,7 +115,17 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
             return null;
         })
         {
-            StepContent = stepContent
+            StepContent = _ =>
+            {
+                _.Paragraph("In this step we need to scaffold/update kernel. You can read more about kernel on the kernel page." +
+                            "This step will modify/create the kernel of your project. This kernel is then used to load all the dependencies for your game.");
+
+                _.Note("When kernel is being updated, you may get the following exception:\n" +
+                       "\"InvalidOperationException: Operation is not valid due to the current state of the object\"\n" +
+                        "This error is harmless and will be fixed in one of upcoming updates");
+
+                if (stepContent != null) stepContent(_);
+            }
         });
         return component;
     }
@@ -215,7 +236,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         TheProject = DoCreateNewProjectStep(_, this.GetType().Name + "Project");
         if (TheProject == null) return false;
 
-        TheGraph = DoGraphStep<MVVMGraph>(_);
+        TheGraph = DoGraphStep<MVVMGraph>(_,"MainDiagram");
         if (TheGraph == null) return false;
 
         EnsureNamespace(_, this.GetType().Name + "Project");
@@ -298,12 +319,13 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         string.Format("Now add the {0} to the scene.", view == null ? "view" : view.Name),
         b =>
         {
-            b.Paragraph("Create an empty gameObject underneath the _SceneARoot game object.  " +
-                        "When creating scene types, everything should be a descendent of this root game object, " +
-                        "this allows them to be destroyed by uFrame when needed.");
+            b.Paragraph("Create an empty gameObject underneath the _SceneARoot game object.  ");
 
             b.Paragraph(
                 string.Format("On this empty game object click 'Add Component' in the inspector. Then add the '{0}' component to it.", view == null ? "view" : view.Name));
+
+            b.Note("When creating scene types, everything should be a descendent of this root game object, " +
+                        "this allows them to be destroyed by uFrame when needed.");
 
             b.ImageByUrl("http://i.imgur.com/3pKo4yL.png");
         });

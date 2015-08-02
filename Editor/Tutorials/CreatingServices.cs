@@ -149,42 +149,31 @@ public class TheBasics : uFrameMVVMTutorial
 
     protected override void TutorialContent(IDocumentationBuilder _)
     {
-
-        //Step 1
         TheProject = DoCreateNewProjectStep(_, "TheBasicsProject");
-        
-        //Step 2
         EnsureNamespace(_,"TheBasicsProject");
 
-        //Step 3
         SubsystemGraph = DoGraphStep<SubsystemGraph>(_, "BasicsSystem");
-        
         if (SubsystemGraph != null)
         {
             SystemA = SubsystemGraph.RootFilter as SubsystemNode;
         }
-        
-        //Step 4
         CreatePlayerElement(_);
-        
-        //Step 5
         CreatePlayerView(_);
         NameProperty = DoNamedItemStep<PropertiesChildItem>(_, "Name", ThePlayer, "a property", b =>
         {
-            b.Paragraph("After you finish this step, your node should look like this:");
-            b.ImageByUrl("http://i.imgur.com/wJi2IZP.png","This picture shows the state of Player node after you finish current step.");
-        }, "Player","Properties");
+            b.ImageByUrl("http://i.imgur.com/wJi2IZP.png");
+        });
 
         ResetCommand = DoNamedItemStep<CommandsChildItem>(_, "Reset", ThePlayer, "a command", b =>
         {
             b.ImageByUrl("http://i.imgur.com/ZktA9FP.png");
-        }, "Player" ,"Commands");
+        });
 
         NameChangedBinding = DoNamedItemStep<BindingsReference>(_, "Name Changed", ThePlayerView, "a binding", b =>
         {
             b.ImageByUrl("http://i.imgur.com/9K08Woe.png");
+        });
 
-        },"PlayerView","Bindings");
         SaveAndCompile(_, ThePlayerView);
         EnsureKernel(_);
         CreateDefaultScene(_);

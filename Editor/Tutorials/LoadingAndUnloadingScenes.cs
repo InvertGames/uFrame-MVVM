@@ -34,11 +34,9 @@ public class LoadingAndUnloadingScenes : uFrameMVVMTutorial
 
         CreateGameElement(_);
 
-        DoNamedItemStep<CommandsChildItem>(_, "LoadB", TheGame, "a Command",
-            b => b.Paragraph("Now we need to add a command to load scene B."));
+        DoNamedItemStep<CommandsChildItem>(_, "LoadB", TheGame, "a Command", null, "Game", "Commands");
 
-        DoNamedItemStep<CommandsChildItem>(_, "UnLoadB", TheGame, "a Command",
-            b => b.Paragraph("Now we need to add a command to un-load scene B."));
+        DoNamedItemStep<CommandsChildItem>(_, "UnLoadB", TheGame, "a Command",null, "Game", "Commands");
 
 
         CreateGameView(_);
@@ -49,12 +47,12 @@ public class LoadingAndUnloadingScenes : uFrameMVVMTutorial
 
         EnsureCreateScene(_, SceneA, b =>
         {
-            b.ImageByUrl("http://i.imgur.com/XPqOhHS.png");
+            b.ImageByUrl("http://i.imgur.com/FK3MZKy.png");
         }, "SceneA");
 
         EnsureCreateScene(_, sceneB, b =>
         {
-            b.ImageByUrl("http://i.imgur.com/XPqOhHS.png");
+            b.ImageByUrl("http://i.imgur.com/FK3MZKy.png");
         }, "SceneA");
 
         EnsureSceneOpen(_, SceneA, null,"SceneA");
