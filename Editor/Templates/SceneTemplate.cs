@@ -18,7 +18,8 @@ namespace uFrame.MVVM.Templates
             get
             {
                 Ctx.CurrentProperty.Attributes = MemberAttributes.Override | MemberAttributes.Public;
-                Ctx._("return \"{0}KernelScene\"", Ctx.Data.Graph.Project.Name);
+                // TODO 2.0 KERNEL SCENE STUFF
+                Ctx._("return \"KernelScene\"");
                 return null;
             }
         }

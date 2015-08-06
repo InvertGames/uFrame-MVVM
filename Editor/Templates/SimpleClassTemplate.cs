@@ -27,7 +27,7 @@ namespace uFrame.MVVM.Templates
             this.Ctx.TryAddNamespace("uFrame.MVVM");
             this.Ctx.TryAddNamespace("uFrame.MVVM.Bindings");
             this.Ctx.TryAddNamespace("uFrame.Serialization");
-            foreach (var property in Ctx.Data.ChildItems.OfType<ITypedItem>())
+            foreach (var property in Ctx.Data.PersistedItems.OfType<ITypedItem>())
             {
                 var type = InvertApplication.FindTypeByNameExternal(property.RelatedTypeName);
                 if (type == null) continue;

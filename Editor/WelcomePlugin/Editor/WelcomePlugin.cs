@@ -14,7 +14,7 @@ using UnityEditor;
 using UnityEngine.UI;
 
 public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
-    private ProjectService _projectService;
+    private WorkspaceService _projectService;
     public override bool Required
     {
         get { return true; }
@@ -47,7 +47,7 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
 
     public bool ExampleProjectExists
     {
-        get { return ProjectService.Projects.Any(p => p.Name == "ExampleProject"); }
+        get { return ProjectService.Workspaces.Any(p => p.Name == "ExampleProject"); }
     }
 
     public bool ExampleProjectNeedInstall
@@ -56,9 +56,9 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
         set { EditorPrefs.SetBool("UF_EXAMPLE_PROJECT_NEEDS_INSTALL", value); }
     }
 
-    public ProjectService ProjectService
+    public WorkspaceService ProjectService
     {
-        get { return _projectService ?? (_projectService = InvertApplication.Container.Resolve<ProjectService>()); }
+        get { return _projectService ?? (_projectService = InvertApplication.Container.Resolve<WorkspaceService>()); }
     }
 
 

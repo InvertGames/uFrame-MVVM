@@ -34,7 +34,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     public MVVMGraph TheGraph { get; set; }
 
-    public IProjectRepository TheProject { get; set; }
+    public Workspace TheProject { get; set; }
     public void EnsureSceneOpen(IDocumentationBuilder _, SceneTypeNode scene, Action<IDocumentationBuilder> stepContent = null, string sceneName = null)
     {
 
@@ -59,75 +59,76 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     }
     public void EnsureCreateScene(IDocumentationBuilder _, SceneTypeNode scene, Action<IDocumentationBuilder> stepContent = null, string sceneName = null)
     {
+        // TODO 2.0 EnsureCreateScene needs to be fixed
+        //_.ShowTutorialStep(new TutorialStep(scene == null ? "Create the scene " + sceneName : string.Format("Create the scene for scene type '{0}'", scene.Name), () =>
+        //{
+        //    var paths = scene.Graph.Project.SystemDirectory;
+        //    var scenesPath = System.IO.Path.Combine(paths, "Scenes");
+        //    var scenePath = System.IO.Path.Combine(scenesPath, scene.Name + ".unity");
+        //    var exists = File.Exists(scenePath);
+        //    return exists
+        //        ? null
+        //        : string.Format(
+        //            "The scene does not exist yet. Right click on the '{0}' node and select 'Create Scene'", scene.Name);
+        //})
+        //{
+        //    StepContent = b =>
+        //    {
 
-        _.ShowTutorialStep(new TutorialStep(scene == null ? "Create the scene " + sceneName : string.Format("Create the scene for scene type '{0}'", scene.Name), () =>
-        {
-            var paths = scene.Graph.Project.SystemDirectory;
-            var scenesPath = System.IO.Path.Combine(paths, "Scenes");
-            var scenePath = System.IO.Path.Combine(scenesPath, scene.Name + ".unity");
-            var exists = File.Exists(scenePath);
-            return exists
-                ? null
-                : string.Format(
-                    "The scene does not exist yet. Right click on the '{0}' node and select 'Create Scene'", scene.Name);
-        })
-        {
-            StepContent = b =>
-            {
+        //        b.Paragraph("In this step you need to created an instance of a scene, based on a SceneType. This means, that uFrame will automatically generate a scene with a basic setup.");
+        //        b.Paragraph("To create an instance of a scene, you first have to locate the desired SceneType node. Right-click on the node and select 'Create Scene' ooption.");
 
-                b.Paragraph("In this step you need to created an instance of a scene, based on a SceneType. This means, that uFrame will automatically generate a scene with a basic setup.");
-                b.Paragraph("To create an instance of a scene, you first have to locate the desired SceneType node. Right-click on the node and select 'Create Scene' ooption.");
+        //        b.Note("There are several things that may happen while you are creating a scene:\n" +
+        //               "* If your current scene is not saved, uFrame will ask if you want to save it, before doing anything. Make sure you save any important data, as during this step you will be transfered to a different scene.\n" +
+        //               "* uFrame will first try to save scene with the name {SceneTypeName}.unity. If such scene does not exist, it will be created automatically and no further dialogs will appear. You then will be transfered to this scene.\n" +
+        //               "* If {SceneTypeName}.unity scene already exists, you will be prompted for the name and location for the new scene. You will then be transfered to the newly created scene."+
+        //               "");
 
-                b.Note("There are several things that may happen while you are creating a scene:\n" +
-                       "* If your current scene is not saved, uFrame will ask if you want to save it, before doing anything. Make sure you save any important data, as during this step you will be transfered to a different scene.\n" +
-                       "* uFrame will first try to save scene with the name {SceneTypeName}.unity. If such scene does not exist, it will be created automatically and no further dialogs will appear. You then will be transfered to this scene.\n" +
-                       "* If {SceneTypeName}.unity scene already exists, you will be prompted for the name and location for the new scene. You will then be transfered to the newly created scene."+
-                       "");
-
-                b.Note("uFrame automatically adds all the scene you create into the build!");
-                if (stepContent != null)
-                {
-                    stepContent(b);
-                }
-            }
-        });
+        //        b.Note("uFrame automatically adds all the scene you create into the build!");
+        //        if (stepContent != null)
+        //        {
+        //            stepContent(b);
+        //        }
+        //    }
+        //});
 
     }
-    public uFrameKernel EnsureScaffoldKernel(IDocumentationBuilder builder, IProjectRepository projectRepository, Action<IDocumentationBuilder> stepContent = null)
+    public uFrameKernel EnsureScaffoldKernel(IDocumentationBuilder builder, Workspace projectRepository, Action<IDocumentationBuilder> stepContent = null)
     {
+        return null;
+        // TODO 2.0 Tutorials EnsureScaffold Kernel
+        //var project = projectRepository as DefaultProjectRepository;
 
-        var project = projectRepository as DefaultProjectRepository;
-        
-        var path = project == null ? string.Empty : AssetDatabase.GetAssetPath(project);
-        var prefabName = project == null ? "Kernel.prefab" : project.Name + "Kernel.prefab";
-        var prefabNameWithPath = project == null ? prefabName : path.Replace(project.name + ".asset", prefabName);
+        //var path = project == null ? string.Empty : AssetDatabase.GetAssetPath(project);
+        //var prefabName = project == null ? "Kernel.prefab" : project.Name + "Kernel.prefab";
+        //var prefabNameWithPath = project == null ? prefabName : path.Replace(project.name + ".asset", prefabName);
 
 
-        var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
-        var component = go == null ? null : go.GetComponent<uFrameKernel>();
+        //var go = AssetDatabase.LoadAssetAtPath(prefabNameWithPath, typeof(GameObject)) as GameObject;
+        //var component = go == null ? null : go.GetComponent<uFrameKernel>();
 
-        builder.ShowTutorialStep(new TutorialStep("Scaffold Kernel", () =>
-        {
-            if (component == null)
-            {
-                return "The Kernel Prefab has not been created yet.  Please press 'Scaffold/Update Kernel'.";
-            }
-            return null;
-        })
-        {
-            StepContent = _ =>
-            {
-                _.Paragraph("In this step we need to scaffold/update kernel. You can read more about kernel on the kernel page." +
-                            "This step will modify/create the kernel of your project. This kernel is then used to load all the dependencies for your game.");
+        //builder.ShowTutorialStep(new TutorialStep("Scaffold Kernel", () =>
+        //{
+        //    if (component == null)
+        //    {
+        //        return "The Kernel Prefab has not been created yet.  Please press 'Scaffold/Update Kernel'.";
+        //    }
+        //    return null;
+        //})
+        //{
+        //    StepContent = _ =>
+        //    {
+        //        _.Paragraph("In this step we need to scaffold/update kernel. You can read more about kernel on the kernel page." +
+        //                    "This step will modify/create the kernel of your project. This kernel is then used to load all the dependencies for your game.");
 
-                _.Note("When kernel is being updated, you may get the following exception:\n" +
-                       "\"InvalidOperationException: Operation is not valid due to the current state of the object\"\n" +
-                        "This error is harmless and will be fixed in one of upcoming updates");
+        //        _.Note("When kernel is being updated, you may get the following exception:\n" +
+        //               "\"InvalidOperationException: Operation is not valid due to the current state of the object\"\n" +
+        //                "This error is harmless and will be fixed in one of upcoming updates");
 
-                if (stepContent != null) stepContent(_);
-            }
-        });
-        return component;
+        //        if (stepContent != null) stepContent(_);
+        //    }
+        //});
+        //return component;
     }
 
     public uFrameKernel EnsureUpdateKernelWithTypes(IDocumentationBuilder builder, IProjectRepository projectRepository, string[] types_section, Action<IDocumentationBuilder> stepContent = null)
@@ -208,27 +209,28 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
 
     protected void EnsureNamespace(IDocumentationBuilder _, string namespaceName)
     {
-        _.ShowTutorialStep(new TutorialStep(string.Format("Set the project namespace to \"{0}\".", namespaceName), () =>
-        {
-            if (TheProject.Namespace != namespaceName)
-            {
-                return
-                    "The current namespace is not set yet.  Navigate to the project repository, and set the namespace property.";
+        // TODO 2.0 EnsureNamespace
+        //_.ShowTutorialStep(new TutorialStep(string.Format("Set the project namespace to \"{0}\".", namespaceName), () =>
+        //{
+        //    if (TheProject.Namespace != namespaceName)
+        //    {
+        //        return
+        //            "The current namespace is not set yet.  Navigate to the project repository, and set the namespace property.";
 
-            }
-            return null;
-        }), b =>
-        {
+        //    }
+        //    return null;
+        //}), b =>
+        //{
 
-            b.Paragraph("uFrame allows you to set specific namespace for each project. Any generated code will then belong to this namespace." +
-                        "In this step we need to change namespace of {0}. For this, select your project repository asset file and refer to Unity inspector window." +
-                        "You will find namespace setting. Type in the namespace you want for your project. ",TheProject.Name);
+        //    b.Paragraph("uFrame allows you to set specific namespace for each project. Any generated code will then belong to this namespace." +
+        //                "In this step we need to change namespace of {0}. For this, select your project repository asset file and refer to Unity inspector window." +
+        //                "You will find namespace setting. Type in the namespace you want for your project. ",TheProject.Name);
             
-            b.ImageByUrl("http://i.imgur.com/JlgCZGD.png");
+        //    b.ImageByUrl("http://i.imgur.com/JlgCZGD.png");
 
-            b.Note("Remember, that project namespace setting will be used for generated code, so avoid any keywords or illegal characters.");
+        //    b.Note("Remember, that project namespace setting will be used for generated code, so avoid any keywords or illegal characters.");
 
-        });
+        //});
    
     }
     protected bool BasicSetup(IDocumentationBuilder _, string systemName = "SystemA", string sceneName = "SystemB")

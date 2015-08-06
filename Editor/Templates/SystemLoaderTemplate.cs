@@ -33,7 +33,7 @@ namespace uFrame.MVVM.Templates
 
             //Ctx.AddIterator("InstanceProperty", node => node.Instances);
             Ctx.AddIterator("ControllerProperty",
-                node => node.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>());
+                node => node.FilterNodes().OfType<ElementNode>());
         }
 
         [GenerateMethod(CallBase = true), Inside(TemplateLocation.Both)]
@@ -48,7 +48,7 @@ namespace uFrame.MVVM.Templates
             {
 
                 foreach (
-                    var item in Ctx.Data.GetContainingNodesInProject(Ctx.Data.Project).OfType<ElementNode>().Distinct())
+                    var item in Ctx.Data.FilterNodes().OfType<ElementNode>().Distinct())
                 {
                     Ctx._("Container.RegisterViewModelManager<{0}>(new ViewModelManager<{0}>())",
                         item.Name.AsViewModel());
