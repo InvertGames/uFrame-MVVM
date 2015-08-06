@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using uFrame.IOC;
+using uFrame.MVVM;
 using UnityEngine;
 
 public interface ISerializerStream
@@ -38,6 +39,10 @@ public interface ISerializerStream
     T DeserializeObject<T>(string name);
 
     object DeserializeObject(string name);
+
+    T DeserializeViewModel<T>(string name) where T : ViewModel;
+
+    IEnumerable<T> DeserializeViewModelArray<T>(string name) where T : ViewModel;
 
     int DeserializeInt(string name);
 

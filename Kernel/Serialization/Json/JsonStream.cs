@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using uFrame;
 using uFrame.IOC;
+using uFrame.Kernel;
+using uFrame.MVVM;
 using UnityEngine;
 
 namespace uFrame.Serialization
@@ -320,6 +322,7 @@ namespace uFrame.Serialization
             return (T)DeserializeObject(name);
         }
 
+
         public object DeserializeObject(string name)
         {
             Push(name, CurrentNode[name]);
@@ -327,6 +330,8 @@ namespace uFrame.Serialization
             Pop();
             return result;
         }
+
+       
 
         private object DeserializeObjectFromCurrent()
         {
@@ -348,6 +353,7 @@ namespace uFrame.Serialization
             }
             return instance;
         }
+
 
         public int DeserializeInt(string name)
         {
@@ -414,5 +420,55 @@ namespace uFrame.Serialization
         {
             return System.Text.Encoding.UTF8.GetBytes(CurrentNode.ToString());
         }
+
+
+        public T DeserializeViewModel<T>(string name) where T : ViewModel
+        {
+            var controller = uFrameKernel.Container.Resolve<Controller>(typeof(T).Name);
+            if (controller == null)
+            {
+                throw new Exception(
+                    "Controller could not be found.  Make sure your subsystem loader has been attached to the kernel.");
+
+            }
+            var instance = controller.Create(Guid.NewGuid().ToString()) as T;
+
+            Push(name, CurrentNode[name]);
+                DeserializeViewModelFromCurrent(instance);
+            Pop();
+            return instance;
+
+        }
+
+        private T DeserializeViewModelFromCurrent<T>(T container) where T : ViewModel
+        {
+            var ufSerializable = container as IUFSerializable;
+                ufSerializable.Read(this);
+            return container;
+        }
+
+
+        public IEnumerable<T> DeserializeViewModelArray<T>(string name) where T : ViewModel
+        {
+            Push(name, CurrentNode[name]);
+            foreach (var jsonNode in CurrentNode.Childs)
+            {
+                var controller = uFrameKernel.Container.Resolve<Controller>(typeof(T).Name);
+                if (controller == null)
+                {
+                    throw new Exception(
+                        "Controller could not be found.  Make sure your subsystem loader has been attached to the kernel.");
+
+                }
+                var instance = controller.Create(Guid.NewGuid().ToString()) as T;
+
+                Push(null, jsonNode);
+                DeserializeViewModelFromCurrent(instance);
+                Pop();
+                yield return instance;
+            }
+            Pop();
+        }
     }
+
 }
