@@ -300,11 +300,41 @@ namespace uFrame.Serialization {
 
         public override string ToString()
         {
+            var tmp = new JSONData("");
+            tmp.AsInt = AsInt;
+
+            if (tmp.m_Data == this.m_Data)
+            {
+                return string.Format("{0}", Escape(m_Data));
+            }
+
+            tmp.AsBool = AsBool;
+
+            if (tmp.m_Data == this.m_Data)
+            {
+                return string.Format("{0}", Escape(m_Data));
+            }
+
             return string.Format("\"{0}\"", Escape(m_Data));
         }
 
         public override string ToString(string aPrefix)
         {
+            var tmp = new JSONData("");
+            tmp.AsInt = AsInt;
+
+            if (tmp.m_Data == this.m_Data)
+            {
+                return string.Format("{0}", Escape(m_Data));
+            }
+
+            tmp.AsBool = AsBool;
+
+            if (tmp.m_Data == this.m_Data)
+            {
+                return string.Format("{0}", Escape(m_Data));
+            }
+
             return string.Format("\"{0}\"", Escape(m_Data));
         }
     }
