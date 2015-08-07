@@ -4,7 +4,18 @@ Be sure to subscribe to our newsletter @ invertgamestudios.com for updates, noti
 Note for 1.5 Users: The 1.6 Version of uFrame, only falls short of a major release due to it being mostly bug fixes and changes that will support 
 	the idea of ECS and MVVM working together, and promises for the 1.x release. If you already have a lot of work done in 1.5 save 1.6 for your next game or application.  
 	While upgrading is possible if you are familiar enough with it, but it will require a significant effort.
-1.61
+1.6.2
+	- New Node Styles for better visual feedback.
+	- Documentation Updates
+	- Interactive Tutorial Updates
+	- Wiki page link on welcome screen
+	- New extension method for copying viewmodels
+	- New sugar methods to invoke commands on view-models.
+	- Serializer fixes
+	- Kernel Fix: Correctly publishes Loading instead of Loaded twice.
+	- Other small enhancements & Fixes
+
+1.601
 	- Added: New Welcome Screen
 	- Cleaned up Documentation look and feel
 	- Documentation changes/fixes/updates are coming in the next version

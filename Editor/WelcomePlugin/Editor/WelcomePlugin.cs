@@ -31,7 +31,7 @@ public class WelcomePlugin : DiagramPlugin, IWelcomeWindowToolbarItemsQuery {
 
     public string AbsoluteExampleUnityPackagePath
     {
-        get { return Path.Combine(Application.dataPath, "pkj/ExampleProject.unitypackage"); }
+        get { return Path.Combine(Application.dataPath, "uFrame/MVVM/Framework/ExampleProject.unitypackage"); }
     }
 
     public IEnumerable<string> GetExampleProjectScenes()
