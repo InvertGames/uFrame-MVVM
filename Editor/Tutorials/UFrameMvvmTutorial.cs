@@ -176,7 +176,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
     }
     public ElementNode TheGame { get; set; }
     public ViewNode GameView { get; set; }
-    protected void SaveAndCompile(IDocumentationBuilder _, DiagramNode node = null)
+    protected void SaveAndCompile(IDocumentationBuilder _, GraphNode node = null)
     {
         _.ShowTutorialStep(SaveAndCompile(node ?? SceneA), b =>
 
@@ -195,7 +195,7 @@ public abstract class uFrameMVVMTutorial : uFrameMVVMPage<InteractiveTutorials>
         });
     }
 
-    public void EnsureCode(IDocumentationBuilder _, DiagramNode codeFor, string description, string imageUrl, string filenameSearch, string codeSearch)
+    public void EnsureCode(IDocumentationBuilder _, GraphNode codeFor, string description, string imageUrl, string filenameSearch, string codeSearch)
     {
 
         _.ShowTutorialStep(new TutorialStep(description,
