@@ -29,7 +29,7 @@ public class CreateSceneCommand : EditorCommand<SceneTypeNode>, IDiagramNodeComm
     {
         if (!EditorApplication.SaveCurrentSceneIfUserWantsTo()) return;
 
-        var paths = InvertApplication.Container.Resolve<IGraphConfiguration>().CodeOutputSystemPath;
+        var paths = InvertApplication.Container.Resolve<IGraphConfiguration>().CodeOutputPath;
         var scenesPath = System.IO.Path.Combine(paths, "Scenes");
         var relativeScenesPath = System.IO.Path.Combine(node.Graph.AssetDirectory, "Scenes");
 
