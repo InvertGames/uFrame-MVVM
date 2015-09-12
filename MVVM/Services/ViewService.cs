@@ -35,6 +35,9 @@ namespace uFrame.MVVM.Services
 
             this.OnEvent<ViewDestroyedEvent>()
                 .Subscribe(ViewDestroyed);
+				
+			this.OnEvent<ViewModelDestroyedEvent>()
+                .Subscribe(ViewModelDestroyed);
         }
 
         public List<ViewBase> Views
@@ -111,6 +114,15 @@ namespace uFrame.MVVM.Services
                 {
                     ViewModel = vm,
                 });
+            }
+        }
+		
+		protected virtual void ViewModelDestroyed(ViewModelDestroyedEvent data)
+        {
+            var instanceIndex = uFrameKernel.Container.Instances.FindIndex(x => x.Name == data.ViewModel.Identifier);
+            if (instanceIndex >= 0)
+            {
+                uFrameKernel.Container.Instances.RemoveAt(instanceIndex);
             }
         }
 
