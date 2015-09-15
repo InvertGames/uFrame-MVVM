@@ -224,6 +224,7 @@ public abstract class ViewModel
     public void Dispose()
     {
         Unbind();
+		Aggregator.Publish(new ViewModelDestroyedEvent { ViewModel = this});
         if (Disposer != null)
         {
             Disposer(this);
