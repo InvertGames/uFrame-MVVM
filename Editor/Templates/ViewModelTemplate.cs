@@ -447,7 +447,7 @@ namespace uFrame.MVVM.Templates
                 var relatedNode = item.RelatedTypeNode;
                 if (relatedNode != null)
                 {
-                    Ctx._("{0}.Take(1).Subscribe(_ => Reset{1}());", item.Name.AsSubscribableProperty(), computed.Name);
+                    Ctx._("{0}.Take(1).Subscribe(_ => Reset{1}())", item.Name.AsSubscribableProperty(), computed.Name);
                     var conditionStatements = Ctx._if("{0}.Value != null", item.Name.AsSubscribableProperty())
                         .TrueStatements;
                     foreach (var p in computed.SubProperties.Where(p => p.SourceItem.Node == relatedNode))
