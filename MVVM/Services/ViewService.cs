@@ -35,8 +35,8 @@ namespace uFrame.MVVM.Services
 
             this.OnEvent<ViewDestroyedEvent>()
                 .Subscribe(ViewDestroyed);
-				
-			this.OnEvent<ViewModelDestroyedEvent>()
+
+            this.OnEvent<ViewModelDestroyedEvent>()
                 .Subscribe(ViewModelDestroyed);
         }
 
@@ -99,7 +99,7 @@ namespace uFrame.MVVM.Services
             if (view.ViewModelObject == null && view.BindOnStart)
             {
                 var viewModel = FetchViewModel(viewCreatedEvent.View);
-                
+
             }
             Views.Add(view);
         }
@@ -116,14 +116,13 @@ namespace uFrame.MVVM.Services
                 });
             }
         }
-		
-		protected virtual void ViewModelDestroyed(ViewModelDestroyedEvent data)
+
+        protected virtual void ViewModelDestroyed(ViewModelDestroyedEvent data)
         {
-            var instanceIndex = uFrameKernel.Container.Instances.FindIndex(x => x.Name == data.ViewModel.Identifier);
-            if (instanceIndex >= 0)
-            {
-                uFrameKernel.Container.Instances.RemoveAt(instanceIndex);
-            }
+            var instanceIndex = uFrameKernel.Container.Instances.FirstOrDefault(x => x.Key.Item2 == data.ViewModel.Identifier);
+        
+            uFrameKernel.Container.Instances.Remove(instanceIndex.Key);
+
         }
 
         /// <summary>
@@ -138,7 +137,7 @@ namespace uFrame.MVVM.Services
             {
                 return viewBase.ViewModelObject;
             }
-            
+
             // Attempt to resolve it by the identifier 
             //var contextViewModel = uFrameMVVMKernel.Container.Resolve<ViewModel>(viewBase.Identifier);
             // It now only registers under the viewmodeltype to allow multip different view-models with the same identifier
@@ -174,7 +173,7 @@ namespace uFrame.MVVM.Services
                 }
                 return viewBase.ViewModelObject = contextViewModel;
             }
-          
+
             return contextViewModel;
         }
 
