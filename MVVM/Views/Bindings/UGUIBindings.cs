@@ -1,4 +1,4 @@
-#if UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
+#if UNITY_4_6 || UNITY_5
 using System;
 using UniRx;
 using UnityEngine;

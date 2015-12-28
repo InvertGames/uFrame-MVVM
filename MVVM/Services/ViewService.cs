@@ -148,9 +148,8 @@ namespace uFrame.MVVM.Services
             if (contextViewModel == null)
             {
                 // Either use the controller to create it or create it ourselves
-                contextViewModel = MVVMKernelExtensions.CreateViewModel(viewBase.ViewModelType);
-                contextViewModel.Identifier = viewBase.Identifier;
-
+                contextViewModel = MVVMKernelExtensions.CreateViewModel(viewBase.ViewModelType, viewBase.Identifier);
+                
                 // Register it, this is usually when a non registered element is treated like a single-instance anways
                 uFrameKernel.Container.RegisterInstance(viewBase.ViewModelType, contextViewModel,
                     string.IsNullOrEmpty(viewBase.Identifier) ? null : viewBase.Identifier);
@@ -158,10 +157,12 @@ namespace uFrame.MVVM.Services
                 // Register it under the generic view-model type
                 //uFrameMVVMKernel.Container.RegisterInstance<ViewModel>(contextViewModel, viewBase.Identifier);
 
-                uFrameKernel.EventAggregator.Publish(new ViewModelCreatedEvent()
-                {
-                    ViewModel = contextViewModel
-                });
+
+                //Will be invoked in the controller.
+                //uFrameKernel.EventAggregator.Publish(new ViewModelCreatedEvent()
+                //{
+                //    ViewModel = contextViewModel
+                //});
             }
             // If we found a view-model
             if (contextViewModel != null)

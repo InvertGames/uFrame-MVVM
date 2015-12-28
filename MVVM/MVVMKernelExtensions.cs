@@ -3,6 +3,7 @@ using uFrame.IOC;
 using uFrame.Kernel;
 using uFrame.MVVM;
 using uFrame.MVVM.Bindings;
+using UnityEngine;
 
 namespace uFrame.MVVM
 {
@@ -14,6 +15,7 @@ namespace uFrame.MVVM
             container.Register<TViewModel, TViewModel>();
             container.RegisterInstance<ViewModel>(viewModel, identifier);
             container.RegisterInstance(typeof (TViewModel), viewModel, identifier);
+            container.RegisterInstance(viewModel.GetType(), viewModel, identifier);
         }
 
         public static void RegisterController<TController>(this IUFrameContainer container, TController controller)
@@ -22,9 +24,12 @@ namespace uFrame.MVVM
             container.RegisterInstance<Controller>(controller, controller.GetType().Name, false);
             container.RegisterInstance<ISystemService>(controller, controller.GetType().Name, false);
             container.RegisterInstance<TController>(controller, false);
+
             // Todo Convention hack make it prettier :)
-            container.RegisterInstance<Controller>(controller,
-                typeof (TController).Name.Replace("Controller", "ViewModel"));
+            container.RegisterInstance<Controller>(controller, typeof(TController).Name.ReplaceLast("Controller","ViewModel"));
+
+            Debug.Log(string.Format("Registering {0} as {1}", typeof(TController).Name, typeof(TController).Name.ReplaceLast("Controller", "ViewModel")));
+
         }
 
         public static void RegisterViewModelManager<TViewModel>(this IUFrameContainer container,
@@ -86,5 +91,14 @@ namespace uFrame.MVVM
         {
             return container.AddBinding(disposable);
         }
+
+        public static string ReplaceLast(this string source, string expr, string replacement)
+        {
+            int ndx = source.LastIndexOf(expr);
+            if (ndx < 0) return source;
+            string result = source.Remove(ndx, expr.Length).Insert(ndx, replacement);
+            return result;
+        }
+
     }
 }
