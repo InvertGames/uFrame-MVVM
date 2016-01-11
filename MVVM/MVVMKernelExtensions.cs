@@ -27,9 +27,6 @@ namespace uFrame.MVVM
 
             // Todo Convention hack make it prettier :)
             container.RegisterInstance<Controller>(controller, typeof(TController).Name.ReplaceLast("Controller","ViewModel"));
-
-            Debug.Log(string.Format("Registering {0} as {1}", typeof(TController).Name, typeof(TController).Name.ReplaceLast("Controller", "ViewModel")));
-
         }
 
         public static void RegisterViewModelManager<TViewModel>(this IUFrameContainer container,
